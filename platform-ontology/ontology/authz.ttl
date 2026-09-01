@@ -1,0 +1,243 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix authn: <https://w3id.org/examplebank/platform/authn#> .
+@prefix authz: <https://w3id.org/examplebank/platform/authz#> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/authz>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/authn> ;
+    dct:title "Authorization Module"@en ;
+    dct:description "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation — distinct from an attribute assertion, which is an observation."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+authz:Policy a owl:Class ;
+    skos:definition "A named, versioned unit of authorization logic governing one or more resources."@en ;
+    vs:term_status "draft" .
+
+authz:PolicyRule a owl:Class ;
+    skos:definition "A single rule within a policy, with an effect (permit/deny) and conditions over attributes."@en ;
+    vs:term_status "draft" .
+
+authz:AttributeAssertion a owl:Class ;
+    skos:definition "A first-class attribute statement about a principal or resource: name, value, issuer, and validity window. Attributes carry provenance rather than being baked into role hierarchies."@en ;
+    vs:term_status "draft" .
+
+authz:Role a owl:Class ;
+    skos:definition "A named collection of permissions; retained for RBAC interop, but modelled as one source of attribute assertions among others."@en ;
+    vs:term_status "draft" .
+
+authz:PolicyDecision a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "An evaluation of policy for a specific access request, with an outcome."@en ;
+    vs:term_status "draft" .
+
+authz:Obligation a owl:Class ;
+    skos:definition "An action the enforcement point must perform alongside enforcing a decision (log, step-up, watermark)."@en ;
+    vs:term_status "draft" .
+
+authz:DecisionOutcome a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "XACML decision outcome; members are individuals."@en ;
+    vs:term_status "draft" .
+
+authz:EntitlementDimension a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "A coarse-grained access dimension ingress validates at the platform boundary. Members are individuals in a closed, platform-owned scheme; applications cannot introduce dimensions — extension is a deliberate MINOR-versioned act behind security-architecture review."@en ;
+    vs:term_status "draft" .
+
+authz:EntitlementGrant a owl:Class ;
+    skos:definition "A conferral of platform access to a tenant on one entitlement dimension, with a value and validity window. Always the materialized projection of upstream governance (a subscription, tenant registration, or application enablement) distributed to ingress — never hand-authored (enforced in SHACL). The token is evidence; the grant is authority."@en ;
+    vs:term_status "draft" .
+
+authz:Action a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "An operation a policy decision evaluates — the action slot of the AuthZEN/XACML tuple (subject, action, resource → decision). Members are individuals in a closed, platform-owned scheme; application verbs (transfer, approve) belong to Level-3 application authorization and must never appear here (guard invariant)."@en ;
+    vs:term_status "draft" .
+
+authz:IngressAdmissionDecision a owl:Class ;
+    rdfs:subClassOf authz:PolicyDecision ;
+    skos:definition "A Level-1/Level-2 decision at the ingress policy enforcement point: subject → action → target → decision (AuthZEN-aligned), evaluated against distributed entitlement grants, with the channel derived from the presenting registration. The evaluated policy is the platform admission policy — the versioned unit of authorization logic the distributed grant configuration realizes — so the policy reference every decision must carry is honest, not synthetic."@en ;
+    vs:term_status "draft" .
+
+authz:Policy owl:disjointWith authz:PolicyDecision .
+authz:EntitlementGrant owl:disjointWith authz:AttributeAssertion .
+
+#################################################################
+# Object properties
+#################################################################
+
+authz:hasRule a owl:ObjectProperty ;
+    skos:definition "Rule contained in a policy."@en ;
+    vs:term_status "draft" .
+
+authz:evaluatedPolicy a owl:ObjectProperty ;
+    skos:definition "Policy evaluated to produce a decision."@en ;
+    vs:term_status "draft" .
+
+authz:decisionOutcome a owl:ObjectProperty ;
+    skos:definition "Outcome concept of a policy decision."@en ;
+    vs:term_status "draft" .
+
+authz:requestingPrincipal a owl:ObjectProperty ;
+    rdfs:subPropertyOf core:performedBy ;
+    skos:definition "Principal whose access request the decision concerns."@en ;
+    vs:term_status "draft" .
+
+authz:withinSession a owl:ObjectProperty ;
+    skos:definition "Session in which the access request was made."@en ;
+    vs:term_status "draft" .
+
+authz:assertedBy a owl:ObjectProperty ;
+    skos:definition "Authoritative source (PIP, IdP, HR system) that issued an attribute assertion."@en ;
+    vs:term_status "draft" .
+
+authz:aboutPrincipal a owl:ObjectProperty ;
+    skos:definition "Principal an attribute assertion describes."@en ;
+    vs:term_status "draft" .
+
+authz:requiredAssuranceLevel a owl:ObjectProperty ;
+    skos:definition "Minimum AAL a policy requires of the session's originating authentication."@en ;
+    vs:term_status "draft" .
+
+authz:imposesObligation a owl:ObjectProperty ;
+    skos:definition "Obligation attached to a rule or decision."@en ;
+    vs:term_status "draft" .
+
+authz:grantedTo a owl:ObjectProperty ;
+    skos:definition "Tenant to which an entitlement grant confers access."@en ;
+    vs:term_status "draft" .
+
+authz:onDimension a owl:ObjectProperty ;
+    skos:definition "Entitlement dimension a grant confers access on; must be drawn from the platform-owned scheme."@en ;
+    vs:term_status "draft" .
+
+authz:derivedFrom a owl:ObjectProperty ;
+    skos:definition "Upstream governance object a grant was projected from: a subscription, an application enablement, an authorized-party registration (channel grants), or — once modelled — the tenant onboarding record (platform/tenant grants). Mandatory: a grant with no derivation is a hand-authored grant, which violates."@en ;
+    vs:term_status "draft" .
+
+authz:viaChannel a owl:ObjectProperty ;
+    skos:definition "Delivery channel through which an admission decision's request arrived, derived from the presenting registration."@en ;
+    vs:term_status "draft" .
+
+authz:evaluatedGrant a owl:ObjectProperty ;
+    skos:definition "Entitlement grant an admission decision evaluated."@en ;
+    vs:term_status "draft" .
+
+authz:evaluatedAction a owl:ObjectProperty ;
+    skos:definition "The action a policy decision evaluated — exactly one per decision (SHACL), drawn from the platform-owned action scheme. AuthZEN's action name is the concept's skos:notation."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+authz:attributeName a owl:DatatypeProperty ;
+    skos:definition "Name of the asserted attribute (e.g., 'lineOfBusiness', 'clearance')."@en ;
+    vs:term_status "draft" .
+
+authz:attributeValue a owl:DatatypeProperty ;
+    skos:definition "Value of the asserted attribute."@en ;
+    vs:term_status "draft" .
+
+authz:effect a owl:DatatypeProperty ;
+    skos:definition "Effect of a rule: 'permit' or 'deny'."@en ;
+    vs:term_status "draft" .
+
+authz:entitlementValue a owl:DatatypeProperty ;
+    skos:definition "Value a grant confers on its dimension (e.g., 'US' on region, 'prod' on environment, 'web' on channel)."@en ;
+    vs:term_status "draft" .
+
+authz:distributedAt a owl:DatatypeProperty ;
+    skos:definition "Instant this grant projection was last distributed to the enforcement point; anchors staleness queries."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Decision outcome vocabulary
+#################################################################
+
+authz:DecisionOutcomeScheme a skos:ConceptScheme ;
+    dct:title "XACML Decision Outcomes"@en .
+
+authz:outcome-permit a authz:DecisionOutcome ;
+    skos:inScheme authz:DecisionOutcomeScheme ;
+    skos:prefLabel "Permit"@en .
+
+authz:outcome-deny a authz:DecisionOutcome ;
+    skos:inScheme authz:DecisionOutcomeScheme ;
+    skos:prefLabel "Deny"@en .
+
+authz:outcome-indeterminate a authz:DecisionOutcome ;
+    skos:inScheme authz:DecisionOutcomeScheme ;
+    skos:prefLabel "Indeterminate"@en .
+
+authz:outcome-not-applicable a authz:DecisionOutcome ;
+    skos:inScheme authz:DecisionOutcomeScheme ;
+    skos:prefLabel "NotApplicable"@en .
+
+#################################################################
+# Action vocabulary (closed, platform-owned; AuthZEN-aligned)
+#################################################################
+
+authz:ActionScheme a skos:ConceptScheme ;
+    dct:title "Platform Actions"@en ;
+    skos:editorialNote "Deliberately minimal: the platform decides few verbs. Application-level verbs are Level-3 and excluded by the guard invariant; extension is a MINOR-versioned act."@en .
+
+authz:action-access a authz:Action ;
+    skos:inScheme authz:ActionScheme ;
+    skos:prefLabel "Access"@en ;
+    skos:notation "access" ;
+    skos:definition "Cross a platform or application boundary — the admission action."@en .
+
+authz:action-read a authz:Action ;
+    skos:inScheme authz:ActionScheme ;
+    skos:prefLabel "Read"@en ;
+    skos:notation "read" .
+
+authz:action-write a authz:Action ;
+    skos:inScheme authz:ActionScheme ;
+    skos:prefLabel "Write"@en ;
+    skos:notation "write" .
+
+authz:action-administer a authz:Action ;
+    skos:inScheme authz:ActionScheme ;
+    skos:prefLabel "Administer"@en ;
+    skos:notation "administer" ;
+    skos:definition "Mutate platform configuration or policy — control-plane operations."@en .
+
+#################################################################
+# Entitlement dimension vocabulary (closed, platform-owned)
+#################################################################
+
+authz:EntitlementDimensionScheme a skos:ConceptScheme ;
+    dct:title "Platform Entitlement Dimensions"@en ;
+    skos:editorialNote "Deliberately small, stable, and platform-owned. 'client' was considered and rejected as a dimension: the registration is the EVIDENCE for the channel dimension, not a dimension itself; the word 'client' is reserved for the firm's business meaning."@en .
+
+authz:dim-platform a authz:EntitlementDimension ;
+    skos:inScheme authz:EntitlementDimensionScheme ;
+    skos:prefLabel "platform.access"@en .
+
+authz:dim-tenant a authz:EntitlementDimension ;
+    skos:inScheme authz:EntitlementDimensionScheme ;
+    skos:prefLabel "tenant.access"@en .
+
+authz:dim-environment a authz:EntitlementDimension ;
+    skos:inScheme authz:EntitlementDimensionScheme ;
+    skos:prefLabel "environment.access"@en .
+
+authz:dim-region a authz:EntitlementDimension ;
+    skos:inScheme authz:EntitlementDimensionScheme ;
+    skos:prefLabel "region.access"@en .
+
+authz:dim-channel a authz:EntitlementDimension ;
+    skos:inScheme authz:EntitlementDimensionScheme ;
+    skos:prefLabel "channel.access"@en .

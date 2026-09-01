@@ -1,0 +1,10 @@
+# CQ-6: Which workload principals exist, what are their SPIFFE identities,
+# and which changes have they executed?
+PREFIX core: <https://w3id.org/examplebank/platform/core#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+
+SELECT ?workload ?spiffeId ?change WHERE {
+    ?workload a core:WorkloadPrincipal ;
+              core:identifier ?spiffeId .
+    OPTIONAL { ?change cp:executedBy ?workload }
+}

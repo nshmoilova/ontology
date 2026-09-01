@@ -1,0 +1,28 @@
+name: ontology-ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: platform-ontology
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r ci/requirements.txt
+      - name: Parse, SHACL-validate, run competency suite
+        run: python3 ci/validate.py
+      - name: Build the browser index (must stay in sync with the sources)
+        run: python3 ci/build_index.py
+      - name: Fail if the committed index is stale
+        run: git diff --exit-code -- browser/data/index.json
+      # Recommended additions once ROBOT is vendored or containerized:
+      # - name: OWL 2 QL profile check + coherence
+      #   run: robot validate-profile --profile QL --input ontology/core.ttl

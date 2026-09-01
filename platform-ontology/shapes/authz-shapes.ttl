@@ -1,0 +1,183 @@
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix authn: <https://w3id.org/examplebank/platform/authn#> .
+@prefix authz: <https://w3id.org/examplebank/platform/authz#> .
+@prefix sz:    <https://w3id.org/examplebank/platform/shapes/authz#> .
+
+sz:PolicyShape a sh:NodeShape ;
+    sh:targetClass authz:Policy ;
+    sh:property [
+        sh:path authz:hasRule ;
+        sh:minCount 1 ;
+        sh:class authz:PolicyRule ;
+        sh:severity sh:Violation ;
+        sh:message "A policy must contain at least one rule." ;
+    ] .
+
+sz:PolicyRuleShape a sh:NodeShape ;
+    sh:targetClass authz:PolicyRule ;
+    sh:property [
+        sh:path authz:effect ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( "permit" "deny" ) ;
+        sh:severity sh:Violation ;
+        sh:message "A rule must have exactly one effect: 'permit' or 'deny'." ;
+    ] .
+
+sz:AttributeAssertionShape a sh:NodeShape ;
+    sh:targetClass authz:AttributeAssertion ;
+    sh:property [
+        sh:path authz:attributeName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "An attribute assertion must have exactly one name." ;
+    ] ;
+    sh:property [
+        sh:path authz:attributeValue ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "An attribute assertion must have a value." ;
+    ] ;
+    sh:property [
+        sh:path authz:assertedBy ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "An attribute assertion must have an authoritative issuer — attributes without provenance cannot be used in decisions." ;
+    ] ;
+    sh:property [
+        sh:path authz:aboutPrincipal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "An attribute assertion must describe exactly one principal." ;
+    ] .
+
+sz:PolicyDecisionShape a sh:NodeShape ;
+    sh:targetClass authz:PolicyDecision ;
+    sh:property [
+        sh:path authz:decisionOutcome ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authz:DecisionOutcome ;
+        sh:severity sh:Violation ;
+        sh:message "A policy decision must have exactly one outcome." ;
+    ] ;
+    sh:property [
+        sh:path authz:evaluatedPolicy ;
+        sh:minCount 1 ;
+        sh:class authz:Policy ;
+        sh:severity sh:Violation ;
+        sh:message "A policy decision must reference the policy it evaluated." ;
+    ] ;
+    sh:property [
+        sh:path authz:evaluatedAction ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authz:Action ;
+        sh:severity sh:Violation ;
+        sh:message "A policy decision must evaluate exactly one action — the AuthZEN tuple is incomplete without it." ;
+    ] .
+
+# Level-3 boundary at the decision layer: actions come from the
+# platform-owned scheme, never from application vocabularies.
+sz:ActionVocabularyShape a sh:NodeShape ;
+    sh:targetClass authz:PolicyDecision ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Decision evaluates an action outside the platform-owned action vocabulary — application verbs are Level-3 and must not reach platform decisions." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authz#evaluatedAction> ?a .
+                FILTER NOT EXISTS {
+                    ?a <http://www.w3.org/2004/02/skos/core#inScheme>
+                       <https://w3id.org/examplebank/platform/authz#ActionScheme> .
+                }
+            }
+        """ ;
+    ] .
+
+# Cross-domain constraint: a Permit decision made within a session must be
+# backed by a successful journey execution (establishing or elevating) whose
+# achieved AAL rank meets the policy's required AAL rank. Approximates the
+# "latest successful execution" rule as "some successful execution suffices";
+# identical while executions per session are monotonic — revisit with decay.
+sz:PermitMeetsRequiredAssuranceShape a sh:NodeShape ;
+    sh:targetClass authz:PolicyDecision ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Permit decision violates policy assurance requirement: the session's authentication AAL is below the policy's required AAL." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authz#decisionOutcome>
+                      <https://w3id.org/examplebank/platform/authz#outcome-permit> ;
+                      <https://w3id.org/examplebank/platform/authz#evaluatedPolicy> ?pol ;
+                      <https://w3id.org/examplebank/platform/authz#withinSession> ?s .
+                ?pol <https://w3id.org/examplebank/platform/authz#requiredAssuranceLevel> ?req .
+                ?req <https://w3id.org/examplebank/platform/authn#assuranceRank> ?reqRank .
+                FILTER NOT EXISTS {
+                    ?s <https://w3id.org/examplebank/platform/session#establishedBy>|<https://w3id.org/examplebank/platform/session#elevatedBy> ?x .
+                    ?x <https://w3id.org/examplebank/platform/authn#succeeded> true ;
+                       <https://w3id.org/examplebank/platform/authn#achievedAssuranceLevel> ?ach .
+                    ?ach <https://w3id.org/examplebank/platform/authn#assuranceRank> ?achRank .
+                    FILTER (?achRank >= ?reqRank)
+                }
+            }
+        """ ;
+    ] .
+
+sz:IngressAdmissionDecisionShape a sh:NodeShape ;
+    sh:targetClass authz:IngressAdmissionDecision ;
+    sh:property [
+        sh:path authz:viaChannel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:DeliveryChannel ;
+        sh:severity sh:Violation ;
+        sh:message "An admission decision must arrive via exactly one channel, derived from the presenting registration." ;
+    ] ;
+    sh:property [
+        sh:path authz:evaluatedGrant ;
+        sh:minCount 1 ;
+        sh:class authz:EntitlementGrant ;
+        sh:severity sh:Violation ;
+        sh:message "An admission decision must evaluate at least one entitlement grant — admission without grants is admission without authority." ;
+    ] .
+
+sz:EntitlementGrantShape a sh:NodeShape ;
+    sh:targetClass authz:EntitlementGrant ;
+    sh:property [
+        sh:path authz:grantedTo ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "An entitlement grant must confer access to exactly one tenant." ;
+    ] ;
+    sh:property [
+        sh:path authz:onDimension ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authz:EntitlementDimension ;
+        sh:severity sh:Violation ;
+        sh:message "An entitlement grant must name exactly one dimension from the platform-owned scheme." ;
+    ] ;
+    sh:property [
+        sh:path authz:derivedFrom ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "An entitlement grant must carry a derivation link to its governing source — hand-authored grants are forbidden; grants are projections." ;
+    ] ;
+    sh:property [
+        sh:path authz:distributedAt ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:severity sh:Warning ;
+        sh:message "Grant has no distribution timestamp — staleness queries cannot cover it." ;
+    ] .

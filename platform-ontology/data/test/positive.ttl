@@ -1,0 +1,295 @@
+# Seed instance data expected to CONFORM (violations: none; warnings acceptable).
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix authn:   <https://w3id.org/examplebank/platform/authn#> .
+@prefix session: <https://w3id.org/examplebank/platform/session#> .
+@prefix ingress: <https://w3id.org/examplebank/platform/ingress#> .
+@prefix authz:   <https://w3id.org/examplebank/platform/authz#> .
+@prefix cp:      <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix ex:      <https://data.examplebank.com/platform/> .
+
+### Principals
+ex:alice a core:HumanPrincipal ;
+    core:identifier "dir:alice.chen" ;
+    core:displayName "Alice Chen" .
+
+ex:payments-agent a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank.com/ns/payments/sa/agent-runner" ;
+    core:displayName "Payments agent runner" .
+
+### Identity provider & credentials
+ex:enterprise-idp a authn:IdentityProvider ;
+    core:displayName "Enterprise IdP" .
+
+ex:alice-passkey a authn:Credential ;
+    authn:credentialOf ex:alice ;
+    authn:issuedBy ex:enterprise-idp .
+
+### Subject identifiers
+ex:subid-alice-idp a authn:SubjectIdentifier ;
+    authn:subjectValue "auth0|8842-alice" ;
+    authn:atIssuer ex:enterprise-idp ;
+    authn:identifies ex:alice ;
+    authn:identifierFormat authn:format-iss-sub ;
+    core:validFrom "2026-01-15T00:00:00Z"^^xsd:dateTime .
+
+ex:subid-alice-web-pairwise a authn:SubjectIdentifier ;
+    authn:subjectValue "pw-9931-c4e1" ;
+    authn:atIssuer ex:enterprise-idp ;
+    authn:identifies ex:alice ;
+    authn:identifierFormat authn:format-opaque ;
+    authn:scopedToParty ex:azp-t123-web .
+
+### Authentication
+ex:authn-1001 a authn:AuthenticationEvent ;
+    core:occurredAtTime "2026-08-31T13:05:00Z"^^xsd:dateTime ;
+    authn:authenticatedPrincipal ex:alice ;
+    authn:usedCredential ex:alice-passkey ;
+    authn:usedMethod authn:method-fido2 ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL2 .
+
+### Authentication journey
+ex:journey-web-default a authn:AuthenticationJourneyDefinition ;
+    core:displayName "Web default journey: FIDO2 passkey, yields AAL2" ;
+    authn:servesChannel core:channel-web .
+
+ex:exec-1001 a authn:AuthenticationJourneyExecution ;
+    core:occurredAtTime "2026-08-31T13:05:00Z"^^xsd:dateTime ;
+    authn:followsDefinition ex:journey-web-default ;
+    authn:comprisesEvent ex:authn-1001 ;
+    authn:authenticatedPrincipal ex:alice ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL2 .
+
+### Session & tokens
+ex:session-9001 a session:Session ;
+    session:establishedBy ex:exec-1001 ;
+    session:boundToPrincipal ex:alice ;
+    session:hasState session:state-active ;
+    session:notBefore "2026-08-31T13:05:01Z"^^xsd:dateTime ;
+    session:expiresAt "2026-08-31T21:05:01Z"^^xsd:dateTime ;
+    session:issuedToken ex:token-at-1 .
+
+ex:token-at-1 a session:AccessToken ;
+    session:expiresAt "2026-08-31T13:20:01Z"^^xsd:dateTime ;
+    session:tokenAudience ex:ledger-service ;
+    session:issuedTo ex:azp-t123-web .
+
+### Ingress
+ex:pep-envoy-east a core:PolicyEnforcementPoint ;
+    core:displayName "Envoy ext_authz filter (east)" .
+
+ex:edge-gateway a ingress:Gateway ;
+    core:governedBy ex:policy-ledger-read ;
+    ingress:hasListener ex:listener-443 ;
+    ingress:exposesRoute ex:route-ledger .
+
+ex:listener-443 a ingress:Listener ;
+    ingress:port 443 ;
+    ingress:protocol "HTTPS" ;
+    ingress:terminatesTLS true .
+
+ex:ledger-service a ingress:UpstreamService ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Ledger service" .
+
+ex:route-ledger a ingress:Route ;
+    core:governedBy ex:policy-ledger-read ;
+    ingress:routesTo ex:ledger-service ;
+    core:enforcedBy ex:pep-envoy-east .
+
+### Authorization
+ex:hr-pip a core:PolicyInformationPoint ;
+    core:displayName "HR attribute service" .
+
+ex:attr-alice-lob a authz:AttributeAssertion ;
+    authz:aboutPrincipal ex:alice ;
+    authz:attributeName "lineOfBusiness" ;
+    authz:attributeValue "payments" ;
+    authz:assertedBy ex:hr-pip ;
+    core:validFrom "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    core:validUntil "2026-12-31T23:59:59Z"^^xsd:dateTime .
+
+ex:policy-ledger-read a authz:Policy ;
+    core:displayName "Ledger read access" ;
+    authz:requiredAssuranceLevel authn:AAL2 ;
+    authz:hasRule ex:rule-lob-payments .
+
+ex:rule-lob-payments a authz:PolicyRule ;
+    authz:effect "permit" .
+
+ex:policy-platform-admission a authz:Policy ;
+    core:displayName "Platform admission policy (realized by distributed grants)" ;
+    authz:hasRule ex:rule-admission .
+
+ex:rule-admission a authz:PolicyRule ;
+    authz:effect "permit" .
+
+ex:admission-6001 a authz:IngressAdmissionDecision ;
+    core:occurredAtTime "2026-08-31T13:06:05Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:alice ;
+    authz:withinSession ex:session-9001 ;
+    authz:evaluatedPolicy ex:policy-platform-admission ;
+    authz:evaluatedAction authz:action-access ;
+    authz:viaChannel core:channel-web ;
+    authz:evaluatedGrant ex:grant-t123-channel-web ;
+    core:targetsResource ex:app-ledger ;
+    authz:decisionOutcome authz:outcome-permit .
+
+ex:decision-5001 a authz:PolicyDecision ;
+    core:occurredAtTime "2026-08-31T13:06:10Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:alice ;
+    authz:withinSession ex:session-9001 ;
+    authz:evaluatedPolicy ex:policy-ledger-read ;
+    authz:evaluatedAction authz:action-read ;
+    core:targetsResource ex:ledger-service ;
+    authz:decisionOutcome authz:outcome-permit .
+
+### Control plane
+ex:policy-service a cp:ControlPlaneComponent ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Central policy service (PAP)" .
+
+ex:change-7001 a cp:PolicyChangeEvent ;
+    core:occurredAtTime "2026-08-30T09:00:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:payments-agent ;
+    cp:changedPolicy ex:policy-ledger-read ;
+    cp:changeTicket "CHG0042117" ;
+    cp:hasApproval ex:approval-7001a .
+
+ex:approval-7001a a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-30T08:45:00Z"^^xsd:dateTime .
+
+### Management vs. capability control planes
+ex:mgmt-plane a cp:ManagementControlPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Platform management control plane" .
+
+ex:tenant-t123 a core:Tenant ;
+    core:displayName "Tenant T123" .
+
+ex:db-capability a core:Capability ;
+    core:displayName "Managed database capability" ;
+    cp:isolationModel "cell-per-tenant" .
+
+### Scope tree (single-parent; facets carry dimensions)
+ex:scope-root a cp:AdministrativeScope ;
+    core:displayName "Platform root scope" .
+
+ex:scope-prod a cp:AdministrativeScope ;
+    core:displayName "Production, US" ;
+    cp:subScopeOf ex:scope-root ;
+    cp:inEnvironment "prod" ;
+    cp:inRegion "US" ;
+    cp:requiresHumanApproval true ;
+    cp:scopeIncludes ex:t123-db-plane .
+
+### Subscription and offering
+ex:sub-9001 a cp:Subscription ;
+    core:displayName "T123 subscription: managed database" ;
+    cp:subscriber ex:tenant-t123 ;
+    cp:subscribedCapability ex:db-capability ;
+    cp:hasSubscriptionState cp:substate-active ;
+    core:validFrom "2026-06-01T00:00:00Z"^^xsd:dateTime ;
+    core:validUntil "2027-05-31T23:59:59Z"^^xsd:dateTime ;
+    cp:hasApproval ex:approval-9001 .
+
+ex:approval-9001 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-05-28T10:00:00Z"^^xsd:dateTime .
+
+ex:offering-db-prod a cp:CapabilityOffering ;
+    core:displayName "Managed database offered in prod/US" ;
+    cp:offersCapability ex:db-capability ;
+    cp:offeredInScope ex:scope-prod .
+
+### Application, confirmed requirement, enablement, portal
+ex:app-ledger a core:Application ;
+    core:displayName "T123 ledger application" ;
+    core:ownedBy ex:tenant-t123 ;
+    core:governedBy ex:policy-ledger-read .
+
+ex:req-ledger-db a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-ledger ;
+    cp:requiredCapability ex:db-capability ;
+    cp:hasApproval ex:approval-req-1 .
+
+ex:approval-req-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-20T09:00:00Z"^^xsd:dateTime .
+
+ex:obs-ledger-db a cp:CapabilityUseObservation ;
+    core:occurredAtTime "2026-08-25T00:00:00Z"^^xsd:dateTime ;
+    cp:observedApplication ex:app-ledger ;
+    cp:observedCapability ex:db-capability ;
+    cp:windowStart "2026-08-18T00:00:00Z"^^xsd:dateTime ;
+    cp:windowEnd "2026-08-25T00:00:00Z"^^xsd:dateTime ;
+    cp:requestCount 48211 .
+
+ex:enable-8002 a cp:ApplicationEnablement ;
+    core:displayName "Enable ledger app for T123 in prod" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:forApplication ex:app-ledger ;
+    cp:hasApproval ex:approval-8002 .
+
+ex:approval-8002 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-21T11:00:00Z"^^xsd:dateTime .
+
+ex:azp-t123-web a core:AuthorizedParty ;
+    core:displayName "T123 web portal front (SPA registration)" ;
+    core:ownedBy ex:tenant-t123 ;
+    core:boundToChannel core:channel-web .
+
+ex:portal-t123-web a cp:Portal ;
+    core:displayName "T123 web portal" ;
+    core:ownedBy ex:tenant-t123 ;
+    cp:groupsApplication ex:app-ledger ;
+    cp:frontedBy ex:azp-t123-web .
+
+### Entitlement grant (projection, never hand-authored)
+ex:grant-t123-channel-web a authz:EntitlementGrant ;
+    authz:grantedTo ex:tenant-t123 ;
+    authz:onDimension authz:dim-channel ;
+    authz:entitlementValue "web" ;
+    authz:derivedFrom ex:azp-t123-web ;
+    authz:distributedAt "2026-08-30T06:00:00Z"^^xsd:dateTime .
+
+ex:db-controller-agent a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank.com/ns/dbaas/sa/controller" ;
+    core:displayName "Database capability controller" .
+
+ex:db-control-plane a cp:CapabilityControlPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Database capability control plane" ;
+    cp:governsCapability ex:db-capability ;
+    core:hasActingIdentity ex:db-controller-agent ;
+    cp:actuates ex:t123-db-plane .
+
+ex:t123-db-plane a cp:DataPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Tenant T123 database data plane" ;
+    cp:realizesCapability ex:db-capability ;
+    cp:servesTenant ex:tenant-t123 .
+
+ex:decl-8001 a cp:DesiredStateDeclaration ;
+    core:displayName "T123 database: provision prod instance" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:declaresStateOf ex:t123-db-plane ;
+    cp:justifiedBy ex:sub-9001 ;
+    cp:forApplication ex:app-ledger ;
+    cp:hasApproval ex:approval-8001 .
+
+ex:approval-8001 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-29T15:00:00Z"^^xsd:dateTime .
+
+ex:mutation-8101 a cp:DataPlaneMutation ;
+    core:occurredAtTime "2026-08-31T14:10:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:db-controller-agent ;
+    cp:mutatedDataPlane ex:t123-db-plane ;
+    cp:realizesIntent ex:decl-8001 .

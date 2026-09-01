@@ -1,0 +1,15 @@
+# CQ-1: Which active sessions were established from an authentication
+# journey execution below AAL2, and for which principals?
+PREFIX core:    <https://w3id.org/examplebank/platform/core#>
+PREFIX authn:   <https://w3id.org/examplebank/platform/authn#>
+PREFIX session: <https://w3id.org/examplebank/platform/session#>
+
+SELECT ?session ?principal ?aal WHERE {
+    ?session a session:Session ;
+             session:hasState session:state-active ;
+             session:boundToPrincipal ?principal ;
+             session:establishedBy ?x .
+    ?x authn:achievedAssuranceLevel ?aal .
+    ?aal authn:assuranceRank ?rank .
+    FILTER (?rank < 2)
+}

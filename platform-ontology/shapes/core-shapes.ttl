@@ -1,0 +1,78 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix core: <https://w3id.org/examplebank/platform/core#> .
+@prefix sc:   <https://w3id.org/examplebank/platform/shapes/core#> .
+
+sc:PrincipalShape a sh:NodeShape ;
+    sh:targetClass core:Principal ;
+    sh:property [
+        sh:path core:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "Every principal must carry exactly one canonical firm-wide identifier." ;
+    ] .
+
+sc:PlatformEventShape a sh:NodeShape ;
+    sh:targetClass core:PlatformEvent ;
+    sh:property [
+        sh:path core:occurredAtTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:severity sh:Violation ;
+        sh:message "Every platform event must have exactly one occurrence timestamp." ;
+    ] ;
+    sh:property [
+        sh:path core:performedBy ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "performedBy must reference a Principal." ;
+    ] .
+
+sc:ApplicationShape a sh:NodeShape ;
+    sh:targetClass core:Application ;
+    sh:property [
+        sh:path core:ownedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "An application must be owned by exactly one tenant (the platform tenant for platform-owned applications)." ;
+    ] .
+
+sc:AuthorizedPartyShape a sh:NodeShape ;
+    sh:targetClass core:AuthorizedParty ;
+    sh:property [
+        sh:path core:ownedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "An authorized party must be registered by exactly one tenant." ;
+    ] ;
+    sh:property [
+        sh:path core:boundToChannel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:DeliveryChannel ;
+        sh:severity sh:Violation ;
+        sh:message "An authorized party must be bound to exactly one delivery channel — the binding ingress derives channel evidence from." ;
+    ] ;
+    sh:property [
+        sh:path core:hasActingIdentity ;
+        sh:maxCount 1 ;
+        sh:class core:WorkloadPrincipal ;
+        sh:severity sh:Violation ;
+        sh:message "An authorized party acts as at most one workload principal (headless parties exactly one by convention; portal fronts none)." ;
+    ] .
+
+sc:ResourceGovernanceShape a sh:NodeShape ;
+    sh:targetClass core:Resource ;
+    sh:property [
+        sh:path core:governedBy ;
+        sh:minCount 1 ;
+        sh:severity sh:Warning ;
+        sh:message "Resource has no governing policy — flag for stewardship review." ;
+    ] .

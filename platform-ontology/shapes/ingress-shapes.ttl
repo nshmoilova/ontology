@@ -1,0 +1,67 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix ingress: <https://w3id.org/examplebank/platform/ingress#> .
+@prefix si:      <https://w3id.org/examplebank/platform/shapes/ingress#> .
+
+si:GatewayShape a sh:NodeShape ;
+    sh:targetClass ingress:Gateway ;
+    sh:property [
+        sh:path ingress:hasListener ;
+        sh:minCount 1 ;
+        sh:class ingress:Listener ;
+        sh:severity sh:Violation ;
+        sh:message "A gateway must expose at least one listener." ;
+    ] .
+
+si:ListenerShape a sh:NodeShape ;
+    sh:targetClass ingress:Listener ;
+    sh:property [
+        sh:path ingress:port ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 65535 ;
+        sh:severity sh:Violation ;
+        sh:message "A listener must have exactly one valid port." ;
+    ] ;
+    sh:property [
+        sh:path ingress:protocol ;
+        sh:minCount 1 ;
+        sh:in ( "HTTPS" "TLS" "TCP" "HTTP" ) ;
+        sh:severity sh:Violation ;
+        sh:message "Listener protocol must be one of HTTPS, TLS, TCP, HTTP." ;
+    ] .
+
+# Plaintext HTTP listeners are flagged for review, not rejected outright.
+si:PlaintextListenerWarningShape a sh:NodeShape ;
+    sh:targetClass ingress:Listener ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Listener uses plaintext HTTP — confirm this is an internal redirect-only listener." ;
+        sh:severity sh:Warning ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#protocol> "HTTP" .
+            }
+        """ ;
+    ] .
+
+si:RouteShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:property [
+        sh:path ingress:routesTo ;
+        sh:minCount 1 ;
+        sh:class ingress:UpstreamService ;
+        sh:severity sh:Violation ;
+        sh:message "A route must forward to at least one upstream service." ;
+    ] ;
+    sh:property [
+        sh:path core:enforcedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:PolicyEnforcementPoint ;
+        sh:severity sh:Violation ;
+        sh:message "Every route must be mediated by exactly one policy enforcement point before its upstream." ;
+    ] .

@@ -1,0 +1,118 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix authn:   <https://w3id.org/examplebank/platform/authn#> .
+@prefix session: <https://w3id.org/examplebank/platform/session#> .
+@prefix vs:      <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/session>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/authn> ;
+    dct:title "Session Module"@en ;
+    dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+session:Session a owl:Class ;
+    skos:definition "A bounded period of authenticated interaction between a principal and the platform, established by an authentication event."@en ;
+    vs:term_status "draft" .
+
+session:Token a owl:Class ;
+    skos:definition "A signed artifact carrying claims, issued within a session."@en ;
+    vs:term_status "draft" .
+
+session:AccessToken a owl:Class ;
+    rdfs:subClassOf session:Token ;
+    skos:definition "Token presented to resource servers to authorize requests (e.g., OAuth 2.0 access token)."@en ;
+    vs:term_status "draft" .
+
+session:RefreshToken a owl:Class ;
+    rdfs:subClassOf session:Token ;
+    skos:definition "Token exchanged for new access tokens without re-authentication."@en ;
+    vs:term_status "draft" .
+
+session:IDToken a owl:Class ;
+    rdfs:subClassOf session:Token ;
+    skos:definition "OIDC ID token asserting the authentication of a principal."@en ;
+    vs:term_status "draft" .
+
+session:SessionState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "Lifecycle state of a session; members are individuals (Active, Expired, Revoked, Suspended) rather than subclasses."@en ;
+    vs:term_status "draft" .
+
+session:Session owl:disjointWith session:Token .
+
+#################################################################
+# Object properties
+#################################################################
+
+session:establishedBy a owl:ObjectProperty ;
+    skos:definition "The authentication journey execution that established this session. Mandatory, exactly one (enforced in SHACL). Retargeted from AuthenticationEvent to AuthenticationJourneyExecution in 0.2.0, while draft."@en ;
+    vs:term_status "draft" .
+
+session:elevatedBy a owl:ObjectProperty ;
+    skos:definition "A step-up elevation journey execution performed within this session after establishment. The session's effective AAL is the latest successful execution's (establishing or elevating); elevation freshness is a policy concern, not session structure."@en ;
+    vs:term_status "draft" .
+
+session:boundToPrincipal a owl:ObjectProperty ;
+    skos:definition "Principal to which the session is bound."@en ;
+    vs:term_status "draft" .
+
+session:hasState a owl:ObjectProperty ;
+    skos:definition "Current lifecycle state of the session."@en ;
+    vs:term_status "draft" .
+
+session:issuedToken a owl:ObjectProperty ;
+    skos:definition "Token issued within this session."@en ;
+    vs:term_status "draft" .
+
+session:tokenAudience a owl:ObjectProperty ;
+    skos:definition "Resource (audience) for which a token is intended — the aud claim: who may ACCEPT the token. The opposite end of the token's journey from issuedTo."@en ;
+    vs:term_status "draft" .
+
+session:issuedTo a owl:ObjectProperty ;
+    skos:definition "Authorized party the token was issued to — the azp claim: who may PRESENT the token. Mandatory, exactly one (SHACL); the hop that makes channel evidence and azp-mismatch audits answerable."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+session:notBefore a owl:DatatypeProperty ;
+    skos:definition "Instant before which the session or token is not valid."@en ;
+    vs:term_status "draft" .
+
+session:expiresAt a owl:DatatypeProperty ;
+    skos:definition "Instant at which the session or token expires."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Session state vocabulary
+#################################################################
+
+session:SessionStateScheme a skos:ConceptScheme ;
+    dct:title "Session Lifecycle States"@en .
+
+session:state-active a session:SessionState ;
+    skos:inScheme session:SessionStateScheme ;
+    skos:prefLabel "Active"@en .
+
+session:state-expired a session:SessionState ;
+    skos:inScheme session:SessionStateScheme ;
+    skos:prefLabel "Expired"@en .
+
+session:state-revoked a session:SessionState ;
+    skos:inScheme session:SessionStateScheme ;
+    skos:prefLabel "Revoked"@en .
+
+session:state-suspended a session:SessionState ;
+    skos:inScheme session:SessionStateScheme ;
+    skos:prefLabel "Suspended"@en .

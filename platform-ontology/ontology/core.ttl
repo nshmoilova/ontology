@@ -1,0 +1,182 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/core>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
+    dct:title "Platform Core Ontology"@en ;
+    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
+    dct:created "2026-08-31"^^xsd:date ;
+    dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> .
+
+#################################################################
+# Classes
+#################################################################
+
+core:Principal a owl:Class ;
+    rdfs:isDefinedBy <https://w3id.org/examplebank/platform/core> ;
+    skos:definition "An entity that can be authenticated and to which authorization decisions apply."@en ;
+    vs:term_status "draft" .
+
+core:HumanPrincipal a owl:Class ;
+    rdfs:subClassOf core:Principal ;
+    skos:definition "A principal representing a human user, identified via the firm's directory (e.g., SID/HR identifier)."@en ;
+    vs:term_status "draft" .
+
+core:WorkloadPrincipal a owl:Class ;
+    rdfs:subClassOf core:Principal ;
+    skos:definition "A principal representing a non-human workload (service, agent, job), identified via a workload identity such as a SPIFFE ID."@en ;
+    vs:term_status "draft" .
+
+core:Resource a owl:Class ;
+    skos:definition "Anything access to which is governed by policy: services, routes, data assets, control-plane operations."@en ;
+    vs:term_status "draft" .
+
+core:PlatformEvent a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    skos:definition "An auditable occurrence on the platform. Subclassed by domain modules (AuthenticationEvent, PolicyDecision, PolicyChangeEvent)."@en ;
+    vs:term_status "draft" .
+
+core:PolicyDecisionPoint a owl:Class ;
+    skos:definition "Component that evaluates policy and renders authorization decisions (XACML PDP)."@en ;
+    vs:term_status "draft" .
+
+core:PolicyEnforcementPoint a owl:Class ;
+    skos:definition "Component that intercepts access and enforces PDP decisions (XACML PEP)."@en ;
+    vs:term_status "draft" .
+
+core:PolicyInformationPoint a owl:Class ;
+    skos:definition "Component that supplies attribute values used in policy evaluation (XACML PIP)."@en ;
+    vs:term_status "draft" .
+
+core:PolicyAdministrationPoint a owl:Class ;
+    skos:definition "Component through which policy is authored and managed (XACML PAP)."@en ;
+    vs:term_status "draft" .
+
+core:Tenant a owl:Class ;
+    skos:definition "An organizational unit onboarded to the platform, to which subscriptions, applications, entitlement grants, and data planes are scoped."@en ;
+    vs:term_status "draft" .
+
+core:PlatformTenant a owl:Class ;
+    rdfs:subClassOf core:Tenant ;
+    skos:definition "The distinguished singleton tenant representing the platform itself. Platform-owned applications are owned by it, and it holds capability subscriptions like any tenant, keeping every ownership and coverage rule uniform. Exactly one individual is expected (stewardship-enforced)."@en ;
+    vs:term_status "draft" .
+
+core:Capability a owl:Class ;
+    skos:definition "A platform offering provided to tenants via subscription (managed database, messaging, unified ingress). Each capability is governed by exactly one capability control plane; where it is available is stated per scope by capability offerings, with no cross-scope parity assumed."@en ;
+    vs:term_status "draft" .
+
+core:Application a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "An independently developed application owned by exactly one tenant (possibly the platform tenant), reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements. What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
+    vs:term_status "draft" .
+
+core:AuthorizedParty a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:prefLabel "Authorized party"@en ;
+    skos:altLabel "OAuth client registration"@en , "azp"@en , "channel registration"@en , "app registration (Entra)"@en ;
+    skos:definition "The governed registration of one unit of request-originating software — a portal's web or mobile front, or a headless API/agent consumer — owned by exactly one tenant, bound to exactly one delivery channel, holding revocable credentials, and the party to which tokens are issued (the azp claim). The evidence ingress resolves a request's channel from; never the running software instance, and never the party the token is addressed to (that is the audience)."@en ;
+    skos:editorialNote "Named for the azp claim it anchors. Reinstated as the uniform azp target after Portal-only left token→client binding without a single-ranged home. Recorded reservations: 'Party' is banking master-data vocabulary for customers — this class is software registrations, not persons; and a registration is 'authorized' only in azp's token-time sense. The word 'client' remains reserved for the firm's business meaning; CallerRegistration and SoftwareRegistration were the runner-up names."@en ;
+    vs:term_status "draft" .
+
+core:DeliveryChannel a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "The delivery avenue through which platform capabilities are consumed, determinable by ingress from the registration presenting the request — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
+    vs:term_status "draft" .
+
+# Disjointness — cheapest consistency checks under reasoning
+[] a owl:AllDisjointClasses ;
+   owl:members ( core:Principal core:Resource core:PlatformEvent ) .
+
+core:HumanPrincipal owl:disjointWith core:WorkloadPrincipal .
+core:Tenant owl:disjointWith core:Capability .
+
+#################################################################
+# Object properties
+#################################################################
+
+core:performedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasAssociatedWith ;
+    skos:definition "Links a platform event to the principal that performed it. Typing enforced in SHACL, not via rdfs:domain/range."@en ;
+    vs:term_status "draft" .
+
+core:targetsResource a owl:ObjectProperty ;
+    skos:definition "Links an event or policy to the resource it concerns."@en ;
+    vs:term_status "draft" .
+
+core:governedBy a owl:ObjectProperty ;
+    skos:definition "Links a resource to a policy that governs access to it."@en ;
+    vs:term_status "draft" .
+
+core:enforcedBy a owl:ObjectProperty ;
+    skos:definition "Links a resource or route to the policy enforcement point that mediates access to it."@en ;
+    vs:term_status "draft" .
+
+core:ownedBy a owl:ObjectProperty ;
+    skos:definition "Tenant that owns an application, portal, or authorized party — exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant."@en ;
+    vs:term_status "draft" .
+
+core:hasActingIdentity a owl:ObjectProperty ;
+    skos:definition "Principal under whose identity a resource acts: a control plane component's SPIFFE workload identity, or the workload principal behind a headless authorized party (client-credentials flows). Resources cannot be principals; their acts are performed by this principal. Portal fronts carry none — their requests act as the authenticated human's principal. Promoted from control-plane while draft."@en ;
+    vs:term_status "draft" .
+
+core:boundToChannel a owl:ObjectProperty ;
+    skos:definition "The single delivery channel an authorized party is bound to. Ingress derives a request's channel from this binding — never from a self-asserted claim."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+core:identifier a owl:DatatypeProperty ;
+    skos:definition "Canonical firm-wide identifier for the subject (SPIFFE ID for workloads; directory identifier for humans)."@en ;
+    vs:term_status "draft" .
+
+core:occurredAtTime a owl:DatatypeProperty ;
+    rdfs:subPropertyOf prov:startedAtTime ;
+    skos:definition "Timestamp at which a platform event occurred."@en ;
+    vs:term_status "draft" .
+
+core:displayName a owl:DatatypeProperty ;
+    skos:definition "Human-readable label for governance and stewardship UIs."@en ;
+    vs:term_status "draft" .
+
+core:validFrom a owl:DatatypeProperty ;
+    skos:definition "Start of a validity window (attribute assertions, subscriptions, subject identifiers). Promoted from authz while draft — generic temporal vocabulary belongs in the upper module."@en ;
+    vs:term_status "draft" .
+
+core:validUntil a owl:DatatypeProperty ;
+    skos:definition "End of a validity window."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Delivery channel vocabulary (closed; extension is a MINOR bump)
+#################################################################
+
+core:DeliveryChannelScheme a skos:ConceptScheme ;
+    dct:title "Platform Delivery Channels"@en .
+
+core:channel-web a core:DeliveryChannel ;
+    skos:inScheme core:DeliveryChannelScheme ;
+    skos:prefLabel "Web"@en .
+
+core:channel-mobile a core:DeliveryChannel ;
+    skos:inScheme core:DeliveryChannelScheme ;
+    skos:prefLabel "Mobile"@en .
+
+core:channel-api a core:DeliveryChannel ;
+    skos:inScheme core:DeliveryChannelScheme ;
+    skos:prefLabel "API (credentialed integration)"@en .
+
+core:channel-agent a core:DeliveryChannel ;
+    skos:inScheme core:DeliveryChannelScheme ;
+    skos:prefLabel "AI agent"@en ;
+    skos:editorialNote "Delegation semantics deliberately deferred; see the agent-channel backlog questions."@en .

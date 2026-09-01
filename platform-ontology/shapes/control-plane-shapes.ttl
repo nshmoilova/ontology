@@ -1,0 +1,494 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix core: <https://w3id.org/examplebank/platform/core#> .
+@prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix scp:  <https://w3id.org/examplebank/platform/shapes/control-plane#> .
+
+scp:PolicyChangeEventShape a sh:NodeShape ;
+    sh:targetClass cp:PolicyChangeEvent ;
+    sh:property [
+        sh:path cp:changedPolicy ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "A policy change event must reference the policy it changed." ;
+    ] ;
+    sh:property [
+        sh:path cp:changeTicket ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Warning ;
+        sh:message "Policy change has no change-management ticket reference — flag for audit follow-up." ;
+    ] .
+
+# "Agents execute, humans authorize": every policy change event must carry
+# at least one approval given by a HUMAN principal. Approvals by workload
+# principals alone do not satisfy the invariant.
+scp:HumanAuthorizationShape a sh:NodeShape ;
+    sh:targetClass cp:PolicyChangeEvent ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Policy change lacks approval by a human principal — agents execute, humans authorize." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .
+                }
+            }
+        """ ;
+    ] .
+
+# Governance/actuation separation, part 1: the management control plane
+# defines desired state but never writes into a data plane itself.
+scp:ManagementPlaneNoActuationShape a sh:NodeShape ;
+    sh:targetClass cp:ManagementControlPlane ;
+    sh:property [
+        sh:path cp:actuates ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "The management control plane must not actuate a data plane directly — governance is separated from actuation (tier skipping)." ;
+    ] .
+
+scp:CapabilityControlPlaneShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityControlPlane ;
+    sh:property [
+        sh:path cp:governsCapability ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Capability ;
+        sh:severity sh:Violation ;
+        sh:message "A capability control plane must govern exactly one capability." ;
+    ] ;
+    sh:property [
+        sh:path core:hasActingIdentity ;
+        sh:minCount 1 ;
+        sh:class core:WorkloadPrincipal ;
+        sh:severity sh:Violation ;
+        sh:message "A capability control plane must have a workload acting identity so its writes are attributable." ;
+    ] .
+
+scp:DataPlaneShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:property [
+        sh:path cp:realizesCapability ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Capability ;
+        sh:severity sh:Violation ;
+        sh:message "A data plane must realize exactly one capability." ;
+    ] .
+
+scp:DesiredStateDeclarationShape a sh:NodeShape ;
+    sh:targetClass cp:DesiredStateDeclaration ;
+    sh:property [
+        sh:path cp:declaredThrough ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cp:ManagementControlPlane ;
+        sh:severity sh:Violation ;
+        sh:message "A desired-state declaration must be declared through exactly one management control plane." ;
+    ] ;
+    sh:property [
+        sh:path cp:declarationScope ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cp:AdministrativeScope ;
+        sh:severity sh:Violation ;
+        sh:message "A declaration must be bound to exactly one administrative scope — global intent names the root scope explicitly." ;
+    ] .
+
+scp:DataPlaneMutationShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlaneMutation ;
+    sh:property [
+        sh:path cp:mutatedDataPlane ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cp:DataPlane ;
+        sh:severity sh:Violation ;
+        sh:message "A data-plane mutation must reference exactly one mutated data plane." ;
+    ] ;
+    sh:property [
+        sh:path cp:realizesIntent ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "A data-plane mutation must realize a governed desired-state declaration — orphan write." ;
+    ] .
+
+# Governance/actuation separation, part 2 (sole-writer): a mutation must be
+# executed under the acting identity of the control plane designated as the
+# mutated data plane's writer.
+scp:SoleWriterShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlaneMutation ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data-plane mutation executed by a principal that is not the acting identity of the data plane's designated writer — sole-writer invariant." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#mutatedDataPlane> ?dp .
+                FILTER NOT EXISTS {
+                    ?writer <https://w3id.org/examplebank/platform/control-plane#actuates> ?dp ;
+                            <https://w3id.org/examplebank/platform/core#hasActingIdentity> ?w .
+                    $this <https://w3id.org/examplebank/platform/control-plane#executedBy> ?w .
+                }
+            }
+        """ ;
+    ] .
+
+# A capability control plane must not administer the scope containing the
+# desired-state declarations that govern its own data planes.
+scp:SelfGovernanceLoopShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityControlPlane ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Capability control plane administers the scope containing its own desired-state declarations — self-governance loop." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#administers> ?s .
+                ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> ?d .
+                ?d a <https://w3id.org/examplebank/platform/control-plane#DesiredStateDeclaration> ;
+                   <https://w3id.org/examplebank/platform/control-plane#declaresStateOf> ?dp .
+                $this <https://w3id.org/examplebank/platform/control-plane#actuates> ?dp .
+            }
+        """ ;
+    ] .
+
+# Locality: a mutation's data plane must fall inside its declaration's
+# scope (the scope itself or any descendant via the single-parent tree).
+scp:ScopeLocalityShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlaneMutation ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data-plane mutation targets a data plane outside the declaration's scope — scoped governance is not optional." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#mutatedDataPlane> ?dp ;
+                      <https://w3id.org/examplebank/platform/control-plane#realizesIntent> ?d .
+                ?d <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s .
+                FILTER NOT EXISTS {
+                    ?s2 <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?s ;
+                        <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> ?dp .
+                }
+            }
+        """ ;
+    ] .
+
+# Scope-dependent approval rigor: a declaration whose scope (or nearest
+# ancestor that says anything) requires human approval must carry one.
+scp:ScopeRigorShape a sh:NodeShape ;
+    sh:targetClass cp:DesiredStateDeclaration ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Declaration lacks human approval, but its scope requires human approval — rigor is inherited down the scope tree." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s .
+                ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?anc .
+                ?anc <https://w3id.org/examplebank/platform/control-plane#requiresHumanApproval> true .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .
+                }
+            }
+        """ ;
+    ] .
+
+# Tenant-provisioning declarations must be justified by a subscription.
+scp:ProvisioningJustificationShape a sh:NodeShape ;
+    sh:targetClass cp:DesiredStateDeclaration ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Declaration provisions capability state for a tenant without a justifying subscription — commercial intent must precede technical intent." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#declaresStateOf> ?dp .
+                ?dp <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/control-plane#justifiedBy> ?sub .
+                }
+            }
+        """ ;
+    ] .
+
+# Reconciler lag: realizing a superseded declaration is admitted but flagged.
+scp:SupersededRealizationShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlaneMutation ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Mutation realizes a superseded declaration — reconciler catching up to stale intent; route to stewardship." ;
+        sh:severity sh:Warning ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#realizesIntent> ?d .
+                ?d2 <https://w3id.org/examplebank/platform/control-plane#supersedes> ?d .
+            }
+        """ ;
+    ] .
+
+scp:SubscriptionShape a sh:NodeShape ;
+    sh:targetClass cp:Subscription ;
+    sh:property [
+        sh:path cp:subscriber ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "A subscription must have exactly one subscribing tenant." ;
+    ] ;
+    sh:property [
+        sh:path cp:subscribedCapability ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Capability ;
+        sh:severity sh:Violation ;
+        sh:message "A subscription must target exactly one capability — bundles expand before subscriptions exist." ;
+    ] ;
+    sh:property [
+        sh:path cp:hasSubscriptionState ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cp:SubscriptionState ;
+        sh:severity sh:Violation ;
+        sh:message "A subscription must have exactly one lifecycle state." ;
+    ] .
+
+# Subscription activation is always human-approved — platform tenant included.
+scp:SubscriptionActivationApprovalShape a sh:NodeShape ;
+    sh:targetClass cp:Subscription ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Active subscription activation lacks approval by a human principal — a tenant gaining a capability is a meta-authorization boundary." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>
+                      <https://w3id.org/examplebank/platform/control-plane#substate-active> .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .
+                }
+            }
+        """ ;
+    ] .
+
+# Tenant-side dependency closure: an active subscription's capability must
+# have every hard dependency covered by an active subscription of the tenant.
+scp:SubscriptionClosureShape a sh:NodeShape ;
+    sh:targetClass cp:Subscription ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Active subscription lacks an active subscription for its hard dependency — the closure is auto-included and materialized at subscription time." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>
+                      <https://w3id.org/examplebank/platform/control-plane#substate-active> ;
+                      <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#subscribedCapability> ?c .
+                ?c <https://w3id.org/examplebank/platform/control-plane#dependsOn> ?dep .
+                FILTER NOT EXISTS {
+                    ?s2 <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;
+                        <https://w3id.org/examplebank/platform/control-plane#subscribedCapability> ?dep ;
+                        <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>
+                        <https://w3id.org/examplebank/platform/control-plane#substate-active> .
+                }
+            }
+        """ ;
+    ] .
+
+# The dependency graph must be acyclic.
+scp:AcyclicDependencyShape a sh:NodeShape ;
+    sh:targetClass core:Capability ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Capability participates in a circular capability dependency — hard dependencies must form a DAG." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#dependsOn>+ $this .
+            }
+        """ ;
+    ] .
+
+# Supply-side closure: a capability offered in a scope needs its hard
+# dependencies offered in that scope or an ancestor of it.
+scp:OfferingSupplyClosureShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityOffering ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Capability offering sits in a scope where a hard dependency lacks a covering offering — an unfulfillable promise." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;
+                      <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?s .
+                ?c <https://w3id.org/examplebank/platform/control-plane#dependsOn> ?dep .
+                FILTER NOT EXISTS {
+                    ?o2 <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?dep ;
+                        <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?s2 .
+                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?s2 .
+                }
+            }
+        """ ;
+    ] .
+
+# Offering conformance: a data plane may only realize a capability in a
+# scope some offering covers — infrastructure outside governance violates.
+scp:DataPlaneOfferedShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data plane realizes a capability in a scope no offering covers — deployed where not offered." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .
+                FILTER NOT EXISTS {
+                    ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> $this ;
+                       <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .
+                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;
+                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .
+                }
+            }
+        """ ;
+    ] .
+
+# Enablement gate: an application enablement requires the owner's active
+# subscriptions to cover the application's confirmed capability requirements.
+scp:EnablementGateShape a sh:NodeShape ;
+    sh:targetClass cp:ApplicationEnablement ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Application enablement exceeds its owner's active subscriptions: a confirmed capability requirement has no active subscription covering it." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .
+                ?app <https://w3id.org/examplebank/platform/core#ownedBy> ?t .
+                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;
+                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;
+                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                FILTER NOT EXISTS {
+                    ?sub <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;
+                         <https://w3id.org/examplebank/platform/control-plane#subscribedCapability> ?c ;
+                         <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>
+                         <https://w3id.org/examplebank/platform/control-plane#substate-active> .
+                }
+            }
+        """ ;
+    ] .
+
+scp:PortalShape a sh:NodeShape ;
+    sh:targetClass cp:Portal ;
+    sh:property [
+        sh:path cp:frontedBy ;
+        sh:minCount 1 ;
+        sh:class core:AuthorizedParty ;
+        sh:severity sh:Violation ;
+        sh:message "A portal must be fronted by at least one authorized party — one per delivery channel it is presented on." ;
+    ] ;
+    sh:property [
+        sh:path core:ownedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "A portal must be owned by exactly one tenant." ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Portal is fronted by a party owned by a different tenant — fronts and portal share one owner." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#frontedBy> ?f .
+                ?f <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .
+                FILTER (?t != ?t2)
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Portal groups an application owned by another tenant — a portal may present its owner's applications and platform-owned applications only." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .
+                ?a <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .
+                FILTER (?t != ?t2)
+                FILTER NOT EXISTS {
+                    ?t2 a <https://w3id.org/examplebank/platform/core#PlatformTenant> .
+                }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Portals of the same tenant have diverging application sets — divergence may be intentional (mobile subset); route to stewardship review." ;
+        sh:severity sh:Warning ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .
+                ?p2 a <https://w3id.org/examplebank/platform/control-plane#Portal> ;
+                    <https://w3id.org/examplebank/platform/core#ownedBy> ?t .
+                FILTER (?p2 != $this)
+                FILTER NOT EXISTS {
+                    ?p2 <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .
+                }
+            }
+        """ ;
+    ] .
+
+# Offering coverage half of the enablement gate: the enablement's scope
+# must be covered by an offering of every confirmed required capability.
+scp:EnablementOfferingCoverageShape a sh:NodeShape ;
+    sh:targetClass cp:ApplicationEnablement ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Application enablement's scope is not covered by any offering of a confirmed required capability — enabled where the capability does not exist." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s ;
+                      <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .
+                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;
+                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;
+                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                FILTER NOT EXISTS {
+                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;
+                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .
+                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .
+                }
+            }
+        """ ;
+    ] .
+
+scp:ChangeApprovalShape a sh:NodeShape ;
+    sh:targetClass cp:ChangeApproval ;
+    sh:property [
+        sh:path cp:approvedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "An approval must be given by exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path cp:approvedAtTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:severity sh:Violation ;
+        sh:message "An approval must be timestamped." ;
+    ] .

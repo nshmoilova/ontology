@@ -1,0 +1,286 @@
+# Seed instance data expected to FAIL validation. Each block names the
+# constraint it should trip. CI asserts these violations are reported.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix authn:   <https://w3id.org/examplebank/platform/authn#> .
+@prefix session: <https://w3id.org/examplebank/platform/session#> .
+@prefix ingress: <https://w3id.org/examplebank/platform/ingress#> .
+@prefix authz:   <https://w3id.org/examplebank/platform/authz#> .
+@prefix cp:      <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix ex:      <https://data.examplebank.com/platform/bad/> .
+
+ex:bob a core:HumanPrincipal ;
+    core:identifier "dir:bob.ray" .
+
+ex:robot a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank.com/ns/ops/sa/robot" .
+
+### 1. Orphan session — no establishing authentication event (SessionShape)
+ex:orphan-session a session:Session ;
+    session:boundToPrincipal ex:bob ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T21:00:00Z"^^xsd:dateTime .
+
+### 2. Active session from a FAILED authentication (ActiveSessionSuccessfulAuthnShape)
+ex:failed-authn a authn:AuthenticationEvent ;
+    core:occurredAtTime "2026-08-31T10:00:00Z"^^xsd:dateTime ;
+    authn:authenticatedPrincipal ex:bob ;
+    authn:usedMethod authn:method-password ;
+    authn:succeeded false .
+
+ex:failed-exec a authn:AuthenticationJourneyExecution ;
+    core:occurredAtTime "2026-08-31T10:00:00Z"^^xsd:dateTime ;
+    authn:comprisesEvent ex:failed-authn ;
+    authn:authenticatedPrincipal ex:bob ;
+    authn:succeeded false .
+
+ex:zombie-session a session:Session ;
+    session:establishedBy ex:failed-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T21:00:00Z"^^xsd:dateTime .
+
+### 3. Route with no policy enforcement point (RouteShape)
+ex:naked-upstream a ingress:UpstreamService ;
+    core:governedBy ex:policy-hi .
+ex:naked-route a ingress:Route ;
+    core:governedBy ex:policy-hi ;
+    ingress:routesTo ex:naked-upstream .
+
+### 4. Permit decision below the policy's required AAL
+###    (PermitMeetsRequiredAssuranceShape)
+ex:weak-authn a authn:AuthenticationEvent ;
+    core:occurredAtTime "2026-08-31T11:00:00Z"^^xsd:dateTime ;
+    authn:authenticatedPrincipal ex:bob ;
+    authn:usedMethod authn:method-password ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL1 .
+
+ex:weak-exec a authn:AuthenticationJourneyExecution ;
+    core:occurredAtTime "2026-08-31T11:00:00Z"^^xsd:dateTime ;
+    authn:comprisesEvent ex:weak-authn ;
+    authn:authenticatedPrincipal ex:bob ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL1 .
+
+ex:weak-session a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T19:00:00Z"^^xsd:dateTime .
+
+ex:policy-hi a authz:Policy ;
+    authz:requiredAssuranceLevel authn:AAL3 ;
+    authz:hasRule ex:rule-hi .
+ex:rule-hi a authz:PolicyRule ;
+    authz:effect "permit" .
+
+ex:bad-permit a authz:PolicyDecision ;
+    core:occurredAtTime "2026-08-31T11:05:00Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:bob ;
+    authz:withinSession ex:weak-session ;
+    authz:evaluatedPolicy ex:policy-hi ;
+    authz:decisionOutcome authz:outcome-permit .
+
+### 5. Policy change approved only by a workload principal
+###    (HumanAuthorizationShape — agents execute, humans authorize)
+ex:rogue-change a cp:PolicyChangeEvent ;
+    core:occurredAtTime "2026-08-31T12:00:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:robot ;
+    cp:changedPolicy ex:policy-hi ;
+    cp:changeTicket "CHG0099999" ;
+    cp:hasApproval ex:robot-approval .
+
+ex:robot-approval a cp:ChangeApproval ;
+    cp:approvedBy ex:robot ;
+    cp:approvedAtTime "2026-08-31T11:59:00Z"^^xsd:dateTime .
+
+### 6. Attribute assertion with no issuer (AttributeAssertionShape)
+ex:unsourced-attr a authz:AttributeAssertion ;
+    authz:aboutPrincipal ex:bob ;
+    authz:attributeName "clearance" ;
+    authz:attributeValue "high" .
+
+### Supporting instances for control-plane cases 7-10 (themselves conformant)
+ex:cache-capability a core:Capability .
+ex:cache-agent a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank.com/ns/cache/sa/controller" .
+ex:cache-cp a cp:CapabilityControlPlane ;
+    cp:governsCapability ex:cache-capability ;
+    core:hasActingIdentity ex:cache-agent ;
+    cp:actuates ex:cache-dp .
+ex:cache-dp a cp:DataPlane ;
+    cp:realizesCapability ex:cache-capability .
+ex:good-mgmt a cp:ManagementControlPlane .
+ex:decl-ok a cp:DesiredStateDeclaration ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declaresStateOf ex:cache-dp .
+
+### 7. Mutation with no desired-state declaration behind it
+###    (DataPlaneMutationShape — orphan write)
+ex:orphan-write a cp:DataPlaneMutation ;
+    core:occurredAtTime "2026-08-31T15:00:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:cache-agent ;
+    cp:mutatedDataPlane ex:cache-dp .
+
+### 8. Mutation executed by a principal that is not the designated
+###    writer's acting identity (SoleWriterShape)
+ex:rogue-write a cp:DataPlaneMutation ;
+    core:occurredAtTime "2026-08-31T15:05:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:robot ;
+    cp:mutatedDataPlane ex:cache-dp ;
+    cp:realizesIntent ex:decl-ok .
+
+### 9. Management control plane writing into a data plane directly
+###    (ManagementPlaneNoActuationShape — tier skipping)
+ex:meddling-mgmt a cp:ManagementControlPlane ;
+    cp:actuates ex:cache-dp .
+
+### 10. Capability control plane administering the scope that holds its
+###     own desired-state declarations (SelfGovernanceLoopShape)
+ex:loop-capability a core:Capability .
+ex:loop-scope a cp:AdministrativeScope ;
+    cp:scopeIncludes ex:loop-decl .
+ex:loop-decl a cp:DesiredStateDeclaration ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declaresStateOf ex:loop-dp .
+ex:loop-dp a cp:DataPlane ;
+    cp:realizesCapability ex:loop-capability .
+ex:loop-cp a cp:CapabilityControlPlane ;
+    cp:governsCapability ex:loop-capability ;
+    core:hasActingIdentity ex:cache-agent ;
+    cp:actuates ex:loop-dp ;
+    cp:administers ex:loop-scope .
+
+### Supporting instances for cases 11-18
+ex:strict-scope a cp:AdministrativeScope ;
+    cp:requiresHumanApproval true .
+ex:lax-scope a cp:AdministrativeScope .
+ex:remote-scope a cp:AdministrativeScope .
+ex:bad-tenant a core:Tenant .
+
+### 11. Mutation whose data plane lies outside its declaration's scope
+###     (ScopeLocalityShape)
+ex:decl-remote a cp:DesiredStateDeclaration ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:remote-scope .
+ex:mut-remote a cp:DataPlaneMutation ;
+    core:occurredAtTime "2026-08-31T16:00:00Z"^^xsd:dateTime ;
+    cp:executedBy ex:cache-agent ;
+    cp:mutatedDataPlane ex:cache-dp ;
+    cp:realizesIntent ex:decl-remote .
+
+### 12. Declaration without human approval in a rigor-requiring scope
+###     (ScopeRigorShape)
+ex:decl-unapproved a cp:DesiredStateDeclaration ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:strict-scope .
+
+### 13. Circular capability dependency (AcyclicDependencyShape)
+ex:cap-a a core:Capability ;
+    cp:dependsOn ex:cap-b .
+ex:cap-b a core:Capability ;
+    cp:dependsOn ex:cap-a .
+
+### 14. Enabled application whose confirmed requirement exceeds its
+###     owner's active subscriptions (EnablementGateShape)
+ex:app-bad a core:Application ;
+    core:ownedBy ex:bad-tenant .
+ex:req-bad a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-bad ;
+    cp:requiredCapability ex:cap-a ;
+    cp:hasApproval ex:approval-req-bad .
+ex:approval-req-bad a cp:ChangeApproval ;
+    cp:approvedBy ex:bob ;
+    cp:approvedAtTime "2026-08-31T12:30:00Z"^^xsd:dateTime .
+ex:enable-bad a cp:ApplicationEnablement ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:forApplication ex:app-bad .
+
+### 15. Hand-authored entitlement grant with no derivation
+###     (EntitlementGrantShape)
+ex:grant-bad a authz:EntitlementGrant ;
+    authz:grantedTo ex:bad-tenant ;
+    authz:onDimension authz:dim-region ;
+    authz:entitlementValue "US" .
+
+### 16. Active subscription never activated with human approval
+###     (SubscriptionActivationApprovalShape)
+ex:sub-bad a cp:Subscription ;
+    cp:subscriber ex:bad-tenant ;
+    cp:subscribedCapability ex:cache-capability ;
+    cp:hasSubscriptionState cp:substate-active .
+
+### 17. Active subscription missing the hard-dependency closure
+###     (SubscriptionClosureShape)
+ex:sub-b a cp:Subscription ;
+    cp:subscriber ex:bad-tenant ;
+    cp:subscribedCapability ex:cap-b ;
+    cp:hasSubscriptionState cp:substate-active ;
+    cp:hasApproval ex:approval-sub-b .
+ex:approval-sub-b a cp:ChangeApproval ;
+    cp:approvedBy ex:bob ;
+    cp:approvedAtTime "2026-08-31T12:45:00Z"^^xsd:dateTime .
+
+### 18. Offering in a scope where a hard dependency lacks a covering
+###     offering (OfferingSupplyClosureShape)
+ex:offer-b a cp:CapabilityOffering ;
+    cp:offersCapability ex:cap-b ;
+    cp:offeredInScope ex:lax-scope .
+
+### 19. Token with no authorized party (TokenShape — azp binding)
+ex:orphan-token a session:AccessToken ;
+    session:expiresAt "2026-08-31T20:00:00Z"^^xsd:dateTime .
+
+### 20. Authorized party with no channel binding (AuthorizedPartyShape)
+ex:chanless-azp a core:AuthorizedParty ;
+    core:ownedBy ex:bad-tenant .
+
+### 21. Two principals behind one (issuer, subject) pair
+###     (SubjectIdentifierCollisionShape)
+ex:neg-idp a authn:IdentityProvider .
+ex:subid-dup-1 a authn:SubjectIdentifier ;
+    authn:subjectValue "dup-777" ;
+    authn:atIssuer ex:neg-idp ;
+    authn:identifies ex:bob ;
+    authn:identifierFormat authn:format-iss-sub .
+ex:subid-dup-2 a authn:SubjectIdentifier ;
+    authn:subjectValue "dup-777" ;
+    authn:atIssuer ex:neg-idp ;
+    authn:identifies ex:robot ;
+    authn:identifierFormat authn:format-iss-sub .
+
+### 22. Decision evaluating an application verb smuggled into the
+###     platform action class (ActionVocabularyShape)
+ex:rogue-action a authz:Action ;
+    skos:prefLabel "Approve payment"@en .
+ex:offbook-decision a authz:PolicyDecision ;
+    core:occurredAtTime "2026-08-31T17:00:00Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:bob ;
+    authz:evaluatedPolicy ex:policy-hi ;
+    authz:evaluatedAction ex:rogue-action ;
+    authz:decisionOutcome authz:outcome-deny .
+
+### 23. Admission decision with no channel and no evaluated grants
+###     (IngressAdmissionDecisionShape)
+ex:blind-admission a authz:IngressAdmissionDecision ;
+    core:occurredAtTime "2026-08-31T17:30:00Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:bob ;
+    authz:evaluatedPolicy ex:policy-hi ;
+    authz:evaluatedAction authz:action-access ;
+    authz:decisionOutcome authz:outcome-deny .
+
+### 24. Portal fronted by another tenant's registration and grouping
+###     another tenant's application (PortalShape coherence)
+ex:other-tenant a core:Tenant .
+ex:foreign-front a core:AuthorizedParty ;
+    core:ownedBy ex:other-tenant ;
+    core:boundToChannel core:channel-web .
+ex:foreign-app a core:Application ;
+    core:ownedBy ex:other-tenant .
+ex:sneaky-portal a cp:Portal ;
+    core:ownedBy ex:bad-tenant ;
+    cp:frontedBy ex:foreign-front ;
+    cp:groupsApplication ex:foreign-app .

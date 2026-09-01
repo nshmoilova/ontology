@@ -1,0 +1,182 @@
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix authn: <https://w3id.org/examplebank/platform/authn#> .
+@prefix sa:    <https://w3id.org/examplebank/platform/shapes/authn#> .
+
+sa:AuthenticationEventShape a sh:NodeShape ;
+    sh:targetClass authn:AuthenticationEvent ;
+    sh:property [
+        sh:path authn:authenticatedPrincipal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "An authentication event must concern exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path authn:usedMethod ;
+        sh:minCount 1 ;
+        sh:class authn:AuthenticationMethod ;
+        sh:severity sh:Violation ;
+        sh:message "An authentication event must record at least one authentication method from the controlled vocabulary." ;
+    ] ;
+    sh:property [
+        sh:path authn:succeeded ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+        sh:severity sh:Violation ;
+        sh:message "An authentication event must record whether it succeeded." ;
+    ] .
+
+# Successful authentications must record an achieved assurance level
+sa:SuccessfulAuthnAssuranceShape a sh:NodeShape ;
+    sh:targetClass authn:AuthenticationEvent ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "A successful authentication event must record an achieved assurance level." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authn#succeeded> true .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/authn#achievedAssuranceLevel> ?lvl .
+                }
+            }
+        """ ;
+    ] .
+
+sa:JourneyExecutionShape a sh:NodeShape ;
+    sh:targetClass authn:AuthenticationJourneyExecution ;
+    sh:property [
+        sh:path authn:comprisesEvent ;
+        sh:minCount 1 ;
+        sh:class authn:AuthenticationEvent ;
+        sh:severity sh:Violation ;
+        sh:message "A journey execution must comprise at least one authentication event." ;
+    ] ;
+    sh:property [
+        sh:path authn:authenticatedPrincipal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "A journey execution must concern exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path authn:succeeded ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+        sh:severity sh:Violation ;
+        sh:message "A journey execution must record whether it succeeded." ;
+    ] ;
+    sh:property [
+        sh:path authn:followsDefinition ;
+        sh:maxCount 1 ;
+        sh:class authn:AuthenticationJourneyDefinition ;
+        sh:severity sh:Warning ;
+        sh:message "Journey execution follows no governed definition — flag for stewardship review." ;
+    ] .
+
+# Successful executions must record the assurance the completed flow achieved
+sa:SuccessfulExecutionAssuranceShape a sh:NodeShape ;
+    sh:targetClass authn:AuthenticationJourneyExecution ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "A successful journey execution must record an achieved assurance level." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authn#succeeded> true .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/authn#achievedAssuranceLevel> ?lvl .
+                }
+            }
+        """ ;
+    ] .
+
+sa:SubjectIdentifierShape a sh:NodeShape ;
+    sh:targetClass authn:SubjectIdentifier ;
+    sh:property [
+        sh:path authn:subjectValue ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "A subject identifier must carry exactly one subject value." ;
+    ] ;
+    sh:property [
+        sh:path authn:atIssuer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authn:IdentityProvider ;
+        sh:severity sh:Violation ;
+        sh:message "A subject identifier must be scoped to exactly one issuer." ;
+    ] ;
+    sh:property [
+        sh:path authn:identifies ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "A subject identifier must denote exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path authn:identifierFormat ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authn:SubjectIdentifierFormat ;
+        sh:severity sh:Violation ;
+        sh:message "A subject identifier must name its RFC 9493 format." ;
+    ] ;
+    sh:property [
+        sh:path authn:scopedToParty ;
+        sh:maxCount 1 ;
+        sh:class core:AuthorizedParty ;
+        sh:severity sh:Violation ;
+        sh:message "A pairwise subject identifier is scoped to at most one authorized party." ;
+    ] .
+
+# Collision: one (issuer, subject value, party-scope) combination must never
+# denote two principals — the account-takeover-by-collision check.
+sa:SubjectIdentifierCollisionShape a sh:NodeShape ;
+    sh:targetClass authn:SubjectIdentifier ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Same issuer, subject value, and party scope denote more than one principal — subject-identifier collision." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;
+                      <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;
+                      <https://w3id.org/examplebank/platform/authn#identifies> ?p .
+                ?other <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;
+                       <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;
+                       <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .
+                FILTER (?other != $this)
+                FILTER (?p != ?p2)
+                OPTIONAL { $this <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s1 . }
+                OPTIONAL { ?other <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s2 . }
+                FILTER (COALESCE(?s1, <urn:examplebank:unscoped>) = COALESCE(?s2, <urn:examplebank:unscoped>))
+            }
+        """ ;
+    ] .
+
+sa:CredentialShape a sh:NodeShape ;
+    sh:targetClass authn:Credential ;
+    sh:property [
+        sh:path authn:credentialOf ;
+        sh:minCount 1 ;
+        sh:or ( [ sh:class core:Principal ] [ sh:class core:AuthorizedParty ] ) ;
+        sh:severity sh:Violation ;
+        sh:message "A credential must be bound to a principal or an authorized party." ;
+    ] ;
+    sh:property [
+        sh:path authn:issuedBy ;
+        sh:minCount 1 ;
+        sh:class authn:IdentityProvider ;
+        sh:severity sh:Violation ;
+        sh:message "A credential must have an issuing identity provider." ;
+    ] .
