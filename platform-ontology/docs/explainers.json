@@ -83,6 +83,47 @@
           ]
         },
         {
+          "heading": "One request, three checkpoints",
+          "diagram": "request-flow.svg",
+          "body": "The three layers become three checkpoints on a single request, and the first distinction to make is between the first two — because it is the one people collapse.\n\nIngress is the enforcement point. It resolves and it enforces, but it does not decide: the domain and path give it the tenant, the application and the endpoint; the token gives it the principal; the cookie handle with its proof gives it the session; the journey definition gives it the channel and the assurance. None of that is a decision. It is the context a decision needs.\n\nThe platform PDP decides one thing — may this request cross into the application boundary — and answers Permit or Deny. Every check it makes is answerable with the application as an opaque identifier: membership, the five dimensions, enablement in scope, coverage, assurance. Nothing about what the application does.\n\nPast the boundary, the application PDP decides what the subject may do, and the ontology does not model it. That is a decision rather than an omission, and it is enforced: an application verb cannot enter the platform action scheme, and an entitlement outside the platform dimensions cannot be evaluated at ingress. The request path ends at /12345, which is an order — the platform never learns that, and must not.",
+          "table": {
+            "columns": [
+              "Checkpoint",
+              "Asks",
+              "Answers with"
+            ],
+            "rows": [
+              [
+                "Platform ingress (PEP)",
+                "What is this request?",
+                "Route bindings, subject identifier, session handle, journey definition — resolution only"
+              ],
+              [
+                "Platform PDP",
+                "May it cross the boundary?",
+                "Membership, the five dimensions, enablement scope, subscription and offering coverage, assurance"
+              ],
+              [
+                "Application PDP",
+                "What may the subject do?",
+                "Roles, business rules, record-level access, limits — application-owned, out of scope"
+              ]
+            ]
+          },
+          "terms": [
+            "core:PolicyEnforcementPoint",
+            "core:PolicyDecisionPoint",
+            "authz:IngressAdmissionDecision",
+            "authz:decidedBy",
+            "core:Application"
+          ],
+          "shapes": [
+            "AdmissionRequiresMembershipShape",
+            "PermitMeetsRequiredAssuranceShape",
+            "ActionVocabularyShape"
+          ]
+        },
+        {
           "heading": "The check that joins the two halves",
           "body": "Before any dimension is evaluated, one thing must hold that is easy to overlook: the principal must be entitled to act for the tenant at all.\n\nThe two halves of a request are resolved independently — the route resolves the tenant, the token resolves the principal — and every entitlement grant is held by the tenant, not the principal. So without a membership record, a valid token for anyone would satisfy every tenant-level check at any tenant's address. Membership is the join, and it is deliberately a governed record with a lifecycle and an approver rather than a bare link, because the access-review question is not whether the link exists but when it was granted and by whom.\n\nOne principal may hold memberships in several tenants. Consultants, dual-capacity staff and the employee who is also a customer are ordinary cases, not exceptions to design around.",
           "terms": [
@@ -186,7 +227,7 @@
         "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
         "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
       ],
-      "stepCount": 8
+      "stepCount": 9
     },
     {
       "id": "token-binding",

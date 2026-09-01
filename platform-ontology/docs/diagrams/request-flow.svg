@@ -1,0 +1,72 @@
+<svg viewBox="0 0 900 720" role="img" xmlns="http://www.w3.org/2000/svg"
+     aria-label="A request passes three checkpoints: platform ingress resolves context without deciding, the platform PDP decides whether the request may cross the boundary, and past the boundary the application PDP decides what the subject may do — which the ontology deliberately does not model.">
+  <defs>
+    <marker id="rfArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+    </marker>
+    <marker id="rfArrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+    </marker>
+  </defs>
+
+  <!-- request -->
+  <rect x="330" y="14" width="240" height="36" rx="8" fill="var(--panel-2)" stroke="var(--rule)" stroke-width="1.3"/>
+  <text x="450" y="38" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="currentColor">POST /digital-bank/transactions/12345</text>
+  <line x1="450" y1="52" x2="450" y2="76" stroke="currentColor" stroke-width="1.4" marker-end="url(#rfArr)" opacity=".7"/>
+
+  <!-- 1. ingress / PEP -->
+  <rect x="60" y="80" width="780" height="150" rx="10" fill="var(--m-ingress)" opacity=".08"/>
+  <rect x="60" y="80" width="780" height="150" rx="10" fill="none" stroke="var(--m-ingress)" stroke-width="1.6"/>
+  <text x="82" y="106" font-family="IBM Plex Mono, monospace" font-size="13.5" fill="var(--m-ingress)" font-weight="600">1 · Platform ingress — the enforcement point</text>
+  <text x="82" y="125" font-size="11.5" fill="currentColor" opacity=".72" font-style="italic">Resolves. Does not decide.</text>
+  <g font-size="11.5" fill="currentColor" opacity=".85">
+    <text x="96" y="149">route domain + path</text><text x="290" y="149" opacity=".55">→</text><text x="316" y="149">tenant, application, endpoint</text>
+    <text x="96" y="170">token sub</text><text x="290" y="170" opacity=".55">→</text><text x="316" y="170">subject identifier → principal</text>
+    <text x="96" y="191">cookie handle + DPoP proof</text><text x="290" y="191" opacity=".55">→</text><text x="316" y="191">session, sender-constrained</text>
+    <text x="96" y="212">journey definition</text><text x="290" y="212" opacity=".55">→</text><text x="316" y="212">channel · assurance (device corroborates)</text>
+  </g>
+  <line x1="450" y1="232" x2="450" y2="258" stroke="currentColor" stroke-width="1.4" marker-end="url(#rfArr)" opacity=".7"/>
+  <text x="462" y="250" font-size="11" fill="currentColor" opacity=".62">assembled context</text>
+
+  <!-- 2. platform PDP -->
+  <rect x="60" y="262" width="780" height="176" rx="10" fill="var(--m-authz)" opacity=".09"/>
+  <rect x="60" y="262" width="780" height="176" rx="10" fill="none" stroke="var(--m-authz)" stroke-width="1.6"/>
+  <text x="82" y="288" font-family="IBM Plex Mono, monospace" font-size="13.5" fill="var(--m-authz)" font-weight="600">2 · Platform PDP — the decision point</text>
+  <text x="82" y="307" font-size="11.5" fill="currentColor" opacity=".72" font-style="italic">May this request cross into the application boundary?</text>
+  <g font-size="11.5" fill="currentColor" opacity=".85">
+    <text x="96" y="331">Is the principal an active member of the resolved tenant?</text>
+    <text x="96" y="352">Do the tenant's grants cover platform · tenant · environment · region · channel?</text>
+    <text x="96" y="373">Is the application enabled for that tenant, in this scope?</text>
+    <text x="96" y="394">Are its confirmed requirements covered by subscriptions and offerings?</text>
+    <text x="96" y="415">Does the session's effective assurance meet the policy's required AAL?</text>
+  </g>
+  <rect x="640" y="316" width="180" height="34" rx="7" fill="var(--accent)" opacity=".14"/>
+  <rect x="640" y="316" width="180" height="34" rx="7" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+  <text x="730" y="338" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--accent-ink)" font-weight="600">Permit / Deny</text>
+
+  <g stroke="var(--accent)" stroke-width="1.5" fill="none">
+    <line x1="450" y1="440" x2="450" y2="470" marker-end="url(#rfArrA)"/>
+  </g>
+  <text x="462" y="462" font-size="11" fill="var(--accent-ink)" font-weight="600">Permit</text>
+
+  <!-- boundary -->
+  <line x1="40" y1="482" x2="860" y2="482" stroke="var(--violation)" stroke-width="2" stroke-dasharray="9 6"/>
+  <text x="450" y="476" text-anchor="middle" font-size="12" fill="var(--violation)" font-weight="600">APPLICATION BOUNDARY — everything below is application-owned</text>
+
+  <line x1="450" y1="486" x2="450" y2="512" stroke="currentColor" stroke-width="1.4" marker-end="url(#rfArr)" opacity=".7"/>
+
+  <!-- 3. application PDP -->
+  <rect x="60" y="516" width="780" height="136" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="7 5" opacity=".5"/>
+  <text x="82" y="542" font-family="IBM Plex Mono, monospace" font-size="13.5" fill="currentColor" opacity=".82" font-weight="600">3 · Application PDP — not modelled, by decision</text>
+  <text x="82" y="561" font-size="11.5" fill="currentColor" opacity=".68" font-style="italic">May this subject perform this operation on this resource?</text>
+  <g font-size="11.5" fill="currentColor" opacity=".62">
+    <text x="96" y="585">Roles, scopes and business rules · record- and field-level access</text>
+    <text x="96" y="606">Transaction limits · four-eyes · ownership of the business object</text>
+    <text x="96" y="631" fill="var(--violation)" opacity="1">/12345 is an order. The platform never learns that, and must not.</text>
+  </g>
+
+  <line x1="450" y1="656" x2="450" y2="678" stroke="currentColor" stroke-width="1.4" marker-end="url(#rfArr)" opacity=".7"/>
+  <rect x="350" y="682" width="200" height="32" rx="7" fill="var(--m-core)" opacity=".13"/>
+  <rect x="350" y="682" width="200" height="32" rx="7" fill="none" stroke="var(--m-core)" stroke-width="1.4"/>
+  <text x="450" y="703" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--m-core)" font-weight="600">Business service</text>
+</svg>
