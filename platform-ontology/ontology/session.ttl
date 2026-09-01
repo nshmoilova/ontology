@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/session>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.5.2> ;
-    owl:versionInfo "0.5.2" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.6.0> ;
+    owl:versionInfo "0.6.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Session Module"@en ;
     dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles — the opaque value a cookie carries — and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter."@en .
@@ -54,7 +54,7 @@ session:Device a owl:Class ;
 
 session:DeviceClass a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    skos:definition "The kind of requesting client a session runs on — browser or mobile — as a closed vocabulary. It classifies the client software rather than the hardware or operating system. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel."@en ;
+    skos:definition "The kind of requesting client a session runs on — browser or mobile — as a closed vocabulary. It classifies the client software rather than the hardware or operating system, and corroborates the channel its journey definition establishes. Concurrency limits are configured per device class."@en ;
     vs:term_status "draft" .
 
 session:SessionHandle a owl:Class ;
@@ -90,6 +90,10 @@ session:issuedToken a owl:ObjectProperty ;
 
 session:onDevice a owl:ObjectProperty ;
     skos:definition "Device the session runs on. At most one, and a principal may hold at most one active session per device (enforced in SHACL). Absent for non-interactive sessions."@en ;
+    vs:term_status "draft" .
+
+session:impliesChannel a owl:ObjectProperty ;
+    skos:definition "Delivery channel a device class corroborates. The channel a session was served over is established by its journey definition; where a session also has a device, its class must imply the same channel."@en ;
     vs:term_status "draft" .
 
 session:hasDeviceClass a owl:ObjectProperty ;
@@ -149,8 +153,10 @@ session:DeviceClassScheme a skos:ConceptScheme ;
 
 session:device-browser a session:DeviceClass ;
     skos:inScheme session:DeviceClassScheme ;
-    skos:prefLabel "Browser"@en .
+    skos:prefLabel "Browser"@en ;
+    session:impliesChannel core:channel-web .
 
 session:device-mobile a session:DeviceClass ;
     skos:inScheme session:DeviceClassScheme ;
-    skos:prefLabel "Mobile"@en .
+    skos:prefLabel "Mobile"@en ;
+    session:impliesChannel core:channel-mobile .

@@ -2,6 +2,24 @@
   "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies.",
   "decisions": [
     {
+      "id": "D51",
+      "title": "The journey definition establishes the channel, for every channel",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "Channel was derived from the session's device class, which works only for interactive sessions — and the model states that api and agent callers have no device. So the two non-interactive channels had no stated source at all, which is a hole in a Level-1 dimension rather than a modelling nicety.\n\nThe answer was already in the model, unused. Journey definitions carry servesChannel, and every session is established by an execution that follows a definition, so the chain from session to channel was complete but never relied upon. It works uniformly: a client-credentials definition serves api, a passkey definition serves web, and the derivation never asks whether a device exists.\n\nIt is also the better provenance. Journey definitions are governed desired state flowing through the declaration machinery, so the channel now derives from an approved artifact rather than from configuration nobody signed. followsDefinition is consequently mandatory: an execution with no definition is an ungoverned authentication path and a session whose channel cannot be established, which was previously only a warning.\n\nThe device class is demoted to corroboration. Each class declares the channel it implies, and a session whose device contradicts its journey's channel is a violation — misconfiguration, or a mobile client presenting as a browser.",
+      "terms": [
+        "servesChannel",
+        "followsDefinition",
+        "impliesChannel",
+        "DeviceClass"
+      ],
+      "rejected": [
+        "Deriving channel from the route: a single application is commonly reachable on both web and api, and routes are per-application, so this would force routes to multiply per channel for a fact the journey already holds.",
+        "An explicit channel property on the session: simplest, but it relocates the question rather than answering it, and creates a second place that can disagree with the journey."
+      ],
+      "$caveat": "Assumes every api and agent caller authenticates through something modelled as a journey, including one-event client-credentials executions. A caller presenting credentials directly to ingress, bypassing the session manager, would have no journey and no derivable channel."
+    },
+    {
       "id": "D50",
       "title": "A device is nameable, and its class describes the client not the hardware",
       "area": "Audit round",

@@ -276,9 +276,11 @@ limits are configured per device class.
   security control with no approver today)*
 - Which sessions have no device at all, and is that legitimate for the
   api and agent channels? *(non-interactive sessions have no device)*
-- What establishes the delivery channel for a session with no device?
-  *(open gap — device class covers the interactive channels only, so api
-  and agent currently have no stated source)*
+- Which journey definition established each session's channel, and does the
+  session's device class agree with it? *(disagreement — expected empty)*
+- Which journey executions follow no governed definition? *(expected empty —
+  an ungoverned authentication path, and a session whose channel cannot be
+  established)*
 
 ### Authentication journeys
 

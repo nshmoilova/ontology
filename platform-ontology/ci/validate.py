@@ -115,6 +115,8 @@ def main() -> int:
             "exactly one client_id",
             "exactly one policy decision point",
             "an unnamed device cannot be counted",
+            "follows no governed definition",
+            "implies a different channel",
             "bound tenant does not own",
             "outside that application's enablement",
         ]

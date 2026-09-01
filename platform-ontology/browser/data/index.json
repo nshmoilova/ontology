@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "334d76127104",
+ "sourceDigest": "574daf2a7b20",
  "stats": {
   "modules": 6,
   "classes": 73,
-  "objectProperties": 91,
+  "objectProperties": 92,
   "datatypeProperties": 34,
-  "shapes": 72,
-  "violations": 106,
-  "warnings": 8,
+  "shapes": 73,
+  "violations": 108,
+  "warnings": 7,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 50,
+  "decisions": 51,
   "explainers": 2,
   "formalCQs": 7,
-  "backlogCQs": 89
+  "backlogCQs": 90
  },
  "modules": [
   {
@@ -32,7 +32,7 @@
    "iri": "https://w3id.org/examplebank/platform/authn",
    "prefix": "authn",
    "title": "Authentication Module",
-   "version": "0.5.1",
+   "version": "0.5.2",
    "description": "Credentials, authentication events and methods, identity providers, and NIST SP 800-63 assurance levels (modelled as SKOS concepts with numeric ranks for comparison). Since 0.2.0: authentication journeys \u2014 governed definitions per delivery channel, and executions comprising the events a principal actually traversed; achieved assurance lives on the execution. Since 0.3.0: proof-of-possession keys, the confirmation binding of RFC 7800 as used by DPoP (RFC 9449), which sender-constrains sessions and tokens so a stolen artifact is useless without the private key.",
    "blurb": "Credentials, identity providers, assurance levels, authentication journeys and issuer-scoped subject identifiers.",
    "imports": [
@@ -44,7 +44,7 @@
    "iri": "https://w3id.org/examplebank/platform/session",
    "prefix": "session",
    "title": "Session Module",
-   "version": "0.5.2",
+   "version": "0.6.0",
    "description": "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles \u2014 the opaque value a cookie carries \u2014 and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter.",
    "blurb": "Sessions established by journey executions, step-up elevations, and tokens carrying both ends of their journey.",
    "imports": [
@@ -1383,8 +1383,8 @@
      "from": "authn:AuthenticationJourneyExecution",
      "property": "authn:followsDefinition",
      "to": "authn:AuthenticationJourneyDefinition",
-     "cardinality": "0..1",
-     "severity": "Warning"
+     "cardinality": "1..1",
+     "severity": "Violation"
     }
    ],
    "usedBy": [],
@@ -1464,7 +1464,7 @@
      "kind": "property",
      "path": "authn:followsDefinition",
      "pathIri": "https://w3id.org/examplebank/platform/authn#followsDefinition",
-     "minCount": null,
+     "minCount": 1,
      "maxCount": 1,
      "class": "authn:AuthenticationJourneyDefinition",
      "classIri": "https://w3id.org/examplebank/platform/authn#AuthenticationJourneyDefinition",
@@ -1472,8 +1472,8 @@
      "in": [],
      "minInclusive": null,
      "maxInclusive": null,
-     "severity": "Warning",
-     "message": "Journey execution follows no governed definition \u2014 flag for stewardship review."
+     "severity": "Violation",
+     "message": "Journey execution follows no governed definition \u2014 an ungoverned authentication path, and a session whose channel cannot be established."
     },
     {
      "kind": "sparql",
@@ -1501,8 +1501,8 @@
      "from": "authn:AuthenticationJourneyExecution",
      "property": "authn:followsDefinition",
      "to": "authn:AuthenticationJourneyDefinition",
-     "cardinality": "0..1",
-     "severity": "Warning"
+     "cardinality": "1..1",
+     "severity": "Violation"
     }
    ],
    "incoming": [
@@ -2424,7 +2424,7 @@
    "kind": "objectProperty",
    "module": "authn",
    "label": null,
-   "definition": "Journey definition a journey execution traversed.",
+   "definition": "Journey definition a journey execution traversed. Mandatory (SHACL): the definition states the channel it serves, so a session with no definition behind it has no established channel and no governed authentication path.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -2441,12 +2441,13 @@
      "from": "authn:AuthenticationJourneyExecution",
      "property": "authn:followsDefinition",
      "to": "authn:AuthenticationJourneyDefinition",
-     "cardinality": "0..1",
-     "severity": "Warning"
+     "cardinality": "1..1",
+     "severity": "Violation"
     }
    ],
    "vocabulary": [],
    "decisions": [
+    "D51",
     "D26"
    ]
   },
@@ -2612,7 +2613,7 @@
    "kind": "objectProperty",
    "module": "authn",
    "label": null,
-   "definition": "Delivery channel a journey definition serves.",
+   "definition": "Delivery channel a journey definition serves. This is what establishes a session's channel, for every channel \u2014 a client-credentials definition serves api, a passkey definition serves web \u2014 so the derivation does not depend on the session having a device.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -2627,6 +2628,7 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
+    "D51",
     "D26"
    ]
   },
@@ -2793,7 +2795,7 @@
    "kind": "class",
    "module": "session",
    "label": null,
-   "definition": "The kind of requesting client a session runs on \u2014 browser or mobile \u2014 as a closed vocabulary. It classifies the client software rather than the hardware or operating system. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel.",
+   "definition": "The kind of requesting client a session runs on \u2014 browser or mobile \u2014 as a closed vocabulary. It classifies the client software rather than the hardware or operating system, and corroborates the channel its journey definition establishes. Concurrency limits are configured per device class.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -2843,6 +2845,7 @@
     }
    ],
    "decisions": [
+    "D51",
     "D50",
     "D46"
    ]
@@ -2923,6 +2926,7 @@
     "SessionDeviceShape",
     "OneSessionPerDeviceShape",
     "ConcurrentSessionLimitShape",
+    "ChannelDeviceAgreementShape",
     "SenderConstrainedSessionShape",
     "TokenInheritsConfirmationShape",
     "KeyConfusionShape"
@@ -3041,6 +3045,12 @@
      "severity": "Violation",
      "message": "Principal exceeds the configured concurrent-session limit for this device class.",
      "select": "SELECT $this WHERE {\n                {\n                    SELECT $this ?p ?dc (COUNT(DISTINCT ?s2) AS ?n) WHERE {\n                        $this <https://w3id.org/examplebank/platform/session#hasState>\n                              <https://w3id.org/examplebank/platform/session#state-active> ;\n                              <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                              <https://w3id.org/examplebank/platform/session#onDevice> ?dev .\n                        ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                        ?s2 <https://w3id.org/examplebank/platform/session#hasState>\n                            <https://w3id.org/examplebank/platform/session#state-active> ;\n                            <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                            <https://w3id.org/examplebank/platform/session#onDevice> ?d2 .\n                        ?d2 <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                    } GROUP BY $this ?p ?dc\n                }\n                ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                   <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                   <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                ?pol <https://w3id.org/examplebank/platform/control-plane#policyForTenant> ?t ;\n                     <https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass> ?dc ;\n                     <https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions> ?max .\n                FILTER (?n > ?max)\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Session's device class implies a different channel than its journey definition establishes.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/session#onDevice> ?dev ;\n                      <https://w3id.org/examplebank/platform/session#establishedBy> ?exec .\n                ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                ?dc <https://w3id.org/examplebank/platform/session#impliesChannel> ?implied .\n                ?exec <https://w3id.org/examplebank/platform/authn#followsDefinition> ?def .\n                ?def <https://w3id.org/examplebank/platform/authn#servesChannel> ?served .\n                FILTER (?implied != ?served)\n            }"
     },
     {
      "kind": "property",
@@ -3519,6 +3529,31 @@
    ],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/session#impliesChannel",
+   "name": "impliesChannel",
+   "curie": "session:impliesChannel",
+   "kind": "objectProperty",
+   "module": "session",
+   "label": null,
+   "definition": "Delivery channel a device class corroborates. The channel a session was served over is established by its journey definition; where a session also has a device, its class must imply the same channel.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D51"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#issuedToken",
@@ -9104,7 +9139,7 @@
      "kind": "property",
      "path": "authn:followsDefinition",
      "pathIri": "https://w3id.org/examplebank/platform/authn#followsDefinition",
-     "minCount": null,
+     "minCount": 1,
      "maxCount": 1,
      "class": "authn:AuthenticationJourneyDefinition",
      "classIri": "https://w3id.org/examplebank/platform/authn#AuthenticationJourneyDefinition",
@@ -9112,12 +9147,12 @@
      "in": [],
      "minInclusive": null,
      "maxInclusive": null,
-     "severity": "Warning",
-     "message": "Journey execution follows no governed definition \u2014 flag for stewardship review."
+     "severity": "Violation",
+     "message": "Journey execution follows no governed definition \u2014 an ungoverned authentication path, and a session whose channel cannot be established."
     }
    ],
-   "violations": 3,
-   "warnings": 1
+   "violations": 4,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#OAuthClientRegistrationShape",
@@ -10813,6 +10848,23 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/session#ChannelDeviceAgreementShape",
+   "name": "ChannelDeviceAgreementShape",
+   "targetClass": "session:Session",
+   "targetClassIri": "https://w3id.org/examplebank/platform/session#Session",
+   "module": "session",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Session's device class implies a different channel than its journey definition establishes.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/session#onDevice> ?dev ;\n                      <https://w3id.org/examplebank/platform/session#establishedBy> ?exec .\n                ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                ?dc <https://w3id.org/examplebank/platform/session#impliesChannel> ?implied .\n                ?exec <https://w3id.org/examplebank/platform/authn#followsDefinition> ?def .\n                ?def <https://w3id.org/examplebank/platform/authn#servesChannel> ?served .\n                FILTER (?implied != ?served)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#ConcurrentSessionLimitShape",
    "name": "ConcurrentSessionLimitShape",
    "targetClass": "session:Session",
@@ -11162,8 +11214,8 @@
    "from": "authn:AuthenticationJourneyExecution",
    "property": "authn:followsDefinition",
    "to": "authn:AuthenticationJourneyDefinition",
-   "cardinality": "0..1",
-   "severity": "Warning"
+   "cardinality": "1..1",
+   "severity": "Violation"
   },
   {
    "from": "authn:Credential",
@@ -11489,6 +11541,30 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D51",
+   "title": "The journey definition establishes the channel, for every channel",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "Channel was derived from the session's device class, which works only for interactive sessions \u2014 and the model states that api and agent callers have no device. So the two non-interactive channels had no stated source at all, which is a hole in a Level-1 dimension rather than a modelling nicety.\n\nThe answer was already in the model, unused. Journey definitions carry servesChannel, and every session is established by an execution that follows a definition, so the chain from session to channel was complete but never relied upon. It works uniformly: a client-credentials definition serves api, a passkey definition serves web, and the derivation never asks whether a device exists.\n\nIt is also the better provenance. Journey definitions are governed desired state flowing through the declaration machinery, so the channel now derives from an approved artifact rather than from configuration nobody signed. followsDefinition is consequently mandatory: an execution with no definition is an ungoverned authentication path and a session whose channel cannot be established, which was previously only a warning.\n\nThe device class is demoted to corroboration. Each class declares the channel it implies, and a session whose device contradicts its journey's channel is a violation \u2014 misconfiguration, or a mobile client presenting as a browser.",
+   "terms": [
+    "servesChannel",
+    "followsDefinition",
+    "impliesChannel",
+    "DeviceClass"
+   ],
+   "rejected": [
+    "Deriving channel from the route: a single application is commonly reachable on both web and api, and routes are per-application, so this would force routes to multiply per channel for a fact the journey already holds.",
+    "An explicit channel property on the session: simplest, but it relocates the question rather than answering it, and creates a second place that can disagree with the journey."
+   ],
+   "$caveat": "Assumes every api and agent caller authenticates through something modelled as a journey, including one-event client-credentials executions. A caller presenting credentials directly to ingress, bypassing the session manager, would have no journey and no derivable channel.",
+   "termCuries": [
+    "authn:followsDefinition",
+    "authn:servesChannel",
+    "session:DeviceClass",
+    "session:impliesChannel"
+   ]
+  },
   {
    "id": "D50",
    "title": "A device is nameable, and its class describes the client not the hardware",
@@ -13317,8 +13393,13 @@
    },
    {
     "section": "Devices and session concurrency",
-    "question": "What establishes the delivery channel for a session with no device? (open gap \u2014 device class covers the interactive channels only, so api and agent currently have no stated source)",
-    "expectedEmpty": false
+    "question": "Which journey definition established each session's channel, and does the session's device class agree with it? (disagreement \u2014 expected empty)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which journey executions follow no governed definition? (expected empty \u2014 an ungoverned authentication path, and a session whose channel cannot be established)",
+    "expectedEmpty": true
    },
    {
     "section": "Authentication journeys",

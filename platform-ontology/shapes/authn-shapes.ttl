@@ -74,10 +74,11 @@ sa:JourneyExecutionShape a sh:NodeShape ;
     ] ;
     sh:property [
         sh:path authn:followsDefinition ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:class authn:AuthenticationJourneyDefinition ;
-        sh:severity sh:Warning ;
-        sh:message "Journey execution follows no governed definition — flag for stewardship review." ;
+        sh:severity sh:Violation ;
+        sh:message "Journey execution follows no governed definition — an ungoverned authentication path, and a session whose channel cannot be established." ;
     ] .
 
 # Successful executions must record the assurance the completed flow achieved

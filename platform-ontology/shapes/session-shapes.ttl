@@ -168,6 +168,27 @@ ss:ConcurrentSessionLimitShape a sh:NodeShape ;
         """ ;
     ] .
 
+# The journey definition establishes the channel; where the session also has
+# a device, its class must corroborate rather than contradict it.
+ss:ChannelDeviceAgreementShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Session's device class implies a different channel than its journey definition establishes." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/session#onDevice> ?dev ;
+                      <https://w3id.org/examplebank/platform/session#establishedBy> ?exec .
+                ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .
+                ?dc <https://w3id.org/examplebank/platform/session#impliesChannel> ?implied .
+                ?exec <https://w3id.org/examplebank/platform/authn#followsDefinition> ?def .
+                ?def <https://w3id.org/examplebank/platform/authn#servesChannel> ?served .
+                FILTER (?implied != ?served)
+            }
+        """ ;
+    ] .
+
 ss:SessionHandleShape a sh:NodeShape ;
     sh:targetClass session:SessionHandle ;
     sh:property [

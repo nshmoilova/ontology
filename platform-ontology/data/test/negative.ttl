@@ -316,6 +316,28 @@ ex:tight-policy a cp:ConcurrentSessionPolicy ;
 ex:brw-1 a session:Device ; core:identifier "dev:brw-1" ; session:hasDeviceClass session:device-browser .
 ex:brw-2 a session:Device ; core:identifier "dev:brw-2" ; session:hasDeviceClass session:device-browser .
 
+### 39. Session whose device class contradicts its journey's channel
+###     (ChannelDeviceAgreementShape) — mobile device, web journey
+ex:web-journey a authn:AuthenticationJourneyDefinition ;
+    authn:servesChannel core:channel-web .
+ex:mismatch-exec a authn:AuthenticationJourneyExecution ;
+    core:occurredAtTime "2026-08-31T20:00:00Z"^^xsd:dateTime ;
+    authn:followsDefinition ex:web-journey ;
+    authn:comprisesEvent ex:weak-authn ;
+    authn:authenticatedPrincipal ex:bob ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL1 .
+ex:mismatch-device a session:Device ;
+    core:identifier "dev:mismatch" ;
+    session:hasDeviceClass session:device-mobile .
+ex:mismatch-session a session:Session ;
+    session:establishedBy ex:mismatch-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:onDevice ex:mismatch-device ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:key-a .
+
 ### 38. Device with no identifier (DeviceShape) — uncountable for limits
 ex:anonymous-device a session:Device ;
     session:hasDeviceClass session:device-browser .

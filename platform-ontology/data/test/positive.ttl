@@ -79,6 +79,39 @@ ex:exec-1001 a authn:AuthenticationJourneyExecution ;
     authn:succeeded true ;
     authn:achievedAssuranceLevel authn:AAL2 .
 
+### An API-channel session: no device, channel from the journey definition
+ex:journey-api-client-credentials a authn:AuthenticationJourneyDefinition ;
+    core:displayName "API default journey: mutual TLS client credentials" ;
+    authn:servesChannel core:channel-api .
+
+ex:authn-2001 a authn:AuthenticationEvent ;
+    core:occurredAtTime "2026-08-31T13:00:00Z"^^xsd:dateTime ;
+    authn:authenticatedPrincipal ex:payments-agent ;
+    authn:usedMethod authn:method-mtls ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL2 .
+
+ex:exec-2001 a authn:AuthenticationJourneyExecution ;
+    core:occurredAtTime "2026-08-31T13:00:00Z"^^xsd:dateTime ;
+    authn:followsDefinition ex:journey-api-client-credentials ;
+    authn:comprisesEvent ex:authn-2001 ;
+    authn:authenticatedPrincipal ex:payments-agent ;
+    authn:succeeded true ;
+    authn:achievedAssuranceLevel authn:AAL2 .
+
+ex:dpop-key-payments-agent a authn:ProofOfPossessionKey ;
+    core:displayName "Payments agent key" ;
+    authn:keyThumbprint "cM4pT1qLd8vXn2Rb7KfYs0WgEjHu5AoZi3Ncx9QeTvs" ;
+    authn:keyAlgorithm "ES256" .
+
+ex:session-9002 a session:Session ;
+    core:displayName "API session — channel established by the journey, no device" ;
+    session:establishedBy ex:exec-2001 ;
+    session:boundToPrincipal ex:payments-agent ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T17:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:dpop-key-payments-agent .
+
 ### Session & tokens — sender-constrained (DPoP, RFC 9449)
 ex:dpop-key-alice-web a authn:ProofOfPossessionKey ;
     core:displayName "Alice's web front DPoP key" ;
