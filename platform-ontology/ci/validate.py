@@ -109,6 +109,9 @@ def main() -> int:
             "resolve to exactly one session",
             "sender constraining must not be lost",
             "key confusion",
+            "holding no active membership in that tenant",
+            "membership lacks approval by a human principal",
+            "more than one active membership in the same tenant",
         ]
         for frag in expected_fragments:
             if frag in text:

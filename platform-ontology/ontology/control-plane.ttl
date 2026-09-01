@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.4.0> ;
-    owl:versionInfo "0.4.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.5.0> ;
+    owl:versionInfo "0.5.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     dct:title "Control Plane Module"@en ;
@@ -61,6 +61,15 @@ cp:DesiredStateDeclaration a owl:Class ;
 cp:DataPlaneMutation a owl:Class ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A write into a data plane performed by a control plane's acting identity, realizing a desired-state declaration."@en ;
+    vs:term_status "draft" .
+
+cp:TenantMembership a owl:Class ;
+    skos:definition "A governed record that a principal may act for a tenant, in a stated capacity, with a lifecycle and a human approval. Entitlement grants are held by tenants; membership is the separate fact that connects the principal a token resolves to with the tenant a route resolves to. Without it an admission decision can verify what a tenant is entitled to, but not that this principal may act for that tenant at all. One principal may hold memberships in several tenants — the consultant and dual-capacity cases are ordinary, not exceptional."@en ;
+    vs:term_status "draft" .
+
+cp:MembershipState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "Lifecycle state of a tenant membership; members are individuals (Requested, Active, Suspended, Terminated). Kept separate from subscription and session state vocabularies: overlapping member names do not make them one vocabulary, and each must be able to evolve independently."@en ;
     vs:term_status "draft" .
 
 cp:Subscription a owl:Class ;
@@ -192,6 +201,18 @@ cp:forApplication a owl:ObjectProperty ;
     skos:definition "Application a declaration provisions for, or that an enablement enables. Makes per-application decommissioning and blast radius a precise query."@en ;
     vs:term_status "draft" .
 
+cp:memberPrincipal a owl:ObjectProperty ;
+    skos:definition "Principal a tenant membership admits — the party that may act for the tenant."@en ;
+    vs:term_status "draft" .
+
+cp:memberOfTenant a owl:ObjectProperty ;
+    skos:definition "Tenant a membership admits the principal to act for."@en ;
+    vs:term_status "draft" .
+
+cp:hasMembershipState a owl:ObjectProperty ;
+    skos:definition "Current lifecycle state of a tenant membership."@en ;
+    vs:term_status "draft" .
+
 cp:subscriber a owl:ObjectProperty ;
     skos:definition "Tenant holding a subscription — including the platform tenant, which subscribes to its own capabilities so every coverage rule stays uniform."@en ;
     vs:term_status "draft" .
@@ -288,6 +309,10 @@ cp:windowEnd a owl:DatatypeProperty ;
     skos:definition "End of a usage observation's aggregation window."@en ;
     vs:term_status "draft" .
 
+cp:memberCapacity a owl:DatatypeProperty ;
+    skos:definition "Capacity in which the principal acts for the tenant (for example 'employee', 'contractor', 'delegate'). Descriptive at the platform layer: capacity does not grant anything by itself, and what it means inside an application is Level-3."@en ;
+    vs:term_status "draft" .
+
 cp:requestCount a owl:DatatypeProperty ;
     skos:definition "Number of requests aggregated in a usage observation window."@en ;
     vs:term_status "draft" .
@@ -314,4 +339,27 @@ cp:substate-suspended a cp:SubscriptionState ;
 
 cp:substate-terminated a cp:SubscriptionState ;
     skos:inScheme cp:SubscriptionStateScheme ;
+    skos:prefLabel "Terminated"@en .
+
+#################################################################
+# Membership state vocabulary
+#################################################################
+
+cp:MembershipStateScheme a skos:ConceptScheme ;
+    dct:title "Tenant Membership Lifecycle States"@en .
+
+cp:memberstate-requested a cp:MembershipState ;
+    skos:inScheme cp:MembershipStateScheme ;
+    skos:prefLabel "Requested"@en .
+
+cp:memberstate-active a cp:MembershipState ;
+    skos:inScheme cp:MembershipStateScheme ;
+    skos:prefLabel "Active"@en .
+
+cp:memberstate-suspended a cp:MembershipState ;
+    skos:inScheme cp:MembershipStateScheme ;
+    skos:prefLabel "Suspended"@en .
+
+cp:memberstate-terminated a cp:MembershipState ;
+    skos:inScheme cp:MembershipStateScheme ;
     skos:prefLabel "Terminated"@en .

@@ -212,6 +212,20 @@ ex:scope-prod a cp:AdministrativeScope ;
     cp:requiresHumanApproval true ;
     cp:scopeIncludes ex:t123-db-plane .
 
+### Tenant membership — which principals may act for T123
+ex:membership-alice-t123 a cp:TenantMembership ;
+    core:displayName "Alice Chen acts for Tenant T123" ;
+    cp:memberPrincipal ex:alice ;
+    cp:memberOfTenant ex:tenant-t123 ;
+    cp:memberCapacity "employee" ;
+    cp:hasMembershipState cp:memberstate-active ;
+    core:validFrom "2026-02-01T00:00:00Z"^^xsd:dateTime ;
+    cp:hasApproval ex:approval-mem-1 .
+
+ex:approval-mem-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-01-30T09:00:00Z"^^xsd:dateTime .
+
 ### Subscription and offering
 ex:sub-9001 a cp:Subscription ;
     core:displayName "T123 subscription: managed database" ;

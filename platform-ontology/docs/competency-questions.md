@@ -99,6 +99,24 @@ approval rigor and locality derive from it.
 - Which declarations' scopes contradict their data planes' environment or
   region facets?
 
+### Tenant membership (which principals may act for a tenant)
+
+Entitlement grants are held by tenants; membership is the separate fact that
+a principal may act for one. Without it, nothing connects the principal a
+token resolves to with the tenant a route resolves to.
+
+- Which principals may act for each tenant, in what capacity, since when,
+  and who approved it?
+- Which admission decisions were made for a principal that is not an active
+  member of the tenant whose grants were evaluated? *(expected empty — the
+  check that connects principal to tenant)*
+- Which memberships are active without a human approval behind them?
+  *(expected empty)*
+- Which principals hold active memberships in more than one tenant?
+  *(the consultant and dual-capacity cases — descriptive, not a violation)*
+- Which memberships remain active for principals whose credentials have all
+  been revoked? *(needs the credential lifecycle work)*
+
 ### Subscriptions, bundles, and dependencies
 
 Subscriptions are first-class, capability-targeted, scope-free; reach is

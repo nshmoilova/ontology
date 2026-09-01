@@ -150,6 +150,30 @@ sz:IngressAdmissionDecisionShape a sh:NodeShape ;
         sh:message "An admission decision must evaluate at least one entitlement grant — admission without grants is admission without authority." ;
     ] .
 
+# The check that connects the principal a token resolves to with the tenant
+# a route resolves to. Without it, entitlements are all tenant-held and
+# nothing verifies that this principal may act for that tenant at all.
+sz:AdmissionRequiresMembershipShape a sh:NodeShape ;
+    sh:targetClass authz:IngressAdmissionDecision ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Admission decision evaluated a tenant's grants for a principal holding no active membership in that tenant." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authz#requestingPrincipal> ?p ;
+                      <https://w3id.org/examplebank/platform/authz#evaluatedGrant> ?g .
+                ?g <https://w3id.org/examplebank/platform/authz#grantedTo> ?t .
+                FILTER NOT EXISTS {
+                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>
+                       <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .
+                }
+            }
+        """ ;
+    ] .
+
 sz:EntitlementGrantShape a sh:NodeShape ;
     sh:targetClass authz:EntitlementGrant ;
     sh:property [

@@ -233,6 +233,77 @@ scp:SupersededRealizationShape a sh:NodeShape ;
         """ ;
     ] .
 
+scp:TenantMembershipShape a sh:NodeShape ;
+    sh:targetClass cp:TenantMembership ;
+    sh:property [
+        sh:path cp:memberPrincipal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "A tenant membership must admit exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path cp:memberOfTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "A tenant membership must name exactly one tenant." ;
+    ] ;
+    sh:property [
+        sh:path cp:hasMembershipState ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cp:MembershipState ;
+        sh:severity sh:Violation ;
+        sh:message "A tenant membership must have exactly one lifecycle state." ;
+    ] .
+
+# Admitting a principal to act for a tenant is a meta-authorization
+# boundary, exactly as subscription activation is.
+scp:MembershipApprovalShape a sh:NodeShape ;
+    sh:targetClass cp:TenantMembership ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Active tenant membership lacks approval by a human principal — admitting a principal to act for a tenant is a meta-authorization boundary." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>
+                      <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .
+                }
+            }
+        """ ;
+    ] .
+
+# One principal must not hold two active memberships in one tenant —
+# otherwise it is ambiguous which membership authorises the request.
+scp:DuplicateMembershipShape a sh:NodeShape ;
+    sh:targetClass cp:TenantMembership ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Principal holds more than one active membership in the same tenant — which membership authorises a request would be ambiguous." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                      <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>
+                      <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .
+                ?other <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>
+                       <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .
+                FILTER (?other != $this)
+            }
+        """ ;
+    ] .
+
 scp:SubscriptionShape a sh:NodeShape ;
     sh:targetClass cp:Subscription ;
     sh:property [

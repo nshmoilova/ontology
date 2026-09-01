@@ -272,6 +272,34 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 30. Admission decision for a principal with no membership in the
+###     tenant whose grants were evaluated (AdmissionRequiresMembershipShape)
+ex:outsider-grant a authz:EntitlementGrant ;
+    authz:grantedTo ex:bad-tenant ;
+    authz:onDimension authz:dim-channel ;
+    authz:entitlementValue "web" ;
+    authz:derivedFrom ex:sub-bad .
+ex:outsider-admission a authz:IngressAdmissionDecision ;
+    core:occurredAtTime "2026-08-31T18:00:00Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:bob ;
+    authz:evaluatedPolicy ex:policy-hi ;
+    authz:evaluatedAction authz:action-access ;
+    authz:viaChannel core:channel-web ;
+    authz:evaluatedGrant ex:outsider-grant ;
+    authz:decisionOutcome authz:outcome-permit .
+
+### 31. Two active memberships for one principal in one tenant, one of
+###     them unapproved (DuplicateMembershipShape, MembershipApprovalShape)
+ex:dup-mem-1 a cp:TenantMembership ;
+    cp:memberPrincipal ex:robot ;
+    cp:memberOfTenant ex:other-tenant ;
+    cp:hasMembershipState cp:memberstate-active ;
+    cp:hasApproval ex:robot-approval .
+ex:dup-mem-2 a cp:TenantMembership ;
+    cp:memberPrincipal ex:robot ;
+    cp:memberOfTenant ex:other-tenant ;
+    cp:hasMembershipState cp:memberstate-active .
+
 ### 27. Bearer session — no confirmation key, so a stolen handle replays
 ###     (SenderConstrainedSessionShape); its handle is also ambiguous
 ###     (SessionHandleShape)

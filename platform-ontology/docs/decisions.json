@@ -310,6 +310,15 @@
       "terms": ["PolicyChangeEvent", "ChangeApproval", "approvedBy", "approvedAtTime", "hasApproval", "changeTicket"]
     },
     {
+      "id": "D45",
+      "title": "Tenant membership connects the principal to the tenant",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "Asking why there is no Identity class exposed a hole. Three senses of 'identity' already had homes — the authenticable entity is Principal, a name in a namespace is split between the firm-canonical identifier and the issuer-scoped SubjectIdentifier, and the assertion at a moment is an authentication event. But a fourth sense, persona or capacity, had none: no property anywhere linked a Principal to a Tenant.\n\nThe consequence was severe. Routes resolve the tenant, tokens resolve the principal, and every entitlement grant is held by a tenant — so nothing verified that this principal may act for that tenant at all. As written, a valid token for any principal presented at any tenant's address satisfied every modelled check.\n\nModelled as TenantMembership: a first-class, approved, lifecycle-bearing record following the Subscription pattern rather than a bare property, because 'when did this principal gain access to this tenant and who approved it' is the access-review question. One principal may hold memberships in several tenants — consultants and dual-capacity staff are ordinary. Capacity is recorded but grants nothing by itself; what a capacity means inside an application is Level-3.\n\nThe keystone invariant is on admission: no admission decision may evaluate a tenant's grants for a principal holding no active membership in that tenant. Two supporting invariants require human approval for activation, mirroring subscriptions, and forbid two active memberships for one principal in one tenant, which would leave it ambiguous which membership authorised a request.",
+      "terms": ["TenantMembership", "MembershipState", "memberPrincipal", "memberOfTenant", "hasMembershipState", "memberCapacity"],
+      "rejected": ["A plain mayActForTenant property: closes the reachability hole but records no lifecycle — no approver, no date, nothing an access review can read.", "A Persona class that entitlement grants are held by, replacing tenant-held grants: more expressive and handles dual capacity natively, but it reopens the settled grant model, and a tenant's subscriptions genuinely are tenant-level — that was never the missing fact.", "An Identity class as a synonym for Principal: two words for one concept.", "An Identity class merging the canonical identifier with issuer-scoped subjects: re-conflates exactly what the subject-identifier work separated, since one says what we call a principal and the other resolves an unknown subject to one."]
+    },
+    {
       "id": "D44",
       "title": "Sessions are sender-constrained, DPoP-style",
       "area": "Standards alignment",
