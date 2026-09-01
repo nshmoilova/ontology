@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.1> ;
-    owl:versionInfo "0.4.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.2> ;
+    owl:versionInfo "0.4.2" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -82,7 +82,8 @@ core:Application a owl:Class ;
 core:BusinessClient a owl:Class ;
     skos:prefLabel "Business client"@en ;
     skos:altLabel "customer"@en , "counterparty"@en ;
-    skos:definition "A party holding a business relationship with the firm — the firm's customer, retail or corporate. This is the word 'client' in its business sense, and the ontology reserves it for that meaning alone: the OAuth client registration is a different and unrelated thing (authn:OAuthClientRegistration). A business client is not itself authenticable; principals act for it, which is what lets one corporate client have many users and one person hold both a staff identity and a client relationship."@en ;
+    skos:definition "A party holding a business relationship with the firm — the firm's customer, retail or corporate. A business client is not itself authenticable; principals act for it, which is what lets one corporate client have many users and one person hold both a staff identity and a client relationship."@en ;
+    skos:editorialNote "This is the word 'client' in its business sense, and the ontology reserves it for that meaning alone. The OAuth client registration is a different and unrelated thing — see authn:OAuthClientRegistration."@en ;
     vs:term_status "draft" .
 
 core:DeliveryChannel a owl:Class ;
