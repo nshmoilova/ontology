@@ -6,12 +6,17 @@
       "title": "What is evaluated where",
       "subtitle": "Platform entitlements at ingress, application authorization inside the boundary",
       "audience": "Platform and application security architects",
-      "summary": "Ingress answers one question — may this subject cross this boundary — using a small, closed, platform-owned vocabulary. Everything about what a subject may then do belongs to the application. This walkthrough covers where the line sits, what sits on each side, and how the model stops the line from moving quietly.",
+      "summary": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. This walkthrough covers where that line sits, what sits on each side, and how the model stops the line from moving quietly.",
       "steps": [
         {
           "heading": "The three layers",
           "diagram": "layers.svg",
-          "body": "One enforcement stack serves many independently developed applications. That only works if the vocabulary ingress evaluates stays small and stable, and if nothing application-specific can enter it. The control plane defines entitlements; ingress enforces them; applications own everything past the boundary.\n\nThe architectural principle: ingress answers \"can this subject reach this platform or application boundary?\" Application security answers \"what can this subject do inside that boundary?\""
+          "body": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary. Resource authorization protects the right to perform an operation on an application resource. Everything below follows from holding those two apart.\n\nThe symmetry is exact and worth reading twice: both are authorization, both have a subject, both end in a decision. What differs is the object being protected — a boundary in one case, a resource in the other — and that difference is what makes one platform-owned and the other application-owned. A boundary is the platform's to define because the platform put it there; a resource belongs to whoever built the application behind it.\n\nOne enforcement stack serves many independently developed applications, and that only works if the vocabulary ingress evaluates stays small and stable, and if nothing application-specific can enter it. The control plane defines entitlements; ingress enforces them; applications own everything past the boundary.",
+          "terms": [
+            "authz:Action",
+            "authz:IngressAdmissionDecision",
+            "core:Application"
+          ]
         },
         {
           "heading": "A request, resolved",
