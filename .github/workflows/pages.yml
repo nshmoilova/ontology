@@ -11,7 +11,11 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  # Supersede an in-flight deploy rather than queueing behind it. The Pages
+  # API rejects a deployment while another is in progress, so queueing turns
+  # two commits in quick succession into a failed run and a stale site. For a
+  # static site the newest build is the only one that matters.
+  cancel-in-progress: true
 
 jobs:
   build:
