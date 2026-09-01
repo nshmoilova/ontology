@@ -72,11 +72,11 @@
         },
         {
           "heading": "Three evidence sources, not one",
-          "body": "It is tempting to say \"ingress reads the token\", but the token is only one of three inputs, and it is not even the one that establishes tenancy.\n\nThe request URL carries tenant context: ingress resolves the tenant from the host and path, not from a claim. Where the request landed carries environment and region. The session cookie carries an opaque handle that maps to a session — there is no session identifier in the token. What the token itself contributes is identity, the presenting registration, and assurance.\n\nThis matters for the discussion because it changes what an attacker has to forge. A claim can be attacked by compromising the issuer; host-and-path tenancy is attacked by compromising the routing configuration — a different control, owned by a different team, and one the ontology does not currently model at all.",
+          "body": "It is tempting to say \"ingress reads the token\", but the token is only one of three inputs, and it is not even the one that establishes tenancy.\n\nTenant comes from the request URL: domain and path are bound to a tenant in ingress configuration, and ingress resolves tenancy from that binding rather than from any claim. Where the request landed carries environment and region. The session cookie carries an opaque handle that maps to a session — there is no session identifier in the token. What the token itself contributes is identity, the presenting registration, and assurance.\n\nThis matters for the discussion because it changes what an attacker has to forge, and who owns the control. A claim is attacked by compromising the issuer; tenancy is attacked by changing an ingress route binding. Both are legitimate designs — but they are different blast radii, different change processes, and different approvers.",
           "table": {
             "columns": ["Evidence", "Source", "Resolves to"],
             "rows": [
-              ["host / path", "Request URL", "core:Tenant — tenant.access, platform.access"],
+              ["domain / path", "Ingress route configuration", "core:Tenant — tenant.access, platform.access"],
               ["landing point", "Which ingress deployment", "environment.access, region.access"],
               ["session cookie", "Cookie, opaque handle", "session:Session — liveness, revocation, withinSession"],
               ["sub", "JWT claim", "authn:SubjectIdentifier → core:Principal"],
@@ -113,7 +113,8 @@
         }
       ],
       "openQuestions": [
-        "Tenant is resolved from host and path, but nothing in the ontology binds a domain or path prefix to a tenant. That mapping is the root of tenant.access — whoever can change it can change who a request is treated as. Should it be governed desired state like everything else, and what invariant would catch two tenants claiming the same host?",
+        "Domain and path are bound to a tenant in ingress configuration, but the ingress module models no hostname or path matching and no tenant binding on a route — so the ontology cannot express the very thing that resolves tenant.access. Should route-to-tenant binding become governed desired state flowing through the declaration machinery, with an invariant catching two tenants bound to the same domain and path?",
+        "If a route binds a tenant, does the existing sole-writer and scope machinery apply to ingress configuration the way it applies to capability data planes? Today ingress config is distributed to enforcement points, but route bindings are not declarations and nothing records who approved one.",
         "Sessions are resolved from a cookie, and the cookie handle is unmodelled. It behaves like a credential — it is presented, it can be stolen, it should be revocable — so does it belong alongside authn:Credential, and does session establishment need the same audit trail as authentication?",
         "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension — a revoked tenant is not a stale region.",
         "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",

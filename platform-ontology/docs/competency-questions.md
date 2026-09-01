@@ -166,11 +166,16 @@ plane. Channels: web, mobile, api, agent.
   grant derive from? *(tenant onboarding not yet modelled — named gap)*
 - Which tokens carry an audience outside their principal's reachable set at
   issuance time? *(expected empty)*
-- Which host or path prefix resolves to which tenant, and which governed
-  declaration established that binding? *(host/path→tenant resolution is not
-  yet modelled — named gap; it is the root of `tenant.access`)*
-- Which hosts or path prefixes resolve to more than one tenant?
+- Which domain and path binds to which tenant, on which route, and which
+  governed declaration established that binding? *(the binding is set in
+  ingress route configuration; the ingress module models no host or path
+  matching and no tenant binding — named gap, and it is the root of
+  `tenant.access`)*
+- Which domain and path combinations bind to more than one tenant?
   *(invariant — expected empty, once the binding is modelled)*
+- Which route-to-tenant bindings were changed without an approved
+  declaration behind them? *(ingress configuration is distributed to
+  enforcement points but is not currently governed as desired state)*
 - For each session, which presented handle resolved to it, when was that
   handle issued, and is it revocable independently of the session?
   *(cookie→session resolution is not yet modelled — named gap)*
