@@ -27,10 +27,22 @@ ontology/          TBox modules (OWL 2 QL target), one file per domain
 shapes/            SHACL shapes graphs, mirroring the module structure
 data/test/         positive.ttl (must conform) / negative.ttl (must fail)
 queries/competency/  formalized competency questions (CQ-1..6) as SPARQL
+browser/           the ontology browser app (GitHub Pages); data/index.json
+                   is generated, never hand-edited
 ci/                validate.py — parse, SHACL, negative-case, CQ gates
-docs/              competency register (6 formal + large graded backlog)
-                   + governance policy
+                   build_index.py — Turtle → the browser's search index
+docs/              competency register (6 formal + large graded backlog),
+                   decisions.json (the recorded "why"), governance policy
 ```
+
+## Browsing it
+
+The **ontology browser** publishes to GitHub Pages from `browser/`: search
+across terms, constraints, decisions and questions; browse by module; and
+read, on every term page, the recorded reasoning for why that term exists
+and which alternatives were rejected. It is generated from the Turtle by
+`ci/build_index.py`, and CI fails if the committed index is stale — so the
+browser cannot drift from the ontology. See `browser/README.md`.
 
 Module import chain: `control-plane → authz → authn → core`, with
 `session → authn` and `ingress → core`. Cross-domain joins live in `core`.

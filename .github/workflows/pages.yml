@@ -1,0 +1,54 @@
+name: deploy-browser
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r platform-ontology/ci/requirements.txt
+
+      - name: Regenerate the browser index from the Turtle sources
+        working-directory: platform-ontology
+        run: python3 ci/build_index.py
+
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp -r platform-ontology/browser/* _site/
+          # Ship the sources alongside the app so every term page can link
+          # to the Turtle it was generated from.
+          mkdir -p _site/sources
+          cp -r platform-ontology/ontology _site/sources/
+          cp -r platform-ontology/shapes _site/sources/
+          cp -r platform-ontology/queries _site/sources/
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

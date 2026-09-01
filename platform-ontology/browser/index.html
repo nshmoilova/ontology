@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform Ontology Browser</title>
+<meta name="description" content="Browse and search the platform identity &amp; access ontology: modules, terms, SHACL constraints, relationships, and the reasoning behind every class.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕸️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="brand" href="#/">
+    <span class="brand-mark" aria-hidden="true">◇</span>
+    <span class="brand-text">
+      <strong>Platform Ontology</strong>
+      <span class="brand-sub">browser</span>
+    </span>
+  </a>
+
+  <div class="searchwrap">
+    <input id="search" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Search terms, shapes, decisions, questions…"
+           aria-label="Search the ontology" aria-controls="results" aria-expanded="false">
+    <kbd class="hint">/</kbd>
+    <div id="results" class="results" role="listbox" aria-label="Search results" hidden></div>
+  </div>
+
+  <nav class="topnav">
+    <a href="#/shapes">Constraints</a>
+    <a href="#/relationships">Relationships</a>
+    <a href="#/decisions">Decisions</a>
+    <a href="#/questions">Questions</a>
+    <button id="themeBtn" class="iconbtn" type="button" title="Toggle theme" aria-label="Toggle colour theme">◐</button>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Ontology navigation">
+    <div class="sidefilter">
+      <input id="filter" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Filter terms…" aria-label="Filter the term list">
+      <div class="kindtabs" role="tablist" aria-label="Term kind">
+        <button data-kind="all" class="on" role="tab" aria-selected="true">All</button>
+        <button data-kind="class" role="tab" aria-selected="false">Classes</button>
+        <button data-kind="objectProperty" role="tab" aria-selected="false">Object</button>
+        <button data-kind="datatypeProperty" role="tab" aria-selected="false">Data</button>
+      </div>
+    </div>
+    <nav id="tree" class="tree"></nav>
+  </aside>
+
+  <main id="main" class="main" tabindex="-1"></main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
