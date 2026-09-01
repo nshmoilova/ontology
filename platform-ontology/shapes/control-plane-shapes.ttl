@@ -472,32 +472,12 @@ scp:RouteBindingChangeShape a sh:NodeShape ;
 scp:PortalShape a sh:NodeShape ;
     sh:targetClass cp:Portal ;
     sh:property [
-        sh:path cp:frontedBy ;
-        sh:minCount 1 ;
-        sh:class core:AuthorizedParty ;
-        sh:severity sh:Violation ;
-        sh:message "A portal must be fronted by at least one authorized party — one per delivery channel it is presented on." ;
-    ] ;
-    sh:property [
         sh:path core:ownedBy ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:class core:Tenant ;
         sh:severity sh:Violation ;
         sh:message "A portal must be owned by exactly one tenant." ;
-    ] ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "Portal is fronted by a party owned by a different tenant — fronts and portal share one owner." ;
-        sh:severity sh:Violation ;
-        sh:select """
-            SELECT $this WHERE {
-                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;
-                      <https://w3id.org/examplebank/platform/control-plane#frontedBy> ?f .
-                ?f <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .
-                FILTER (?t != ?t2)
-            }
-        """ ;
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;

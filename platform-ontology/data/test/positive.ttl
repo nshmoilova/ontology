@@ -33,12 +33,11 @@ ex:subid-alice-idp a authn:SubjectIdentifier ;
     authn:identifierFormat authn:format-iss-sub ;
     core:validFrom "2026-01-15T00:00:00Z"^^xsd:dateTime .
 
-ex:subid-alice-web-pairwise a authn:SubjectIdentifier ;
-    authn:subjectValue "pw-9931-c4e1" ;
+ex:subid-alice-legacy a authn:SubjectIdentifier ;
+    authn:subjectValue "legacy-9931-c4e1" ;
     authn:atIssuer ex:enterprise-idp ;
     authn:identifies ex:alice ;
-    authn:identifierFormat authn:format-opaque ;
-    authn:scopedToParty ex:azp-t123-web .
+    authn:identifierFormat authn:format-opaque .
 
 ### Authentication
 ex:authn-1001 a authn:AuthenticationEvent ;
@@ -89,7 +88,6 @@ ex:handle-9001 a session:SessionHandle ;
 ex:token-at-1 a session:AccessToken ;
     session:expiresAt "2026-08-31T13:20:01Z"^^xsd:dateTime ;
     session:tokenAudience ex:ledger-service ;
-    session:issuedTo ex:azp-t123-web ;
     authn:confirmedByKey ex:dpop-key-alice-web .
 
 ### Ingress
@@ -297,23 +295,18 @@ ex:approval-8002 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-21T11:00:00Z"^^xsd:dateTime .
 
-ex:azp-t123-web a core:AuthorizedParty ;
-    core:displayName "T123 web portal front (SPA registration)" ;
-    core:ownedBy ex:tenant-t123 ;
-    core:boundToChannel core:channel-web .
-
 ex:portal-t123-web a cp:Portal ;
     core:displayName "T123 web portal" ;
     core:ownedBy ex:tenant-t123 ;
     cp:groupsApplication ex:app-ledger ;
-    cp:frontedBy ex:azp-t123-web .
+    cp:groupsApplication ex:app-ledger .
 
 ### Entitlement grant (projection, never hand-authored)
 ex:grant-t123-channel-web a authz:EntitlementGrant ;
     authz:grantedTo ex:tenant-t123 ;
     authz:onDimension authz:dim-channel ;
     authz:entitlementValue "web" ;
-    authz:derivedFrom ex:azp-t123-web ;
+    authz:derivedFrom ex:route-binding-8003 ;
     authz:distributedAt "2026-08-30T06:00:00Z"^^xsd:dateTime .
 
 ex:db-controller-agent a core:WorkloadPrincipal ;

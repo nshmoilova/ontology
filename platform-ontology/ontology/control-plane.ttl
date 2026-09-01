@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.6.0> ;
-    owl:versionInfo "0.6.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.7.0> ;
+    owl:versionInfo "0.7.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     owl:imports <https://w3id.org/examplebank/platform/session> ;
@@ -120,7 +120,7 @@ cp:RouteBindingChange a owl:Class ;
     vs:term_status "draft" .
 
 cp:Portal a owl:Class ;
-    skos:definition "A tenant-owned presentation grouping of applications, fronted by one or more authorized parties — one per delivery channel it is presented on (the web front and the iOS front of one portal are two authorized parties, each with its own credentials and revocation). Presentation only: admission stays per-application and the enforcement vocabulary never sees portals."@en ;
+    skos:definition "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals. Whether a portal is per delivery channel is deliberately left open — the channel of a request comes from the session's device class, not from anything the portal declares."@en ;
     vs:term_status "draft" .
 
 cp:ManagementControlPlane owl:disjointWith cp:CapabilityControlPlane .
@@ -281,10 +281,6 @@ cp:declaresDefinition a owl:ObjectProperty ;
 
 cp:declaresRouteBinding a owl:ObjectProperty ;
     skos:definition "Ingress route whose tenant binding a route-binding change declares. Typing enforced in SHACL, not via rdfs:range."@en ;
-    vs:term_status "draft" .
-
-cp:frontedBy a owl:ObjectProperty ;
-    skos:definition "Authorized party that fronts a portal on one delivery channel. A portal's channels are derived from its fronts' bindings — stated once, never duplicated on the portal."@en ;
     vs:term_status "draft" .
 
 #################################################################

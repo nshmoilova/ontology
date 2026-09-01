@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.2.1> ;
-    owl:versionInfo "0.2.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -79,14 +79,6 @@ core:Application a owl:Class ;
     skos:definition "An independently developed application owned by exactly one tenant (possibly the platform tenant), reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements. What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
     vs:term_status "draft" .
 
-core:AuthorizedParty a owl:Class ;
-    rdfs:subClassOf core:Resource ;
-    skos:prefLabel "Authorized party"@en ;
-    skos:altLabel "OAuth client registration"@en , "azp"@en , "channel registration"@en ;
-    skos:definition "The governed registration of one unit of request-originating software — a portal's web or mobile front, or a headless API/agent consumer — owned by exactly one tenant, bound to exactly one delivery channel, holding revocable credentials, and the party to which tokens are issued (the azp claim). The evidence ingress resolves a request's channel from; never the running software instance, and never the party the token is addressed to (that is the audience)."@en ;
-    skos:editorialNote "Named for the azp claim it anchors. Reinstated as the uniform azp target after Portal-only left token→client binding without a single-ranged home. Recorded reservations: 'Party' is banking master-data vocabulary for customers — this class is software registrations, not persons; and a registration is 'authorized' only in azp's token-time sense. The word 'client' remains reserved for the firm's business meaning; CallerRegistration and SoftwareRegistration were the runner-up names."@en ;
-    vs:term_status "draft" .
-
 core:DeliveryChannel a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     skos:definition "The delivery avenue through which platform capabilities are consumed, determinable by ingress from the registration presenting the request — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
@@ -121,15 +113,11 @@ core:enforcedBy a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 core:ownedBy a owl:ObjectProperty ;
-    skos:definition "Tenant that owns an application, portal, or authorized party — exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant."@en ;
+    skos:definition "Tenant that owns an application or portal — exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant."@en ;
     vs:term_status "draft" .
 
 core:hasActingIdentity a owl:ObjectProperty ;
-    skos:definition "Principal under whose identity a resource acts: a control plane component's SPIFFE workload identity, or the workload principal behind a headless authorized party (client-credentials flows). Resources cannot be principals; their acts are performed by this principal. Portal fronts carry none — their requests act as the authenticated human's principal. Promoted from control-plane while draft."@en ;
-    vs:term_status "draft" .
-
-core:boundToChannel a owl:ObjectProperty ;
-    skos:definition "The single delivery channel an authorized party is bound to. Ingress derives a request's channel from this binding — never from a self-asserted claim."@en ;
+    skos:definition "Principal under whose identity a resource acts — a control plane component's SPIFFE workload identity, for example. Resources cannot be principals; their acts are performed by this principal. Promoted from control-plane while draft."@en ;
     vs:term_status "draft" .
 
 #################################################################

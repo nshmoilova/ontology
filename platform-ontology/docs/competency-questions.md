@@ -170,12 +170,10 @@ plane. Channels: web, mobile, api, agent.
 
 - For each admission decision, which token claims supplied the evidence for
   each evaluated dimension?
-- For each admission decision, which authorized party supplied the channel
-  evidence?
-- Which authorized parties exist per tenant and per channel, and which
-  tokens were issued to each?
-- Which tokens were presented by a party other than the authorized party
-  they were issued to? *(azp mismatch — expected empty)*
+- For each admission decision, which session and device class supplied the
+  channel evidence?
+- Which pairwise subject identifiers exist, and per which OAuth audience are
+  they scoped? *(pairwise scoping is not yet modelled — named gap)*
 - Which entitlement grants lack a derivation link to their governing source?
   *(hand-authored grants — expected empty)*
 - Which registrations may be minted which token audiences, and from which

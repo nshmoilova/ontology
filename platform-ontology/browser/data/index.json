@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "02b638915902",
+ "sourceDigest": "2335cfe4ac8c",
  "stats": {
   "modules": 6,
-  "classes": 72,
-  "objectProperties": 90,
+  "classes": 71,
+  "objectProperties": 86,
   "datatypeProperties": 33,
-  "shapes": 68,
-  "violations": 104,
+  "shapes": 67,
+  "violations": 97,
   "warnings": 7,
   "vocabularies": 11,
-  "relationships": 53,
+  "relationships": 48,
   "decisions": 46,
   "explainers": 2,
   "formalCQs": 6,
-  "backlogCQs": 79
+  "backlogCQs": 78
  },
  "modules": [
   {
@@ -22,7 +22,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.2.1",
+   "version": "0.3.0",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -32,7 +32,7 @@
    "iri": "https://w3id.org/examplebank/platform/authn",
    "prefix": "authn",
    "title": "Authentication Module",
-   "version": "0.3.0",
+   "version": "0.4.0",
    "description": "Credentials, authentication events and methods, identity providers, and NIST SP 800-63 assurance levels (modelled as SKOS concepts with numeric ranks for comparison). Since 0.2.0: authentication journeys \u2014 governed definitions per delivery channel, and executions comprising the events a principal actually traversed; achieved assurance lives on the execution. Since 0.3.0: proof-of-possession keys, the confirmation binding of RFC 7800 as used by DPoP (RFC 9449), which sender-constrains sessions and tokens so a stolen artifact is useless without the private key.",
    "blurb": "Credentials, identity providers, assurance levels, authentication journeys and issuer-scoped subject identifiers.",
    "imports": [
@@ -44,7 +44,7 @@
    "iri": "https://w3id.org/examplebank/platform/session",
    "prefix": "session",
    "title": "Session Module",
-   "version": "0.4.0",
+   "version": "0.5.0",
    "description": "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles \u2014 the opaque value a cookie carries \u2014 and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter.",
    "blurb": "Sessions established by journey executions, step-up elevations, and tokens carrying both ends of their journey.",
    "imports": [
@@ -80,7 +80,7 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.6.0",
+   "version": "0.7.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
@@ -143,130 +143,6 @@
    "decisions": [
     "D09",
     "D17"
-   ]
-  },
-  {
-   "iri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-   "name": "AuthorizedParty",
-   "curie": "core:AuthorizedParty",
-   "kind": "class",
-   "module": "core",
-   "label": "Authorized party",
-   "definition": "The governed registration of one unit of request-originating software \u2014 a portal's web or mobile front, or a headless API/agent consumer \u2014 owned by exactly one tenant, bound to exactly one delivery channel, holding revocable credentials, and the party to which tokens are issued (the azp claim). The evidence ingress resolves a request's channel from; never the running software instance, and never the party the token is addressed to (that is the audience).",
-   "editorialNote": "Named for the azp claim it anchors. Reinstated as the uniform azp target after Portal-only left token\u2192client binding without a single-ranged home. Recorded reservations: 'Party' is banking master-data vocabulary for customers \u2014 this class is software registrations, not persons; and a registration is 'authorized' only in azp's token-time sense. The word 'client' remains reserved for the firm's business meaning; CallerRegistration and SoftwareRegistration were the runner-up names.",
-   "altLabels": [
-    "OAuth client registration",
-    "azp",
-    "channel registration"
-   ],
-   "status": "draft",
-   "subClassOf": [
-    "core:Resource"
-   ],
-   "subPropertyOf": [],
-   "disjointWith": [],
-   "subClasses": [],
-   "shapes": [
-    "AuthorizedPartyShape"
-   ],
-   "constraints": [
-    {
-     "kind": "property",
-     "path": "core:ownedBy",
-     "pathIri": "https://w3id.org/examplebank/platform/core#ownedBy",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:Tenant",
-     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party must be registered by exactly one tenant."
-    },
-    {
-     "kind": "property",
-     "path": "core:boundToChannel",
-     "pathIri": "https://w3id.org/examplebank/platform/core#boundToChannel",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:DeliveryChannel",
-     "classIri": "https://w3id.org/examplebank/platform/core#DeliveryChannel",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party must be bound to exactly one delivery channel \u2014 the binding ingress derives channel evidence from."
-    },
-    {
-     "kind": "property",
-     "path": "core:hasActingIdentity",
-     "pathIri": "https://w3id.org/examplebank/platform/core#hasActingIdentity",
-     "minCount": null,
-     "maxCount": 1,
-     "class": "core:WorkloadPrincipal",
-     "classIri": "https://w3id.org/examplebank/platform/core#WorkloadPrincipal",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party acts as at most one workload principal (headless parties exactly one by convention; portal fronts none)."
-    }
-   ],
-   "outgoing": [
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:ownedBy",
-     "to": "core:Tenant",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:boundToChannel",
-     "to": "core:DeliveryChannel",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:hasActingIdentity",
-     "to": "core:WorkloadPrincipal",
-     "cardinality": "0..1",
-     "severity": "Violation"
-    }
-   ],
-   "incoming": [
-    {
-     "from": "authn:SubjectIdentifier",
-     "property": "authn:scopedToParty",
-     "to": "core:AuthorizedParty",
-     "cardinality": "0..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "cp:Portal",
-     "property": "cp:frontedBy",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..*",
-     "severity": "Violation"
-    },
-    {
-     "from": "session:Token",
-     "property": "session:issuedTo",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    }
-   ],
-   "usedBy": [],
-   "vocabulary": [],
-   "decisions": [
-    "D29",
-    "D33"
    ]
   },
   {
@@ -349,13 +225,6 @@
     {
      "from": "authz:IngressAdmissionDecision",
      "property": "authz:viaChannel",
-     "to": "core:DeliveryChannel",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:boundToChannel",
      "to": "core:DeliveryChannel",
      "cardinality": "1..1",
      "severity": "Violation"
@@ -693,6 +562,13 @@
      "severity": "Violation"
     },
     {
+     "from": "authn:Credential",
+     "property": "authn:credentialOf",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    },
+    {
      "from": "authn:AuthenticationJourneyExecution",
      "property": "authn:authenticatedPrincipal",
      "to": "core:Principal",
@@ -762,7 +638,6 @@
    "disjointWith": [],
    "subClasses": [
     "core:Application",
-    "core:AuthorizedParty",
     "cp:ControlPlaneComponent",
     "cp:DataPlane",
     "ingress:Gateway",
@@ -854,13 +729,6 @@
      "severity": "Violation"
     },
     {
-     "from": "core:AuthorizedParty",
-     "property": "core:ownedBy",
-     "to": "core:Tenant",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
      "from": "ingress:Route",
      "property": "ingress:boundToTenant",
      "to": "core:Tenant",
@@ -900,13 +768,6 @@
      "property": "core:hasActingIdentity",
      "to": "core:WorkloadPrincipal",
      "cardinality": "1..*",
-     "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:hasActingIdentity",
-     "to": "core:WorkloadPrincipal",
-     "cardinality": "0..1",
      "severity": "Violation"
     }
    ],
@@ -1036,39 +897,6 @@
    "decisions": []
   },
   {
-   "iri": "https://w3id.org/examplebank/platform/core#boundToChannel",
-   "name": "boundToChannel",
-   "curie": "core:boundToChannel",
-   "kind": "objectProperty",
-   "module": "core",
-   "label": null,
-   "definition": "The single delivery channel an authorized party is bound to. Ingress derives a request's channel from this binding \u2014 never from a self-asserted claim.",
-   "editorialNote": null,
-   "altLabels": [],
-   "status": "draft",
-   "subClassOf": [],
-   "subPropertyOf": [],
-   "disjointWith": [],
-   "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
-   "incoming": [],
-   "usedBy": [
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:boundToChannel",
-     "to": "core:DeliveryChannel",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    }
-   ],
-   "vocabulary": [],
-   "decisions": [
-    "D23"
-   ]
-  },
-  {
    "iri": "https://w3id.org/examplebank/platform/core#enforcedBy",
    "name": "enforcedBy",
    "curie": "core:enforcedBy",
@@ -1133,7 +961,7 @@
    "kind": "objectProperty",
    "module": "core",
    "label": null,
-   "definition": "Principal under whose identity a resource acts: a control plane component's SPIFFE workload identity, or the workload principal behind a headless authorized party (client-credentials flows). Resources cannot be principals; their acts are performed by this principal. Portal fronts carry none \u2014 their requests act as the authenticated human's principal. Promoted from control-plane while draft.",
+   "definition": "Principal under whose identity a resource acts \u2014 a control plane component's SPIFFE workload identity, for example. Resources cannot be principals; their acts are performed by this principal. Promoted from control-plane while draft.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -1152,13 +980,6 @@
      "to": "core:WorkloadPrincipal",
      "cardinality": "1..*",
      "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
-     "property": "core:hasActingIdentity",
-     "to": "core:WorkloadPrincipal",
-     "cardinality": "0..1",
-     "severity": "Violation"
     }
    ],
    "vocabulary": [],
@@ -1174,7 +995,7 @@
    "kind": "objectProperty",
    "module": "core",
    "label": null,
-   "definition": "Tenant that owns an application, portal, or authorized party \u2014 exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant.",
+   "definition": "Tenant that owns an application or portal \u2014 exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -1196,13 +1017,6 @@
     },
     {
      "from": "core:Application",
-     "property": "core:ownedBy",
-     "to": "core:Tenant",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "core:AuthorizedParty",
      "property": "core:ownedBy",
      "to": "core:Tenant",
      "cardinality": "1..1",
@@ -1735,14 +1549,14 @@
      "pathIri": "https://w3id.org/examplebank/platform/authn#credentialOf",
      "minCount": 1,
      "maxCount": null,
-     "class": null,
-     "classIri": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
      "datatype": null,
      "in": [],
      "minInclusive": null,
      "maxInclusive": null,
      "severity": "Violation",
-     "message": "A credential must be bound to a principal or an authorized party."
+     "message": "A credential must be bound to a principal."
     },
     {
      "kind": "property",
@@ -1761,6 +1575,13 @@
     }
    ],
    "outgoing": [
+    {
+     "from": "authn:Credential",
+     "property": "authn:credentialOf",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    },
     {
      "from": "authn:Credential",
      "property": "authn:issuedBy",
@@ -1875,7 +1696,7 @@
    "kind": "class",
    "module": "authn",
    "label": null,
-   "definition": "A first-class naming fact: at one issuer, one subject value denotes one principal (RFC 9493 / OIDC sub). Read in reverse at resolution time \u2014 a token or security event carries the subject; this node yields the principal. Optionally pairwise: scoped to the authorized party the issuer minted it for. Not a credential (it proves nothing and is presented by no one) and not an attribute assertion (it resolves an unknown subject rather than describing a known principal).",
+   "definition": "A first-class naming fact: at one issuer, one subject value denotes one principal (RFC 9493 / OIDC sub). Read in reverse at resolution time \u2014 a token or security event carries the subject; this node yields the principal. Pairwise subjects, which an issuer scopes per OAuth client, are not yet distinguished \u2014 a recorded gap. Not a credential (it proves nothing and is presented by no one) and not an attribute assertion (it resolves an unknown subject rather than describing a known principal).",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -1951,25 +1772,10 @@
      "message": "A subject identifier must name its RFC 9493 format."
     },
     {
-     "kind": "property",
-     "path": "authn:scopedToParty",
-     "pathIri": "https://w3id.org/examplebank/platform/authn#scopedToParty",
-     "minCount": null,
-     "maxCount": 1,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "A pairwise subject identifier is scoped to at most one authorized party."
-    },
-    {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Same issuer, subject value, and party scope denote more than one principal \u2014 subject-identifier collision.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                      <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                      <https://w3id.org/examplebank/platform/authn#identifies> ?p .\n                ?other <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                       <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                       <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .\n                FILTER (?other != $this)\n                FILTER (?p != ?p2)\n                OPTIONAL { $this <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s1 . }\n                OPTIONAL { ?other <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s2 . }\n                FILTER (COALESCE(?s1, <urn:examplebank:unscoped>) = COALESCE(?s2, <urn:examplebank:unscoped>))\n            }"
+     "message": "Same issuer and subject value denote more than one principal \u2014 subject-identifier collision.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                      <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                      <https://w3id.org/examplebank/platform/authn#identifies> ?p .\n                ?other <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                       <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                       <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .\n                FILTER (?other != $this)\n                FILTER (?p != ?p2)\n            }"
     }
    ],
    "outgoing": [
@@ -1992,13 +1798,6 @@
      "property": "authn:identifierFormat",
      "to": "authn:SubjectIdentifierFormat",
      "cardinality": "1..1",
-     "severity": "Violation"
-    },
-    {
-     "from": "authn:SubjectIdentifier",
-     "property": "authn:scopedToParty",
-     "to": "core:AuthorizedParty",
-     "cardinality": "0..1",
      "severity": "Violation"
     }
    ],
@@ -2388,7 +2187,15 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "authn:Credential",
+     "property": "authn:credentialOf",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": []
   },
@@ -2521,39 +2328,6 @@
    ],
    "vocabulary": [],
    "decisions": []
-  },
-  {
-   "iri": "https://w3id.org/examplebank/platform/authn#scopedToParty",
-   "name": "scopedToParty",
-   "curie": "authn:scopedToParty",
-   "kind": "objectProperty",
-   "module": "authn",
-   "label": null,
-   "definition": "Authorized party a pairwise subject identifier is minted for; absent means the identifier is public across the issuer's parties.",
-   "editorialNote": null,
-   "altLabels": [],
-   "status": "draft",
-   "subClassOf": [],
-   "subPropertyOf": [],
-   "disjointWith": [],
-   "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
-   "incoming": [],
-   "usedBy": [
-    {
-     "from": "authn:SubjectIdentifier",
-     "property": "authn:scopedToParty",
-     "to": "core:AuthorizedParty",
-     "cardinality": "0..1",
-     "severity": "Violation"
-    }
-   ],
-   "vocabulary": [],
-   "decisions": [
-    "D30"
-   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#servesChannel",
@@ -3236,32 +3010,9 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "Every token must have an expiry."
-    },
-    {
-     "kind": "property",
-     "path": "session:issuedTo",
-     "pathIri": "https://w3id.org/examplebank/platform/session#issuedTo",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "Every token must be issued to exactly one authorized party (the azp claim) \u2014 without it, channel evidence and azp-mismatch audits are unanswerable."
     }
    ],
-   "outgoing": [
-    {
-     "from": "session:Token",
-     "property": "session:issuedTo",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    }
-   ],
+   "outgoing": [],
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
@@ -3477,40 +3228,6 @@
    "decisions": []
   },
   {
-   "iri": "https://w3id.org/examplebank/platform/session#issuedTo",
-   "name": "issuedTo",
-   "curie": "session:issuedTo",
-   "kind": "objectProperty",
-   "module": "session",
-   "label": null,
-   "definition": "Authorized party the token was issued to \u2014 the azp claim: who may PRESENT the token. Mandatory, exactly one (SHACL); the hop that makes channel evidence and azp-mismatch audits answerable.",
-   "editorialNote": null,
-   "altLabels": [],
-   "status": "draft",
-   "subClassOf": [],
-   "subPropertyOf": [],
-   "disjointWith": [],
-   "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
-   "incoming": [],
-   "usedBy": [
-    {
-     "from": "session:Token",
-     "property": "session:issuedTo",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..1",
-     "severity": "Violation"
-    }
-   ],
-   "vocabulary": [],
-   "decisions": [
-    "D24",
-    "D29"
-   ]
-  },
-  {
    "iri": "https://w3id.org/examplebank/platform/session#issuedToken",
    "name": "issuedToken",
    "curie": "session:issuedToken",
@@ -3606,7 +3323,7 @@
    "kind": "objectProperty",
    "module": "session",
    "label": null,
-   "definition": "Resource (audience) for which a token is intended \u2014 the aud claim: who may ACCEPT the token. The opposite end of the token's journey from issuedTo.",
+   "definition": "Resource (audience) for which a token is intended \u2014 the aud claim: who may accept the token. The platform maintains one OAuth client registration per audience, so the token's client_id is a protocol identifier derivable from this and carries no platform semantics.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -5237,7 +4954,7 @@
    "kind": "objectProperty",
    "module": "authz",
    "label": null,
-   "definition": "Upstream governance object a grant was projected from: a subscription, an application enablement, an authorized-party registration (channel grants), or \u2014 once modelled \u2014 the tenant onboarding record (platform/tenant grants). Mandatory: a grant with no derivation is a hand-authored grant, which violates.",
+   "definition": "Upstream governance object a grant was projected from: a subscription, an application enablement, a route binding, or \u2014 once modelled \u2014 the tenant onboarding record, which is where platform, tenant and channel grants properly originate. Mandatory: a grant with no derivation is a hand-authored grant, which violates.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -6458,7 +6175,7 @@
    "kind": "class",
    "module": "control-plane",
    "label": null,
-   "definition": "A tenant-owned presentation grouping of applications, fronted by one or more authorized parties \u2014 one per delivery channel it is presented on (the web front and the iOS front of one portal are two authorized parties, each with its own credentials and revocation). Presentation only: admission stays per-application and the enforcement vocabulary never sees portals.",
+   "definition": "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals. Whether a portal is per delivery channel is deliberately left open \u2014 the channel of a request comes from the session's device class, not from anything the portal declares.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -6470,21 +6187,6 @@
     "PortalShape"
    ],
    "constraints": [
-    {
-     "kind": "property",
-     "path": "cp:frontedBy",
-     "pathIri": "https://w3id.org/examplebank/platform/control-plane#frontedBy",
-     "minCount": 1,
-     "maxCount": null,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "A portal must be fronted by at least one authorized party \u2014 one per delivery channel it is presented on."
-    },
     {
      "kind": "property",
      "path": "core:ownedBy",
@@ -6503,12 +6205,6 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Portal is fronted by a party owned by a different tenant \u2014 fronts and portal share one owner.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#frontedBy> ?f .\n                ?f <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .\n                FILTER (?t != ?t2)\n            }"
-    },
-    {
-     "kind": "sparql",
-     "severity": "Violation",
      "message": "Portal groups an application owned by another tenant \u2014 a portal may present its owner's applications and platform-owned applications only.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .\n                ?a <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .\n                FILTER (?t != ?t2)\n                FILTER NOT EXISTS {\n                    ?t2 a <https://w3id.org/examplebank/platform/core#PlatformTenant> .\n                }\n            }"
     },
@@ -6520,13 +6216,6 @@
     }
    ],
    "outgoing": [
-    {
-     "from": "cp:Portal",
-     "property": "cp:frontedBy",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..*",
-     "severity": "Violation"
-    },
     {
      "from": "cp:Portal",
      "property": "core:ownedBy",
@@ -7555,41 +7244,6 @@
    "decisions": [
     "D13",
     "D19"
-   ]
-  },
-  {
-   "iri": "https://w3id.org/examplebank/platform/control-plane#frontedBy",
-   "name": "frontedBy",
-   "curie": "cp:frontedBy",
-   "kind": "objectProperty",
-   "module": "control-plane",
-   "label": null,
-   "definition": "Authorized party that fronts a portal on one delivery channel. A portal's channels are derived from its fronts' bindings \u2014 stated once, never duplicated on the portal.",
-   "editorialNote": null,
-   "altLabels": [],
-   "status": "draft",
-   "subClassOf": [],
-   "subPropertyOf": [],
-   "disjointWith": [],
-   "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
-   "incoming": [],
-   "usedBy": [
-    {
-     "from": "cp:Portal",
-     "property": "cp:frontedBy",
-     "to": "core:AuthorizedParty",
-     "cardinality": "1..*",
-     "severity": "Violation"
-    }
-   ],
-   "vocabulary": [],
-   "decisions": [
-    "D20",
-    "D29",
-    "D34"
    ]
   },
   {
@@ -8939,14 +8593,14 @@
      "pathIri": "https://w3id.org/examplebank/platform/authn#credentialOf",
      "minCount": 1,
      "maxCount": null,
-     "class": null,
-     "classIri": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
      "datatype": null,
      "in": [],
      "minInclusive": null,
      "maxInclusive": null,
      "severity": "Violation",
-     "message": "A credential must be bound to a principal or an authorized party."
+     "message": "A credential must be bound to a principal."
     },
     {
      "kind": "property",
@@ -9074,8 +8728,8 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Same issuer, subject value, and party scope denote more than one principal \u2014 subject-identifier collision.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                      <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                      <https://w3id.org/examplebank/platform/authn#identifies> ?p .\n                ?other <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                       <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                       <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .\n                FILTER (?other != $this)\n                FILTER (?p != ?p2)\n                OPTIONAL { $this <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s1 . }\n                OPTIONAL { ?other <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s2 . }\n                FILTER (COALESCE(?s1, <urn:examplebank:unscoped>) = COALESCE(?s2, <urn:examplebank:unscoped>))\n            }"
+     "message": "Same issuer and subject value denote more than one principal \u2014 subject-identifier collision.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                      <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                      <https://w3id.org/examplebank/platform/authn#identifies> ?p .\n                ?other <https://w3id.org/examplebank/platform/authn#atIssuer> ?iss ;\n                       <https://w3id.org/examplebank/platform/authn#subjectValue> ?v ;\n                       <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .\n                FILTER (?other != $this)\n                FILTER (?p != ?p2)\n            }"
     }
    ],
    "violations": 1,
@@ -9147,24 +8801,9 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A subject identifier must name its RFC 9493 format."
-    },
-    {
-     "kind": "property",
-     "path": "authn:scopedToParty",
-     "pathIri": "https://w3id.org/examplebank/platform/authn#scopedToParty",
-     "minCount": null,
-     "maxCount": 1,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "A pairwise subject identifier is scoped to at most one authorized party."
     }
    ],
-   "violations": 5,
+   "violations": 4,
    "warnings": 0
   },
   {
@@ -9931,21 +9570,6 @@
    "constraints": [
     {
      "kind": "property",
-     "path": "cp:frontedBy",
-     "pathIri": "https://w3id.org/examplebank/platform/control-plane#frontedBy",
-     "minCount": 1,
-     "maxCount": null,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "A portal must be fronted by at least one authorized party \u2014 one per delivery channel it is presented on."
-    },
-    {
-     "kind": "property",
      "path": "core:ownedBy",
      "pathIri": "https://w3id.org/examplebank/platform/core#ownedBy",
      "minCount": 1,
@@ -9962,12 +9586,6 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Portal is fronted by a party owned by a different tenant \u2014 fronts and portal share one owner.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#frontedBy> ?f .\n                ?f <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .\n                FILTER (?t != ?t2)\n            }"
-    },
-    {
-     "kind": "sparql",
-     "severity": "Violation",
      "message": "Portal groups an application owned by another tenant \u2014 a portal may present its owner's applications and platform-owned applications only.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .\n                ?a <https://w3id.org/examplebank/platform/core#ownedBy> ?t2 .\n                FILTER (?t != ?t2)\n                FILTER NOT EXISTS {\n                    ?t2 a <https://w3id.org/examplebank/platform/core#PlatformTenant> .\n                }\n            }"
     },
@@ -9978,7 +9596,7 @@
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/core#ownedBy> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .\n                ?p2 a <https://w3id.org/examplebank/platform/control-plane#Portal> ;\n                    <https://w3id.org/examplebank/platform/core#ownedBy> ?t .\n                FILTER (?p2 != $this)\n                FILTER NOT EXISTS {\n                    ?p2 <https://w3id.org/examplebank/platform/control-plane#groupsApplication> ?a .\n                }\n            }"
     }
    ],
-   "violations": 4,
+   "violations": 2,
    "warnings": 1
   },
   {
@@ -10296,62 +9914,6 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
-  },
-  {
-   "iri": "https://w3id.org/examplebank/platform/shapes/core#AuthorizedPartyShape",
-   "name": "AuthorizedPartyShape",
-   "targetClass": "core:AuthorizedParty",
-   "targetClassIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-   "module": "core",
-   "constraints": [
-    {
-     "kind": "property",
-     "path": "core:ownedBy",
-     "pathIri": "https://w3id.org/examplebank/platform/core#ownedBy",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:Tenant",
-     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party must be registered by exactly one tenant."
-    },
-    {
-     "kind": "property",
-     "path": "core:boundToChannel",
-     "pathIri": "https://w3id.org/examplebank/platform/core#boundToChannel",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:DeliveryChannel",
-     "classIri": "https://w3id.org/examplebank/platform/core#DeliveryChannel",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party must be bound to exactly one delivery channel \u2014 the binding ingress derives channel evidence from."
-    },
-    {
-     "kind": "property",
-     "path": "core:hasActingIdentity",
-     "pathIri": "https://w3id.org/examplebank/platform/core#hasActingIdentity",
-     "minCount": null,
-     "maxCount": 1,
-     "class": "core:WorkloadPrincipal",
-     "classIri": "https://w3id.org/examplebank/platform/core#WorkloadPrincipal",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "An authorized party acts as at most one workload principal (headless parties exactly one by convention; portal fronts none)."
-    }
-   ],
-   "violations": 3,
    "warnings": 0
   },
   {
@@ -10956,24 +10518,9 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "Every token must have an expiry."
-    },
-    {
-     "kind": "property",
-     "path": "session:issuedTo",
-     "pathIri": "https://w3id.org/examplebank/platform/session#issuedTo",
-     "minCount": 1,
-     "maxCount": 1,
-     "class": "core:AuthorizedParty",
-     "classIri": "https://w3id.org/examplebank/platform/core#AuthorizedParty",
-     "datatype": null,
-     "in": [],
-     "minInclusive": null,
-     "maxInclusive": null,
-     "severity": "Violation",
-     "message": "Every token must be issued to exactly one authorized party (the azp claim) \u2014 without it, channel evidence and azp-mismatch audits are unanswerable."
     }
    ],
-   "violations": 2,
+   "violations": 1,
    "warnings": 0
   }
  ],
@@ -11015,6 +10562,13 @@
   },
   {
    "from": "authn:Credential",
+   "property": "authn:credentialOf",
+   "to": "core:Principal",
+   "cardinality": "1..*",
+   "severity": "Violation"
+  },
+  {
+   "from": "authn:Credential",
    "property": "authn:issuedBy",
    "to": "authn:IdentityProvider",
    "cardinality": "1..*",
@@ -11039,13 +10593,6 @@
    "property": "authn:identifies",
    "to": "core:Principal",
    "cardinality": "1..1",
-   "severity": "Violation"
-  },
-  {
-   "from": "authn:SubjectIdentifier",
-   "property": "authn:scopedToParty",
-   "to": "core:AuthorizedParty",
-   "cardinality": "0..1",
    "severity": "Violation"
   },
   {
@@ -11119,27 +10666,6 @@
    "severity": "Violation"
   },
   {
-   "from": "core:AuthorizedParty",
-   "property": "core:boundToChannel",
-   "to": "core:DeliveryChannel",
-   "cardinality": "1..1",
-   "severity": "Violation"
-  },
-  {
-   "from": "core:AuthorizedParty",
-   "property": "core:hasActingIdentity",
-   "to": "core:WorkloadPrincipal",
-   "cardinality": "0..1",
-   "severity": "Violation"
-  },
-  {
-   "from": "core:AuthorizedParty",
-   "property": "core:ownedBy",
-   "to": "core:Tenant",
-   "cardinality": "1..1",
-   "severity": "Violation"
-  },
-  {
    "from": "core:PlatformEvent",
    "property": "core:performedBy",
    "to": "core:Principal",
@@ -11200,13 +10726,6 @@
    "property": "core:ownedBy",
    "to": "core:Tenant",
    "cardinality": "1..1",
-   "severity": "Violation"
-  },
-  {
-   "from": "cp:Portal",
-   "property": "cp:frontedBy",
-   "to": "core:AuthorizedParty",
-   "cardinality": "1..*",
    "severity": "Violation"
   },
   {
@@ -11339,13 +10858,6 @@
    "from": "session:SessionHandle",
    "property": "session:resolvesToSession",
    "to": "session:Session",
-   "cardinality": "1..1",
-   "severity": "Violation"
-  },
-  {
-   "from": "session:Token",
-   "property": "session:issuedTo",
-   "to": "core:AuthorizedParty",
    "cardinality": "1..1",
    "severity": "Violation"
   }
@@ -11705,16 +11217,14 @@
    "title": "Portals are presentation only",
    "area": "Applications & portals",
    "invariant": true,
-   "reasoning": "Tenant-owned groupings of applications, fronted by one authorized party per channel (so the web and mobile fronts are separately credentialed and revocable). Admission stays per-application and the enforcement vocabulary never learns the word 'portal'; disabling a portal is a governance macro over enablement declarations, not an enforcement concept. Coherence is enforced: fronts and grouped applications must belong to the portal's owner. Divergence between a tenant's portals on different channels is a stewardship warning, not a violation \u2014 mobile offering fewer applications than web is normal.",
+   "reasoning": "Tenant-owned groupings of applications. Admission stays per-application and the enforcement vocabulary never learns the word 'portal'; disabling a portal is a governance macro over enablement declarations, not an enforcement concept. Coherence is enforced: grouped applications must belong to the portal's owner. Whether a portal is per delivery channel is left open \u2014 the channel of a request comes from the session's device class, not from anything a portal declares.",
    "terms": [
     "Portal",
-    "frontedBy",
     "groupsApplication"
    ],
    "rejected": [],
    "termCuries": [
     "cp:Portal",
-    "cp:frontedBy",
     "cp:groupsApplication"
    ]
   },
@@ -11764,31 +11274,28 @@
    "id": "D23",
    "title": "Channel is the capability delivery channel",
    "area": "Entitlements & channels",
-   "reasoning": "web, mobile, api, agent \u2014 the avenue through which platform capabilities are consumed, resolved by ingress from the presenting registration rather than any self-asserted claim. M2M was dropped: east-west service traffic largely does not cross unified ingress, and workload identity already governs it. Agent-channel delegation semantics are deliberately deferred to backlog questions, since delegation modelled casually is worse than absent.",
+   "reasoning": "web, mobile, api, agent \u2014 the avenue through which platform capabilities are consumed, resolved from the session's device class rather than any self-asserted claim. M2M was dropped: east-west service traffic largely does not cross unified ingress, and workload identity already governs it. Agent-channel delegation semantics are deliberately deferred to backlog questions, since delegation modelled casually is worse than absent.",
    "terms": [
     "DeliveryChannel",
-    "boundToChannel",
     "viaChannel"
    ],
    "invariant": false,
    "rejected": [],
    "termCuries": [
     "authz:viaChannel",
-    "core:DeliveryChannel",
-    "core:boundToChannel"
+    "core:DeliveryChannel"
    ]
   },
   {
    "id": "D24",
    "title": "The ingress token contract",
    "area": "Entitlements & channels",
-   "reasoning": "Ingress assembles context from three sources, and the token is only one of them. The request host and path resolve the tenant; the ingress deployment that received the request resolves environment and region; the session cookie's opaque handle resolves the session. The token contributes identity and assurance: sub through a subject identifier to a principal, azp to the registration and thereby the channel, acr/amr/auth_time to the journey execution. None of these is an entitlement \u2014 a token asserting 'I am allowed in prod' would invert the evidence/authority split. Ingress deliberately ignores scope and permissions claims: those are Level-3, application-owned. Two of the three sources are currently unmodelled: domain and path are bound to a tenant in ingress route configuration, but the ingress module has no host or path matching and no tenant binding; and the cookie-to-session resolution has no representation at all. Both are recorded gaps rather than settled design.",
+   "reasoning": "Ingress assembles context from three sources, and the token is only one of them. The request host and path resolve the tenant; the ingress deployment that received the request resolves environment and region; the session cookie's opaque handle resolves the session. The token contributes identity and assurance: sub through a subject identifier to a principal, acr/amr/auth_time to the journey execution. None of these is an entitlement \u2014 a token asserting 'I am allowed in prod' would invert the evidence/authority split. Ingress deliberately ignores scope and permissions claims: those are Level-3, application-owned. Two of the three sources are currently unmodelled: domain and path are bound to a tenant in ingress route configuration, but the ingress module has no host or path matching and no tenant binding; and the cookie-to-session resolution has no representation at all. Both are recorded gaps rather than settled design.",
    "terms": [
     "Token",
     "AccessToken",
     "IDToken",
-    "tokenAudience",
-    "issuedTo"
+    "tokenAudience"
    ],
    "rejected": [
     "Minting entitlements into the token: claims freeze at issuance, so an entitlement stays true until expiry \u2014 exactly the window in which offboarding or compromise must take effect.",
@@ -11799,7 +11306,6 @@
     "session:AccessToken",
     "session:IDToken",
     "session:Token",
-    "session:issuedTo",
     "session:tokenAudience"
    ]
   },
@@ -11879,41 +11385,30 @@
   },
   {
    "id": "D29",
-   "title": "AuthorizedParty \u2014 the azp binding",
+   "title": "AuthorizedParty \u2014 reinstated, then removed as unfounded",
    "area": "Standards alignment",
-   "invariant": true,
-   "reasoning": "OAuth/OIDC review exposed that dissolving the registration class had left the token-to-client binding (azp) with no single-ranged home: the referent was scattered across Portal (a Resource) and credentialed principals. Reinstated as a tenant-owned, single-channel, credential-holding registration; portals are re-composed as fronted by one or more parties, and every token is issuedTo exactly one. Distinct from tokenAudience (aud): issuedTo says who may PRESENT the token, audience says who may ACCEPT it \u2014 the two ends of a token's journey, neither derivable from the other.",
-   "terms": [
-    "AuthorizedParty",
-    "issuedTo",
-    "frontedBy"
-   ],
+   "invariant": false,
+   "reasoning": "Recorded as a reversal rather than deleted, because the reasoning failed in an instructive way. Standards review found that tokens carry a client identifier with no home in the model, and I inferred that it pointed at tenant-owned, channel-bound request-originating software \u2014 a portal's web front, a partner daemon. On that premise AuthorizedParty was introduced with an owning tenant, a channel binding, and an issuedTo edge from every token.\n\nThe premise was wrong. The OAuth client is the session manager, the platform maintains one client registration per audience, and client_id is only a protocol identifier: it carries no tenancy and no channel. Both defining properties of the class were therefore false, and what remained was derivable from the audience \u2014 putting it in the same category as JOSE header fields, which the model excludes as plumbing below the semantic layer.\n\nRemoved in full: the class, boundToChannel, session:issuedTo, cp:frontedBy, authn:scopedToParty and the shapes and tests that depended on them. The lesson worth keeping is that a gap identified from a standard rather than from the architecture is a hypothesis, and this one should have been checked before it was modelled.",
+   "terms": [],
    "rejected": [
-    "ChannelRegistration: parses first as 'registering a channel', and 'channel' is already a governed entitlement dimension and an overloaded engineering word.",
-    "CallerRegistration and SoftwareRegistration: viable runners-up, less standards-recognizable.",
-    "AppRegistration: collides with core:Application, which means the tenant's deployed application.",
-    "'Client': carries the firm's business meaning (the customer) and would be shortened back to it within days."
+    "Keeping a hollowed-out AuthorizedParty with the false properties stripped: what remained was an OAuth registration identifier derivable from the audience, adding nothing the model needs.",
+    "Retargeting it to the session manager's per-audience registration: that is real, but it is protocol bookkeeping with no competency question behind it."
    ],
-   "termCuries": [
-    "core:AuthorizedParty",
-    "cp:frontedBy",
-    "session:issuedTo"
-   ]
+   "termCuries": []
   },
   {
    "id": "D30",
    "title": "Subject identifiers as first-class naming facts",
    "area": "Standards alignment",
    "invariant": true,
-   "reasoning": "'At issuer Y, subject X denotes principal P' had no home: core:identifier is the firm-canonical name, not the per-issuer and possibly pairwise subject that OIDC and RFC 9493 require. Reified with value, issuer, principal, format and an optional pairwise scope to an authorized party, plus a validity window because issuers recycle subjects (email especially). Read in reverse at resolution time: a token or CAEP event carries the subject, this node yields the principal. One (issuer, value, scope) combination must never denote two principals \u2014 the account-takeover-by-collision check.",
+   "reasoning": "'At issuer Y, subject X denotes principal P' had no home: core:identifier is the firm-canonical name, not the per-issuer and possibly pairwise subject that OIDC and RFC 9493 require. Reified with value, issuer, principal, format and an optional pairwise scope to an authorized party, plus a validity window because issuers recycle subjects (email especially). Read in reverse at resolution time: a token or CAEP event carries the subject, this node yields the principal. One (issuer, value) combination must never denote two principals \u2014 the account-takeover-by-collision check.",
    "terms": [
     "SubjectIdentifier",
     "SubjectIdentifierFormat",
     "subjectValue",
     "atIssuer",
     "identifies",
-    "identifierFormat",
-    "scopedToParty"
+    "identifierFormat"
    ],
    "rejected": [
     "A multi-valued datatype property: stringly-typed, with no home for pairwise scoping, formats or validity, and uniqueness unenforceable without string surgery.",
@@ -11926,7 +11421,6 @@
     "authn:atIssuer",
     "authn:identifierFormat",
     "authn:identifies",
-    "authn:scopedToParty",
     "authn:subjectValue"
    ]
   },
@@ -11969,18 +11463,16 @@
   },
   {
    "id": "D33",
-   "title": "Headless parties act as principals",
+   "title": "Resources act through principals",
    "area": "Audit round",
-   "reasoning": "A partner daemon was two unlinked things: an authorized party (tokens issued to it) and a principal (decisions name it), so azp auditing could not reach the decision layer. hasActingIdentity was promoted from control-plane to core \u2014 its third use of the same pattern \u2014 and applied to authorized parties. Headless parties carry one workload identity; portal fronts carry none, because their requests act as the authenticated human's principal.",
+   "reasoning": "Resources cannot be principals, so anything that acts needs a principal to act as. hasActingIdentity was promoted from control-plane to core for this, and control plane components use it so their writes are attributable under the sole-writer invariant. It was also applied to authorized parties for headless consumers; that half went away with the class, but the pattern and the promotion stand.",
    "terms": [
     "hasActingIdentity",
-    "AuthorizedParty",
     "WorkloadPrincipal"
    ],
    "invariant": false,
    "rejected": [],
    "termCuries": [
-    "core:AuthorizedParty",
     "core:WorkloadPrincipal",
     "core:hasActingIdentity"
    ]
@@ -11993,13 +11485,11 @@
    "reasoning": "Nothing prevented a portal fronted by another tenant's registration or grouping another tenant's application \u2014 both contradict settled ownership decisions and would breach tenant isolation at the presentation layer. Two violations added, plus the agreed stewardship warning for same-tenant portals whose application sets diverge.",
    "terms": [
     "Portal",
-    "frontedBy",
     "groupsApplication"
    ],
    "rejected": [],
    "termCuries": [
     "cp:Portal",
-    "cp:frontedBy",
     "cp:groupsApplication"
    ]
   },
@@ -12304,7 +11794,7 @@
     },
     {
      "heading": "Level 1 \u2014 platform entitlements",
-     "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.\n\nNote how little of this comes from the token. Tenant is resolved from the request host and path; environment and region from which ingress deployment received the request. Only channel is token-derived, and even then indirectly \u2014 through the registration the token was issued to, not a claim naming the channel.",
+     "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.\n\nNote how little of this comes from the token. Tenant is resolved from the route's domain and path binding; environment and region from which ingress deployment received the request; channel from the session's device class. The token contributes identity and assurance \u2014 not one of the five dimensions is a claim.",
      "terms": [
       "authz:EntitlementDimension",
       "authz:EntitlementGrant",
@@ -12409,7 +11899,8 @@
       "authz:EntitlementGrant",
       "session:Token"
      ],
-     "svg": "<svg viewBox=\"0 0 920 500\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Ingress assembles request context from three evidence sources \u2014 the request URL, the JWT, and the session cookie \u2014 then checks the resolved context against entitlement grants distributed from the control plane. The token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <text x=\"150\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Three evidence sources</text>\n  <text x=\"470\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Resolved context</text>\n  <text x=\"782\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--accent-ink)\" font-weight=\"600\">Authority</text>\n\n  <!-- 1. request URL -->\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"64\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-ingress)\" font-weight=\"600\">1 \u00b7 request URL + landing point</text>\n  <text x=\"36\" y=\"84\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">domain / path \u2192 tenant</text>\n  <text x=\"36\" y=\"102\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">which ingress deployment</text>\n  <text x=\"36\" y=\"120\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">bound in ingress route config</text>\n\n  <!-- 2. JWT -->\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"162\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-session)\" font-weight=\"600\">2 \u00b7 JWT \u2014 identity + assurance</text>\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\">\n    <text x=\"36\" y=\"184\" opacity=\".8\">iss / aud / exp</text>\n    <text x=\"36\" y=\"204\" opacity=\".8\">sub</text>\n    <text x=\"36\" y=\"224\" opacity=\".8\">azp</text>\n    <text x=\"36\" y=\"244\" opacity=\".8\">acr / amr / auth_time</text>\n    <text x=\"36\" y=\"268\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"36\" y=\"283\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- 3. cookie -->\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"var(--m-authn)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"326\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authn)\" font-weight=\"600\">3 \u00b7 handle + DPoP proof</text>\n  <text x=\"36\" y=\"346\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">cookie handle \u00b7 signed proof</text>\n  <text x=\"36\" y=\"362\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">handle identifies, key authenticates</text>\n\n  <!-- arrows to resolved -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".6\">\n    <line x1=\"286\" y1=\"76\" x2=\"352\" y2=\"76\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"104\" x2=\"352\" y2=\"128\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"204\" x2=\"352\" y2=\"182\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"224\" x2=\"352\" y2=\"234\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"244\" x2=\"352\" y2=\"286\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"337\" x2=\"352\" y2=\"337\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"81\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-control-plane)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"133\" text-anchor=\"middle\" fill=\"var(--m-control-plane)\">environment \u00b7 region</text>\n\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"185\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"237\" text-anchor=\"middle\" fill=\"var(--m-core)\">AuthorizedParty \u2192 channel</text>\n\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"289\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"341\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n  </g>\n\n  <!-- grants -->\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"763\" y=\"122\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"763\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">never in the token, never in the URL</text>\n  <text x=\"763\" y=\"166\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"763\" y=\"184\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"763\" y=\"208\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting anything</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"582\" y1=\"160\" x2=\"618\" y2=\"160\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"600\" y=\"152\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n\n  <!-- decision -->\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"763\" y=\"275\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"763\" y=\"294\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"763\" y1=\"228\" x2=\"763\" y2=\"248\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- footer note -->\n  <rect x=\"18\" y=\"392\" width=\"886\" height=\"92\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"42\" y=\"417\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">Where each binding stands</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"42\" y=\"441\">domain / path \u2192 Tenant \u2014 a route binding, governed by an approved declaration; one address resolves to one tenant.</text>\n    <text x=\"42\" y=\"465\">handle \u2192 Session \u2014 sender-constrained per DPoP: the session and every token it issues bind to one proof-of-possession key.</text>\n  </g>\n</svg>"
+     "shapes": [],
+     "svg": "<svg viewBox=\"0 0 920 500\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Ingress assembles request context from three evidence sources \u2014 the request URL, the JWT, and the session cookie \u2014 then checks the resolved context against entitlement grants distributed from the control plane. The token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <text x=\"150\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Three evidence sources</text>\n  <text x=\"470\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Resolved context</text>\n  <text x=\"782\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--accent-ink)\" font-weight=\"600\">Authority</text>\n\n  <!-- 1. request URL -->\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"64\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-ingress)\" font-weight=\"600\">1 \u00b7 request URL + landing point</text>\n  <text x=\"36\" y=\"84\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">domain / path \u2192 tenant</text>\n  <text x=\"36\" y=\"102\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">which ingress deployment</text>\n  <text x=\"36\" y=\"120\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">bound in ingress route config</text>\n\n  <!-- 2. JWT -->\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"162\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-session)\" font-weight=\"600\">2 \u00b7 JWT \u2014 identity + assurance</text>\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\">\n    <text x=\"36\" y=\"184\" opacity=\".8\">iss / aud / exp</text>\n    <text x=\"36\" y=\"204\" opacity=\".8\">sub</text>\n    <text x=\"36\" y=\"224\" opacity=\".8\">client_id</text>\n    <text x=\"36\" y=\"244\" opacity=\".8\">acr / amr / auth_time</text>\n    <text x=\"36\" y=\"268\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"36\" y=\"283\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- 3. cookie -->\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"var(--m-authn)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"326\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authn)\" font-weight=\"600\">3 \u00b7 handle + DPoP proof</text>\n  <text x=\"36\" y=\"346\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">cookie handle \u00b7 signed proof</text>\n  <text x=\"36\" y=\"362\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">handle identifies, key authenticates</text>\n\n  <!-- arrows to resolved -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".6\">\n    <line x1=\"286\" y1=\"76\" x2=\"352\" y2=\"76\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"104\" x2=\"352\" y2=\"128\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"204\" x2=\"352\" y2=\"182\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"224\" x2=\"352\" y2=\"234\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"244\" x2=\"352\" y2=\"286\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"337\" x2=\"352\" y2=\"337\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"81\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-control-plane)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"133\" text-anchor=\"middle\" fill=\"var(--m-control-plane)\">environment \u00b7 region</text>\n\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"185\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"237\" text-anchor=\"middle\" fill=\"var(--m-core)\">OAuth registration (plumbing)</text>\n\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"289\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"341\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n  </g>\n\n  <!-- grants -->\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"763\" y=\"122\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"763\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">never in the token, never in the URL</text>\n  <text x=\"763\" y=\"166\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"763\" y=\"184\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"763\" y=\"208\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting anything</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"582\" y1=\"160\" x2=\"618\" y2=\"160\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"600\" y=\"152\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n\n  <!-- decision -->\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"763\" y=\"275\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"763\" y=\"294\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"763\" y1=\"228\" x2=\"763\" y2=\"248\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- footer note -->\n  <rect x=\"18\" y=\"392\" width=\"886\" height=\"92\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"42\" y=\"417\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">Where each binding stands</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"42\" y=\"441\">domain / path \u2192 Tenant \u2014 a route binding, governed by an approved declaration; one address resolves to one tenant.</text>\n    <text x=\"42\" y=\"465\">handle \u2192 Session \u2014 sender-constrained per DPoP: the session and every token it issues bind to one proof-of-possession key.</text>\n  </g>\n</svg>"
     },
     {
      "heading": "Three evidence sources, not one",
@@ -12470,11 +11961,11 @@
      },
      "terms": [
       "authn:SubjectIdentifier",
-      "core:AuthorizedParty",
       "session:Session",
       "authn:AuthenticationJourneyExecution",
       "core:Tenant"
-     ]
+     ],
+     "shapes": []
     },
     {
      "heading": "Channel comes from the device, not the token",
@@ -12508,12 +11999,13 @@
      ]
     },
     {
-     "heading": "aud is not azp",
-     "body": "The most-confused pair. A token travels from the party it was issued to, to the resource that accepts it. `azp` is the caller \u2014 the web front, the mobile app, the partner integration. `aud` is the destination \u2014 the ledger service, a capability endpoint.\n\nNeither is derivable from the other: many callers hold tokens for one audience, and one caller holds tokens for many. They also guard different attacks \u2014 an `aud` violation is replay against the wrong resource; an `azp` mismatch is token theft across callers. One spec subtlety worth knowing: in ID tokens `aud` is the client, which is precisely why OIDC introduced `azp` to disambiguate.",
+     "heading": "What the audience does, and what client_id does not",
+     "body": "The audience is the resource expected to accept the token \u2014 the ledger service, a capability endpoint. A token presented to a resource it was not minted for is rejected, which is what makes aud a real control.\n\nThe token's client_id is a different kind of thing: it identifies the session manager's OAuth registration at the global IdP, and since the platform maintains one registration per audience, it is derivable from aud. It carries no tenancy, no channel and no front-end identity, so the model treats it as protocol plumbing and does not represent it \u2014 the same call the model already makes for JOSE header fields.\n\nThis is worth stating plainly in the room, because the instinct to read platform meaning into the OAuth client identifier is strong, and acting on it would put tenancy or channel decisions on a value that cannot carry them.",
      "terms": [
       "session:tokenAudience",
-      "session:issuedTo"
-     ]
+      "core:Tenant"
+     ],
+     "shapes": []
     },
     {
      "heading": "Where the grants come from",
@@ -12543,13 +12035,13 @@
     }
    ],
    "openQuestions": [
+    "Pairwise subject identifiers are scoped per OAuth client. With one platform registration per audience, pairwise scoping would be per-audience rather than per-application \u2014 is that the intent, and does the model need to represent it at all?",
     "Route bindings are now governed declarations, which closes the approver gap \u2014 but only for the tenant binding. The rest of ingress configuration (listeners, TLS termination, upstream targets) is still distributed out of band. Where should that line sit: is tenant binding uniquely sensitive, or is all ingress config desired state?",
     "Sessions are now sender-constrained per DPoP, so a stolen handle alone is useless. What remains open is key lifecycle: rotation, and what should happen to a session whose confirmation key is revoked \u2014 the same shape as the credential-revocation gap, and probably the same answer.",
     "DPoP applies cleanly to web and mobile, where the presenter can hold a key. What sender-constrains an API or agent consumer \u2014 mutual TLS certificate binding (RFC 8705) instead, and does the model need to distinguish which mechanism constrains a given session, or is the confirmation key enough?",
     "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension \u2014 a revoked tenant is not a stale region.",
     "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
     "Do we need entitlement evaluation results in the token as a cache \u2014 a short-lived assertion of the Level-1 outcome \u2014 and if so, does that reintroduce the freeze problem we designed around?",
-    "For the agent channel, is azp the agent's own registration or the registration of the application it acts for? This decides whether channel evidence survives delegation.",
     "Token lineage is unmodelled: when a refresh token is revoked, we cannot currently enumerate the access tokens descended from it. Is that a gap worth closing before the first production tenant?"
    ],
    "stepCount": 7
@@ -12841,18 +12333,13 @@
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "For each admission decision, which authorized party supplied the channel evidence?",
+    "question": "For each admission decision, which session and device class supplied the channel evidence?",
     "expectedEmpty": false
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "Which authorized parties exist per tenant and per channel, and which tokens were issued to each?",
+    "question": "Which pairwise subject identifiers exist, and per which OAuth audience are they scoped? (pairwise scoping is not yet modelled \u2014 named gap)",
     "expectedEmpty": false
-   },
-   {
-    "section": "Ingress token contract and channels",
-    "question": "Which tokens were presented by a party other than the authorized party they were issued to? (azp mismatch \u2014 expected empty)",
-    "expectedEmpty": true
    },
    {
     "section": "Ingress token contract and channels",

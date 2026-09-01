@@ -231,12 +231,4 @@ ss:TokenShape a sh:NodeShape ;
         sh:datatype xsd:dateTime ;
         sh:severity sh:Violation ;
         sh:message "Every token must have an expiry." ;
-    ] ;
-    sh:property [
-        sh:path session:issuedTo ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:class core:AuthorizedParty ;
-        sh:severity sh:Violation ;
-        sh:message "Every token must be issued to exactly one authorized party (the azp claim) — without it, channel evidence and azp-mismatch audits are unanswerable." ;
     ] .

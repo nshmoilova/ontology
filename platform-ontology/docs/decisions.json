@@ -6,14 +6,21 @@
       "title": "One logical management control plane",
       "area": "Planes & scoped governance",
       "reasoning": "A single governance authority platform-wide; regional replicas are deployment topology, not model citizens. Blast radius is partitioned by scoped declarations, not by forking governance truth. Per-region planes would partition authority (drift-prone) where the actual need is partitioned blast radius. Choose per-region planes only if regulators force governance data itself to be region-confined.",
-      "terms": ["ManagementControlPlane", "declaredThrough"]
+      "terms": [
+        "ManagementControlPlane",
+        "declaredThrough"
+      ]
     },
     {
       "id": "D02",
       "title": "Control planes are logical components",
       "area": "Planes & scoped governance",
       "reasoning": "One CapabilityControlPlane individual per capability; regional deployments appear as multiple acting identities rather than multiple control-plane individuals. Deployment topology belongs in a CMDB; the audit questions are about the logical writer.",
-      "terms": ["CapabilityControlPlane", "governsCapability", "hasActingIdentity"]
+      "terms": [
+        "CapabilityControlPlane",
+        "governsCapability",
+        "hasActingIdentity"
+      ]
     },
     {
       "id": "D03",
@@ -21,8 +28,17 @@
       "area": "Planes & scoped governance",
       "invariant": true,
       "reasoning": "A single-parent tree carries authority, locality containment and approval-rigor inheritance; environment/region facets on nodes carry cross-cutting dimensions. Single-parent by design: DAG inheritance is ambiguous the moment two parents disagree, and conflict-resolution rules for governance metadata are exactly the complexity auditors should not have to re-derive. Scope is mandatory because 'global' should be an explicit root-scope choice someone made, never a default you get by forgetting a triple.",
-      "terms": ["AdministrativeScope", "subScopeOf", "declarationScope", "inEnvironment", "inRegion"],
-      "rejected": ["Two orthogonal axis-properties (environment + region): clean for env×region, silent on tenants, and every future axis needs invariant surgery.", "Flat named scopes: no inheritance or containment reasoning; all meaning trapped in naming conventions."]
+      "terms": [
+        "AdministrativeScope",
+        "subScopeOf",
+        "declarationScope",
+        "inEnvironment",
+        "inRegion"
+      ],
+      "rejected": [
+        "Two orthogonal axis-properties (environment + region): clean for env×region, silent on tenants, and every future axis needs invariant surgery.",
+        "Flat named scopes: no inheritance or containment reasoning; all meaning trapped in naming conventions."
+      ]
     },
     {
       "id": "D04",
@@ -30,7 +46,10 @@
       "area": "Planes & scoped governance",
       "invariant": true,
       "reasoning": "A mutation's data plane must fall inside its declaration's scope, checked by containment through the scope tree. This is what makes scoped governance real rather than advisory, and it is the mechanism that delivers blast-radius containment without forking governance authority.",
-      "terms": ["DataPlaneMutation", "declarationScope"]
+      "terms": [
+        "DataPlaneMutation",
+        "declarationScope"
+      ]
     },
     {
       "id": "D05",
@@ -38,7 +57,11 @@
       "area": "Planes & scoped governance",
       "invariant": true,
       "reasoning": "New intent means a new individual; a supersedes chain versions them. Realizing an unapproved declaration is a violation; realizing a superseded one is only a warning, because a reconciler catching up to yesterday's intent is operational reality, not a breach. Immutability is what makes the audit chain meaningful: if declarations could be silently rewritten, the provenance chain would prove nothing.",
-      "terms": ["DesiredStateDeclaration", "supersedes", "hasApproval"]
+      "terms": [
+        "DesiredStateDeclaration",
+        "supersedes",
+        "hasApproval"
+      ]
     },
     {
       "id": "D06",
@@ -46,7 +69,9 @@
       "area": "Planes & scoped governance",
       "invariant": true,
       "reasoning": "Scopes carry the approval requirement, inherited to the nearest ancestor that says anything: prod strict, dev light, one constraint, zero shape exceptions. Data-driven rigor keeps the invariant count constant and makes 'which scopes waive human approval' a governed, queryable fact — an auditor question you want answerable.",
-      "terms": ["requiresHumanApproval"]
+      "terms": [
+        "requiresHumanApproval"
+      ]
     },
     {
       "id": "D07",
@@ -54,37 +79,63 @@
       "area": "Planes & scoped governance",
       "invariant": true,
       "reasoning": "Mutations execute under the acting identity of the data plane's designated writer; the management plane never actuates a data plane (tier skipping); no capability control plane administers the scope holding its own declarations (self-governance loop). Governance is separated from actuation, and each half is machine-checked rather than assumed.",
-      "terms": ["actuates", "DataPlane", "mutatedDataPlane", "realizesIntent", "executedBy"]
+      "terms": [
+        "actuates",
+        "DataPlane",
+        "mutatedDataPlane",
+        "realizesIntent",
+        "executedBy"
+      ]
     },
     {
       "id": "D08",
       "title": "Data-driven isolation models",
       "area": "Planes & scoped governance",
       "reasoning": "Each capability declares its isolation model ('shared' or 'cell-per-tenant') and one constraint enforces whatever the capability claims, rather than a hand-written shape per capability. The invariant count stays constant as capabilities multiply, and the isolation model becomes a governed, queryable fact.",
-      "terms": ["isolationModel", "servesTenant"]
+      "terms": [
+        "isolationModel",
+        "servesTenant"
+      ]
     },
     {
       "id": "D09",
       "title": "Tenant, Capability and Application promoted to core",
       "area": "Tenancy & subscriptions",
       "reasoning": "These are platform-wide primitives every module must see: ingress-layer work needs tenancy and applications, but ingress imports only core. Moved while all terms were draft and unconsumed — a free structural correction that would have been a MAJOR-version migration later.",
-      "terms": ["Tenant", "Capability", "Application"]
+      "terms": [
+        "Tenant",
+        "Capability",
+        "Application"
+      ]
     },
     {
       "id": "D10",
       "title": "The platform is a distinguished tenant",
       "area": "Tenancy & subscriptions",
       "reasoning": "PlatformTenant is a singleton subclass of Tenant, so ownership stays single-ranged with no or-branches anywhere, and the platform holds capability subscriptions like any tenant — keeping every coverage rule uniform. Modelled as a subclass rather than a boolean flag so tenant-level queries can include or exclude it by type, containing the risk that platform-owned assets silently sweep into tenant reporting.",
-      "terms": ["PlatformTenant", "ownedBy"],
-      "rejected": ["A separate Platform class outside the Tenant hierarchy: ontologically honest (the platform does not onboard or offboard) but forces an or-ranged ownedBy and or-branches into every ownership shape and query."]
+      "terms": [
+        "PlatformTenant",
+        "ownedBy"
+      ],
+      "rejected": [
+        "A separate Platform class outside the Tenant hierarchy: ontologically honest (the platform does not onboard or offboard) but forces an or-ranged ownedBy and or-branches into every ownership shape and query."
+      ]
     },
     {
       "id": "D11",
       "title": "Subscriptions: first-class, capability-only, scope-free",
       "area": "Tenancy & subscriptions",
       "reasoning": "A subscription is a first-class object with an access-relevant lifecycle (no billing states) and a validity window, because 'when did this tenant gain this, who approved it, is it still active' is exactly what auditors ask and a bare triple cannot answer. Subscriptions target capabilities only — applications are owned, not subscribed. They are scope-free: where a capability is usable is computed as subscription ∩ entitlement grants ∩ offerings, so each authority states one thing and none can contradict another.",
-      "terms": ["Subscription", "SubscriptionState", "subscriber", "subscribedCapability", "hasSubscriptionState"],
-      "rejected": ["Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule — a design smell."]
+      "terms": [
+        "Subscription",
+        "SubscriptionState",
+        "subscriber",
+        "subscribedCapability",
+        "hasSubscriptionState"
+      ],
+      "rejected": [
+        "Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule — a design smell."
+      ]
     },
     {
       "id": "D12",
@@ -92,7 +143,11 @@
       "area": "Tenancy & subscriptions",
       "invariant": true,
       "reasoning": "A tenant gaining a capability changes what it can reach — the meta-authorization boundary the control-plane module exists to guard. Uniform rule, platform tenant included: slightly ceremonial for the platform subscribing to itself, but one rule everywhere and system capabilities get the same audit trail.",
-      "terms": ["Subscription", "hasApproval", "ChangeApproval"]
+      "terms": [
+        "Subscription",
+        "hasApproval",
+        "ChangeApproval"
+      ]
     },
     {
       "id": "D13",
@@ -100,7 +155,10 @@
       "area": "Tenancy & subscriptions",
       "invariant": true,
       "reasoning": "Tenant-provisioning declarations carry justifiedBy, completing a provenance chain rare in platform models: subscription → declaration → mutation → data plane, every hop human-approvable and machine-checkable. Teardown declarations reference the terminated subscription, so the invariant is about the subscription existing rather than being currently active — otherwise deprovisioning would violate it.",
-      "terms": ["justifiedBy", "forApplication"]
+      "terms": [
+        "justifiedBy",
+        "forApplication"
+      ]
     },
     {
       "id": "D14",
@@ -108,14 +166,19 @@
       "area": "Tenancy & subscriptions",
       "invariant": true,
       "reasoning": "Dependencies are hard-only until a real soft case appears (YAGNI applies to edge types too); the closure is auto-included and materialized at subscription time so 'what does this tenant hold' stays a flat read; and the dependency graph must be a DAG, which SHACL checks in one line with a property path.",
-      "terms": ["dependsOn"]
+      "terms": [
+        "dependsOn"
+      ]
     },
     {
       "id": "D15",
       "title": "Bundles expand at subscription time",
       "area": "Tenancy & subscriptions",
       "reasoning": "A bundle is a named set — sales-time convenience. Subscribing expands it to per-capability subscriptions, so enforcement, reachability and every competency question only ever see capabilities. Treating bundles as products with their own identity would force bundle-awareness into every enforcement path and query forever.",
-      "terms": ["CapabilityBundle", "bundlesCapability"]
+      "terms": [
+        "CapabilityBundle",
+        "bundlesCapability"
+      ]
     },
     {
       "id": "D16",
@@ -123,21 +186,38 @@
       "area": "Tenancy & subscriptions",
       "invariant": true,
       "reasoning": "A capability exists where an offering says it does — parity across regions and environments cannot be assumed. Offerings are governed intent (so 'we launch in APAC next quarter' is representable before hardware exists) and data planes must conform: deployed-where-not-offered is a violation, because infrastructure existing outside governance is exactly what a bank wants caught; offered-but-undeployed is launch tracking. A supply-side closure forbids offering a capability where its hard dependencies are not covered.",
-      "terms": ["CapabilityOffering", "offersCapability", "offeredInScope"]
+      "terms": [
+        "CapabilityOffering",
+        "offersCapability",
+        "offeredInScope"
+      ]
     },
     {
       "id": "D17",
       "title": "Applications are owned, distinct from capabilities",
       "area": "Applications & portals",
       "reasoning": "Exactly one owning tenant (possibly the platform tenant); transfer is declaration supersession, never co-ownership. Applications and capabilities stay distinct classes because one is owned and consumes while the other is subscribed and provides — and because collapsing them would invite exactly the vocabulary leak the ingress boundary principle forbids.",
-      "terms": ["Application", "ownedBy"]
+      "terms": [
+        "Application",
+        "ownedBy"
+      ]
     },
     {
       "id": "D18",
       "title": "Requirements: observed, then human-confirmed",
       "area": "Applications & portals",
       "reasoning": "'Agents observe, humans confirm.' Windowed aggregate observations (never per-request) propose capability requirements; a human approval confirms them; only confirmed requirements gate enablement, and drift is watched in both directions. Pure declared manifests rot and lie; pure observation would mean an access model that learns its rules by watching violations happen, inverting intent-precedes-actuation. The hybrid makes observation the auditor rather than the gatekeeper.",
-      "terms": ["CapabilityRequirement", "CapabilityUseObservation", "ofApplication", "requiredCapability", "observedApplication", "observedCapability", "windowStart", "windowEnd", "requestCount"]
+      "terms": [
+        "CapabilityRequirement",
+        "CapabilityUseObservation",
+        "ofApplication",
+        "requiredCapability",
+        "observedApplication",
+        "observedCapability",
+        "windowStart",
+        "windowEnd",
+        "requestCount"
+      ]
     },
     {
       "id": "D19",
@@ -145,23 +225,35 @@
       "area": "Applications & portals",
       "invariant": true,
       "reasoning": "Enablement is a declaration, so scope, approval rigor and supersession apply for free rather than needing a second mechanism. It is gated on the owner's active subscriptions covering the application's confirmed requirements AND on offerings covering the enablement scope — both halves, since no parity is assumed. This is the keystone invariant joining ownership, curation, subscription and closure.",
-      "terms": ["ApplicationEnablement", "forApplication"]
+      "terms": [
+        "ApplicationEnablement",
+        "forApplication"
+      ]
     },
     {
       "id": "D20",
       "title": "Portals are presentation only",
       "area": "Applications & portals",
       "invariant": true,
-      "reasoning": "Tenant-owned groupings of applications, fronted by one authorized party per channel (so the web and mobile fronts are separately credentialed and revocable). Admission stays per-application and the enforcement vocabulary never learns the word 'portal'; disabling a portal is a governance macro over enablement declarations, not an enforcement concept. Coherence is enforced: fronts and grouped applications must belong to the portal's owner. Divergence between a tenant's portals on different channels is a stewardship warning, not a violation — mobile offering fewer applications than web is normal.",
-      "terms": ["Portal", "frontedBy", "groupsApplication"]
+      "reasoning": "Tenant-owned groupings of applications. Admission stays per-application and the enforcement vocabulary never learns the word 'portal'; disabling a portal is a governance macro over enablement declarations, not an enforcement concept. Coherence is enforced: grouped applications must belong to the portal's owner. Whether a portal is per delivery channel is left open — the channel of a request comes from the session's device class, not from anything a portal declares.",
+      "terms": [
+        "Portal",
+        "groupsApplication"
+      ]
     },
     {
       "id": "D21",
       "title": "Five entitlement dimensions in a closed scheme",
       "area": "Entitlements & channels",
       "reasoning": "platform / tenant / environment / region / channel, as a closed SKOS scheme owned by authz. The closure is the point: it makes 'deliberately small, stable, platform-owned' machine-checkable rather than aspirational, so no application team can introduce its own entitlement model into unified ingress. It lives in authz because that module already requires security-architecture review — precisely the gate you want on a vocabulary whose value is that it changes rarely and deliberately.",
-      "terms": ["EntitlementDimension"],
-      "rejected": ["A subclass per dimension: no benefit over ranked individuals, and every new dimension becomes a class-hierarchy change.", "Reusing AttributeAssertion: conflates an observation (the HR system reports a fact) with a conferral (someone granted access), and loses the closed-vocabulary check since attribute names are open strings by design.", "client.access as a sixth dimension: the registration is the evidence for the channel dimension, not a dimension itself."]
+      "terms": [
+        "EntitlementDimension"
+      ],
+      "rejected": [
+        "A subclass per dimension: no benefit over ranked individuals, and every new dimension becomes a class-hierarchy change.",
+        "Reusing AttributeAssertion: conflates an observation (the HR system reports a fact) with a conferral (someone granted access), and loses the closed-vocabulary check since attribute names are open strings by design.",
+        "client.access as a sixth dimension: the registration is the evidence for the channel dimension, not a dimension itself."
+      ]
     },
     {
       "id": "D22",
@@ -169,36 +261,63 @@
       "area": "Entitlements & channels",
       "invariant": true,
       "reasoning": "An entitlement grant is the materialized projection of upstream governance — a subscription, a registration, an enablement — with derivation mandatory and a distribution timestamp anchoring staleness queries. The token is evidence; the grant is authority. This is what makes revocation take effect without re-minting tokens, and it is the continuous-access-evaluation philosophy CAEP exists to serve.",
-      "terms": ["EntitlementGrant", "grantedTo", "onDimension", "derivedFrom", "distributedAt", "entitlementValue"]
+      "terms": [
+        "EntitlementGrant",
+        "grantedTo",
+        "onDimension",
+        "derivedFrom",
+        "distributedAt",
+        "entitlementValue"
+      ]
     },
     {
       "id": "D23",
       "title": "Channel is the capability delivery channel",
       "area": "Entitlements & channels",
-      "reasoning": "web, mobile, api, agent — the avenue through which platform capabilities are consumed, resolved by ingress from the presenting registration rather than any self-asserted claim. M2M was dropped: east-west service traffic largely does not cross unified ingress, and workload identity already governs it. Agent-channel delegation semantics are deliberately deferred to backlog questions, since delegation modelled casually is worse than absent.",
-      "terms": ["DeliveryChannel", "boundToChannel", "viaChannel"]
+      "reasoning": "web, mobile, api, agent — the avenue through which platform capabilities are consumed, resolved from the session's device class rather than any self-asserted claim. M2M was dropped: east-west service traffic largely does not cross unified ingress, and workload identity already governs it. Agent-channel delegation semantics are deliberately deferred to backlog questions, since delegation modelled casually is worse than absent.",
+      "terms": [
+        "DeliveryChannel",
+        "viaChannel"
+      ]
     },
     {
       "id": "D24",
       "title": "The ingress token contract",
       "area": "Entitlements & channels",
-      "reasoning": "Ingress assembles context from three sources, and the token is only one of them. The request host and path resolve the tenant; the ingress deployment that received the request resolves environment and region; the session cookie's opaque handle resolves the session. The token contributes identity and assurance: sub through a subject identifier to a principal, azp to the registration and thereby the channel, acr/amr/auth_time to the journey execution. None of these is an entitlement — a token asserting 'I am allowed in prod' would invert the evidence/authority split. Ingress deliberately ignores scope and permissions claims: those are Level-3, application-owned. Two of the three sources are currently unmodelled: domain and path are bound to a tenant in ingress route configuration, but the ingress module has no host or path matching and no tenant binding; and the cookie-to-session resolution has no representation at all. Both are recorded gaps rather than settled design.",
-      "terms": ["Token", "AccessToken", "IDToken", "tokenAudience", "issuedTo"],
-      "rejected": ["Minting entitlements into the token: claims freeze at issuance, so an entitlement stays true until expiry — exactly the window in which offboarding or compromise must take effect.", "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."]
+      "reasoning": "Ingress assembles context from three sources, and the token is only one of them. The request host and path resolve the tenant; the ingress deployment that received the request resolves environment and region; the session cookie's opaque handle resolves the session. The token contributes identity and assurance: sub through a subject identifier to a principal, acr/amr/auth_time to the journey execution. None of these is an entitlement — a token asserting 'I am allowed in prod' would invert the evidence/authority split. Ingress deliberately ignores scope and permissions claims: those are Level-3, application-owned. Two of the three sources are currently unmodelled: domain and path are bound to a tenant in ingress route configuration, but the ingress module has no host or path matching and no tenant binding; and the cookie-to-session resolution has no representation at all. Both are recorded gaps rather than settled design.",
+      "terms": [
+        "Token",
+        "AccessToken",
+        "IDToken",
+        "tokenAudience"
+      ],
+      "rejected": [
+        "Minting entitlements into the token: claims freeze at issuance, so an entitlement stays true until expiry — exactly the window in which offboarding or compromise must take effect.",
+        "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."
+      ]
     },
     {
       "id": "D25",
       "title": "The flagship reachability question",
       "area": "Entitlements & channels",
       "reasoning": "For a token or principal-session pair: which resources are reachable, and through which chain? Reachable = grants ∩ enablement scopes ∩ subscriptions ∩ offerings ∩ token audience ∩ effective AAL. The explanation form — returning the chain rather than just the set — is what makes access reviews tractable, and the audience-minting invariant uses it as a subroutine.",
-      "terms": ["PolicyDecision", "IngressAdmissionDecision"]
+      "terms": [
+        "PolicyDecision",
+        "IngressAdmissionDecision"
+      ]
     },
     {
       "id": "D26",
       "title": "Journeys in scope — definitions and executions",
       "area": "Authentication journeys",
       "reasoning": "User journeys enter the ontology narrowly, as authentication journeys — orchestrated flows by which a principal establishes or elevates authentication. Governed definitions per channel (whose changes flow through the declaration machinery) plus executions comprising the events actually traversed. Both halves are needed: without definitions you cannot ask what was configured; without executions you cannot ask what was completed; and only having both makes 'which sessions deviate from their definition' expressible.",
-      "terms": ["AuthenticationJourneyDefinition", "AuthenticationJourneyExecution", "followsDefinition", "comprisesEvent", "servesChannel"]
+      "terms": [
+        "AuthenticationJourneyDefinition",
+        "AuthenticationJourneyExecution",
+        "followsDefinition",
+        "comprisesEvent",
+        "servesChannel"
+      ]
     },
     {
       "id": "D27",
@@ -206,32 +325,55 @@
       "area": "Authentication journeys",
       "invariant": true,
       "reasoning": "establishedBy was retargeted from a single AuthenticationEvent to a journey execution while every term was still draft — a free structural correction that would have become a MAJOR-version migration the week a consumer shipped. Achieved assurance moved to the execution because AAL is a property of completing the flow, not of any single step: password alone achieves nothing, password+OTP achieves AAL2. Single-step flows such as passkeys are simply one-event executions, so nothing gets more complicated for simple cases.",
-      "terms": ["Session", "establishedBy", "achievedAssuranceLevel"]
+      "terms": [
+        "Session",
+        "establishedBy",
+        "achievedAssuranceLevel"
+      ]
     },
     {
       "id": "D28",
       "title": "Step-up elevations; effective AAL is the latest successful",
       "area": "Authentication journeys",
       "reasoning": "A step-up is an elevation execution linked to the same session, not a new session. Effective AAL is the latest successful execution's — cheap in SPARQL and semantically honest if a re-authentication ever lands lower than an earlier elevation. Freshness decay is policy, not session structure: a policy demanding 'AAL3 within the last 10 minutes' compares the elevation's timestamp at decision time, which the model already supports. The shipped guard checks that some successful execution meets the requirement — identical while executions are monotonic, and flagged for revisiting when decay lands.",
-      "terms": ["elevatedBy", "AssuranceLevel", "assuranceRank"]
+      "terms": [
+        "elevatedBy",
+        "AssuranceLevel",
+        "assuranceRank"
+      ]
     },
     {
       "id": "D29",
-      "title": "AuthorizedParty — the azp binding",
+      "title": "AuthorizedParty — reinstated, then removed as unfounded",
       "area": "Standards alignment",
-      "invariant": true,
-      "reasoning": "OAuth/OIDC review exposed that dissolving the registration class had left the token-to-client binding (azp) with no single-ranged home: the referent was scattered across Portal (a Resource) and credentialed principals. Reinstated as a tenant-owned, single-channel, credential-holding registration; portals are re-composed as fronted by one or more parties, and every token is issuedTo exactly one. Distinct from tokenAudience (aud): issuedTo says who may PRESENT the token, audience says who may ACCEPT it — the two ends of a token's journey, neither derivable from the other.",
-      "terms": ["AuthorizedParty", "issuedTo", "frontedBy"],
-      "rejected": ["ChannelRegistration: parses first as 'registering a channel', and 'channel' is already a governed entitlement dimension and an overloaded engineering word.", "CallerRegistration and SoftwareRegistration: viable runners-up, less standards-recognizable.", "AppRegistration: collides with core:Application, which means the tenant's deployed application.", "'Client': carries the firm's business meaning (the customer) and would be shortened back to it within days."]
+      "invariant": false,
+      "reasoning": "Recorded as a reversal rather than deleted, because the reasoning failed in an instructive way. Standards review found that tokens carry a client identifier with no home in the model, and I inferred that it pointed at tenant-owned, channel-bound request-originating software — a portal's web front, a partner daemon. On that premise AuthorizedParty was introduced with an owning tenant, a channel binding, and an issuedTo edge from every token.\n\nThe premise was wrong. The OAuth client is the session manager, the platform maintains one client registration per audience, and client_id is only a protocol identifier: it carries no tenancy and no channel. Both defining properties of the class were therefore false, and what remained was derivable from the audience — putting it in the same category as JOSE header fields, which the model excludes as plumbing below the semantic layer.\n\nRemoved in full: the class, boundToChannel, session:issuedTo, cp:frontedBy, authn:scopedToParty and the shapes and tests that depended on them. The lesson worth keeping is that a gap identified from a standard rather than from the architecture is a hypothesis, and this one should have been checked before it was modelled.",
+      "terms": [],
+      "rejected": [
+        "Keeping a hollowed-out AuthorizedParty with the false properties stripped: what remained was an OAuth registration identifier derivable from the audience, adding nothing the model needs.",
+        "Retargeting it to the session manager's per-audience registration: that is real, but it is protocol bookkeeping with no competency question behind it."
+      ],
+      "termCuries": []
     },
     {
       "id": "D30",
       "title": "Subject identifiers as first-class naming facts",
       "area": "Standards alignment",
       "invariant": true,
-      "reasoning": "'At issuer Y, subject X denotes principal P' had no home: core:identifier is the firm-canonical name, not the per-issuer and possibly pairwise subject that OIDC and RFC 9493 require. Reified with value, issuer, principal, format and an optional pairwise scope to an authorized party, plus a validity window because issuers recycle subjects (email especially). Read in reverse at resolution time: a token or CAEP event carries the subject, this node yields the principal. One (issuer, value, scope) combination must never denote two principals — the account-takeover-by-collision check.",
-      "terms": ["SubjectIdentifier", "SubjectIdentifierFormat", "subjectValue", "atIssuer", "identifies", "identifierFormat", "scopedToParty"],
-      "rejected": ["A multi-valued datatype property: stringly-typed, with no home for pairwise scoping, formats or validity, and uniqueness unenforceable without string surgery.", "A Credential subclass: a subject identifier proves nothing and is presented by no one — it is a naming fact, not an authentication artifact.", "AttributeAssertion reuse: assertions describe a known principal to feed decisions; identifiers resolve an unknown subject to a principal — opposite direction, different consumer."]
+      "reasoning": "'At issuer Y, subject X denotes principal P' had no home: core:identifier is the firm-canonical name, not the per-issuer and possibly pairwise subject that OIDC and RFC 9493 require. Reified with value, issuer, principal, format and an optional pairwise scope to an authorized party, plus a validity window because issuers recycle subjects (email especially). Read in reverse at resolution time: a token or CAEP event carries the subject, this node yields the principal. One (issuer, value) combination must never denote two principals — the account-takeover-by-collision check.",
+      "terms": [
+        "SubjectIdentifier",
+        "SubjectIdentifierFormat",
+        "subjectValue",
+        "atIssuer",
+        "identifies",
+        "identifierFormat"
+      ],
+      "rejected": [
+        "A multi-valued datatype property: stringly-typed, with no home for pairwise scoping, formats or validity, and uniqueness unenforceable without string surgery.",
+        "A Credential subclass: a subject identifier proves nothing and is presented by no one — it is a naming fact, not an authentication artifact.",
+        "AttributeAssertion reuse: assertions describe a known principal to feed decisions; identifiers resolve an unknown subject to a principal — opposite direction, different consumer."
+      ]
     },
     {
       "id": "D31",
@@ -239,8 +381,14 @@
       "area": "Standards alignment",
       "invariant": true,
       "reasoning": "Decisions recorded subject, resource and outcome but not the action attempted, leaving AuthZEN's evaluation tuple incomplete: every decision said who, where and what was answered, but not what was asked. Added as a closed, platform-owned SKOS scheme (access, read, write, administer, with AuthZEN wire names as notations) required exactly once on every decision. Two invariants: tuple completeness, and the Level-3 boundary enforced at the decision layer — application verbs like 'approve payment' must never reach platform decisions. The slot was originally called 'capability' in the architecture write-up; renamed to 'action' because capability now names platform offerings.",
-      "terms": ["Action", "evaluatedAction"],
-      "rejected": ["A datatype property with a string action name: free strings drift (read/READ/view) and the Level-3 boundary becomes unenforceable.", "Reifying the whole request as an AccessRequest node: no competency question demands it, and PolicyDecision already is the reified evaluation record."]
+      "terms": [
+        "Action",
+        "evaluatedAction"
+      ],
+      "rejected": [
+        "A datatype property with a string action name: free strings drift (read/READ/view) and the Level-3 boundary becomes unenforceable.",
+        "Reifying the whole request as an AccessRequest node: no competency question demands it, and PolicyDecision already is the reified evaluation record."
+      ]
     },
     {
       "id": "D32",
@@ -248,14 +396,21 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "The decision shape requires an evaluated policy, but admission evaluates distributed grants — so every admission decision had to either fake a policy reference or violate. Resolved by declaring the distributed entitlement configuration to BE a Policy instance ('the platform admission policy'), which is true by the model's own definition of Policy as a named, versioned unit of authorization logic. Keeps one shape and gives policy-change governance a hook on admission configuration. Admission decisions additionally require exactly one channel and at least one evaluated grant: admission without grants is admission without authority.",
-      "terms": ["IngressAdmissionDecision", "evaluatedGrant", "evaluatedPolicy"]
+      "terms": [
+        "IngressAdmissionDecision",
+        "evaluatedGrant",
+        "evaluatedPolicy"
+      ]
     },
     {
       "id": "D33",
-      "title": "Headless parties act as principals",
+      "title": "Resources act through principals",
       "area": "Audit round",
-      "reasoning": "A partner daemon was two unlinked things: an authorized party (tokens issued to it) and a principal (decisions name it), so azp auditing could not reach the decision layer. hasActingIdentity was promoted from control-plane to core — its third use of the same pattern — and applied to authorized parties. Headless parties carry one workload identity; portal fronts carry none, because their requests act as the authenticated human's principal.",
-      "terms": ["hasActingIdentity", "AuthorizedParty", "WorkloadPrincipal"]
+      "reasoning": "Resources cannot be principals, so anything that acts needs a principal to act as. hasActingIdentity was promoted from control-plane to core for this, and control plane components use it so their writes are attributable under the sole-writer invariant. It was also applied to authorized parties for headless consumers; that half went away with the class, but the pattern and the promotion stand.",
+      "terms": [
+        "hasActingIdentity",
+        "WorkloadPrincipal"
+      ]
     },
     {
       "id": "D34",
@@ -263,7 +418,10 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "Nothing prevented a portal fronted by another tenant's registration or grouping another tenant's application — both contradict settled ownership decisions and would breach tenant isolation at the presentation layer. Two violations added, plus the agreed stewardship warning for same-tenant portals whose application sets diverge.",
-      "terms": ["Portal", "frontedBy", "groupsApplication"]
+      "terms": [
+        "Portal",
+        "groupsApplication"
+      ]
     },
     {
       "id": "D35",
@@ -271,35 +429,54 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "The no-parity decision requires enablement to check subscriptions AND offerings covering the enablement scope, but only the subscription half had been implemented — so an application could be enabled in a scope where its required capability is offered nowhere. Added as a separate shape with its own message and test rather than widening the existing gate, so each half fails distinguishably.",
-      "terms": ["ApplicationEnablement", "CapabilityOffering"]
+      "terms": [
+        "ApplicationEnablement",
+        "CapabilityOffering"
+      ]
     },
     {
       "id": "D36",
       "title": "Grant derivation corrected; tenant onboarding named as a gap",
       "area": "Audit round",
       "reasoning": "The seed channel grant derived from a database subscription — structurally valid, semantically nonsense. Channel grants now derive from the party registration. This exposed a real absence: platform- and tenant-dimension grants have no natural source because tenant onboarding is not modelled at all. Recorded as a named backlog gap, and the likely home for future tenant-level CAEP events.",
-      "terms": ["derivedFrom"]
+      "terms": [
+        "derivedFrom"
+      ]
     },
     {
       "id": "D37",
       "title": "Journey-definition governance made falsifiable",
       "area": "Audit round",
       "reasoning": "The claim that journey-definition changes 'flow through the declaration machinery' was unfalsifiable prose: declarations could only declare the state of data planes, with no link to a journey definition. Added a JourneyDefinitionChange subclass of DesiredStateDeclaration mirroring ApplicationEnablement, so scope, rigor and supersession apply for real.",
-      "terms": ["JourneyDefinitionChange", "declaresDefinition"]
+      "terms": [
+        "JourneyDefinitionChange",
+        "declaresDefinition"
+      ]
     },
     {
       "id": "D38",
       "title": "OWL for semantics, SHACL for contracts",
       "area": "Foundations",
       "reasoning": "OWL defines meaning and licenses inference; rdfs:domain and rdfs:range are deliberately kept off shared properties, because under OWL semantics a domain axiom does not reject bad data — it infers a (wrong) type. Typing and cardinality live in SHACL, where a breach is a report rather than a silent inference. sh:Violation rejects at ingestion; sh:Warning admits but routes to the stewardship queue.",
-      "terms": ["performedBy", "targetsResource", "governedBy", "enforcedBy"]
+      "terms": [
+        "performedBy",
+        "targetsResource",
+        "governedBy",
+        "enforcedBy"
+      ]
     },
     {
       "id": "D39",
       "title": "States and vocabularies are individuals, not subclasses",
       "area": "Foundations",
       "reasoning": "Session and subscription states, decision outcomes, authentication methods, assurance levels, entitlement dimensions, actions, channels and subject-identifier formats are all SKOS individuals in closed schemes. Individuals keep generic queries simple, make extension a data change rather than a hierarchy change, and — crucially — make closure checkable: 'is this term in the platform-owned scheme' is a one-line constraint, which is how the ingress vocabulary boundary is enforced. Assurance levels additionally carry an integer rank so SHACL-SPARQL can compare them in order.",
-      "terms": ["SessionState", "DecisionOutcome", "AuthenticationMethod", "AssuranceLevel", "assuranceRank"]
+      "terms": [
+        "SessionState",
+        "DecisionOutcome",
+        "AuthenticationMethod",
+        "AssuranceLevel",
+        "assuranceRank"
+      ]
     },
     {
       "id": "D40",
@@ -307,7 +484,14 @@
       "area": "Foundations",
       "invariant": true,
       "reasoning": "Every policy change must carry an approval by a human principal; approvals by workload principals alone do not satisfy the invariant. The pattern recurs across the model — declarations in rigor-requiring scopes, subscription activations, requirement confirmations — because the same asymmetry holds each time: automation may act, but a person must be accountable for the grant of authority. The planned counterpart is deliberately asymmetric: revocation should need no approval, since taking access away fast is safe, while reinstatement does.",
-      "terms": ["PolicyChangeEvent", "ChangeApproval", "approvedBy", "approvedAtTime", "hasApproval", "changeTicket"]
+      "terms": [
+        "PolicyChangeEvent",
+        "ChangeApproval",
+        "approvedBy",
+        "approvedAtTime",
+        "hasApproval",
+        "changeTicket"
+      ]
     },
     {
       "id": "D46",
@@ -315,8 +499,21 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "The platform issues one session per user per device, and concurrent session limits are configured per device class. Neither fact was expressible: there was no device concept at all, so the session identity rule could not be stated and the limits could not be checked.\n\nModelling the device also settles a question left open twice. Channel evidence was first assumed to come from the token's authorized party, which turned out to be wrong once the OAuth client_id proved to be only a protocol identifier. The real source is the device: the session manager knows whether it authenticated a browser or a mobile app, so for interactive sessions the delivery channel follows from the device class. Channel is a property of the session, not evidence carried in a token — which also explains why the api and agent channels have no device, since there is no interactive client to classify.\n\nTwo invariants: a principal holds at most one active session per device, and a principal's active sessions in a device class must not exceed the tenant's configured limit — a counting constraint that joins through tenant membership to find the applicable policy.",
-      "terms": ["Device", "DeviceClass", "onDevice", "hasDeviceClass", "ConcurrentSessionPolicy", "policyForTenant", "appliesToDeviceClass", "maxConcurrentSessions"],
-      "rejected": ["Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device — one vocabulary would have members that cannot be devices.", "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.", "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver — the same asymmetry route bindings had before D43."]
+      "terms": [
+        "Device",
+        "DeviceClass",
+        "onDevice",
+        "hasDeviceClass",
+        "ConcurrentSessionPolicy",
+        "policyForTenant",
+        "appliesToDeviceClass",
+        "maxConcurrentSessions"
+      ],
+      "rejected": [
+        "Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device — one vocabulary would have members that cannot be devices.",
+        "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.",
+        "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver — the same asymmetry route bindings had before D43."
+      ]
     },
     {
       "id": "D45",
@@ -324,8 +521,20 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "Asking why there is no Identity class exposed a hole. Three senses of 'identity' already had homes — the authenticable entity is Principal, a name in a namespace is split between the firm-canonical identifier and the issuer-scoped SubjectIdentifier, and the assertion at a moment is an authentication event. But a fourth sense, persona or capacity, had none: no property anywhere linked a Principal to a Tenant.\n\nThe consequence was severe. Routes resolve the tenant, tokens resolve the principal, and every entitlement grant is held by a tenant — so nothing verified that this principal may act for that tenant at all. As written, a valid token for any principal presented at any tenant's address satisfied every modelled check.\n\nModelled as TenantMembership: a first-class, approved, lifecycle-bearing record following the Subscription pattern rather than a bare property, because 'when did this principal gain access to this tenant and who approved it' is the access-review question. One principal may hold memberships in several tenants — consultants and dual-capacity staff are ordinary. Capacity is recorded but grants nothing by itself; what a capacity means inside an application is Level-3.\n\nThe keystone invariant is on admission: no admission decision may evaluate a tenant's grants for a principal holding no active membership in that tenant. Two supporting invariants require human approval for activation, mirroring subscriptions, and forbid two active memberships for one principal in one tenant, which would leave it ambiguous which membership authorised a request.",
-      "terms": ["TenantMembership", "MembershipState", "memberPrincipal", "memberOfTenant", "hasMembershipState", "memberCapacity"],
-      "rejected": ["A plain mayActForTenant property: closes the reachability hole but records no lifecycle — no approver, no date, nothing an access review can read.", "A Persona class that entitlement grants are held by, replacing tenant-held grants: more expressive and handles dual capacity natively, but it reopens the settled grant model, and a tenant's subscriptions genuinely are tenant-level — that was never the missing fact.", "An Identity class as a synonym for Principal: two words for one concept.", "An Identity class merging the canonical identifier with issuer-scoped subjects: re-conflates exactly what the subject-identifier work separated, since one says what we call a principal and the other resolves an unknown subject to one."]
+      "terms": [
+        "TenantMembership",
+        "MembershipState",
+        "memberPrincipal",
+        "memberOfTenant",
+        "hasMembershipState",
+        "memberCapacity"
+      ],
+      "rejected": [
+        "A plain mayActForTenant property: closes the reachability hole but records no lifecycle — no approver, no date, nothing an access review can read.",
+        "A Persona class that entitlement grants are held by, replacing tenant-held grants: more expressive and handles dual capacity natively, but it reopens the settled grant model, and a tenant's subscriptions genuinely are tenant-level — that was never the missing fact.",
+        "An Identity class as a synonym for Principal: two words for one concept.",
+        "An Identity class merging the canonical identifier with issuer-scoped subjects: re-conflates exactly what the subject-identifier work separated, since one says what we call a principal and the other resolves an unknown subject to one."
+      ]
     },
     {
       "id": "D44",
@@ -333,8 +542,18 @@
       "area": "Standards alignment",
       "invariant": true,
       "reasoning": "A session cookie is a bearer artifact: steal the handle, replay it, you are in. Adopting DPoP (RFC 9449) with the confirmation binding of RFC 7800 changes that, and it changes what the handle IS. The handle identifies the session; the proof-of-possession key authenticates the presenter. A stolen handle without the private key grants nothing, so the cookie stops being credential-like and becomes an identifier — which is why ProofOfPossessionKey is modelled as its own class rather than a Credential subclass: it is generated by the presenter rather than issued by an identity provider, and it proves continuity of possession rather than an identity claim.\n\nFour invariants follow, and the third is the one that matters most in practice: a session must be bound to a key at all; a handle must resolve to exactly one session; a sender-constrained session must not issue tokens that are unbound or bound to a different key — constraint laundering, where the session is protected but the tokens it hands out are not; and one key must not confirm sessions belonging to different principals.\n\nDeliberately not modelled: the per-request DPoP proof itself, with its htm, htu, jti and ath claims. Proofs are per-request and transient, and the same reasoning that keeps per-request capability usage out of the graph applies here — what is durable and governable is the key binding, not the evidence of any single request.",
-      "terms": ["ProofOfPossessionKey", "confirmedByKey", "keyThumbprint", "keyAlgorithm", "SessionHandle", "resolvesToSession"],
-      "rejected": ["Modelling the proof-of-possession key as a Credential subclass: a credential is issued by an identity provider and proves an identity claim, while this key is presenter-generated and proves possession — merging them would make issuedBy meaningless for half the instances.", "Modelling the per-request DPoP proof as a first-class node: per-request volume with no competency question behind it; replay prevention via jti is an enforcement concern, not a governance one."]
+      "terms": [
+        "ProofOfPossessionKey",
+        "confirmedByKey",
+        "keyThumbprint",
+        "keyAlgorithm",
+        "SessionHandle",
+        "resolvesToSession"
+      ],
+      "rejected": [
+        "Modelling the proof-of-possession key as a Credential subclass: a credential is issued by an identity provider and proves an identity claim, while this key is presenter-generated and proves possession — merging them would make issuedBy meaningless for half the instances.",
+        "Modelling the per-request DPoP proof as a first-class node: per-request volume with no competency question behind it; replay prevention via jti is an enforcement concern, not a governance one."
+      ]
     },
     {
       "id": "D43",
@@ -342,23 +561,46 @@
       "area": "Audit round",
       "invariant": true,
       "reasoning": "Ingress resolves tenant context from domain and path, bound to a tenant in ingress route configuration — not from any token claim. That binding is therefore the root of tenant.access: changing it changes who a request is treated as. But it was distributed configuration with no declaration, no approver and no supersession history, while every write into a capability data plane required all three. That asymmetry was not deliberate, and it put the most tenant-sensitive control outside the governance pipeline.\n\nModelled by adding hostname, pathPrefix and boundToTenant to the ingress route, and a RouteBindingChange subclass of DesiredStateDeclaration — the third use of that pattern after application enablement and journey-definition changes — so route bindings inherit scope, approval rigor and supersession for free. Three invariants follow: one address must resolve to exactly one tenant; a tenant-bound route must state the hostname it resolves from; and a tenant binding must have an approved declaration behind it. The control-plane module now imports ingress, which states the governance relationship honestly rather than leaving it implicit.",
-      "terms": ["RouteBindingChange", "declaresRouteBinding", "boundToTenant", "hostname", "pathPrefix", "Route"],
-      "rejected": ["Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.", "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."]
+      "terms": [
+        "RouteBindingChange",
+        "declaresRouteBinding",
+        "boundToTenant",
+        "hostname",
+        "pathPrefix",
+        "Route"
+      ],
+      "rejected": [
+        "Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.",
+        "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."
+      ]
     },
     {
       "id": "D42",
       "title": "Implementation-independent, standards-aligned",
       "area": "Foundations",
       "reasoning": "The ontology aligns to specifications but names no products. Alignment claims to a particular gateway API were removed from the ingress module, along with product names in definitions and seed data, because a vocabulary that encodes today's implementation ages badly: the terms would need renaming the moment the platform changed gateway, and readers would mistake an implementation detail for a modelling commitment. Gateways, listeners, routes and upstream services are real concepts in their own right and stand without borrowing anyone's product vocabulary. The distinction held is specification versus product: XACML's PDP/PEP/PIP/PAP roles, OAuth and OIDC claims, NIST SP 800-63 assurance levels, RFC 9493 subject identifiers, AuthZEN's evaluation tuple and SPIFFE workload identity all stay, because they are stable public specifications the firm has deliberately adopted — and in SPIFFE's case, the identifier strategy is a recorded governance decision, not incidental coupling.",
-      "terms": ["Gateway", "Listener", "Route", "UpstreamService", "TLSConfiguration", "changeTicket"],
-      "rejected": ["Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.", "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."]
+      "terms": [
+        "Gateway",
+        "Listener",
+        "Route",
+        "UpstreamService",
+        "TLSConfiguration",
+        "changeTicket"
+      ],
+      "rejected": [
+        "Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.",
+        "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."
+      ]
     },
     {
       "id": "D41",
       "title": "Events are PROV activities",
       "area": "Foundations",
       "reasoning": "core:PlatformEvent is a subclass of prov:Activity, so authentication, decision, mutation and change events inherit lineage tooling for free — and causal chaining between events (prov:wasInformedBy) is available at zero modelling cost when credential and session state-change events land.",
-      "terms": ["PlatformEvent", "occurredAtTime"]
+      "terms": [
+        "PlatformEvent",
+        "occurredAtTime"
+      ]
     }
   ]
 }

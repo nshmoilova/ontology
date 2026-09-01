@@ -230,14 +230,6 @@ ex:offer-b a cp:CapabilityOffering ;
     cp:offersCapability ex:cap-b ;
     cp:offeredInScope ex:lax-scope .
 
-### 19. Token with no authorized party (TokenShape — azp binding)
-ex:orphan-token a session:AccessToken ;
-    session:expiresAt "2026-08-31T20:00:00Z"^^xsd:dateTime .
-
-### 20. Authorized party with no channel binding (AuthorizedPartyShape)
-ex:chanless-azp a core:AuthorizedParty ;
-    core:ownedBy ex:bad-tenant .
-
 ### 21. Two principals behind one (issuer, subject) pair
 ###     (SubjectIdentifierCollisionShape)
 ex:neg-idp a authn:IdentityProvider .
@@ -362,8 +354,7 @@ ex:laundering-session a session:Session ;
     authn:confirmedByKey ex:key-a ;
     session:issuedToken ex:unbound-token .
 ex:unbound-token a session:AccessToken ;
-    session:expiresAt "2026-08-31T18:00:00Z"^^xsd:dateTime ;
-    session:issuedTo ex:chanless-azp .
+    session:expiresAt "2026-08-31T18:00:00Z"^^xsd:dateTime .
 
 ### 29. One key confirming two principals' sessions (KeyConfusionShape)
 ex:shared-key a authn:ProofOfPossessionKey ;
@@ -419,15 +410,10 @@ ex:route-ungoverned a ingress:Route ;
     core:enforcedBy ex:pep-x ;
     ingress:boundToTenant ex:tenant-x .
 
-### 24. Portal fronted by another tenant's registration and grouping
-###     another tenant's application (PortalShape coherence)
+### 24. Portal grouping another tenant's application (PortalShape coherence)
 ex:other-tenant a core:Tenant .
-ex:foreign-front a core:AuthorizedParty ;
-    core:ownedBy ex:other-tenant ;
-    core:boundToChannel core:channel-web .
 ex:foreign-app a core:Application ;
     core:ownedBy ex:other-tenant .
 ex:sneaky-portal a cp:Portal ;
     core:ownedBy ex:bad-tenant ;
-    cp:frontedBy ex:foreign-front ;
     cp:groupsApplication ex:foreign-app .

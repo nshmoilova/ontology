@@ -42,32 +42,6 @@ sc:ApplicationShape a sh:NodeShape ;
         sh:message "An application must be owned by exactly one tenant (the platform tenant for platform-owned applications)." ;
     ] .
 
-sc:AuthorizedPartyShape a sh:NodeShape ;
-    sh:targetClass core:AuthorizedParty ;
-    sh:property [
-        sh:path core:ownedBy ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:class core:Tenant ;
-        sh:severity sh:Violation ;
-        sh:message "An authorized party must be registered by exactly one tenant." ;
-    ] ;
-    sh:property [
-        sh:path core:boundToChannel ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:class core:DeliveryChannel ;
-        sh:severity sh:Violation ;
-        sh:message "An authorized party must be bound to exactly one delivery channel — the binding ingress derives channel evidence from." ;
-    ] ;
-    sh:property [
-        sh:path core:hasActingIdentity ;
-        sh:maxCount 1 ;
-        sh:class core:WorkloadPrincipal ;
-        sh:severity sh:Violation ;
-        sh:message "An authorized party acts as at most one workload principal (headless parties exactly one by convention; portal fronts none)." ;
-    ] .
-
 sc:ResourceGovernanceShape a sh:NodeShape ;
     sh:targetClass core:Resource ;
     sh:property [

@@ -130,13 +130,6 @@ sa:SubjectIdentifierShape a sh:NodeShape ;
         sh:class authn:SubjectIdentifierFormat ;
         sh:severity sh:Violation ;
         sh:message "A subject identifier must name its RFC 9493 format." ;
-    ] ;
-    sh:property [
-        sh:path authn:scopedToParty ;
-        sh:maxCount 1 ;
-        sh:class core:AuthorizedParty ;
-        sh:severity sh:Violation ;
-        sh:message "A pairwise subject identifier is scoped to at most one authorized party." ;
     ] .
 
 # Collision: one (issuer, subject value, party-scope) combination must never
@@ -145,7 +138,7 @@ sa:SubjectIdentifierCollisionShape a sh:NodeShape ;
     sh:targetClass authn:SubjectIdentifier ;
     sh:sparql [
         a sh:SPARQLConstraint ;
-        sh:message "Same issuer, subject value, and party scope denote more than one principal — subject-identifier collision." ;
+        sh:message "Same issuer and subject value denote more than one principal — subject-identifier collision." ;
         sh:severity sh:Violation ;
         sh:select """
             SELECT $this WHERE {
@@ -157,9 +150,6 @@ sa:SubjectIdentifierCollisionShape a sh:NodeShape ;
                        <https://w3id.org/examplebank/platform/authn#identifies> ?p2 .
                 FILTER (?other != $this)
                 FILTER (?p != ?p2)
-                OPTIONAL { $this <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s1 . }
-                OPTIONAL { ?other <https://w3id.org/examplebank/platform/authn#scopedToParty> ?s2 . }
-                FILTER (COALESCE(?s1, <urn:examplebank:unscoped>) = COALESCE(?s2, <urn:examplebank:unscoped>))
             }
         """ ;
     ] .
@@ -180,9 +170,9 @@ sa:CredentialShape a sh:NodeShape ;
     sh:property [
         sh:path authn:credentialOf ;
         sh:minCount 1 ;
-        sh:or ( [ sh:class core:Principal ] [ sh:class core:AuthorizedParty ] ) ;
+        sh:class core:Principal ;
         sh:severity sh:Violation ;
-        sh:message "A credential must be bound to a principal or an authorized party." ;
+        sh:message "A credential must be bound to a principal." ;
     ] ;
     sh:property [
         sh:path authn:issuedBy ;
