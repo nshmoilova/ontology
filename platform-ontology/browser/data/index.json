@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "14ad98390407",
+ "sourceDigest": "334d76127104",
  "stats": {
   "modules": 6,
   "classes": 73,
   "objectProperties": 91,
   "datatypeProperties": 34,
   "shapes": 72,
-  "violations": 105,
+  "violations": 106,
   "warnings": 8,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 49,
+  "decisions": 50,
   "explainers": 2,
   "formalCQs": 7,
-  "backlogCQs": 88
+  "backlogCQs": 89
  },
  "modules": [
   {
@@ -22,7 +22,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.4.4",
+   "version": "0.4.5",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -44,7 +44,7 @@
    "iri": "https://w3id.org/examplebank/platform/session",
    "prefix": "session",
    "title": "Session Module",
-   "version": "0.5.1",
+   "version": "0.5.2",
    "description": "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles \u2014 the opaque value a cookie carries \u2014 and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter.",
    "blurb": "Sessions established by journey executions, step-up elevations, and tokens carrying both ends of their journey.",
    "imports": [
@@ -878,7 +878,7 @@
    "kind": "datatypeProperty",
    "module": "core",
    "label": null,
-   "definition": "Canonical firm-wide identifier for the subject: SPIFFE ID for workloads, directory identifier for staff, customer identifier for business clients.",
+   "definition": "The canonical identifier for this entity in the firm's registry for its kind \u2014 a SPIFFE ID, a directory identifier, a customer identifier, a device registration.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -892,7 +892,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D50"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#occurredAtTime",
@@ -2716,7 +2718,7 @@
    "kind": "class",
    "module": "session",
    "label": null,
-   "definition": "The device a principal holds a session on, and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device.",
+   "definition": "The requesting client a principal holds a session on, identified in the firm's registry and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -2728,6 +2730,21 @@
     "DeviceShape"
    ],
    "constraints": [
+    {
+     "kind": "property",
+     "path": "core:identifier",
+     "pathIri": "https://w3id.org/examplebank/platform/core#identifier",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A device must carry exactly one identifier \u2014 a concurrency limit counts sessions per device, and an unnamed device cannot be counted."
+    },
     {
      "kind": "property",
      "path": "session:hasDeviceClass",
@@ -2765,6 +2782,7 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
+    "D50",
     "D46"
    ]
   },
@@ -2775,7 +2793,7 @@
    "kind": "class",
    "module": "session",
    "label": null,
-   "definition": "The kind of device a session runs on, as a closed vocabulary. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel.",
+   "definition": "The kind of requesting client a session runs on \u2014 browser or mobile \u2014 as a closed vocabulary. It classifies the client software rather than the hardware or operating system. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -2825,6 +2843,7 @@
     }
    ],
    "decisions": [
+    "D50",
     "D46"
    ]
   },
@@ -10819,6 +10838,21 @@
    "constraints": [
     {
      "kind": "property",
+     "path": "core:identifier",
+     "pathIri": "https://w3id.org/examplebank/platform/core#identifier",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A device must carry exactly one identifier \u2014 a concurrency limit counts sessions per device, and an unnamed device cannot be counted."
+    },
+    {
+     "kind": "property",
      "path": "session:hasDeviceClass",
      "pathIri": "https://w3id.org/examplebank/platform/session#hasDeviceClass",
      "minCount": 1,
@@ -10833,7 +10867,7 @@
      "message": "A device must have exactly one device class from the closed vocabulary \u2014 concurrency limits are configured against it."
     }
    ],
-   "violations": 1,
+   "violations": 2,
    "warnings": 0
   },
   {
@@ -11455,6 +11489,27 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D50",
+   "title": "A device is nameable, and its class describes the client not the hardware",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "Device carried exactly one property \u2014 its class \u2014 so a PDP context that names a requesting client could say the category was Browser but never which client. A concurrency limit counts sessions per device, and an unnamed device cannot be counted, so identity was load-bearing rather than cosmetic. Device now requires a canonical identifier, and core:identifier was generalised from an enumeration of principal kinds to any entity's registry identifier.\n\nThe class definition was also wrong in a way worth correcting rather than living with. Its members are Browser and Mobile, which are client software types, not hardware and not operating systems \u2014 the same axis Microsoft calls 'client apps' and keeps separate from device platforms and from a specific registered device. The definition now says it classifies the requesting client.\n\nThe fuller correction \u2014 splitting client type from device the way Microsoft does \u2014 was deliberately not taken. It would churn the concurrency invariants, which are keyed to device class, and it is a vocabulary decision for the security architecture group rather than an inference.",
+   "terms": [
+    "Device",
+    "DeviceClass",
+    "identifier"
+   ],
+   "rejected": [
+    "Splitting client type from device entirely, per Microsoft's three-way division into client apps, device platforms and device filters: the right end state, but it churns invariants and is a decision to take with the review group.",
+    "Leaving Device unnameable: a concurrency limit that counts per device cannot count anonymous ones."
+   ],
+   "termCuries": [
+    "core:identifier",
+    "session:Device",
+    "session:DeviceClass"
+   ]
+  },
   {
    "id": "D49",
    "title": "Decisions name the point that made them; XACML is the settled vocabulary",
@@ -13232,7 +13287,7 @@
    },
    {
     "section": "Devices and session concurrency",
-    "question": "Which devices does each principal hold active sessions on, of which device class, and since when?",
+    "question": "Which devices does each principal hold active sessions on, identified how, of which device class, and since when?",
     "expectedEmpty": false
    },
    {
@@ -13258,6 +13313,11 @@
    {
     "section": "Devices and session concurrency",
     "question": "Which sessions have no device at all, and is that legitimate for the api and agent channels? (non-interactive sessions have no device)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "What establishes the delivery channel for a session with no device? (open gap \u2014 device class covers the interactive channels only, so api and agent currently have no stated source)",
     "expectedEmpty": false
    },
    {

@@ -86,7 +86,8 @@ ex:dpop-key-alice-web a authn:ProofOfPossessionKey ;
     authn:keyAlgorithm "ES256" .
 
 ex:device-alice-laptop a session:Device ;
-    core:displayName "Alice's work laptop browser" ;
+    core:identifier "dev:web-client:9f2a41c8" ;
+    core:displayName "Alice's browser client" ;
     session:hasDeviceClass session:device-browser .
 
 ex:session-9001 a session:Session ;

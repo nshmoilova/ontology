@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/session>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.5.1> ;
-    owl:versionInfo "0.5.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.5.2> ;
+    owl:versionInfo "0.5.2" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Session Module"@en ;
     dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles — the opaque value a cookie carries — and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter."@en .
@@ -49,12 +49,12 @@ session:SessionState a owl:Class ;
     vs:term_status "draft" .
 
 session:Device a owl:Class ;
-    skos:definition "The device a principal holds a session on, and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device."@en ;
+    skos:definition "The requesting client a principal holds a session on, identified in the firm's registry and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device."@en ;
     vs:term_status "draft" .
 
 session:DeviceClass a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    skos:definition "The kind of device a session runs on, as a closed vocabulary. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel."@en ;
+    skos:definition "The kind of requesting client a session runs on — browser or mobile — as a closed vocabulary. It classifies the client software rather than the hardware or operating system. Concurrency limits are configured per device class, and for interactive sessions it establishes the delivery channel."@en ;
     vs:term_status "draft" .
 
 session:SessionHandle a owl:Class ;

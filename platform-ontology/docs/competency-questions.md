@@ -263,8 +263,8 @@ party with a relationship to the firm, whose identity is in a session.
 The platform issues one session per user per device; concurrent session
 limits are configured per device class.
 
-- Which devices does each principal hold active sessions on, of which
-  device class, and since when?
+- Which devices does each principal hold active sessions on, identified how,
+  of which device class, and since when?
 - Which principals hold more than one active session on the same device?
   *(expected empty — one session per user per device)*
 - Which principals exceed the configured concurrent-session limit for a
@@ -276,6 +276,9 @@ limits are configured per device class.
   security control with no approver today)*
 - Which sessions have no device at all, and is that legitimate for the
   api and agent channels? *(non-interactive sessions have no device)*
+- What establishes the delivery channel for a session with no device?
+  *(open gap — device class covers the interactive channels only, so api
+  and agent currently have no stated source)*
 
 ### Authentication journeys
 

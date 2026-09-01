@@ -114,6 +114,7 @@ def main() -> int:
             "exceeds the configured concurrent-session limit",
             "exactly one client_id",
             "exactly one policy decision point",
+            "an unnamed device cannot be counted",
             "bound tenant does not own",
             "outside that application's enablement",
         ]

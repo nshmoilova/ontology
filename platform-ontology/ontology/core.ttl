@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.4> ;
-    owl:versionInfo "0.4.4" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.5> ;
+    owl:versionInfo "0.4.5" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -139,7 +139,7 @@ core:hasActingIdentity a owl:ObjectProperty ;
 #################################################################
 
 core:identifier a owl:DatatypeProperty ;
-    skos:definition "Canonical firm-wide identifier for the subject: SPIFFE ID for workloads, directory identifier for staff, customer identifier for business clients."@en ;
+    skos:definition "The canonical identifier for this entity in the firm's registry for its kind — a SPIFFE ID, a directory identifier, a customer identifier, a device registration."@en ;
     vs:term_status "draft" .
 
 core:occurredAtTime a owl:DatatypeProperty ;

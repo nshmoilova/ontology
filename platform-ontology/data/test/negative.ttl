@@ -282,6 +282,7 @@ ex:vague-reg a authn:OAuthClientRegistration ;
 ### 33. Two active sessions for one principal on one device
 ###     (OneSessionPerDeviceShape)
 ex:bob-phone a session:Device ;
+    core:identifier "dev:bob-phone" ;
     session:hasDeviceClass session:device-mobile .
 ex:dup-device-1 a session:Session ;
     session:establishedBy ex:weak-exec ;
@@ -312,8 +313,12 @@ ex:tight-policy a cp:ConcurrentSessionPolicy ;
     cp:policyForTenant ex:limited-tenant ;
     cp:appliesToDeviceClass session:device-browser ;
     cp:maxConcurrentSessions 1 .
-ex:brw-1 a session:Device ; session:hasDeviceClass session:device-browser .
-ex:brw-2 a session:Device ; session:hasDeviceClass session:device-browser .
+ex:brw-1 a session:Device ; core:identifier "dev:brw-1" ; session:hasDeviceClass session:device-browser .
+ex:brw-2 a session:Device ; core:identifier "dev:brw-2" ; session:hasDeviceClass session:device-browser .
+
+### 38. Device with no identifier (DeviceShape) — uncountable for limits
+ex:anonymous-device a session:Device ;
+    session:hasDeviceClass session:device-browser .
 ex:over-1 a session:Session ;
     session:establishedBy ex:weak-exec ; session:boundToPrincipal ex:over-user ;
     session:onDevice ex:brw-1 ; session:hasState session:state-active ;
