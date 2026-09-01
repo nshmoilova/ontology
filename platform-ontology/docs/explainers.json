@@ -14,6 +14,75 @@
           "body": "One enforcement stack serves many independently developed applications. That only works if the vocabulary ingress evaluates stays small and stable, and if nothing application-specific can enter it. The control plane defines entitlements; ingress enforces them; applications own everything past the boundary.\n\nThe architectural principle: ingress answers \"can this subject reach this platform or application boundary?\" Application security answers \"what can this subject do inside that boundary?\""
         },
         {
+          "heading": "A request, resolved",
+          "body": "Take a concrete request:\n\nPOST https://api.company.com/digital-bank/transactions/12345\n\nBefore any entitlement is evaluated, ingress resolves it to a platform endpoint. The route registry matches the domain and path, and everything the platform needs falls out of governed configuration — none of it asserted by the caller.\n\nWhat ingress then knows is that a request is attempting to enter the digital bank's transactions boundary, in prod, in us-west-2. What it does not know, and never needs to, is that /12345 identifies an order. That is the line: the endpoint is registered platform configuration, the object behind it is application data.\n\nWith that resolved, the authorization request is the XACML tuple — subject Alice, action ACCESS, resource the application access endpoint — with the tenant, environment, region, channel, session and assurance as context. The decision point answers one question: may Alice, acting for this tenant, cross this boundary. Permit or Deny.",
+          "table": {
+            "columns": [
+              "Resolved",
+              "From",
+              "Ontology term"
+            ],
+            "rows": [
+              [
+                "Application",
+                "the route's servesApplication binding",
+                "core:Application"
+              ],
+              [
+                "Endpoint",
+                "the matched domain and path",
+                "ingress:Route — \"application access endpoint\""
+              ],
+              [
+                "Tenant",
+                "the route's boundToTenant binding",
+                "core:Tenant"
+              ],
+              [
+                "Environment, Region",
+                "which ingress deployment received it",
+                "scope facets: inEnvironment, inRegion"
+              ],
+              [
+                "Channel",
+                "the session's device class",
+                "core:DeliveryChannel — web, mobile, api, agent"
+              ],
+              [
+                "Session, Assurance",
+                "the session and its journey execution",
+                "session:Session, authn:AssuranceLevel"
+              ],
+              [
+                "Subject",
+                "the token's sub, via a subject identifier",
+                "core:Principal"
+              ],
+              [
+                "Action",
+                "the admission action, always",
+                "authz:action-access"
+              ],
+              [
+                "Outcome",
+                "the decision",
+                "Permit / Deny (XACML)"
+              ]
+            ]
+          },
+          "terms": [
+            "ingress:Route",
+            "ingress:servesApplication",
+            "core:Application",
+            "authz:IngressAdmissionDecision",
+            "authz:decidedBy"
+          ],
+          "shapes": [
+            "RouteApplicationOwnershipShape",
+            "RouteEnablementScopeShape"
+          ]
+        },
+        {
           "heading": "The check that joins the two halves",
           "body": "Before any dimension is evaluated, one thing must hold that is easy to overlook: the principal must be entitled to act for the tenant at all.\n\nThe two halves of a request are resolved independently — the route resolves the tenant, the token resolves the principal — and every entitlement grant is held by the tenant, not the principal. So without a membership record, a valid token for anyone would satisfy every tenant-level check at any tenant's address. Membership is the join, and it is deliberately a governed record with a lifecycle and an approver rather than a bare link, because the access-review question is not whether the link exists but when it was granted and by whom.\n\nOne principal may hold memberships in several tenants. Consultants, dual-capacity staff and the employee who is also a customer are ordinary cases, not exceptions to design around.",
           "terms": [
@@ -116,7 +185,8 @@
         "Application admission currently answers reachability of the application boundary. Do we also need a coarse 'capability class' notion at Level 2 — for example admitting a tenant to a read-only view of an application — or does that immediately become Level 3?",
         "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
         "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
-      ]
+      ],
+      "stepCount": 8
     },
     {
       "id": "token-binding",

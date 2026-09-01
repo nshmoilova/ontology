@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "e057ea6522c7",
+ "sourceDigest": "14ad98390407",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -12443,6 +12443,75 @@
      "svg": "<svg viewBox=\"0 0 900 430\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Three evaluation layers: the control plane projects entitlement grants to ingress, which evaluates platform entitlements then application admission; what the subject may do inside the application is application-owned and out of scope.\">\n  <defs>\n    <marker id=\"lyArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"lyArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <!-- control plane -->\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"var(--m-control-plane)\" opacity=\".10\"/>\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.4\"/>\n  <text x=\"676\" y=\"41\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-control-plane)\" font-weight=\"600\">Control plane \u2014 defines</text>\n  <text x=\"676\" y=\"60\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".7\">tenants \u00b7 subscriptions \u00b7 offerings \u00b7 enablements \u00b7 registrations</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\" stroke-dasharray=\"5 4\">\n    <path d=\"M 470 52 L 296 52 L 296 106\" marker-end=\"url(#lyArrG)\"/>\n  </g>\n  <text x=\"306\" y=\"86\" font-size=\"11.5\" fill=\"var(--accent-ink)\" font-weight=\"600\">projects grants \u00b7 distributed, timestamped</text>\n\n  <!-- ingress -->\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".08\"/>\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"296\" y=\"131\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-ingress)\" font-weight=\"600\">Unified ingress \u2014 enforces</text>\n\n  <rect x=\"162\" y=\"145\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"166\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 1 \u00b7 platform entitlements</text>\n  <text x=\"296\" y=\"185\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">platform \u00b7 tenant \u00b7 environment</text>\n  <text x=\"296\" y=\"200\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">region \u00b7 channel</text>\n  <text x=\"296\" y=\"212\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">closed scheme \u2014 5 dimensions</text>\n\n  <rect x=\"162\" y=\"231\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"252\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 2 \u00b7 application admission</text>\n  <text x=\"296\" y=\"271\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">enabled for this tenant, in this scope,</text>\n  <text x=\"296\" y=\"286\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">with subscription + offering coverage</text>\n  <text x=\"296\" y=\"298\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">generic: subject \u2192 action \u2192 target</text>\n\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".75\">\n    <line x1=\"48\" y1=\"181\" x2=\"158\" y2=\"181\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"296\" y1=\"217\" x2=\"296\" y2=\"227\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"454\" y1=\"267\" x2=\"556\" y2=\"267\" marker-end=\"url(#lyArr)\"/>\n  </g>\n  <text x=\"103\" y=\"172\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">request + token</text>\n  <text x=\"505\" y=\"258\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">admitted</text>\n\n  <!-- level 3 -->\n  <rect x=\"558\" y=\"231\" width=\"324\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-dasharray=\"6 5\" opacity=\".5\"/>\n  <text x=\"720\" y=\"257\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"currentColor\" opacity=\".82\" font-weight=\"600\">Level 3 \u00b7 inside the application</text>\n  <text x=\"720\" y=\"281\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">roles, scopes, business rules,</text>\n  <text x=\"720\" y=\"298\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">record-level and transactional limits</text>\n  <text x=\"720\" y=\"324\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--violation)\" font-weight=\"600\">application-owned \u00b7 out of scope</text>\n  <text x=\"720\" y=\"344\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".55\">the ontology deliberately refuses this question</text>\n\n  <line x1=\"510\" y1=\"120\" x2=\"510\" y2=\"380\" stroke=\"var(--violation)\" stroke-width=\"1.6\" stroke-dasharray=\"7 5\" opacity=\".65\"/>\n  <text x=\"510\" y=\"112\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"var(--violation)\" font-weight=\"600\">the boundary</text>\n\n  <text x=\"450\" y=\"404\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"currentColor\" opacity=\".7\">Two closure invariants police the line: no entitlement outside the dimension scheme, no action outside the action scheme.</text>\n</svg>"
     },
     {
+     "heading": "A request, resolved",
+     "body": "Take a concrete request:\n\nPOST https://api.company.com/digital-bank/transactions/12345\n\nBefore any entitlement is evaluated, ingress resolves it to a platform endpoint. The route registry matches the domain and path, and everything the platform needs falls out of governed configuration \u2014 none of it asserted by the caller.\n\nWhat ingress then knows is that a request is attempting to enter the digital bank's transactions boundary, in prod, in us-west-2. What it does not know, and never needs to, is that /12345 identifies an order. That is the line: the endpoint is registered platform configuration, the object behind it is application data.\n\nWith that resolved, the authorization request is the XACML tuple \u2014 subject Alice, action ACCESS, resource the application access endpoint \u2014 with the tenant, environment, region, channel, session and assurance as context. The decision point answers one question: may Alice, acting for this tenant, cross this boundary. Permit or Deny.",
+     "table": {
+      "columns": [
+       "Resolved",
+       "From",
+       "Ontology term"
+      ],
+      "rows": [
+       [
+        "Application",
+        "the route's servesApplication binding",
+        "core:Application"
+       ],
+       [
+        "Endpoint",
+        "the matched domain and path",
+        "ingress:Route \u2014 \"application access endpoint\""
+       ],
+       [
+        "Tenant",
+        "the route's boundToTenant binding",
+        "core:Tenant"
+       ],
+       [
+        "Environment, Region",
+        "which ingress deployment received it",
+        "scope facets: inEnvironment, inRegion"
+       ],
+       [
+        "Channel",
+        "the session's device class",
+        "core:DeliveryChannel \u2014 web, mobile, api, agent"
+       ],
+       [
+        "Session, Assurance",
+        "the session and its journey execution",
+        "session:Session, authn:AssuranceLevel"
+       ],
+       [
+        "Subject",
+        "the token's sub, via a subject identifier",
+        "core:Principal"
+       ],
+       [
+        "Action",
+        "the admission action, always",
+        "authz:action-access"
+       ],
+       [
+        "Outcome",
+        "the decision",
+        "Permit / Deny (XACML)"
+       ]
+      ]
+     },
+     "terms": [
+      "ingress:Route",
+      "ingress:servesApplication",
+      "core:Application",
+      "authz:IngressAdmissionDecision",
+      "authz:decidedBy"
+     ],
+     "shapes": [
+      "RouteApplicationOwnershipShape",
+      "RouteEnablementScopeShape"
+     ]
+    },
+    {
      "heading": "The check that joins the two halves",
      "body": "Before any dimension is evaluated, one thing must hold that is easy to overlook: the principal must be entitled to act for the tenant at all.\n\nThe two halves of a request are resolved independently \u2014 the route resolves the tenant, the token resolves the principal \u2014 and every entitlement grant is held by the tenant, not the principal. So without a membership record, a valid token for anyone would satisfy every tenant-level check at any tenant's address. Membership is the join, and it is deliberately a governed record with a lifecycle and an approver rather than a bare link, because the access-review question is not whether the link exists but when it was granted and by whom.\n\nOne principal may hold memberships in several tenants. Consultants, dual-capacity staff and the employee who is also a customer are ordinary cases, not exceptions to design around.",
      "terms": [
@@ -12546,7 +12615,7 @@
     "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
     "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
    ],
-   "stepCount": 7
+   "stepCount": 8
   },
   {
    "id": "token-binding",
