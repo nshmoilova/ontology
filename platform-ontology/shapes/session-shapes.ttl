@@ -82,6 +82,68 @@ ss:ActiveSessionSuccessfulAuthnShape a sh:NodeShape ;
         """ ;
     ] .
 
+ss:SessionHandleShape a sh:NodeShape ;
+    sh:targetClass session:SessionHandle ;
+    sh:property [
+        sh:path session:resolvesToSession ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class session:Session ;
+        sh:severity sh:Violation ;
+        sh:message "A session handle must resolve to exactly one session — an ambiguous handle is a session-fixation hazard." ;
+    ] .
+
+# Sender constraining: a session that is not bound to a proof-of-possession
+# key is a bearer session — whoever steals the handle can use it.
+ss:SenderConstrainedSessionShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:property [
+        sh:path authn:confirmedByKey ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authn:ProofOfPossessionKey ;
+        sh:severity sh:Violation ;
+        sh:message "Session is not sender-constrained: no proof-of-possession key confirms it, so a stolen handle alone would be replayable." ;
+    ] .
+
+# Constraint laundering: a sender-constrained session must not hand out
+# tokens that are unbound, or bound to a different key.
+ss:TokenInheritsConfirmationShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Session issued a token bound to a different key, or to no key at all — sender constraining must not be lost at token issuance." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k ;
+                      <https://w3id.org/examplebank/platform/session#issuedToken> ?tok .
+                FILTER NOT EXISTS {
+                    ?tok <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k .
+                }
+            }
+        """ ;
+    ] .
+
+# One key must not confirm sessions belonging to different principals.
+ss:KeyConfusionShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "One proof-of-possession key confirms sessions bound to different principals — key confusion." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k ;
+                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p1 .
+                ?other <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k ;
+                       <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p2 .
+                FILTER (?other != $this)
+                FILTER (?p1 != ?p2)
+            }
+        """ ;
+    ] .
+
 ss:TokenShape a sh:NodeShape ;
     sh:targetClass session:Token ;
     sh:property [

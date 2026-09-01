@@ -62,19 +62,30 @@ ex:exec-1001 a authn:AuthenticationJourneyExecution ;
     authn:succeeded true ;
     authn:achievedAssuranceLevel authn:AAL2 .
 
-### Session & tokens
+### Session & tokens — sender-constrained (DPoP, RFC 9449)
+ex:dpop-key-alice-web a authn:ProofOfPossessionKey ;
+    core:displayName "Alice's web front DPoP key" ;
+    authn:keyThumbprint "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I" ;
+    authn:keyAlgorithm "ES256" .
+
 ex:session-9001 a session:Session ;
     session:establishedBy ex:exec-1001 ;
     session:boundToPrincipal ex:alice ;
     session:hasState session:state-active ;
     session:notBefore "2026-08-31T13:05:01Z"^^xsd:dateTime ;
     session:expiresAt "2026-08-31T21:05:01Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:dpop-key-alice-web ;
     session:issuedToken ex:token-at-1 .
+
+ex:handle-9001 a session:SessionHandle ;
+    core:displayName "Session cookie handle" ;
+    session:resolvesToSession ex:session-9001 .
 
 ex:token-at-1 a session:AccessToken ;
     session:expiresAt "2026-08-31T13:20:01Z"^^xsd:dateTime ;
     session:tokenAudience ex:ledger-service ;
-    session:issuedTo ex:azp-t123-web .
+    session:issuedTo ex:azp-t123-web ;
+    authn:confirmedByKey ex:dpop-key-alice-web .
 
 ### Ingress
 ex:pep-edge-east a core:PolicyEnforcementPoint ;

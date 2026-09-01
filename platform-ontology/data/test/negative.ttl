@@ -272,6 +272,43 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 27. Bearer session — no confirmation key, so a stolen handle replays
+###     (SenderConstrainedSessionShape); its handle is also ambiguous
+###     (SessionHandleShape)
+ex:bearer-handle a session:SessionHandle ;
+    session:resolvesToSession ex:zombie-session , ex:weak-session .
+
+### 28. Sender-constrained session handing out an unbound token
+###     (TokenInheritsConfirmationShape)
+ex:key-a a authn:ProofOfPossessionKey ;
+    authn:keyThumbprint "thumb-aaa" .
+ex:laundering-session a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:key-a ;
+    session:issuedToken ex:unbound-token .
+ex:unbound-token a session:AccessToken ;
+    session:expiresAt "2026-08-31T18:00:00Z"^^xsd:dateTime ;
+    session:issuedTo ex:chanless-azp .
+
+### 29. One key confirming two principals' sessions (KeyConfusionShape)
+ex:shared-key a authn:ProofOfPossessionKey ;
+    authn:keyThumbprint "thumb-shared" .
+ex:confused-session-1 a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:shared-key .
+ex:confused-session-2 a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:robot ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:shared-key .
+
 ### 25. Two tenants reachable at the same domain and path
 ###     (RouteBindingCollisionShape)
 ex:tenant-x a core:Tenant .

@@ -175,9 +175,20 @@ plane. Channels: web, mobile, api, agent.
   behind them? *(ungoverned binding — expected empty)*
 - Which route bindings changed without a human approval in a scope that
   requires one? *(inherited from the declaration machinery)*
-- For each session, which presented handle resolved to it, when was that
-  handle issued, and is it revocable independently of the session?
-  *(cookie→session resolution is not yet modelled — named gap)*
+- For each session, which handle resolves to it, and to which
+  proof-of-possession key is the session sender-constrained?
+- Which sessions are not sender-constrained — bound to no confirmation key,
+  and therefore replayable from a stolen handle alone? *(expected empty)*
+- Which tokens issued within a sender-constrained session are bound to a
+  different key than the session, or to no key at all? *(constraint
+  laundering — expected empty)*
+- Which confirmation keys are shared across sessions belonging to different
+  principals? *(key confusion — expected empty)*
+- Which handles resolve to more than one session? *(session fixation —
+  expected empty)*
+- Which sessions outlived the rotation or revocation of their confirmation
+  key? *(needs the key lifecycle work; sibling of the credential-revocation
+  question)*
 
 ### Subject identifiers (RFC 9493 / OIDC sub)
 

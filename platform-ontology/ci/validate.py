@@ -105,6 +105,10 @@ def main() -> int:
             "same domain and path to different tenants",
             "no route-binding declaration behind it",
             "binds a tenant but declares no hostname",
+            "not sender-constrained",
+            "resolve to exactly one session",
+            "sender constraining must not be lost",
+            "key confusion",
         ]
         for frag in expected_fragments:
             if frag in text:

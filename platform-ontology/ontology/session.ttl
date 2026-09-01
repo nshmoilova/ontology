@@ -10,11 +10,11 @@
 
 <https://w3id.org/examplebank/platform/session>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Session Module"@en ;
-    dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's."@en .
+    dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles — the opaque value a cookie carries — and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter."@en .
 
 #################################################################
 # Classes
@@ -48,7 +48,12 @@ session:SessionState a owl:Class ;
     skos:definition "Lifecycle state of a session; members are individuals (Active, Expired, Revoked, Suspended) rather than subclasses."@en ;
     vs:term_status "draft" .
 
+session:SessionHandle a owl:Class ;
+    skos:definition "The opaque value presented to identify a session — typically carried in a cookie. It identifies but does not authenticate: under DPoP-style sender constraining the presenter must also prove possession of the session's confirmation key, so a stolen handle alone grants nothing. A handle must resolve to exactly one session (enforced in SHACL); several may resolve to one session across rotations."@en ;
+    vs:term_status "draft" .
+
 session:Session owl:disjointWith session:Token .
+session:SessionHandle owl:disjointWith session:Token .
 
 #################################################################
 # Object properties
@@ -72,6 +77,10 @@ session:hasState a owl:ObjectProperty ;
 
 session:issuedToken a owl:ObjectProperty ;
     skos:definition "Token issued within this session."@en ;
+    vs:term_status "draft" .
+
+session:resolvesToSession a owl:ObjectProperty ;
+    skos:definition "Session a presented handle identifies. Exactly one (enforced in SHACL) — a handle resolving to two sessions is a session-fixation hazard."@en ;
     vs:term_status "draft" .
 
 session:tokenAudience a owl:ObjectProperty ;

@@ -37,9 +37,9 @@
   <!-- 3. cookie -->
   <rect x="18" y="304" width="264" height="66" rx="9" fill="var(--m-authn)" opacity=".10"/>
   <rect x="18" y="304" width="264" height="66" rx="9" fill="none" stroke="var(--m-authn)" stroke-width="1.5"/>
-  <text x="36" y="326" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--m-authn)" font-weight="600">3 · session cookie</text>
-  <text x="36" y="346" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">opaque handle → session id</text>
-  <text x="36" y="362" font-size="10" fill="currentColor" opacity=".55">no sid claim in the token</text>
+  <text x="36" y="326" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--m-authn)" font-weight="600">3 · handle + DPoP proof</text>
+  <text x="36" y="346" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".8">cookie handle · signed proof</text>
+  <text x="36" y="362" font-size="10" fill="currentColor" opacity=".55">handle identifies, key authenticates</text>
 
   <!-- arrows to resolved -->
   <g stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6">
@@ -105,7 +105,7 @@
   <rect x="18" y="392" width="886" height="92" rx="9" fill="var(--panel-2)" stroke="var(--rule)" stroke-width="1.2"/>
   <text x="42" y="417" font-size="12.5" font-weight="600" fill="currentColor">Where each binding stands</text>
   <g font-size="11.5" fill="currentColor" opacity=".82">
-    <text x="42" y="441">domain / path → Tenant — modelled as a route binding, governed by an approved declaration; one address resolves to one tenant.</text>
-    <text x="42" y="465" fill="var(--violation)">session cookie → Session — still unmodelled: the handle is credential-like, but nothing states how a request resolves to a session.</text>
+    <text x="42" y="441">domain / path → Tenant — a route binding, governed by an approved declaration; one address resolves to one tenant.</text>
+    <text x="42" y="465">handle → Session — sender-constrained per DPoP: the session and every token it issues bind to one proof-of-possession key.</text>
   </g>
 </svg>

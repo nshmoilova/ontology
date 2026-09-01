@@ -78,7 +78,7 @@
             "rows": [
               ["domain / path", "Ingress route binding — a governed declaration", "core:Tenant — tenant.access, platform.access"],
               ["landing point", "Which ingress deployment", "environment.access, region.access"],
-              ["session cookie", "Cookie, opaque handle", "session:Session — liveness, revocation, withinSession"],
+              ["session handle + DPoP proof", "Cookie, plus a per-request signed proof", "session:Session — sender-constrained, not bearer"],
               ["sub", "JWT claim", "authn:SubjectIdentifier → core:Principal"],
               ["azp", "JWT claim", "core:AuthorizedParty → core:DeliveryChannel — channel.access"],
               ["acr, amr, auth_time", "JWT claim", "authn:AuthenticationJourneyExecution → AAL"],
@@ -93,6 +93,12 @@
           "body": "Channel is not self-evident from the connection — \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable — this was a real gap found during the OAuth/OIDC review and closed.\n\nWorth testing in the session: is azp alone sufficient? A registration is bound to exactly one channel, so a compromised web registration cannot claim to be mobile. But if one registration is ever reused across channels, the binding silently becomes a lie and nothing in the model would catch it.",
           "terms": ["core:AuthorizedParty", "session:issuedTo", "core:boundToChannel"],
           "shapes": ["TokenShape", "AuthorizedPartyShape"]
+        },
+        {
+          "heading": "Sender constraining: the handle stops being a bearer token",
+          "body": "The session cookie used to be the weakest link in the chain — a bearer artifact that anyone holding it could replay. Under DPoP (RFC 9449) the presenter holds a key pair and signs a proof per request, and the session carries a confirmation binding to that key's thumbprint.\n\nThat splits two things the cookie previously conflated: the handle now identifies the session, and the key authenticates the presenter. A stolen handle grants nothing on its own.\n\nThe invariant worth dwelling on is the third one — constraint laundering. It is entirely possible to sender-constrain a session correctly and then hand out access tokens that are unbound, at which point the protection is decorative. The model forbids a constrained session from issuing a token bound to a different key, or to none.",
+          "terms": ["authn:ProofOfPossessionKey", "authn:confirmedByKey", "authn:keyThumbprint", "session:SessionHandle", "session:resolvesToSession"],
+          "shapes": ["SenderConstrainedSessionShape", "TokenInheritsConfirmationShape", "KeyConfusionShape", "SessionHandleShape"]
         },
         {
           "heading": "aud is not azp",
@@ -114,7 +120,8 @@
       ],
       "openQuestions": [
         "Route bindings are now governed declarations, which closes the approver gap — but only for the tenant binding. The rest of ingress configuration (listeners, TLS termination, upstream targets) is still distributed out of band. Where should that line sit: is tenant binding uniquely sensitive, or is all ingress config desired state?",
-        "Sessions are resolved from a cookie, and the cookie handle is unmodelled. It behaves like a credential — it is presented, it can be stolen, it should be revocable — so does it belong alongside authn:Credential, and does session establishment need the same audit trail as authentication?",
+        "Sessions are now sender-constrained per DPoP, so a stolen handle alone is useless. What remains open is key lifecycle: rotation, and what should happen to a session whose confirmation key is revoked — the same shape as the credential-revocation gap, and probably the same answer.",
+        "DPoP applies cleanly to web and mobile, where the presenter can hold a key. What sender-constrains an API or agent consumer — mutual TLS certificate binding (RFC 8705) instead, and does the model need to distinguish which mechanism constrains a given session, or is the confirmation key enough?",
         "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension — a revoked tenant is not a stale region.",
         "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
         "Do we need entitlement evaluation results in the token as a cache — a short-lived assertion of the Level-1 outcome — and if so, does that reintroduce the freeze problem we designed around?",
