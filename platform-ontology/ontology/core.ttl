@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.0> ;
-    owl:versionInfo "0.4.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.1> ;
+    owl:versionInfo "0.4.1" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -71,7 +71,7 @@ core:PlatformTenant a owl:Class ;
     vs:term_status "draft" .
 
 core:Capability a owl:Class ;
-    skos:definition "A platform offering provided to tenants via subscription (managed database, messaging, unified ingress). Each capability is governed by exactly one capability control plane; where it is available is stated per scope by capability offerings, with no cross-scope parity assumed."@en ;
+    skos:definition "A platform offering provided to tenants via subscription. Each capability is governed by exactly one capability control plane."@en ;
     vs:term_status "draft" .
 
 core:Application a owl:Class ;
@@ -87,7 +87,7 @@ core:BusinessClient a owl:Class ;
 
 core:DeliveryChannel a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    skos:definition "The delivery avenue through which platform capabilities are consumed, determinable by ingress from the registration presenting the request — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
+    skos:definition "The delivery avenue through which platform capabilities are consumed. For interactive sessions it follows from the session's device class, which the session manager sets from what it authenticated — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
     vs:term_status "draft" .
 
 # Disjointness — cheapest consistency checks under reasoning

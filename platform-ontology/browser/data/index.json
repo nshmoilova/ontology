@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "8da4b97e15e6",
+ "sourceDigest": "253d1e9eb278",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -22,7 +22,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.4.0",
+   "version": "0.4.1",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -205,7 +205,7 @@
    "kind": "class",
    "module": "core",
    "label": null,
-   "definition": "A platform offering provided to tenants via subscription (managed database, messaging, unified ingress). Each capability is governed by exactly one capability control plane; where it is available is stated per scope by capability offerings, with no cross-scope parity assumed.",
+   "definition": "A platform offering provided to tenants via subscription. Each capability is governed by exactly one capability control plane.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -261,7 +261,7 @@
    "kind": "class",
    "module": "core",
    "label": null,
-   "definition": "The delivery avenue through which platform capabilities are consumed, determinable by ingress from the registration presenting the request \u2014 never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme.",
+   "definition": "The delivery avenue through which platform capabilities are consumed. For interactive sessions it follows from the session's device class, which the session manager sets from what it authenticated \u2014 never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
