@@ -21,8 +21,8 @@ jobs:
         run: python3 ci/validate.py
       - name: Build the browser index (must stay in sync with the sources)
         run: python3 ci/build_index.py
-      - name: Fail if the committed index is stale
-        run: git diff --exit-code -- browser/data/index.json
+      - name: Fail if the committed browser build is stale
+        run: git diff --exit-code -- browser/
       # Recommended additions once ROBOT is vendored or containerized:
       # - name: OWL 2 QL profile check + coherence
       #   run: robot validate-profile --profile QL --input ontology/core.ttl

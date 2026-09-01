@@ -9,6 +9,7 @@ so the browser cannot drift from the ontology.
 Run from the repository root:  python3 ci/build_index.py
 Writes: browser/data/index.json
 """
+import hashlib
 import json
 import re
 import sys
@@ -415,6 +416,52 @@ def load_competency_questions():
     return formal, backlog
 
 
+def source_digest() -> str:
+    """Stable digest over everything the index is derived from."""
+    h = hashlib.sha256()
+    for rel in ("ontology", "shapes", "queries/competency", "docs/diagrams"):
+        for f in sorted((ROOT / rel).glob("*")):
+            if f.is_file():
+                h.update(f.name.encode())
+                h.update(f.read_bytes())
+    for rel in ("docs/decisions.json", "docs/explainers.json",
+                "docs/competency-questions.md"):
+        f = ROOT / rel
+        if f.exists():
+            h.update(f.read_bytes())
+    return h.hexdigest()[:12]
+
+
+def stamp_asset_versions() -> str:
+    """Content-hash app.js and styles.css into index.html.
+
+    GitHub Pages serves everything with `max-age=600` and no revalidation,
+    so without this a deploy is invisible to anyone who loaded the page in
+    the previous ten minutes. A content hash in the query string makes each
+    build a new URL, which no cache can serve staler than the build itself.
+    """
+    browser = ROOT / "browser"
+    html_path = browser / "index.html"
+    if not html_path.exists():
+        return ""
+    html = html_path.read_text()
+    digests = []
+    for asset in ("app.js", "styles.css"):
+        path = browser / asset
+        if not path.exists():
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()[:10]
+        digests.append(digest)
+        # match the asset with or without an existing ?v= stamp
+        html = re.sub(
+            rf'(["\'])({re.escape(asset)})(\?v=[0-9a-f]+)?\1',
+            rf'\g<1>{asset}?v={digest}\g<1>',
+            html,
+        )
+    html_path.write_text(html)
+    return hashlib.sha256("".join(digests).encode()).hexdigest()[:10]
+
+
 def main() -> int:
     print("== Building ontology browser index ==")
     g = load_ontology()
@@ -440,6 +487,9 @@ def main() -> int:
 
     index = {
         "generated": True,
+        # Digest of the sources, not a wall-clock time: the build must be
+        # reproducible or CI's staleness check would fail on every run.
+        "sourceDigest": source_digest(),
         "stats": {
             "modules": len(modules),
             "classes": counts["class"],
@@ -467,6 +517,9 @@ def main() -> int:
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(index, indent=1, sort_keys=False))
+    stamp = stamp_asset_versions()
+    if stamp:
+        print(f"  stamped app.js / styles.css with content hashes ({stamp})")
     s = index["stats"]
     print(f"  {s['modules']} modules · {s['classes']} classes · "
           f"{s['objectProperties']}+{s['datatypeProperties']} properties")

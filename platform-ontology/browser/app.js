@@ -273,7 +273,11 @@
         <p style="margin:0"><b>Questions come before terms.</b> A term with no competency
         question behind it is scope creep, so each term links to the
         <a href="#/decisions">decision</a> that justified it.</p>
-      </div>`;
+      </div>
+      <footer class="pagefoot">Generated from the Turtle sources${
+        DB.sourceDigest ? ` · source digest <code>${esc(DB.sourceDigest)}</code>` : ""}.
+        Assets are content-hashed and the index revalidates on load, so a plain
+        reload is always enough to see the current ontology.</footer>`;
   }
 
   function viewTerm(curie) {
@@ -743,7 +747,9 @@
   }
 
   /* ---------- boot ---------- */
-  fetch("data/index.json")
+  // GitHub Pages serves with max-age=600 and no revalidation, so without
+  // this the app would show a ten-minute-stale ontology after each deploy.
+  fetch("data/index.json", { cache: "no-cache" })
     .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     .then((data) => {
       DB = data;
