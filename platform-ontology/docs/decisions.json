@@ -2,6 +2,21 @@
   "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies.",
   "decisions": [
     {
+      "id": "D48",
+      "title": "A route serving an application is the application access endpoint",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "The platform PDP's question — may this subject enter this application through this endpoint — could not be answered. Four of its five joins existed, but nothing linked a route to an application: routes reached an UpstreamService, and no UpstreamService named an Application.\n\nRun as SPARQL the question returned zero rows. Drop the missing join and it returned a plausible row, which was worse: the only thing tying application to endpoint was that both belonged to the same tenant, so a tenant owning three applications would have matched all three at any of its routes. The model would have answered 'may enter' for an application the endpoint does not serve — a false positive, the direction that fails open.\n\nOne property closes it. servesApplication makes a tenant-bound route the addressable endpoint an application is entered at: it already carried the domain, the path, the tenant binding, the mediating enforcement point, and a governed declaration behind the binding. Route now carries 'application access endpoint' as an alt-label, so the architecture diagrams and the ontology use one vocabulary.\n\nTwo invariants follow — a route must not serve an application its bound tenant does not own, and must not serve one at a scope outside that application's enablement — and the question becomes CQ-7, executed by CI.",
+      "terms": [
+        "servesApplication",
+        "Route"
+      ],
+      "rejected": [
+        "Linking UpstreamService to Application instead: an upstream is a backend the route forwards to, and several may serve one application; the endpoint is what a subject enters through.",
+        "Leaving the join implicit through shared tenant ownership: it returns rows, which is precisely why it is dangerous — the answer looks right and fails open."
+      ]
+    },
+    {
       "id": "D47",
       "title": "Two clients, kept apart",
       "area": "Foundations",

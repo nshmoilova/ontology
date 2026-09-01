@@ -1,0 +1,58 @@
+# CQ-7: Does this subject's tenant have the right to enter this application
+# through this platform-controlled endpoint and deployment scope?
+#
+# The platform PDP's question. Every join is a governed fact:
+#   principal -> tenant        active, human-approved membership
+#   tenant    -> endpoint      route binding, behind an approved declaration
+#   endpoint  -> application   the route serves it
+#   tenant    -> application   ownership
+#   application -> scope       a current enablement covers it
+#   tenant    -> capability    active subscription for each confirmed requirement
+#   capability -> scope        an offering covers the enablement scope
+#
+# What this deliberately does NOT answer is what the subject may then do
+# inside the application: that is the application PDP's question.
+PREFIX core:    <https://w3id.org/examplebank/platform/core#>
+PREFIX ingress: <https://w3id.org/examplebank/platform/ingress#>
+PREFIX cp:      <https://w3id.org/examplebank/platform/control-plane#>
+
+SELECT ?principal ?tenant ?application ?hostname ?pathPrefix ?scope WHERE {
+
+    # the subject may act for the tenant
+    ?membership cp:memberPrincipal ?principal ;
+                cp:memberOfTenant ?tenant ;
+                cp:hasMembershipState cp:memberstate-active .
+
+    # the endpoint resolves to that tenant and serves this application
+    ?endpoint ingress:boundToTenant ?tenant ;
+              ingress:servesApplication ?application ;
+              ingress:hostname ?hostname .
+    OPTIONAL { ?endpoint ingress:pathPrefix ?pathPrefix }
+
+    # the tenant owns the application
+    ?application core:ownedBy ?tenant .
+
+    # and it is enabled in a scope covering the endpoint's binding scope
+    ?enablement a cp:ApplicationEnablement ;
+                cp:forApplication ?application ;
+                cp:declarationScope ?scope .
+    ?binding cp:declaresRouteBinding ?endpoint ;
+             cp:declarationScope ?bindingScope .
+    ?bindingScope cp:subScopeOf* ?scope .
+
+    # every confirmed capability requirement is covered by an active
+    # subscription and by an offering reaching that scope
+    FILTER NOT EXISTS {
+        ?requirement cp:ofApplication ?application ;
+                     cp:requiredCapability ?capability ;
+                     cp:hasApproval ?confirmed .
+        FILTER NOT EXISTS {
+            ?subscription cp:subscriber ?tenant ;
+                          cp:subscribedCapability ?capability ;
+                          cp:hasSubscriptionState cp:substate-active .
+            ?offering cp:offersCapability ?capability ;
+                      cp:offeredInScope ?offeringScope .
+            ?scope cp:subScopeOf* ?offeringScope .
+        }
+    }
+}

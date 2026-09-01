@@ -115,7 +115,7 @@ ex:pep-edge-east a core:PolicyEnforcementPoint ;
 ex:edge-gateway a ingress:Gateway ;
     core:governedBy ex:policy-ledger-read ;
     ingress:hasListener ex:listener-443 ;
-    ingress:exposesRoute ex:route-ledger .
+    ingress:exposesRoute ex:route-digital-bank .
 
 ex:listener-443 a ingress:Listener ;
     ingress:port 443 ;
@@ -126,20 +126,21 @@ ex:transaction-service a ingress:UpstreamService ;
     core:governedBy ex:policy-ledger-read ;
     core:displayName "Transaction service" .
 
-ex:route-ledger a ingress:Route ;
+ex:route-digital-bank a ingress:Route ;
     core:governedBy ex:policy-ledger-read ;
     ingress:routesTo ex:transaction-service ;
     ingress:hostname "t123.apps.examplebank.com" ;
-    ingress:pathPrefix "/ledger" ;
+    ingress:pathPrefix "/digital-bank" ;
     ingress:boundToTenant ex:tenant-t123 ;
+    ingress:servesApplication ex:app-digital-bank ;
     core:enforcedBy ex:pep-edge-east .
 
 ### The route binding is governed desired state, not loose config
 ex:route-binding-8003 a cp:RouteBindingChange ;
-    core:displayName "Bind t123.apps.examplebank.com/ledger to tenant T123" ;
+    core:displayName "Bind t123.apps.examplebank.com/digital-bank to tenant T123" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:declaresRouteBinding ex:route-ledger ;
+    cp:declaresRouteBinding ex:route-digital-bank ;
     cp:hasApproval ex:approval-8003 .
 
 ex:approval-8003 a cp:ChangeApproval ;

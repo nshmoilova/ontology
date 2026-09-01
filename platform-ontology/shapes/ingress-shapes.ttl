@@ -48,6 +48,45 @@ si:PlaintextListenerWarningShape a sh:NodeShape ;
         """ ;
     ] .
 
+# An endpoint must not expose one tenant's application at another's address.
+si:RouteApplicationOwnershipShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Route serves an application its bound tenant does not own — a cross-tenant endpoint." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t ;
+                      <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .
+                ?app <https://w3id.org/examplebank/platform/core#ownedBy> ?owner .
+                FILTER (?owner != ?t)
+            }
+        """ ;
+    ] .
+
+# An endpoint must not be reachable where its application is not enabled.
+si:RouteEnablementScopeShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Route serves an application at a scope outside that application's enablement — reachable where it is not enabled." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .
+                ?binding <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this ;
+                         <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?routeScope .
+                FILTER NOT EXISTS {
+                    ?en a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;
+                        <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;
+                        <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?appScope .
+                    ?routeScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?appScope .
+                }
+            }
+        """ ;
+    ] .
+
 # A route that resolves tenant context must carry the address it resolves
 # from — a tenant binding with no hostname is unresolvable configuration.
 si:TenantBoundRouteShape a sh:NodeShape ;
@@ -129,4 +168,11 @@ si:RouteShape a sh:NodeShape ;
         sh:class core:Tenant ;
         sh:severity sh:Violation ;
         sh:message "A route binds at most one tenant, and what it binds must be a tenant — a domain resolves to a tenant, it does not substitute for one." ;
+    ] ;
+    sh:property [
+        sh:path ingress:servesApplication ;
+        sh:maxCount 1 ;
+        sh:class core:Application ;
+        sh:severity sh:Violation ;
+        sh:message "A route serves at most one application — an access endpoint addresses one application boundary." ;
     ] .

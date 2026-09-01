@@ -9,11 +9,11 @@
 
 <https://w3id.org/examplebank/platform/ingress>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.2.1> ;
-    owl:versionInfo "0.2.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> ;
     dct:title "Ingress Module"@en ;
-    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves — the configuration from which ingress resolves tenant context, and therefore the root of tenant.access."@en .
+    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves — the configuration from which ingress resolves tenant context, and therefore the root of tenant.access. Since 0.3.0: the application a route serves, which completes the route as an application access endpoint."@en .
 
 #################################################################
 # Classes
@@ -30,7 +30,9 @@ ingress:Listener a owl:Class ;
 
 ingress:Route a owl:Class ;
     rdfs:subClassOf core:Resource ;
-    skos:definition "A rule mapping matched traffic on a gateway to an upstream service."@en ;
+    skos:prefLabel "Route"@en ;
+    skos:altLabel "application access endpoint"@en ;
+    skos:definition "A rule mapping matched traffic on a gateway to an upstream service. A route that binds a tenant and serves an application is the addressable endpoint through which that application is entered: it carries the domain and path, the tenant binding, the mediating enforcement point, and a governed declaration behind the binding."@en ;
     vs:term_status "draft" .
 
 ingress:UpstreamService a owl:Class ;
@@ -60,6 +62,10 @@ ingress:routesTo a owl:ObjectProperty ;
 
 ingress:boundToTenant a owl:ObjectProperty ;
     skos:definition "Tenant that traffic matching this route resolves to. Ingress establishes tenant context from this binding, not from any token claim."@en ;
+    vs:term_status "draft" .
+
+ingress:servesApplication a owl:ObjectProperty ;
+    skos:definition "Application reachable through this route. With the tenant binding, this makes the route the endpoint an application is entered at, so admission can ask whether a subject may enter THIS application through THIS endpoint rather than merely whether the tenant owns some enabled application."@en ;
     vs:term_status "draft" .
 
 ingress:hasTLSConfiguration a owl:ObjectProperty ;

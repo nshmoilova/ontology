@@ -396,6 +396,20 @@ ex:route-collide-b a ingress:Route ;
     ingress:boundToTenant ex:tenant-y .
 ex:pep-x a core:PolicyEnforcementPoint .
 
+### 36. Route exposing another tenant's application, at a scope where it
+###     is not enabled (RouteApplicationOwnershipShape,
+###     RouteEnablementScopeShape)
+ex:route-crosstenant a ingress:Route ;
+    ingress:routesTo ex:naked-upstream ;
+    core:enforcedBy ex:pep-x ;
+    ingress:hostname "crosstenant.examplebank.com" ;
+    ingress:boundToTenant ex:tenant-x ;
+    ingress:servesApplication ex:foreign-app .
+ex:binding-crosstenant a cp:RouteBindingChange ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:declaresRouteBinding ex:route-crosstenant .
+
 ### 32. Route binding something that is not a tenant (RouteShape typing).
 ###     Governed and hostnamed, so only the class violation is at fault —
 ###     a domain resolves to a tenant, it does not substitute for one.

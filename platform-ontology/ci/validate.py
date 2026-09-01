@@ -113,6 +113,8 @@ def main() -> int:
             "one session per user per device",
             "exceeds the configured concurrent-session limit",
             "exactly one client_id",
+            "bound tenant does not own",
+            "outside that application's enablement",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -130,6 +132,7 @@ def main() -> int:
         "cq2-routes-and-peps.rq", "cq3-policy-change-approvers.rq",
         "cq4-attribute-provenance.rq", "cq5-permits-with-assurance-chain.rq",
         "cq6-workload-principals.rq",
+        "cq7-application-entry-rights.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

@@ -13,6 +13,7 @@ scope creep.
 | CQ-4 | Which attribute assertions back decisions about a principal, and which authoritative source issued each? | `cq4-attribute-provenance.rq` | authz |
 | CQ-5 | For each Permit decision, what is the full assurance chain (decision → session → authentication → method/AAL)? | `cq5-permits-with-assurance-chain.rq` | authz, session, authn |
 | CQ-6 | Which workload principals exist, what are their SPIFFE identities, and which changes have they executed? | `cq6-workload-principals.rq` | core, control-plane |
+| CQ-7 | Does this subject's tenant have the right to enter this application through this platform-controlled endpoint and deployment scope? | `cq7-application-entry-rights.rq` | core, ingress, control-plane |
 
 ## Backlog (draft, not yet modelled)
 
@@ -191,6 +192,11 @@ plane. Channels: web, mobile, api, agent.
   behind them? *(ungoverned binding — expected empty)*
 - Which route bindings changed without a human approval in a scope that
   requires one? *(inherited from the declaration machinery)*
+- Which routes serve an application their bound tenant does not own?
+  *(cross-tenant endpoint — expected empty)*
+- Which routes serve an application at a scope outside that application's
+  enablement scope? *(endpoint reachable where the application is not
+  enabled — expected empty)*
 - For each session, which handle resolves to it, and to which
   proof-of-possession key is the session sender-constrained?
 - Which sessions are not sender-constrained — bound to no confirmation key,

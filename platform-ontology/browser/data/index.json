@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "a66be9a72c4b",
+ "sourceDigest": "b487f18a187e",
  "stats": {
   "modules": 6,
   "classes": 73,
-  "objectProperties": 89,
+  "objectProperties": 90,
   "datatypeProperties": 34,
-  "shapes": 70,
-  "violations": 101,
+  "shapes": 72,
+  "violations": 104,
   "warnings": 8,
   "vocabularies": 11,
-  "relationships": 49,
-  "decisions": 47,
+  "relationships": 50,
+  "decisions": 48,
   "explainers": 2,
-  "formalCQs": 6,
-  "backlogCQs": 83
+  "formalCQs": 7,
+  "backlogCQs": 85
  },
  "modules": [
   {
@@ -56,8 +56,8 @@
    "iri": "https://w3id.org/examplebank/platform/ingress",
    "prefix": "ingress",
    "title": "Ingress Module",
-   "version": "0.2.1",
-   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves \u2014 the configuration from which ingress resolves tenant context, and therefore the root of tenant.access.",
+   "version": "0.3.0",
+   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves \u2014 the configuration from which ingress resolves tenant context, and therefore the root of tenant.access. Since 0.3.0: the application a route serves, which completes the route as an application access endpoint.",
    "blurb": "Network entry: gateways, listeners, routes, TLS termination and upstream services \u2014 deliberately implementation-independent.",
    "imports": [
     "core"
@@ -137,7 +137,15 @@
      "severity": "Violation"
     }
    ],
-   "incoming": [],
+   "incoming": [
+    {
+     "from": "ingress:Route",
+     "property": "ingress:servesApplication",
+     "to": "core:Application",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
@@ -3731,10 +3739,12 @@
    "curie": "ingress:Route",
    "kind": "class",
    "module": "ingress",
-   "label": null,
-   "definition": "A rule mapping matched traffic on a gateway to an upstream service.",
+   "label": "Route",
+   "definition": "A rule mapping matched traffic on a gateway to an upstream service. A route that binds a tenant and serves an application is the addressable endpoint through which that application is entered: it carries the domain and path, the tenant binding, the mediating enforcement point, and a governed declaration behind the binding.",
    "editorialNote": null,
-   "altLabels": [],
+   "altLabels": [
+    "application access endpoint"
+   ],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -3743,12 +3753,26 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "RouteApplicationOwnershipShape",
+    "RouteEnablementScopeShape",
     "TenantBoundRouteShape",
     "RouteBindingCollisionShape",
     "GovernedRouteBindingShape",
     "RouteShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route serves an application its bound tenant does not own \u2014 a cross-tenant endpoint.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t ;\n                      <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .\n                ?app <https://w3id.org/examplebank/platform/core#ownedBy> ?owner .\n                FILTER (?owner != ?t)\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route serves an application at a scope outside that application's enablement \u2014 reachable where it is not enabled.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .\n                ?binding <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this ;\n                         <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?routeScope .\n                FILTER NOT EXISTS {\n                    ?en a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;\n                        <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?appScope .\n                    ?routeScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?appScope .\n                }\n            }"
+    },
     {
      "kind": "sparql",
      "severity": "Violation",
@@ -3811,6 +3835,21 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A route binds at most one tenant, and what it binds must be a tenant \u2014 a domain resolves to a tenant, it does not substitute for one."
+    },
+    {
+     "kind": "property",
+     "path": "ingress:servesApplication",
+     "pathIri": "https://w3id.org/examplebank/platform/ingress#servesApplication",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "core:Application",
+     "classIri": "https://w3id.org/examplebank/platform/core#Application",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route serves at most one application \u2014 an access endpoint addresses one application boundary."
     }
    ],
    "outgoing": [
@@ -3834,6 +3873,13 @@
      "to": "core:Tenant",
      "cardinality": "0..1",
      "severity": "Violation"
+    },
+    {
+     "from": "ingress:Route",
+     "property": "ingress:servesApplication",
+     "to": "core:Application",
+     "cardinality": "0..1",
+     "severity": "Violation"
     }
    ],
    "incoming": [
@@ -3848,6 +3894,7 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
+    "D48",
     "D43",
     "D42"
    ]
@@ -4171,6 +4218,39 @@
    ],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/ingress#servesApplication",
+   "name": "servesApplication",
+   "curie": "ingress:servesApplication",
+   "kind": "objectProperty",
+   "module": "ingress",
+   "label": null,
+   "definition": "Application reachable through this route. With the tenant binding, this makes the route the endpoint an application is entered at, so admission can ask whether a subject may enter THIS application through THIS endpoint rather than merely whether the tenant owns some enabled application.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "ingress:Route",
+     "property": "ingress:servesApplication",
+     "to": "core:Application",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D48"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#Action",
@@ -10468,6 +10548,23 @@
    "warnings": 1
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteApplicationOwnershipShape",
+   "name": "RouteApplicationOwnershipShape",
+   "targetClass": "ingress:Route",
+   "targetClassIri": "https://w3id.org/examplebank/platform/ingress#Route",
+   "module": "ingress",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route serves an application its bound tenant does not own \u2014 a cross-tenant endpoint.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t ;\n                      <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .\n                ?app <https://w3id.org/examplebank/platform/core#ownedBy> ?owner .\n                FILTER (?owner != ?t)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteBindingCollisionShape",
    "name": "RouteBindingCollisionShape",
    "targetClass": "ingress:Route",
@@ -10479,6 +10576,23 @@
      "severity": "Violation",
      "message": "Two routes bind the same domain and path to different tenants \u2014 one address must resolve to exactly one tenant.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                      <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t1 .\n                ?other <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                       <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t2 .\n                FILTER (?other != $this)\n                FILTER (?t1 != ?t2)\n                OPTIONAL { $this <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p1 . }\n                OPTIONAL { ?other <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p2 . }\n                FILTER (COALESCE(?p1, \"/\") = COALESCE(?p2, \"/\"))\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteEnablementScopeShape",
+   "name": "RouteEnablementScopeShape",
+   "targetClass": "ingress:Route",
+   "targetClassIri": "https://w3id.org/examplebank/platform/ingress#Route",
+   "module": "ingress",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route serves an application at a scope outside that application's enablement \u2014 reachable where it is not enabled.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#servesApplication> ?app .\n                ?binding <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this ;\n                         <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?routeScope .\n                FILTER NOT EXISTS {\n                    ?en a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;\n                        <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?appScope .\n                    ?routeScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?appScope .\n                }\n            }"
     }
    ],
    "violations": 1,
@@ -10535,9 +10649,24 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A route binds at most one tenant, and what it binds must be a tenant \u2014 a domain resolves to a tenant, it does not substitute for one."
+    },
+    {
+     "kind": "property",
+     "path": "ingress:servesApplication",
+     "pathIri": "https://w3id.org/examplebank/platform/ingress#servesApplication",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "core:Application",
+     "classIri": "https://w3id.org/examplebank/platform/core#Application",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route serves at most one application \u2014 an access endpoint addresses one application boundary."
     }
    ],
-   "violations": 3,
+   "violations": 4,
    "warnings": 0
   },
   {
@@ -11165,6 +11294,13 @@
    "severity": "Violation"
   },
   {
+   "from": "ingress:Route",
+   "property": "ingress:servesApplication",
+   "to": "core:Application",
+   "cardinality": "0..1",
+   "severity": "Violation"
+  },
+  {
    "from": "session:Device",
    "property": "session:hasDeviceClass",
    "to": "session:DeviceClass",
@@ -11222,6 +11358,25 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D48",
+   "title": "A route serving an application is the application access endpoint",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "The platform PDP's question \u2014 may this subject enter this application through this endpoint \u2014 could not be answered. Four of its five joins existed, but nothing linked a route to an application: routes reached an UpstreamService, and no UpstreamService named an Application.\n\nRun as SPARQL the question returned zero rows. Drop the missing join and it returned a plausible row, which was worse: the only thing tying application to endpoint was that both belonged to the same tenant, so a tenant owning three applications would have matched all three at any of its routes. The model would have answered 'may enter' for an application the endpoint does not serve \u2014 a false positive, the direction that fails open.\n\nOne property closes it. servesApplication makes a tenant-bound route the addressable endpoint an application is entered at: it already carried the domain, the path, the tenant binding, the mediating enforcement point, and a governed declaration behind the binding. Route now carries 'application access endpoint' as an alt-label, so the architecture diagrams and the ontology use one vocabulary.\n\nTwo invariants follow \u2014 a route must not serve an application its bound tenant does not own, and must not serve one at a scope outside that application's enablement \u2014 and the question becomes CQ-7, executed by CI.",
+   "terms": [
+    "servesApplication",
+    "Route"
+   ],
+   "rejected": [
+    "Linking UpstreamService to Application instead: an upstream is a backend the route forwards to, and several may serve one application; the endpoint is what a subject enters through.",
+    "Leaving the join implicit through shared tenant ownership: it returns rows, which is precisely why it is dangerous \u2014 the answer looks right and fails open."
+   ],
+   "termCuries": [
+    "ingress:Route",
+    "ingress:servesApplication"
+   ]
+  },
   {
    "id": "D47",
    "title": "Two clients, kept apart",
@@ -12495,6 +12650,17 @@
      "core",
      "control-plane"
     ]
+   },
+   {
+    "id": "CQ-7",
+    "question": "Does this subject's tenant have the right to enter this application through this platform-controlled endpoint and deployment scope?",
+    "query": "cq7-application-entry-rights.rq",
+    "sparql": "# CQ-7: Does this subject's tenant have the right to enter this application\n# through this platform-controlled endpoint and deployment scope?\n#\n# The platform PDP's question. Every join is a governed fact:\n#   principal -> tenant        active, human-approved membership\n#   tenant    -> endpoint      route binding, behind an approved declaration\n#   endpoint  -> application   the route serves it\n#   tenant    -> application   ownership\n#   application -> scope       a current enablement covers it\n#   tenant    -> capability    active subscription for each confirmed requirement\n#   capability -> scope        an offering covers the enablement scope\n#\n# What this deliberately does NOT answer is what the subject may then do\n# inside the application: that is the application PDP's question.\nPREFIX core:    <https://w3id.org/examplebank/platform/core#>\nPREFIX ingress: <https://w3id.org/examplebank/platform/ingress#>\nPREFIX cp:      <https://w3id.org/examplebank/platform/control-plane#>\n\nSELECT ?principal ?tenant ?application ?hostname ?pathPrefix ?scope WHERE {\n\n    # the subject may act for the tenant\n    ?membership cp:memberPrincipal ?principal ;\n                cp:memberOfTenant ?tenant ;\n                cp:hasMembershipState cp:memberstate-active .\n\n    # the endpoint resolves to that tenant and serves this application\n    ?endpoint ingress:boundToTenant ?tenant ;\n              ingress:servesApplication ?application ;\n              ingress:hostname ?hostname .\n    OPTIONAL { ?endpoint ingress:pathPrefix ?pathPrefix }\n\n    # the tenant owns the application\n    ?application core:ownedBy ?tenant .\n\n    # and it is enabled in a scope covering the endpoint's binding scope\n    ?enablement a cp:ApplicationEnablement ;\n                cp:forApplication ?application ;\n                cp:declarationScope ?scope .\n    ?binding cp:declaresRouteBinding ?endpoint ;\n             cp:declarationScope ?bindingScope .\n    ?bindingScope cp:subScopeOf* ?scope .\n\n    # every confirmed capability requirement is covered by an active\n    # subscription and by an offering reaching that scope\n    FILTER NOT EXISTS {\n        ?requirement cp:ofApplication ?application ;\n                     cp:requiredCapability ?capability ;\n                     cp:hasApproval ?confirmed .\n        FILTER NOT EXISTS {\n            ?subscription cp:subscriber ?tenant ;\n                          cp:subscribedCapability ?capability ;\n                          cp:hasSubscriptionState cp:substate-active .\n            ?offering cp:offersCapability ?capability ;\n                      cp:offeredInScope ?offeringScope .\n            ?scope cp:subScopeOf* ?offeringScope .\n        }\n    }\n}",
+    "modules": [
+     "core",
+     "ingress",
+     "control-plane"
+    ]
    }
   ],
   "backlog": [
@@ -12767,6 +12933,16 @@
     "section": "Ingress token contract and channels",
     "question": "Which route bindings changed without a human approval in a scope that requires one? (inherited from the declaration machinery)",
     "expectedEmpty": false
+   },
+   {
+    "section": "Ingress token contract and channels",
+    "question": "Which routes serve an application their bound tenant does not own? (cross-tenant endpoint \u2014 expected empty)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Ingress token contract and channels",
+    "question": "Which routes serve an application at a scope outside that application's enablement scope? (endpoint reachable where the application is not enabled \u2014 expected empty)",
+    "expectedEmpty": true
    },
    {
     "section": "Ingress token contract and channels",
