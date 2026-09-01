@@ -19,11 +19,11 @@ ex:payments-agent a core:WorkloadPrincipal ;
 
 ### The two clients, kept apart
 ### 1. OAuth client — the session manager's registration, one per audience
-ex:oauth-reg-ledger a authn:OAuthClientRegistration ;
-    core:displayName "Session manager registration for the ledger audience" ;
+ex:oauth-reg-transaction a authn:OAuthClientRegistration ;
+    core:displayName "Session manager registration for the transaction audience" ;
     authn:clientId "a3f1c8e2-7d44-4b91-9f0e-2c6b5d18ae37" ;
     authn:registeredWith ex:enterprise-idp ;
-    authn:forAudience ex:ledger-service .
+    authn:forAudience ex:transaction-service .
 
 ### 2. Business client — a party with a relationship to the firm
 ex:client-acme a core:BusinessClient ;
@@ -105,7 +105,7 @@ ex:handle-9001 a session:SessionHandle ;
 
 ex:token-at-1 a session:AccessToken ;
     session:expiresAt "2026-08-31T13:20:01Z"^^xsd:dateTime ;
-    session:tokenAudience ex:ledger-service ;
+    session:tokenAudience ex:transaction-service ;
     authn:confirmedByKey ex:dpop-key-alice-web .
 
 ### Ingress
@@ -122,13 +122,13 @@ ex:listener-443 a ingress:Listener ;
     ingress:protocol "HTTPS" ;
     ingress:terminatesTLS true .
 
-ex:ledger-service a ingress:UpstreamService ;
+ex:transaction-service a ingress:UpstreamService ;
     core:governedBy ex:policy-ledger-read ;
-    core:displayName "Ledger service" .
+    core:displayName "Transaction service" .
 
 ex:route-ledger a ingress:Route ;
     core:governedBy ex:policy-ledger-read ;
-    ingress:routesTo ex:ledger-service ;
+    ingress:routesTo ex:transaction-service ;
     ingress:hostname "t123.apps.examplebank.com" ;
     ingress:pathPrefix "/ledger" ;
     ingress:boundToTenant ex:tenant-t123 ;
@@ -190,7 +190,7 @@ ex:decision-5001 a authz:PolicyDecision ;
     authz:withinSession ex:session-9001 ;
     authz:evaluatedPolicy ex:policy-ledger-read ;
     authz:evaluatedAction authz:action-read ;
-    core:targetsResource ex:ledger-service ;
+    core:targetsResource ex:transaction-service ;
     authz:decisionOutcome authz:outcome-permit .
 
 ### Control plane
@@ -316,7 +316,6 @@ ex:approval-8002 a cp:ChangeApproval ;
 ex:portal-t123-web a cp:Portal ;
     core:displayName "T123 web portal" ;
     core:ownedBy ex:tenant-t123 ;
-    cp:groupsApplication ex:app-ledger ;
     cp:groupsApplication ex:app-ledger .
 
 ### Entitlement grant (projection, never hand-authored)

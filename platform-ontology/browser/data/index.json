@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "1fad9dbb2eff",
+ "sourceDigest": "a66be9a72c4b",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -12387,7 +12387,7 @@
     },
     {
      "heading": "What the audience does, and what client_id does not",
-     "body": "The audience is the resource expected to accept the token \u2014 the ledger service, a capability endpoint. A token presented to a resource it was not minted for is rejected, which is what makes aud a real control.\n\nThe token's client_id is a different kind of thing: it identifies the session manager's OAuth registration at the global IdP, and since the platform maintains one registration per audience, it is derivable from aud. It carries no tenancy, no channel and no front-end identity, so the model treats it as protocol plumbing and does not represent it \u2014 the same call the model already makes for JOSE header fields.\n\nThis is worth stating plainly in the room, because the instinct to read platform meaning into the OAuth client identifier is strong, and acting on it would put tenancy or channel decisions on a value that cannot carry them.",
+     "body": "The audience is the resource expected to accept the token \u2014 a transaction service, a capability endpoint. A token presented to a resource it was not minted for is rejected, which is what makes aud a real control.\n\nThe token's client_id is a different kind of thing: it identifies the session manager's OAuth registration at the global IdP, and since the platform maintains one registration per audience, it is derivable from aud. It carries no tenancy, no channel and no front-end identity, so the model treats it as protocol plumbing and does not represent it \u2014 the same call the model already makes for JOSE header fields.\n\nThis is worth stating plainly in the room, because the instinct to read platform meaning into the OAuth client identifier is strong, and acting on it would put tenancy or channel decisions on a value that cannot carry them.",
      "terms": [
       "session:tokenAudience",
       "core:Tenant"
