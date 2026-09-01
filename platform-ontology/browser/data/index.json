@@ -1,16 +1,16 @@
 {
  "generated": true,
- "sourceDigest": "d7dbcdc568b2",
+ "sourceDigest": "3fc31abb3d03",
  "stats": {
   "modules": 6,
   "classes": 69,
   "objectProperties": 86,
   "datatypeProperties": 32,
   "shapes": 64,
-  "violations": 99,
+  "violations": 100,
   "warnings": 7,
   "vocabularies": 10,
-  "relationships": 50,
+  "relationships": 51,
   "decisions": 45,
   "explainers": 2,
   "formalCQs": 6,
@@ -857,6 +857,13 @@
      "property": "core:ownedBy",
      "to": "core:Tenant",
      "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "ingress:Route",
+     "property": "ingress:boundToTenant",
+     "to": "core:Tenant",
+     "cardinality": "0..1",
      "severity": "Violation"
     }
    ],
@@ -3596,6 +3603,21 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "Every route must be mediated by exactly one policy enforcement point before its upstream."
+    },
+    {
+     "kind": "property",
+     "path": "ingress:boundToTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/ingress#boundToTenant",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route binds at most one tenant, and what it binds must be a tenant \u2014 a domain resolves to a tenant, it does not substitute for one."
     }
    ],
    "outgoing": [
@@ -3611,6 +3633,13 @@
      "property": "core:enforcedBy",
      "to": "core:PolicyEnforcementPoint",
      "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "ingress:Route",
+     "property": "ingress:boundToTenant",
+     "to": "core:Tenant",
+     "cardinality": "0..1",
      "severity": "Violation"
     }
    ],
@@ -3828,7 +3857,15 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "ingress:Route",
+     "property": "ingress:boundToTenant",
+     "to": "core:Tenant",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": [
     "D43"
@@ -10213,9 +10250,24 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "Every route must be mediated by exactly one policy enforcement point before its upstream."
+    },
+    {
+     "kind": "property",
+     "path": "ingress:boundToTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/ingress#boundToTenant",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route binds at most one tenant, and what it binds must be a tenant \u2014 a domain resolves to a tenant, it does not substitute for one."
     }
    ],
-   "violations": 2,
+   "violations": 3,
    "warnings": 0
   },
   {
@@ -10776,6 +10828,13 @@
    "property": "core:enforcedBy",
    "to": "core:PolicyEnforcementPoint",
    "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "ingress:Route",
+   "property": "ingress:boundToTenant",
+   "to": "core:Tenant",
+   "cardinality": "0..1",
    "severity": "Violation"
   },
   {

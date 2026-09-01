@@ -122,4 +122,11 @@ si:RouteShape a sh:NodeShape ;
         sh:class core:PolicyEnforcementPoint ;
         sh:severity sh:Violation ;
         sh:message "Every route must be mediated by exactly one policy enforcement point before its upstream." ;
+    ] ;
+    sh:property [
+        sh:path ingress:boundToTenant ;
+        sh:maxCount 1 ;
+        sh:class core:Tenant ;
+        sh:severity sh:Violation ;
+        sh:message "A route binds at most one tenant, and what it binds must be a tenant — a domain resolves to a tenant, it does not substitute for one." ;
     ] .

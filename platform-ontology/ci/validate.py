@@ -112,6 +112,7 @@ def main() -> int:
             "holding no active membership in that tenant",
             "membership lacks approval by a human principal",
             "more than one active membership in the same tenant",
+            "does not substitute for one",
         ]
         for frag in expected_fragments:
             if frag in text:

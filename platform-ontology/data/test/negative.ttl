@@ -355,6 +355,19 @@ ex:route-collide-b a ingress:Route ;
     ingress:boundToTenant ex:tenant-y .
 ex:pep-x a core:PolicyEnforcementPoint .
 
+### 32. Route binding something that is not a tenant (RouteShape typing).
+###     Governed and hostnamed, so only the class violation is at fault —
+###     a domain resolves to a tenant, it does not substitute for one.
+ex:route-mistyped a ingress:Route ;
+    ingress:routesTo ex:naked-upstream ;
+    core:enforcedBy ex:pep-x ;
+    ingress:hostname "mistyped.examplebank.com" ;
+    ingress:boundToTenant ex:cache-capability .
+ex:binding-mistyped a cp:RouteBindingChange ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:declaresRouteBinding ex:route-mistyped .
+
 ### 26. Tenant-bound route with no governing declaration, and no hostname
 ###     (GovernedRouteBindingShape, TenantBoundRouteShape)
 ex:route-ungoverned a ingress:Route ;
