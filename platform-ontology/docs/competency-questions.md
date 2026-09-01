@@ -166,6 +166,14 @@ plane. Channels: web, mobile, api, agent.
   grant derive from? *(tenant onboarding not yet modelled — named gap)*
 - Which tokens carry an audience outside their principal's reachable set at
   issuance time? *(expected empty)*
+- Which host or path prefix resolves to which tenant, and which governed
+  declaration established that binding? *(host/path→tenant resolution is not
+  yet modelled — named gap; it is the root of `tenant.access`)*
+- Which hosts or path prefixes resolve to more than one tenant?
+  *(invariant — expected empty, once the binding is modelled)*
+- For each session, which presented handle resolved to it, when was that
+  handle issued, and is it revocable independently of the session?
+  *(cookie→session resolution is not yet modelled — named gap)*
 
 ### Subject identifiers (RFC 9493 / OIDC sub)
 

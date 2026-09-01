@@ -15,16 +15,16 @@
         },
         {
           "heading": "Level 1 — platform entitlements",
-          "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.",
+          "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.\n\nNote how little of this comes from the token. Tenant is resolved from the request host and path; environment and region from which ingress deployment received the request. Only channel is token-derived, and even then indirectly — through the registration the token was issued to, not a claim naming the channel.",
           "terms": ["authz:EntitlementDimension", "authz:EntitlementGrant", "core:DeliveryChannel"],
           "table": {
             "columns": ["Dimension", "Governs", "Resolved from"],
             "rows": [
               ["platform.access", "May this tenant use the platform at all?", "Tenant registration"],
-              ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "Token org_id → Tenant"],
+              ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "The request host / path — not a token claim"],
               ["environment.access", "May this tenant operate in prod / uat / dev?", "Which ingress deployment received the request"],
               ["region.access", "May this tenant operate in this region?", "Where the request landed"],
-              ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The presenting registration (azp), never a claim"]
+              ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The presenting registration (azp)"]
             ]
           }
         },
@@ -50,7 +50,8 @@
         }
       ],
       "openQuestions": [
-        "Do environment and region belong as entitlement dimensions at all, given they are resolved from where the request landed rather than from tenant configuration — or are they properly deployment facts that policy reads, with the grant a redundant assertion?",
+        "Do environment and region belong as entitlement dimensions at all, given they are resolved from where the request landed rather than from tenant configuration — or are they properly deployment facts that policy reads, with the grant a redundant assertion? The same question now applies to tenant.access, since tenancy comes from the request URL rather than from anything the tenant presents.",
+        "If tenant context comes from host and path, is tenant.access enforcing anything the routing has not already decided? Put sharply: does a request that reaches a tenant's hostname ever fail tenant.access, and if not, is the dimension real or ceremonial?",
         "Application admission currently answers reachability of the application boundary. Do we also need a coarse 'capability class' notion at Level 2 — for example admitting a tenant to a read-only view of an application — or does that immediately become Level 3?",
         "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
         "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
@@ -70,25 +71,26 @@
           "terms": ["authz:EntitlementGrant", "session:Token"]
         },
         {
-          "heading": "Claim by claim",
-          "body": "Every claim ingress reads resolves to a node in the model. Nothing resolves to an entitlement.\n\nNote what carries no claim: environment and region come from which ingress deployment received the request. A token asserting \"I am allowed in prod\" would invert the evidence/authority split — the caller would be supplying its own authority.",
+          "heading": "Three evidence sources, not one",
+          "body": "It is tempting to say \"ingress reads the token\", but the token is only one of three inputs, and it is not even the one that establishes tenancy.\n\nThe request URL carries tenant context: ingress resolves the tenant from the host and path, not from a claim. Where the request landed carries environment and region. The session cookie carries an opaque handle that maps to a session — there is no session identifier in the token. What the token itself contributes is identity, the presenting registration, and assurance.\n\nThis matters for the discussion because it changes what an attacker has to forge. A claim can be attacked by compromising the issuer; host-and-path tenancy is attacked by compromising the routing configuration — a different control, owned by a different team, and one the ontology does not currently model at all.",
           "table": {
-            "columns": ["Claim", "Resolves to", "Used for"],
+            "columns": ["Evidence", "Source", "Resolves to"],
             "rows": [
-              ["iss, aud, exp, nbf", "Trusted issuer; session:tokenAudience", "Preconditions — valid, in window, addressed to this platform"],
-              ["sub", "authn:SubjectIdentifier → core:Principal", "Who is calling, per issuer, possibly pairwise"],
-              ["org_id", "core:Tenant", "tenant.access and platform.access"],
-              ["azp", "core:AuthorizedParty → core:DeliveryChannel", "channel.access — the channel evidence"],
-              ["sid", "session:Session", "Liveness and revocation; the decision's withinSession link"],
-              ["acr, amr, auth_time", "authn:AuthenticationJourneyExecution → AAL", "Assurance comparison against policy"],
-              ["scope, permissions", "— deliberately ignored —", "Level 3: application-owned authorization"]
+              ["host / path", "Request URL", "core:Tenant — tenant.access, platform.access"],
+              ["landing point", "Which ingress deployment", "environment.access, region.access"],
+              ["session cookie", "Cookie, opaque handle", "session:Session — liveness, revocation, withinSession"],
+              ["sub", "JWT claim", "authn:SubjectIdentifier → core:Principal"],
+              ["azp", "JWT claim", "core:AuthorizedParty → core:DeliveryChannel — channel.access"],
+              ["acr, amr, auth_time", "JWT claim", "authn:AuthenticationJourneyExecution → AAL"],
+              ["iss, aud, exp, nbf", "JWT claim", "Preconditions — valid, in window, addressed here"],
+              ["scope, permissions", "JWT claim", "— deliberately ignored: Level 3 —"]
             ]
           },
-          "terms": ["authn:SubjectIdentifier", "core:AuthorizedParty", "session:Session", "authn:AuthenticationJourneyExecution"]
+          "terms": ["authn:SubjectIdentifier", "core:AuthorizedParty", "session:Session", "authn:AuthenticationJourneyExecution", "core:Tenant"]
         },
         {
-          "heading": "azp: the binding that makes channel trustworthy",
-          "body": "Channel is the one dimension that is not self-evident from the connection — \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable — this was a real gap found during the OAuth/OIDC review and closed.",
+          "heading": "azp: the one dimension the token does establish",
+          "body": "Channel is not self-evident from the connection — \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable — this was a real gap found during the OAuth/OIDC review and closed.\n\nWorth testing in the session: is azp alone sufficient? A registration is bound to exactly one channel, so a compromised web registration cannot claim to be mobile. But if one registration is ever reused across channels, the binding silently becomes a lie and nothing in the model would catch it.",
           "terms": ["core:AuthorizedParty", "session:issuedTo", "core:boundToChannel"],
           "shapes": ["TokenShape", "AuthorizedPartyShape"]
         },
@@ -111,6 +113,8 @@
         }
       ],
       "openQuestions": [
+        "Tenant is resolved from host and path, but nothing in the ontology binds a domain or path prefix to a tenant. That mapping is the root of tenant.access — whoever can change it can change who a request is treated as. Should it be governed desired state like everything else, and what invariant would catch two tenants claiming the same host?",
+        "Sessions are resolved from a cookie, and the cookie handle is unmodelled. It behaves like a credential — it is presented, it can be stolen, it should be revocable — so does it belong alongside authn:Credential, and does session establishment need the same audit trail as authentication?",
         "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension — a revoked tenant is not a stale region.",
         "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
         "Do we need entitlement evaluation results in the token as a cache — a short-lived assertion of the Level-1 outcome — and if so, does that reintroduce the freeze problem we designed around?",
