@@ -27,7 +27,7 @@ ex:alice-passkey a authn:Credential ;
 
 ### Subject identifiers
 ex:subid-alice-idp a authn:SubjectIdentifier ;
-    authn:subjectValue "auth0|8842-alice" ;
+    authn:subjectValue "idp|8842-alice" ;
     authn:atIssuer ex:enterprise-idp ;
     authn:identifies ex:alice ;
     authn:identifierFormat authn:format-iss-sub ;
@@ -77,8 +77,8 @@ ex:token-at-1 a session:AccessToken ;
     session:issuedTo ex:azp-t123-web .
 
 ### Ingress
-ex:pep-envoy-east a core:PolicyEnforcementPoint ;
-    core:displayName "Envoy ext_authz filter (east)" .
+ex:pep-edge-east a core:PolicyEnforcementPoint ;
+    core:displayName "Edge enforcement point (east)" .
 
 ex:edge-gateway a ingress:Gateway ;
     core:governedBy ex:policy-ledger-read ;
@@ -97,7 +97,7 @@ ex:ledger-service a ingress:UpstreamService ;
 ex:route-ledger a ingress:Route ;
     core:governedBy ex:policy-ledger-read ;
     ingress:routesTo ex:ledger-service ;
-    core:enforcedBy ex:pep-envoy-east .
+    core:enforcedBy ex:pep-edge-east .
 
 ### Authorization
 ex:hr-pip a core:PolicyInformationPoint ;

@@ -309,6 +309,14 @@
       "terms": ["PolicyChangeEvent", "ChangeApproval", "approvedBy", "approvedAtTime", "hasApproval", "changeTicket"]
     },
     {
+      "id": "D42",
+      "title": "Implementation-independent, standards-aligned",
+      "area": "Foundations",
+      "reasoning": "The ontology aligns to specifications but names no products. Alignment claims to a particular gateway API were removed from the ingress module, along with product names in definitions and seed data, because a vocabulary that encodes today's implementation ages badly: the terms would need renaming the moment the platform changed gateway, and readers would mistake an implementation detail for a modelling commitment. Gateways, listeners, routes and upstream services are real concepts in their own right and stand without borrowing anyone's product vocabulary. The distinction held is specification versus product: XACML's PDP/PEP/PIP/PAP roles, OAuth and OIDC claims, NIST SP 800-63 assurance levels, RFC 9493 subject identifiers, AuthZEN's evaluation tuple and SPIFFE workload identity all stay, because they are stable public specifications the firm has deliberately adopted — and in SPIFFE's case, the identifier strategy is a recorded governance decision, not incidental coupling.",
+      "terms": ["Gateway", "Listener", "Route", "UpstreamService", "TLSConfiguration", "changeTicket"],
+      "rejected": ["Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.", "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."]
+    },
+    {
       "id": "D41",
       "title": "Events are PROV activities",
       "area": "Foundations",

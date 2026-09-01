@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.3.0> ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.3.1> ;
+    owl:versionInfo "0.3.1" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     dct:title "Control Plane Module"@en ;
     dct:description "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft."@en .
@@ -251,7 +251,7 @@ cp:approvedAtTime a owl:DatatypeProperty ;
     vs:term_status "draft" .
 
 cp:changeTicket a owl:DatatypeProperty ;
-    skos:definition "Reference to the change-management record (e.g., ServiceNow ticket) for auditability."@en ;
+    skos:definition "Reference to the change-management record in the firm's change system, for auditability."@en ;
     vs:term_status "draft" .
 
 cp:requiresHumanApproval a owl:DatatypeProperty ;

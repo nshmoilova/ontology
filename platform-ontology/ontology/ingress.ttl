@@ -9,11 +9,11 @@
 
 <https://w3id.org/examplebank/platform/ingress>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.1.0> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.1.1> ;
+    owl:versionInfo "0.1.1" ;
     owl:imports <https://w3id.org/examplebank/platform/core> ;
     dct:title "Ingress Module"@en ;
-    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Aligns to Kubernetes Gateway API concepts."@en .
+    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API."@en .
 
 #################################################################
 # Classes
@@ -21,7 +21,7 @@
 
 ingress:Gateway a owl:Class ;
     rdfs:subClassOf core:Resource ;
-    skos:definition "A network entry point into the platform (Gateway API Gateway / Envoy listener set)."@en ;
+    skos:definition "A network entry point into the platform, exposing one or more listeners through which external traffic arrives."@en ;
     vs:term_status "draft" .
 
 ingress:Listener a owl:Class ;
@@ -30,7 +30,7 @@ ingress:Listener a owl:Class ;
 
 ingress:Route a owl:Class ;
     rdfs:subClassOf core:Resource ;
-    skos:definition "A rule mapping matched traffic on a gateway to an upstream service (Gateway API HTTPRoute and kin)."@en ;
+    skos:definition "A rule mapping matched traffic on a gateway to an upstream service."@en ;
     vs:term_status "draft" .
 
 ingress:UpstreamService a owl:Class ;

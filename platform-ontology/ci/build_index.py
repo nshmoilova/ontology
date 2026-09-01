@@ -34,7 +34,7 @@ MODULE_BLURB = {
     "session": "Sessions established by journey executions, step-up elevations, "
                "and tokens carrying both ends of their journey.",
     "ingress": "Network entry: gateways, listeners, routes, TLS termination and "
-               "upstream services, aligned to the Kubernetes Gateway API.",
+               "upstream services — deliberately implementation-independent.",
     "authz": "ABAC-first authorization plus the platform-owned coarse-grained "
              "layer: dimensions, grants, actions and admission decisions.",
     "control-plane": "Two-tier planes, the scope tree, and the chain from "

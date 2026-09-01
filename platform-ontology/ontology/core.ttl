@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.2.1> ;
+    owl:versionInfo "0.2.1" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -82,7 +82,7 @@ core:Application a owl:Class ;
 core:AuthorizedParty a owl:Class ;
     rdfs:subClassOf core:Resource ;
     skos:prefLabel "Authorized party"@en ;
-    skos:altLabel "OAuth client registration"@en , "azp"@en , "channel registration"@en , "app registration (Entra)"@en ;
+    skos:altLabel "OAuth client registration"@en , "azp"@en , "channel registration"@en ;
     skos:definition "The governed registration of one unit of request-originating software — a portal's web or mobile front, or a headless API/agent consumer — owned by exactly one tenant, bound to exactly one delivery channel, holding revocable credentials, and the party to which tokens are issued (the azp claim). The evidence ingress resolves a request's channel from; never the running software instance, and never the party the token is addressed to (that is the audience)."@en ;
     skos:editorialNote "Named for the azp claim it anchors. Reinstated as the uniform azp target after Portal-only left token→client binding without a single-ranged home. Recorded reservations: 'Party' is banking master-data vocabulary for customers — this class is software registrations, not persons; and a registration is 'authorized' only in azp's token-time sense. The word 'client' remains reserved for the firm's business meaning; CallerRegistration and SoftwareRegistration were the runner-up names."@en ;
     vs:term_status "draft" .

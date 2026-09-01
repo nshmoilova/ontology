@@ -10,7 +10,7 @@
   "warnings": 7,
   "vocabularies": 9,
   "relationships": 44,
-  "decisions": 41,
+  "decisions": 42,
   "formalCQs": 6,
   "backlogCQs": 58
  },
@@ -20,7 +20,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.2.0",
+   "version": "0.2.1",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -54,9 +54,9 @@
    "iri": "https://w3id.org/examplebank/platform/ingress",
    "prefix": "ingress",
    "title": "Ingress Module",
-   "version": "0.1.0",
-   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Aligns to Kubernetes Gateway API concepts.",
-   "blurb": "Network entry: gateways, listeners, routes, TLS termination and upstream services, aligned to the Kubernetes Gateway API.",
+   "version": "0.1.1",
+   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API.",
+   "blurb": "Network entry: gateways, listeners, routes, TLS termination and upstream services \u2014 deliberately implementation-independent.",
    "imports": [
     "core"
    ]
@@ -78,7 +78,7 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.3.0",
+   "version": "0.3.1",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
@@ -152,7 +152,6 @@
    "editorialNote": "Named for the azp claim it anchors. Reinstated as the uniform azp target after Portal-only left token\u2192client binding without a single-ranged home. Recorded reservations: 'Party' is banking master-data vocabulary for customers \u2014 this class is software registrations, not persons; and a registration is 'authorized' only in azp's token-time sense. The word 'client' remains reserved for the firm's business meaning; CallerRegistration and SoftwareRegistration were the runner-up names.",
    "altLabels": [
     "OAuth client registration",
-    "app registration (Entra)",
     "azp",
     "channel registration"
    ],
@@ -3115,7 +3114,7 @@
    "kind": "class",
    "module": "ingress",
    "label": null,
-   "definition": "A network entry point into the platform (Gateway API Gateway / Envoy listener set).",
+   "definition": "A network entry point into the platform, exposing one or more listeners through which external traffic arrives.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -3157,7 +3156,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D42"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#Listener",
@@ -3233,7 +3234,9 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D42"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#Route",
@@ -3242,7 +3245,7 @@
    "kind": "class",
    "module": "ingress",
    "label": null,
-   "definition": "A rule mapping matched traffic on a gateway to an upstream service (Gateway API HTTPRoute and kin).",
+   "definition": "A rule mapping matched traffic on a gateway to an upstream service.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -3306,7 +3309,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D42"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#TLSConfiguration",
@@ -3329,7 +3334,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D42"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#UpstreamService",
@@ -3362,7 +3369,9 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D42"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#port",
@@ -5993,7 +6002,7 @@
    "kind": "datatypeProperty",
    "module": "control-plane",
    "label": null,
-   "definition": "Reference to the change-management record (e.g., ServiceNow ticket) for auditability.",
+   "definition": "Reference to the change-management record in the firm's change system, for auditability.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -6008,7 +6017,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D40"
+    "D40",
+    "D42"
    ]
   },
   {
@@ -10387,6 +10397,33 @@
     "cp:approvedBy",
     "cp:changeTicket",
     "cp:hasApproval"
+   ]
+  },
+  {
+   "id": "D42",
+   "title": "Implementation-independent, standards-aligned",
+   "area": "Foundations",
+   "reasoning": "The ontology aligns to specifications but names no products. Alignment claims to a particular gateway API were removed from the ingress module, along with product names in definitions and seed data, because a vocabulary that encodes today's implementation ages badly: the terms would need renaming the moment the platform changed gateway, and readers would mistake an implementation detail for a modelling commitment. Gateways, listeners, routes and upstream services are real concepts in their own right and stand without borrowing anyone's product vocabulary. The distinction held is specification versus product: XACML's PDP/PEP/PIP/PAP roles, OAuth and OIDC claims, NIST SP 800-63 assurance levels, RFC 9493 subject identifiers, AuthZEN's evaluation tuple and SPIFFE workload identity all stay, because they are stable public specifications the firm has deliberately adopted \u2014 and in SPIFFE's case, the identifier strategy is a recorded governance decision, not incidental coupling.",
+   "terms": [
+    "Gateway",
+    "Listener",
+    "Route",
+    "UpstreamService",
+    "TLSConfiguration",
+    "changeTicket"
+   ],
+   "rejected": [
+    "Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.",
+    "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."
+   ],
+   "invariant": false,
+   "termCuries": [
+    "cp:changeTicket",
+    "ingress:Gateway",
+    "ingress:Listener",
+    "ingress:Route",
+    "ingress:TLSConfiguration",
+    "ingress:UpstreamService"
    ]
   },
   {
