@@ -225,6 +225,25 @@ possibly pairwise per authorized party.
 - Which tokens or security events reference subjects with no mapped
   principal? *(needs token subject links and in-graph CAEP events)*
 
+### Devices and session concurrency
+
+The platform issues one session per user per device; concurrent session
+limits are configured per device class.
+
+- Which devices does each principal hold active sessions on, of which
+  device class, and since when?
+- Which principals hold more than one active session on the same device?
+  *(expected empty — one session per user per device)*
+- Which principals exceed the configured concurrent-session limit for a
+  device class? *(expected empty)*
+- Which tenants have no concurrent-session policy configured for a device
+  class their principals actually use? *(unbounded concurrency by omission)*
+- Should concurrent-session policy be governed desired state, as route
+  bindings now are, rather than plain configuration? *(open — it is a
+  security control with no approver today)*
+- Which sessions have no device at all, and is that legitimate for the
+  api and agent channels? *(non-interactive sessions have no device)*
+
 ### Authentication journeys
 
 Sessions are established by journey executions; step-up is an elevation

@@ -82,6 +82,84 @@ ss:ActiveSessionSuccessfulAuthnShape a sh:NodeShape ;
         """ ;
     ] .
 
+ss:DeviceShape a sh:NodeShape ;
+    sh:targetClass session:Device ;
+    sh:property [
+        sh:path session:hasDeviceClass ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class session:DeviceClass ;
+        sh:severity sh:Violation ;
+        sh:message "A device must have exactly one device class from the closed vocabulary — concurrency limits are configured against it." ;
+    ] .
+
+ss:SessionDeviceShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:property [
+        sh:path session:onDevice ;
+        sh:maxCount 1 ;
+        sh:class session:Device ;
+        sh:severity sh:Violation ;
+        sh:message "A session runs on at most one device; non-interactive sessions have none." ;
+    ] .
+
+# One session per user per device.
+ss:OneSessionPerDeviceShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Principal holds more than one active session on the same device — the platform issues one session per user per device." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/session#hasState>
+                      <https://w3id.org/examplebank/platform/session#state-active> ;
+                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;
+                      <https://w3id.org/examplebank/platform/session#onDevice> ?d .
+                ?other <https://w3id.org/examplebank/platform/session#hasState>
+                       <https://w3id.org/examplebank/platform/session#state-active> ;
+                       <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/session#onDevice> ?d .
+                FILTER (?other != $this)
+            }
+        """ ;
+    ] .
+
+# Configured concurrency ceiling, per principal per device class.
+ss:ConcurrentSessionLimitShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Principal exceeds the configured concurrent-session limit for this device class." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                {
+                    SELECT $this ?p ?dc (COUNT(DISTINCT ?s2) AS ?n) WHERE {
+                        $this <https://w3id.org/examplebank/platform/session#hasState>
+                              <https://w3id.org/examplebank/platform/session#state-active> ;
+                              <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;
+                              <https://w3id.org/examplebank/platform/session#onDevice> ?dev .
+                        ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .
+                        ?s2 <https://w3id.org/examplebank/platform/session#hasState>
+                            <https://w3id.org/examplebank/platform/session#state-active> ;
+                            <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;
+                            <https://w3id.org/examplebank/platform/session#onDevice> ?d2 .
+                        ?d2 <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .
+                    } GROUP BY $this ?p ?dc
+                }
+                ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                   <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;
+                   <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>
+                   <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .
+                ?pol <https://w3id.org/examplebank/platform/control-plane#policyForTenant> ?t ;
+                     <https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass> ?dc ;
+                     <https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions> ?max .
+                FILTER (?n > ?max)
+            }
+        """ ;
+    ] .
+
 ss:SessionHandleShape a sh:NodeShape ;
     sh:targetClass session:SessionHandle ;
     sh:property [

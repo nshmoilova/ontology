@@ -310,6 +310,15 @@
       "terms": ["PolicyChangeEvent", "ChangeApproval", "approvedBy", "approvedAtTime", "hasApproval", "changeTicket"]
     },
     {
+      "id": "D46",
+      "title": "Sessions are per user per device; channel comes from device class",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "The platform issues one session per user per device, and concurrent session limits are configured per device class. Neither fact was expressible: there was no device concept at all, so the session identity rule could not be stated and the limits could not be checked.\n\nModelling the device also settles a question left open twice. Channel evidence was first assumed to come from the token's authorized party, which turned out to be wrong once the OAuth client_id proved to be only a protocol identifier. The real source is the device: the session manager knows whether it authenticated a browser or a mobile app, so for interactive sessions the delivery channel follows from the device class. Channel is a property of the session, not evidence carried in a token — which also explains why the api and agent channels have no device, since there is no interactive client to classify.\n\nTwo invariants: a principal holds at most one active session per device, and a principal's active sessions in a device class must not exceed the tenant's configured limit — a counting constraint that joins through tenant membership to find the applicable policy.",
+      "terms": ["Device", "DeviceClass", "onDevice", "hasDeviceClass", "ConcurrentSessionPolicy", "policyForTenant", "appliesToDeviceClass", "maxConcurrentSessions"],
+      "rejected": ["Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device — one vocabulary would have members that cannot be devices.", "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.", "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver — the same asymmetry route bindings had before D43."]
+    },
+    {
       "id": "D45",
       "title": "Tenant membership connects the principal to the tenant",
       "area": "Audit round",

@@ -30,7 +30,7 @@
               ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "The route's domain/path binding — not a token claim"],
               ["environment.access", "May this tenant operate in prod / uat / dev?", "Which ingress deployment received the request"],
               ["region.access", "May this tenant operate in this region?", "Where the request landed"],
-              ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The presenting registration (azp)"]
+              ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The session's device class — the session manager knows what it authenticated"]
             ]
           }
         },
@@ -85,9 +85,10 @@
             "rows": [
               ["domain / path", "Ingress route binding — a governed declaration", "core:Tenant — tenant.access, platform.access"],
               ["landing point", "Which ingress deployment", "environment.access, region.access"],
-              ["session handle + DPoP proof", "Cookie, plus a per-request signed proof", "session:Session — sender-constrained, not bearer"],
+              ["session handle + DPoP proof", "Cookie, plus a per-request signed proof", "session:Session — sender-constrained, per user per device"],
               ["sub", "JWT claim", "authn:SubjectIdentifier → core:Principal"],
-              ["azp", "JWT claim", "core:AuthorizedParty → core:DeliveryChannel — channel.access"],
+              ["client_id", "JWT claim", "The session manager's OAuth registration — protocol identifier only"],
+              ["device class", "The session, set by the session manager", "core:DeliveryChannel — channel.access"],
               ["acr, amr, auth_time", "JWT claim", "authn:AuthenticationJourneyExecution → AAL"],
               ["iss, aud, exp, nbf", "JWT claim", "Preconditions — valid, in window, addressed here"],
               ["scope, permissions", "JWT claim", "— deliberately ignored: Level 3 —"]
@@ -96,10 +97,10 @@
           "terms": ["authn:SubjectIdentifier", "core:AuthorizedParty", "session:Session", "authn:AuthenticationJourneyExecution", "core:Tenant"]
         },
         {
-          "heading": "azp: the one dimension the token does establish",
-          "body": "Channel is not self-evident from the connection — \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable — this was a real gap found during the OAuth/OIDC review and closed.\n\nWorth testing in the session: is azp alone sufficient? A registration is bound to exactly one channel, so a compromised web registration cannot claim to be mobile. But if one registration is ever reused across channels, the binding silently becomes a lie and nothing in the model would catch it.",
-          "terms": ["core:AuthorizedParty", "session:issuedTo", "core:boundToChannel"],
-          "shapes": ["TokenShape", "AuthorizedPartyShape"]
+          "heading": "Channel comes from the device, not the token",
+          "body": "Channel is not self-evident from the connection — \"mobile\" is a fact about the client, not about TCP. It is also not in the token: the OAuth client_id identifies the session manager's registration at the global IdP, one per audience, and carries no channel information.\n\nThe actual source is the device. The platform issues one session per user per device, and the session manager knows whether it authenticated a browser or a mobile app, so the session's device class establishes the channel. That makes channel a property of the session rather than evidence a caller presents — which is the strongest possible position, since the caller cannot assert it at all.\n\nIt also explains a shape in the vocabulary: api and agent are channels with no device class, because there is no interactive client to classify. Whatever sender-constrains those callers, it is not a device.",
+          "terms": ["session:Device", "session:DeviceClass", "session:onDevice", "cp:ConcurrentSessionPolicy"],
+          "shapes": ["OneSessionPerDeviceShape", "ConcurrentSessionLimitShape"]
         },
         {
           "heading": "Sender constraining: the handle stops being a bearer token",

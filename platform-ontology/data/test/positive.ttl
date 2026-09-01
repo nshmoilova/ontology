@@ -68,9 +68,14 @@ ex:dpop-key-alice-web a authn:ProofOfPossessionKey ;
     authn:keyThumbprint "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I" ;
     authn:keyAlgorithm "ES256" .
 
+ex:device-alice-laptop a session:Device ;
+    core:displayName "Alice's work laptop browser" ;
+    session:hasDeviceClass session:device-browser .
+
 ex:session-9001 a session:Session ;
     session:establishedBy ex:exec-1001 ;
     session:boundToPrincipal ex:alice ;
+    session:onDevice ex:device-alice-laptop ;
     session:hasState session:state-active ;
     session:notBefore "2026-08-31T13:05:01Z"^^xsd:dateTime ;
     session:expiresAt "2026-08-31T21:05:01Z"^^xsd:dateTime ;
@@ -211,6 +216,19 @@ ex:scope-prod a cp:AdministrativeScope ;
     cp:inRegion "US" ;
     cp:requiresHumanApproval true ;
     cp:scopeIncludes ex:t123-db-plane .
+
+### Concurrent session policy — configured per device class
+ex:policy-sessions-browser a cp:ConcurrentSessionPolicy ;
+    core:displayName "T123: at most 3 concurrent browser sessions" ;
+    cp:policyForTenant ex:tenant-t123 ;
+    cp:appliesToDeviceClass session:device-browser ;
+    cp:maxConcurrentSessions 3 .
+
+ex:policy-sessions-mobile a cp:ConcurrentSessionPolicy ;
+    core:displayName "T123: at most 2 concurrent mobile sessions" ;
+    cp:policyForTenant ex:tenant-t123 ;
+    cp:appliesToDeviceClass session:device-mobile ;
+    cp:maxConcurrentSessions 2 .
 
 ### Tenant membership — which principals may act for T123
 ex:membership-alice-t123 a cp:TenantMembership ;

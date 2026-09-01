@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "3fc31abb3d03",
+ "sourceDigest": "02b638915902",
  "stats": {
   "modules": 6,
-  "classes": 69,
-  "objectProperties": 86,
-  "datatypeProperties": 32,
-  "shapes": 64,
-  "violations": 100,
+  "classes": 72,
+  "objectProperties": 90,
+  "datatypeProperties": 33,
+  "shapes": 68,
+  "violations": 104,
   "warnings": 7,
-  "vocabularies": 10,
-  "relationships": 51,
-  "decisions": 45,
+  "vocabularies": 11,
+  "relationships": 53,
+  "decisions": 46,
   "explainers": 2,
   "formalCQs": 6,
-  "backlogCQs": 73
+  "backlogCQs": 79
  },
  "modules": [
   {
@@ -44,7 +44,7 @@
    "iri": "https://w3id.org/examplebank/platform/session",
    "prefix": "session",
    "title": "Session Module",
-   "version": "0.3.0",
+   "version": "0.4.0",
    "description": "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles \u2014 the opaque value a cookie carries \u2014 and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter.",
    "blurb": "Sessions established by journey executions, step-up elevations, and tokens carrying both ends of their journey.",
    "imports": [
@@ -80,12 +80,13 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.5.0",
+   "version": "0.6.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
     "authz",
-    "ingress"
+    "ingress",
+    "session"
    ]
   }
  ],
@@ -2661,6 +2662,125 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/session#Device",
+   "name": "Device",
+   "curie": "session:Device",
+   "kind": "class",
+   "module": "session",
+   "label": null,
+   "definition": "The device a principal holds a session on. The platform issues one session per principal per device, so a device is the unit of session identity rather than an incidental attribute \u2014 and its class is what concurrency limits are configured against. Non-interactive callers on the api and agent channels have no device.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "DeviceShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "session:hasDeviceClass",
+     "pathIri": "https://w3id.org/examplebank/platform/session#hasDeviceClass",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "session:DeviceClass",
+     "classIri": "https://w3id.org/examplebank/platform/session#DeviceClass",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A device must have exactly one device class from the closed vocabulary \u2014 concurrency limits are configured against it."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "session:Device",
+     "property": "session:hasDeviceClass",
+     "to": "session:DeviceClass",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [
+    {
+     "from": "session:Session",
+     "property": "session:onDevice",
+     "to": "session:Device",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/session#DeviceClass",
+   "name": "DeviceClass",
+   "curie": "session:DeviceClass",
+   "kind": "class",
+   "module": "session",
+   "label": null,
+   "definition": "The kind of device a session runs on \u2014 browser or mobile \u2014 as a closed vocabulary. Concurrent session limits are configured per device class, and for interactive sessions the device class is what establishes the delivery channel: the session manager knows what it authenticated, so channel is a property of the session rather than evidence carried in a token.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "session:Device",
+     "property": "session:hasDeviceClass",
+     "to": "session:DeviceClass",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/session#device-browser",
+     "curie": "session:device-browser",
+     "label": "Browser",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "session:DeviceClass"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/session#device-mobile",
+     "curie": "session:device-mobile",
+     "label": "Mobile",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "session:DeviceClass"
+     ]
+    }
+   ],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/session#IDToken",
    "name": "IDToken",
    "curie": "session:IDToken",
@@ -2733,6 +2853,9 @@
     "SessionShape",
     "SessionPrincipalConsistencyShape",
     "ActiveSessionSuccessfulAuthnShape",
+    "SessionDeviceShape",
+    "OneSessionPerDeviceShape",
+    "ConcurrentSessionLimitShape",
     "SenderConstrainedSessionShape",
     "TokenInheritsConfirmationShape",
     "KeyConfusionShape"
@@ -2827,6 +2950,33 @@
     },
     {
      "kind": "property",
+     "path": "session:onDevice",
+     "pathIri": "https://w3id.org/examplebank/platform/session#onDevice",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "session:Device",
+     "classIri": "https://w3id.org/examplebank/platform/session#Device",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A session runs on at most one device; non-interactive sessions have none."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Principal holds more than one active session on the same device \u2014 the platform issues one session per user per device.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/session#hasState>\n                      <https://w3id.org/examplebank/platform/session#state-active> ;\n                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/session#onDevice> ?d .\n                ?other <https://w3id.org/examplebank/platform/session#hasState>\n                       <https://w3id.org/examplebank/platform/session#state-active> ;\n                       <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/session#onDevice> ?d .\n                FILTER (?other != $this)\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Principal exceeds the configured concurrent-session limit for this device class.",
+     "select": "SELECT $this WHERE {\n                {\n                    SELECT $this ?p ?dc (COUNT(DISTINCT ?s2) AS ?n) WHERE {\n                        $this <https://w3id.org/examplebank/platform/session#hasState>\n                              <https://w3id.org/examplebank/platform/session#state-active> ;\n                              <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                              <https://w3id.org/examplebank/platform/session#onDevice> ?dev .\n                        ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                        ?s2 <https://w3id.org/examplebank/platform/session#hasState>\n                            <https://w3id.org/examplebank/platform/session#state-active> ;\n                            <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                            <https://w3id.org/examplebank/platform/session#onDevice> ?d2 .\n                        ?d2 <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                    } GROUP BY $this ?p ?dc\n                }\n                ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                   <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                   <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                ?pol <https://w3id.org/examplebank/platform/control-plane#policyForTenant> ?t ;\n                     <https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass> ?dc ;\n                     <https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions> ?max .\n                FILTER (?n > ?max)\n            }"
+    },
+    {
+     "kind": "property",
      "path": "authn:confirmedByKey",
      "pathIri": "https://w3id.org/examplebank/platform/authn#confirmedByKey",
      "minCount": 1,
@@ -2859,6 +3009,13 @@
      "property": "authn:confirmedByKey",
      "to": "authn:ProofOfPossessionKey",
      "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "session:Session",
+     "property": "session:onDevice",
+     "to": "session:Device",
+     "cardinality": "0..1",
      "severity": "Violation"
     },
     {
@@ -3256,6 +3413,39 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/session#hasDeviceClass",
+   "name": "hasDeviceClass",
+   "curie": "session:hasDeviceClass",
+   "kind": "objectProperty",
+   "module": "session",
+   "label": null,
+   "definition": "Class of a device, from the closed device-class vocabulary.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "session:Device",
+     "property": "session:hasDeviceClass",
+     "to": "session:DeviceClass",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/session#hasState",
    "name": "hasState",
    "curie": "session:hasState",
@@ -3342,6 +3532,39 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/session#onDevice",
+   "name": "onDevice",
+   "curie": "session:onDevice",
+   "kind": "objectProperty",
+   "module": "session",
+   "label": null,
+   "definition": "Device the session runs on. At most one, and a principal may hold at most one active session per device (enforced in SHACL). Absent for non-interactive sessions.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "session:Session",
+     "property": "session:onDevice",
+     "to": "session:Device",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#resolvesToSession",
@@ -5695,6 +5918,31 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#ConcurrentSessionPolicy",
+   "name": "ConcurrentSessionPolicy",
+   "curie": "cp:ConcurrentSessionPolicy",
+   "kind": "class",
+   "module": "control-plane",
+   "label": null,
+   "definition": "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class. Configured per tenant per device class; a device class with no policy is unbounded, which is a stewardship concern rather than a safe default.",
+   "editorialNote": "Modelled as plain configuration rather than a governed declaration. It is a security control with no approver today, which is the same asymmetry that route bindings had before they were governed \u2014 recorded as an open question rather than settled.",
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ControlPlaneComponent",
    "name": "ControlPlaneComponent",
    "curie": "cp:ControlPlaneComponent",
@@ -6780,6 +7028,31 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions",
+   "name": "maxConcurrentSessions",
+   "curie": "cp:maxConcurrentSessions",
+   "kind": "datatypeProperty",
+   "module": "control-plane",
+   "label": null,
+   "definition": "Maximum concurrent active sessions one principal may hold on devices of the policy's class.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#memberCapacity",
    "name": "memberCapacity",
    "curie": "cp:memberCapacity",
@@ -6951,6 +7224,31 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass",
+   "name": "appliesToDeviceClass",
+   "curie": "cp:appliesToDeviceClass",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": null,
+   "definition": "Device class a concurrent-session policy limits.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#approvedBy",
@@ -7696,6 +7994,31 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#policyForTenant",
+   "name": "policyForTenant",
+   "curie": "cp:policyForTenant",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": null,
+   "definition": "Tenant a concurrent-session policy applies to.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D46"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#realizesCapability",
    "name": "realizesCapability",
    "curie": "cp:realizesCapability",
@@ -8154,6 +8477,39 @@
      "rank": null,
      "types": [
       "authn:SubjectIdentifierFormat"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/session#DeviceClassScheme",
+   "curie": "session:DeviceClassScheme",
+   "title": "Device Classes",
+   "note": "Interactive device classes only. Non-interactive callers on the api and agent channels have no device, so they are absent here by design rather than by omission.",
+   "module": "session",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/session#device-browser",
+     "curie": "session:device-browser",
+     "label": "Browser",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "session:DeviceClass"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/session#device-mobile",
+     "curie": "session:device-mobile",
+     "label": "Mobile",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "session:DeviceClass"
      ]
     }
    ]
@@ -10305,6 +10661,49 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/session#ConcurrentSessionLimitShape",
+   "name": "ConcurrentSessionLimitShape",
+   "targetClass": "session:Session",
+   "targetClassIri": "https://w3id.org/examplebank/platform/session#Session",
+   "module": "session",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Principal exceeds the configured concurrent-session limit for this device class.",
+     "select": "SELECT $this WHERE {\n                {\n                    SELECT $this ?p ?dc (COUNT(DISTINCT ?s2) AS ?n) WHERE {\n                        $this <https://w3id.org/examplebank/platform/session#hasState>\n                              <https://w3id.org/examplebank/platform/session#state-active> ;\n                              <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                              <https://w3id.org/examplebank/platform/session#onDevice> ?dev .\n                        ?dev <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                        ?s2 <https://w3id.org/examplebank/platform/session#hasState>\n                            <https://w3id.org/examplebank/platform/session#state-active> ;\n                            <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                            <https://w3id.org/examplebank/platform/session#onDevice> ?d2 .\n                        ?d2 <https://w3id.org/examplebank/platform/session#hasDeviceClass> ?dc .\n                    } GROUP BY $this ?p ?dc\n                }\n                ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                   <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                   <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                ?pol <https://w3id.org/examplebank/platform/control-plane#policyForTenant> ?t ;\n                     <https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass> ?dc ;\n                     <https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions> ?max .\n                FILTER (?n > ?max)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/session#DeviceShape",
+   "name": "DeviceShape",
+   "targetClass": "session:Device",
+   "targetClassIri": "https://w3id.org/examplebank/platform/session#Device",
+   "module": "session",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "session:hasDeviceClass",
+     "pathIri": "https://w3id.org/examplebank/platform/session#hasDeviceClass",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "session:DeviceClass",
+     "classIri": "https://w3id.org/examplebank/platform/session#DeviceClass",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A device must have exactly one device class from the closed vocabulary \u2014 concurrency limits are configured against it."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#KeyConfusionShape",
    "name": "KeyConfusionShape",
    "targetClass": "session:Session",
@@ -10316,6 +10715,23 @@
      "severity": "Violation",
      "message": "One proof-of-possession key confirms sessions bound to different principals \u2014 key confusion.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k ;\n                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p1 .\n                ?other <https://w3id.org/examplebank/platform/authn#confirmedByKey> ?k ;\n                       <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p2 .\n                FILTER (?other != $this)\n                FILTER (?p1 != ?p2)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/session#OneSessionPerDeviceShape",
+   "name": "OneSessionPerDeviceShape",
+   "targetClass": "session:Session",
+   "targetClassIri": "https://w3id.org/examplebank/platform/session#Session",
+   "module": "session",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Principal holds more than one active session on the same device \u2014 the platform issues one session per user per device.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/session#hasState>\n                      <https://w3id.org/examplebank/platform/session#state-active> ;\n                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/session#onDevice> ?d .\n                ?other <https://w3id.org/examplebank/platform/session#hasState>\n                       <https://w3id.org/examplebank/platform/session#state-active> ;\n                       <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/session#onDevice> ?d .\n                FILTER (?other != $this)\n            }"
     }
    ],
    "violations": 1,
@@ -10342,6 +10758,32 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "Session is not sender-constrained: no proof-of-possession key confirms it, so a stolen handle alone would be replayable."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/session#SessionDeviceShape",
+   "name": "SessionDeviceShape",
+   "targetClass": "session:Session",
+   "targetClassIri": "https://w3id.org/examplebank/platform/session#Session",
+   "module": "session",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "session:onDevice",
+     "pathIri": "https://w3id.org/examplebank/platform/session#onDevice",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "session:Device",
+     "classIri": "https://w3id.org/examplebank/platform/session#Device",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A session runs on at most one device; non-interactive sessions have none."
     }
    ],
    "violations": 1,
@@ -10845,6 +11287,13 @@
    "severity": "Violation"
   },
   {
+   "from": "session:Device",
+   "property": "session:hasDeviceClass",
+   "to": "session:DeviceClass",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
    "from": "session:Session",
    "property": "authn:confirmedByKey",
    "to": "authn:ProofOfPossessionKey",
@@ -10877,6 +11326,13 @@
    "property": "session:hasState",
    "to": "session:SessionState",
    "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "session:Session",
+   "property": "session:onDevice",
+   "to": "session:Device",
+   "cardinality": "0..1",
    "severity": "Violation"
   },
   {
@@ -11660,6 +12116,38 @@
    ]
   },
   {
+   "id": "D46",
+   "title": "Sessions are per user per device; channel comes from device class",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "The platform issues one session per user per device, and concurrent session limits are configured per device class. Neither fact was expressible: there was no device concept at all, so the session identity rule could not be stated and the limits could not be checked.\n\nModelling the device also settles a question left open twice. Channel evidence was first assumed to come from the token's authorized party, which turned out to be wrong once the OAuth client_id proved to be only a protocol identifier. The real source is the device: the session manager knows whether it authenticated a browser or a mobile app, so for interactive sessions the delivery channel follows from the device class. Channel is a property of the session, not evidence carried in a token \u2014 which also explains why the api and agent channels have no device, since there is no interactive client to classify.\n\nTwo invariants: a principal holds at most one active session per device, and a principal's active sessions in a device class must not exceed the tenant's configured limit \u2014 a counting constraint that joins through tenant membership to find the applicable policy.",
+   "terms": [
+    "Device",
+    "DeviceClass",
+    "onDevice",
+    "hasDeviceClass",
+    "ConcurrentSessionPolicy",
+    "policyForTenant",
+    "appliesToDeviceClass",
+    "maxConcurrentSessions"
+   ],
+   "rejected": [
+    "Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device \u2014 one vocabulary would have members that cannot be devices.",
+    "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.",
+    "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver \u2014 the same asymmetry route bindings had before D43."
+   ],
+   "termCuries": [
+    "cp:ConcurrentSessionPolicy",
+    "cp:appliesToDeviceClass",
+    "cp:maxConcurrentSessions",
+    "cp:policyForTenant",
+    "session:Device",
+    "session:DeviceClass",
+    "session:hasDeviceClass",
+    "session:onDevice"
+   ]
+  },
+  {
    "id": "D45",
    "title": "Tenant membership connects the principal to the tenant",
    "area": "Audit round",
@@ -11852,7 +12340,7 @@
        [
         "channel.access",
         "May this tenant be served over web / mobile / api / agent?",
-        "The presenting registration (azp)"
+        "The session's device class \u2014 the session manager knows what it authenticated"
        ]
       ]
      }
@@ -11946,7 +12434,7 @@
        [
         "session handle + DPoP proof",
         "Cookie, plus a per-request signed proof",
-        "session:Session \u2014 sender-constrained, not bearer"
+        "session:Session \u2014 sender-constrained, per user per device"
        ],
        [
         "sub",
@@ -11954,9 +12442,14 @@
         "authn:SubjectIdentifier \u2192 core:Principal"
        ],
        [
-        "azp",
+        "client_id",
         "JWT claim",
-        "core:AuthorizedParty \u2192 core:DeliveryChannel \u2014 channel.access"
+        "The session manager's OAuth registration \u2014 protocol identifier only"
+       ],
+       [
+        "device class",
+        "The session, set by the session manager",
+        "core:DeliveryChannel \u2014 channel.access"
        ],
        [
         "acr, amr, auth_time",
@@ -11984,16 +12477,17 @@
      ]
     },
     {
-     "heading": "azp: the one dimension the token does establish",
-     "body": "Channel is not self-evident from the connection \u2014 \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable \u2014 this was a real gap found during the OAuth/OIDC review and closed.\n\nWorth testing in the session: is azp alone sufficient? A registration is bound to exactly one channel, so a compromised web registration cannot claim to be mobile. But if one registration is ever reused across channels, the binding silently becomes a lie and nothing in the model would catch it.",
+     "heading": "Channel comes from the device, not the token",
+     "body": "Channel is not self-evident from the connection \u2014 \"mobile\" is a fact about the client, not about TCP. It is also not in the token: the OAuth client_id identifies the session manager's registration at the global IdP, one per audience, and carries no channel information.\n\nThe actual source is the device. The platform issues one session per user per device, and the session manager knows whether it authenticated a browser or a mobile app, so the session's device class establishes the channel. That makes channel a property of the session rather than evidence a caller presents \u2014 which is the strongest possible position, since the caller cannot assert it at all.\n\nIt also explains a shape in the vocabulary: api and agent are channels with no device class, because there is no interactive client to classify. Whatever sender-constrains those callers, it is not a device.",
      "terms": [
-      "core:AuthorizedParty",
-      "session:issuedTo",
-      "core:boundToChannel"
+      "session:Device",
+      "session:DeviceClass",
+      "session:onDevice",
+      "cp:ConcurrentSessionPolicy"
      ],
      "shapes": [
-      "TokenShape",
-      "AuthorizedPartyShape"
+      "OneSessionPerDeviceShape",
+      "ConcurrentSessionLimitShape"
      ]
     },
     {
@@ -12453,6 +12947,36 @@
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which tokens or security events reference subjects with no mapped principal? (needs token subject links and in-graph CAEP events)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which devices does each principal hold active sessions on, of which device class, and since when?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which principals hold more than one active session on the same device? (expected empty \u2014 one session per user per device)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which principals exceed the configured concurrent-session limit for a device class? (expected empty)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which tenants have no concurrent-session policy configured for a device class their principals actually use? (unbounded concurrency by omission)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Should concurrent-session policy be governed desired state, as route bindings now are, rather than plain configuration? (open \u2014 it is a security control with no approver today)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Devices and session concurrency",
+    "question": "Which sessions have no device at all, and is that legitimate for the api and agent channels? (non-interactive sessions have no device)",
     "expectedEmpty": false
    },
    {

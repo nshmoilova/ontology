@@ -10,10 +10,11 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.5.0> ;
-    owl:versionInfo "0.5.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.6.0> ;
+    owl:versionInfo "0.6.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
+    owl:imports <https://w3id.org/examplebank/platform/session> ;
     dct:title "Control Plane Module"@en ;
     dct:description "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft."@en .
 
@@ -61,6 +62,11 @@ cp:DesiredStateDeclaration a owl:Class ;
 cp:DataPlaneMutation a owl:Class ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A write into a data plane performed by a control plane's acting identity, realizing a desired-state declaration."@en ;
+    vs:term_status "draft" .
+
+cp:ConcurrentSessionPolicy a owl:Class ;
+    skos:definition "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class. Configured per tenant per device class; a device class with no policy is unbounded, which is a stewardship concern rather than a safe default."@en ;
+    skos:editorialNote "Modelled as plain configuration rather than a governed declaration. It is a security control with no approver today, which is the same asymmetry that route bindings had before they were governed — recorded as an open question rather than settled."@en ;
     vs:term_status "draft" .
 
 cp:TenantMembership a owl:Class ;
@@ -201,6 +207,14 @@ cp:forApplication a owl:ObjectProperty ;
     skos:definition "Application a declaration provisions for, or that an enablement enables. Makes per-application decommissioning and blast radius a precise query."@en ;
     vs:term_status "draft" .
 
+cp:policyForTenant a owl:ObjectProperty ;
+    skos:definition "Tenant a concurrent-session policy applies to."@en ;
+    vs:term_status "draft" .
+
+cp:appliesToDeviceClass a owl:ObjectProperty ;
+    skos:definition "Device class a concurrent-session policy limits."@en ;
+    vs:term_status "draft" .
+
 cp:memberPrincipal a owl:ObjectProperty ;
     skos:definition "Principal a tenant membership admits — the party that may act for the tenant."@en ;
     vs:term_status "draft" .
@@ -307,6 +321,10 @@ cp:windowStart a owl:DatatypeProperty ;
 
 cp:windowEnd a owl:DatatypeProperty ;
     skos:definition "End of a usage observation's aggregation window."@en ;
+    vs:term_status "draft" .
+
+cp:maxConcurrentSessions a owl:DatatypeProperty ;
+    skos:definition "Maximum concurrent active sessions one principal may hold on devices of the policy's class."@en ;
     vs:term_status "draft" .
 
 cp:memberCapacity a owl:DatatypeProperty ;

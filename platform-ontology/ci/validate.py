@@ -113,6 +113,8 @@ def main() -> int:
             "membership lacks approval by a human principal",
             "more than one active membership in the same tenant",
             "does not substitute for one",
+            "one session per user per device",
+            "exceeds the configured concurrent-session limit",
         ]
         for frag in expected_fragments:
             if frag in text:

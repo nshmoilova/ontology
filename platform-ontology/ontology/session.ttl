@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/session>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.3.0> ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/session/0.4.0> ;
+    owl:versionInfo "0.4.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Session Module"@en ;
     dct:description "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles — the opaque value a cookie carries — and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter."@en .
@@ -48,6 +48,15 @@ session:SessionState a owl:Class ;
     skos:definition "Lifecycle state of a session; members are individuals (Active, Expired, Revoked, Suspended) rather than subclasses."@en ;
     vs:term_status "draft" .
 
+session:Device a owl:Class ;
+    skos:definition "The device a principal holds a session on. The platform issues one session per principal per device, so a device is the unit of session identity rather than an incidental attribute — and its class is what concurrency limits are configured against. Non-interactive callers on the api and agent channels have no device."@en ;
+    vs:term_status "draft" .
+
+session:DeviceClass a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "The kind of device a session runs on — browser or mobile — as a closed vocabulary. Concurrent session limits are configured per device class, and for interactive sessions the device class is what establishes the delivery channel: the session manager knows what it authenticated, so channel is a property of the session rather than evidence carried in a token."@en ;
+    vs:term_status "draft" .
+
 session:SessionHandle a owl:Class ;
     skos:definition "The opaque value presented to identify a session — typically carried in a cookie. It identifies but does not authenticate: under DPoP-style sender constraining the presenter must also prove possession of the session's confirmation key, so a stolen handle alone grants nothing. A handle must resolve to exactly one session (enforced in SHACL); several may resolve to one session across rotations."@en ;
     vs:term_status "draft" .
@@ -77,6 +86,14 @@ session:hasState a owl:ObjectProperty ;
 
 session:issuedToken a owl:ObjectProperty ;
     skos:definition "Token issued within this session."@en ;
+    vs:term_status "draft" .
+
+session:onDevice a owl:ObjectProperty ;
+    skos:definition "Device the session runs on. At most one, and a principal may hold at most one active session per device (enforced in SHACL). Absent for non-interactive sessions."@en ;
+    vs:term_status "draft" .
+
+session:hasDeviceClass a owl:ObjectProperty ;
+    skos:definition "Class of a device, from the closed device-class vocabulary."@en ;
     vs:term_status "draft" .
 
 session:resolvesToSession a owl:ObjectProperty ;
@@ -125,3 +142,19 @@ session:state-revoked a session:SessionState ;
 session:state-suspended a session:SessionState ;
     skos:inScheme session:SessionStateScheme ;
     skos:prefLabel "Suspended"@en .
+
+#################################################################
+# Device class vocabulary (closed; extension is a MINOR bump)
+#################################################################
+
+session:DeviceClassScheme a skos:ConceptScheme ;
+    dct:title "Device Classes"@en ;
+    skos:editorialNote "Interactive device classes only. Non-interactive callers on the api and agent channels have no device, so they are absent here by design rather than by omission."@en .
+
+session:device-browser a session:DeviceClass ;
+    skos:inScheme session:DeviceClassScheme ;
+    skos:prefLabel "Browser"@en .
+
+session:device-mobile a session:DeviceClass ;
+    skos:inScheme session:DeviceClassScheme ;
+    skos:prefLabel "Mobile"@en .

@@ -272,6 +272,50 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 33. Two active sessions for one principal on one device
+###     (OneSessionPerDeviceShape)
+ex:bob-phone a session:Device ;
+    session:hasDeviceClass session:device-mobile .
+ex:dup-device-1 a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:onDevice ex:bob-phone ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:key-a .
+ex:dup-device-2 a session:Session ;
+    session:establishedBy ex:weak-exec ;
+    session:boundToPrincipal ex:bob ;
+    session:onDevice ex:bob-phone ;
+    session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ;
+    authn:confirmedByKey ex:key-a .
+
+### 34. Principal over the configured concurrency limit for a device class
+###     (ConcurrentSessionLimitShape) — limit is 1, three sessions exist
+ex:limited-tenant a core:Tenant .
+ex:limit-mem a cp:TenantMembership ;
+    cp:memberPrincipal ex:over-user ;
+    cp:memberOfTenant ex:limited-tenant ;
+    cp:hasMembershipState cp:memberstate-active ;
+    cp:hasApproval ex:robot-approval .
+ex:over-user a core:HumanPrincipal ;
+    core:identifier "dir:over.user" .
+ex:tight-policy a cp:ConcurrentSessionPolicy ;
+    cp:policyForTenant ex:limited-tenant ;
+    cp:appliesToDeviceClass session:device-browser ;
+    cp:maxConcurrentSessions 1 .
+ex:brw-1 a session:Device ; session:hasDeviceClass session:device-browser .
+ex:brw-2 a session:Device ; session:hasDeviceClass session:device-browser .
+ex:over-1 a session:Session ;
+    session:establishedBy ex:weak-exec ; session:boundToPrincipal ex:over-user ;
+    session:onDevice ex:brw-1 ; session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ; authn:confirmedByKey ex:key-a .
+ex:over-2 a session:Session ;
+    session:establishedBy ex:weak-exec ; session:boundToPrincipal ex:over-user ;
+    session:onDevice ex:brw-2 ; session:hasState session:state-active ;
+    session:expiresAt "2026-08-31T22:00:00Z"^^xsd:dateTime ; authn:confirmedByKey ex:key-a .
+
 ### 30. Admission decision for a principal with no membership in the
 ###     tenant whose grants were evaluated (AdmissionRequiresMembershipShape)
 ex:outsider-grant a authz:EntitlementGrant ;
