@@ -264,6 +264,12 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 35. OAuth client registration with no client_id and two audiences
+###     (OAuthClientRegistrationShape)
+ex:vague-reg a authn:OAuthClientRegistration ;
+    authn:registeredWith ex:neg-idp ;
+    authn:forAudience ex:naked-upstream , ex:cache-dp .
+
 ### 33. Two active sessions for one principal on one device
 ###     (OneSessionPerDeviceShape)
 ex:bob-phone a session:Device ;

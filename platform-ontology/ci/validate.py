@@ -112,6 +112,7 @@ def main() -> int:
             "does not substitute for one",
             "one session per user per device",
             "exceeds the configured concurrent-session limit",
+            "exactly one client_id",
         ]
         for frag in expected_fragments:
             if frag in text:

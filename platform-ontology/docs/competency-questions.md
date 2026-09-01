@@ -223,6 +223,23 @@ possibly pairwise per authorized party.
 - Which tokens or security events reference subjects with no mapped
   principal? *(needs token subject links and in-graph CAEP events)*
 
+### The two clients
+
+"Client" names two unrelated things and the model keeps them apart: the
+OAuth client registration is protocol bookkeeping; the business client is a
+party with a relationship to the firm, whose identity is in a session.
+
+- Which OAuth client registrations exist, at which issuer, for which
+  audience, and what is each one's client_id?
+- Which principals act for which business clients, and since when?
+- Which sessions carry a business-client identity, and which carry an
+  internal staff or workload identity?
+- Which business clients have no principal able to act for them?
+  *(a relationship nobody can exercise — stewardship review)*
+- Is a business client ever also a tenant, and if so does membership or the
+  client relationship govern admission? *(open — the two are modelled
+  separately until the answer is settled)*
+
 ### Devices and session concurrency
 
 The platform issues one session per user per device; concurrent session

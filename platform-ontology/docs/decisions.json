@@ -2,6 +2,26 @@
   "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies.",
   "decisions": [
     {
+      "id": "D47",
+      "title": "Two clients, kept apart",
+      "area": "Foundations",
+      "invariant": true,
+      "reasoning": "The word 'client' names two unrelated things, and conflating them is how a platform ends up making entitlement decisions from a protocol identifier.\n\nThe OAuth client is the session manager's registration at the identity provider, one per audience. Its client_id identifies that registration and nothing else — no tenancy, no channel, no caller identity — and it is derivable from the audience. It is modelled as authn:OAuthClientRegistration, deliberately thin, and carries an editorial note that entitlement decisions must never be made from a client_id.\n\nThe business client is a party holding a relationship with the firm: the customer, retail or corporate. It is core:BusinessClient, and it is not itself authenticable — principals act for it. That separation is what lets one corporate client have many users, and lets one person hold both a staff identity and a client relationship without the model confusing them.\n\nThis also spends a reservation the model has held since the naming work on registrations: 'client' was kept free for the firm's business meaning rather than being used for software, and this is that meaning taking its place.",
+      "terms": [
+        "OAuthClientRegistration",
+        "clientId",
+        "registeredWith",
+        "forAudience",
+        "BusinessClient",
+        "actsForClient"
+      ],
+      "rejected": [
+        "One Client class covering both: the two share a word and nothing else — one is protocol bookkeeping, the other is a business relationship with a lifecycle.",
+        "Making BusinessClient a subclass of Principal: a corporate client is not authenticable and has many users, so principals act for a client rather than being one.",
+        "Leaving the OAuth registration unmodelled as pure plumbing: it is plumbing, but naming it explicitly is what stops the two senses of 'client' collapsing back together in conversation."
+      ]
+    },
+    {
       "id": "D01",
       "title": "One logical management control plane",
       "area": "Planes & scoped governance",

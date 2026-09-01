@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "2335cfe4ac8c",
+ "sourceDigest": "8da4b97e15e6",
  "stats": {
   "modules": 6,
-  "classes": 71,
-  "objectProperties": 86,
-  "datatypeProperties": 33,
-  "shapes": 67,
-  "violations": 97,
-  "warnings": 7,
+  "classes": 73,
+  "objectProperties": 89,
+  "datatypeProperties": 34,
+  "shapes": 70,
+  "violations": 101,
+  "warnings": 8,
   "vocabularies": 11,
-  "relationships": 48,
-  "decisions": 46,
+  "relationships": 49,
+  "decisions": 47,
   "explainers": 2,
   "formalCQs": 6,
-  "backlogCQs": 78
+  "backlogCQs": 83
  },
  "modules": [
   {
@@ -22,7 +22,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.3.0",
+   "version": "0.4.0",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -32,7 +32,7 @@
    "iri": "https://w3id.org/examplebank/platform/authn",
    "prefix": "authn",
    "title": "Authentication Module",
-   "version": "0.4.0",
+   "version": "0.5.0",
    "description": "Credentials, authentication events and methods, identity providers, and NIST SP 800-63 assurance levels (modelled as SKOS concepts with numeric ranks for comparison). Since 0.2.0: authentication journeys \u2014 governed definitions per delivery channel, and executions comprising the events a principal actually traversed; achieved assurance lives on the execution. Since 0.3.0: proof-of-possession keys, the confirmation binding of RFC 7800 as used by DPoP (RFC 9449), which sender-constrains sessions and tokens so a stolen artifact is useless without the private key.",
    "blurb": "Credentials, identity providers, assurance levels, authentication journeys and issuer-scoped subject identifiers.",
    "imports": [
@@ -143,6 +143,59 @@
    "decisions": [
     "D09",
     "D17"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#BusinessClient",
+   "name": "BusinessClient",
+   "curie": "core:BusinessClient",
+   "kind": "class",
+   "module": "core",
+   "label": "Business client",
+   "definition": "A party holding a business relationship with the firm \u2014 the firm's customer, retail or corporate. This is the word 'client' in its business sense, and the ontology reserves it for that meaning alone: the OAuth client registration is a different and unrelated thing (authn:OAuthClientRegistration). A business client is not itself authenticable; principals act for it, which is what lets one corporate client have many users and one person hold both a staff identity and a client relationship.",
+   "editorialNote": null,
+   "altLabels": [
+    "counterparty",
+    "customer"
+   ],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "BusinessClientShape",
+    "UnreachableClientShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "core:identifier",
+     "pathIri": "https://w3id.org/examplebank/platform/core#identifier",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A business client must carry exactly one canonical customer identifier."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Business client has no principal acting for it \u2014 a relationship nobody can exercise; route to stewardship review.",
+     "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS {\n                    ?p <https://w3id.org/examplebank/platform/core#actsForClient> $this .\n                }\n            }"
+    }
+   ],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
    ]
   },
   {
@@ -807,7 +860,7 @@
    "kind": "datatypeProperty",
    "module": "core",
    "label": null,
-   "definition": "Canonical firm-wide identifier for the subject (SPIFFE ID for workloads; directory identifier for humans).",
+   "definition": "Canonical firm-wide identifier for the subject: SPIFFE ID for workloads, directory identifier for staff, customer identifier for business clients.",
    "editorialNote": null,
    "altLabels": [],
    "status": "draft",
@@ -895,6 +948,31 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#actsForClient",
+   "name": "actsForClient",
+   "curie": "core:actsForClient",
+   "kind": "objectProperty",
+   "module": "core",
+   "label": null,
+   "definition": "Business client a principal acts for. Retail relationships are typically one principal to one client; corporate relationships are many principals to one client. Distinct from tenant membership, which says a principal may act for a platform tenant \u2014 whether a business client is ever also a tenant is deliberately left open.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#enforcedBy",
@@ -1622,6 +1700,13 @@
      "severity": "Violation"
     },
     {
+     "from": "authn:OAuthClientRegistration",
+     "property": "authn:registeredWith",
+     "to": "authn:IdentityProvider",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "authn:SubjectIdentifier",
      "property": "authn:atIssuer",
      "to": "authn:IdentityProvider",
@@ -1632,6 +1717,91 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/authn#OAuthClientRegistration",
+   "name": "OAuthClientRegistration",
+   "curie": "authn:OAuthClientRegistration",
+   "kind": "class",
+   "module": "authn",
+   "label": "OAuth client registration",
+   "definition": "The registration through which the platform obtains tokens from an identity provider \u2014 held by the session manager, one per audience. Protocol bookkeeping: its client_id identifies the registration and nothing else, carrying no tenancy, no channel and no front-end identity, and it is derivable from the audience. Modelled only so the two senses of 'client' can be told apart; the firm's customer is core:BusinessClient.",
+   "editorialNote": "Deliberately thin. Entitlement decisions must never be made from a client_id \u2014 it names the platform's own registration, not the caller.",
+   "altLabels": [
+    "client_id"
+   ],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [
+    "authn:Credential"
+   ],
+   "subClasses": [],
+   "shapes": [
+    "OAuthClientRegistrationShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "authn:clientId",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#clientId",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration must carry exactly one client_id."
+    },
+    {
+     "kind": "property",
+     "path": "authn:registeredWith",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#registeredWith",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "authn:IdentityProvider",
+     "classIri": "https://w3id.org/examplebank/platform/authn#IdentityProvider",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration must be held at exactly one identity provider."
+    },
+    {
+     "kind": "property",
+     "path": "authn:forAudience",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#forAudience",
+     "minCount": null,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration serves at most one audience \u2014 the platform maintains one registration per audience."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "authn:OAuthClientRegistration",
+     "property": "authn:registeredWith",
+     "to": "authn:IdentityProvider",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#ProofOfPossessionKey",
@@ -1904,6 +2074,31 @@
    "decisions": [
     "D28",
     "D39"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/authn#clientId",
+   "name": "clientId",
+   "curie": "authn:clientId",
+   "kind": "datatypeProperty",
+   "module": "authn",
+   "label": null,
+   "definition": "The client_id of an OAuth client registration \u2014 a protocol identifier, not a platform-semantic one.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
    ]
   },
   {
@@ -2233,6 +2428,31 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/authn#forAudience",
+   "name": "forAudience",
+   "curie": "authn:forAudience",
+   "kind": "objectProperty",
+   "module": "authn",
+   "label": null,
+   "definition": "Audience an OAuth client registration obtains tokens for. The platform maintains one registration per audience.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/authn#identifierFormat",
    "name": "identifierFormat",
    "curie": "authn:identifierFormat",
@@ -2328,6 +2548,39 @@
    ],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/authn#registeredWith",
+   "name": "registeredWith",
+   "curie": "authn:registeredWith",
+   "kind": "objectProperty",
+   "module": "authn",
+   "label": null,
+   "definition": "Identity provider an OAuth client registration is held at.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "authn:OAuthClientRegistration",
+     "property": "authn:registeredWith",
+     "to": "authn:IdentityProvider",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D47"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#servesChannel",
@@ -8693,6 +8946,62 @@
    "warnings": 1
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/authn#OAuthClientRegistrationShape",
+   "name": "OAuthClientRegistrationShape",
+   "targetClass": "authn:OAuthClientRegistration",
+   "targetClassIri": "https://w3id.org/examplebank/platform/authn#OAuthClientRegistration",
+   "module": "authn",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "authn:clientId",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#clientId",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration must carry exactly one client_id."
+    },
+    {
+     "kind": "property",
+     "path": "authn:registeredWith",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#registeredWith",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "authn:IdentityProvider",
+     "classIri": "https://w3id.org/examplebank/platform/authn#IdentityProvider",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration must be held at exactly one identity provider."
+    },
+    {
+     "kind": "property",
+     "path": "authn:forAudience",
+     "pathIri": "https://w3id.org/examplebank/platform/authn#forAudience",
+     "minCount": null,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An OAuth client registration serves at most one audience \u2014 the platform maintains one registration per audience."
+    }
+   ],
+   "violations": 3,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#ProofOfPossessionKeyShape",
    "name": "ProofOfPossessionKeyShape",
    "targetClass": "authn:ProofOfPossessionKey",
@@ -9917,6 +10226,32 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/core#BusinessClientShape",
+   "name": "BusinessClientShape",
+   "targetClass": "core:BusinessClient",
+   "targetClassIri": "https://w3id.org/examplebank/platform/core#BusinessClient",
+   "module": "core",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "core:identifier",
+     "pathIri": "https://w3id.org/examplebank/platform/core#identifier",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A business client must carry exactly one canonical customer identifier."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#PlatformEventShape",
    "name": "PlatformEventShape",
    "targetClass": "core:PlatformEvent",
@@ -10004,6 +10339,23 @@
      "maxInclusive": null,
      "severity": "Warning",
      "message": "Resource has no governing policy \u2014 flag for stewardship review."
+    }
+   ],
+   "violations": 0,
+   "warnings": 1
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/core#UnreachableClientShape",
+   "name": "UnreachableClientShape",
+   "targetClass": "core:BusinessClient",
+   "targetClassIri": "https://w3id.org/examplebank/platform/core#BusinessClient",
+   "module": "core",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Business client has no principal acting for it \u2014 a relationship nobody can exercise; route to stewardship review.",
+     "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS {\n                    ?p <https://w3id.org/examplebank/platform/core#actsForClient> $this .\n                }\n            }"
     }
    ],
    "violations": 0,
@@ -10575,6 +10927,13 @@
    "severity": "Violation"
   },
   {
+   "from": "authn:OAuthClientRegistration",
+   "property": "authn:registeredWith",
+   "to": "authn:IdentityProvider",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
    "from": "authn:SubjectIdentifier",
    "property": "authn:atIssuer",
    "to": "authn:IdentityProvider",
@@ -10863,6 +11222,34 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D47",
+   "title": "Two clients, kept apart",
+   "area": "Foundations",
+   "invariant": true,
+   "reasoning": "The word 'client' names two unrelated things, and conflating them is how a platform ends up making entitlement decisions from a protocol identifier.\n\nThe OAuth client is the session manager's registration at the identity provider, one per audience. Its client_id identifies that registration and nothing else \u2014 no tenancy, no channel, no caller identity \u2014 and it is derivable from the audience. It is modelled as authn:OAuthClientRegistration, deliberately thin, and carries an editorial note that entitlement decisions must never be made from a client_id.\n\nThe business client is a party holding a relationship with the firm: the customer, retail or corporate. It is core:BusinessClient, and it is not itself authenticable \u2014 principals act for it. That separation is what lets one corporate client have many users, and lets one person hold both a staff identity and a client relationship without the model confusing them.\n\nThis also spends a reservation the model has held since the naming work on registrations: 'client' was kept free for the firm's business meaning rather than being used for software, and this is that meaning taking its place.",
+   "terms": [
+    "OAuthClientRegistration",
+    "clientId",
+    "registeredWith",
+    "forAudience",
+    "BusinessClient",
+    "actsForClient"
+   ],
+   "rejected": [
+    "One Client class covering both: the two share a word and nothing else \u2014 one is protocol bookkeeping, the other is a business relationship with a lifecycle.",
+    "Making BusinessClient a subclass of Principal: a corporate client is not authenticable and has many users, so principals act for a client rather than being one.",
+    "Leaving the OAuth registration unmodelled as pure plumbing: it is plumbing, but naming it explicitly is what stops the two senses of 'client' collapsing back together in conversation."
+   ],
+   "termCuries": [
+    "authn:OAuthClientRegistration",
+    "authn:clientId",
+    "authn:forAudience",
+    "authn:registeredWith",
+    "core:BusinessClient",
+    "core:actsForClient"
+   ]
+  },
   {
    "id": "D01",
    "title": "One logical management control plane",
@@ -12434,6 +12821,31 @@
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which tokens or security events reference subjects with no mapped principal? (needs token subject links and in-graph CAEP events)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "The two clients",
+    "question": "Which OAuth client registrations exist, at which issuer, for which audience, and what is each one's client_id?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "The two clients",
+    "question": "Which principals act for which business clients, and since when?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "The two clients",
+    "question": "Which sessions carry a business-client identity, and which carry an internal staff or workload identity?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "The two clients",
+    "question": "Which business clients have no principal able to act for them? (a relationship nobody can exercise \u2014 stewardship review)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "The two clients",
+    "question": "Is a business client ever also a tenant, and if so does membership or the client relationship govern admission? (open \u2014 the two are modelled separately until the answer is settled)",
     "expectedEmpty": false
    },
    {

@@ -17,6 +17,24 @@ ex:payments-agent a core:WorkloadPrincipal ;
     core:identifier "spiffe://examplebank.com/ns/payments/sa/agent-runner" ;
     core:displayName "Payments agent runner" .
 
+### The two clients, kept apart
+### 1. OAuth client — the session manager's registration, one per audience
+ex:oauth-reg-ledger a authn:OAuthClientRegistration ;
+    core:displayName "Session manager registration for the ledger audience" ;
+    authn:clientId "a3f1c8e2-7d44-4b91-9f0e-2c6b5d18ae37" ;
+    authn:registeredWith ex:enterprise-idp ;
+    authn:forAudience ex:ledger-service .
+
+### 2. Business client — a party with a relationship to the firm
+ex:client-acme a core:BusinessClient ;
+    core:identifier "cif:8840127" ;
+    core:displayName "Acme Trading Ltd" .
+
+ex:dana a core:HumanPrincipal ;
+    core:identifier "cust:dana.okafor" ;
+    core:displayName "Dana Okafor" ;
+    core:actsForClient ex:client-acme .
+
 ### Identity provider & credentials
 ex:enterprise-idp a authn:IdentityProvider ;
     core:displayName "Enterprise IdP" .

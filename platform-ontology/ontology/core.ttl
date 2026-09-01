@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.3.0> ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.0> ;
+    owl:versionInfo "0.4.0" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -79,6 +79,12 @@ core:Application a owl:Class ;
     skos:definition "An independently developed application owned by exactly one tenant (possibly the platform tenant), reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements. What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
     vs:term_status "draft" .
 
+core:BusinessClient a owl:Class ;
+    skos:prefLabel "Business client"@en ;
+    skos:altLabel "customer"@en , "counterparty"@en ;
+    skos:definition "A party holding a business relationship with the firm — the firm's customer, retail or corporate. This is the word 'client' in its business sense, and the ontology reserves it for that meaning alone: the OAuth client registration is a different and unrelated thing (authn:OAuthClientRegistration). A business client is not itself authenticable; principals act for it, which is what lets one corporate client have many users and one person hold both a staff identity and a client relationship."@en ;
+    vs:term_status "draft" .
+
 core:DeliveryChannel a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     skos:definition "The delivery avenue through which platform capabilities are consumed, determinable by ingress from the registration presenting the request — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
@@ -116,6 +122,10 @@ core:ownedBy a owl:ObjectProperty ;
     skos:definition "Tenant that owns an application or portal — exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant."@en ;
     vs:term_status "draft" .
 
+core:actsForClient a owl:ObjectProperty ;
+    skos:definition "Business client a principal acts for. Retail relationships are typically one principal to one client; corporate relationships are many principals to one client. Distinct from tenant membership, which says a principal may act for a platform tenant — whether a business client is ever also a tenant is deliberately left open."@en ;
+    vs:term_status "draft" .
+
 core:hasActingIdentity a owl:ObjectProperty ;
     skos:definition "Principal under whose identity a resource acts — a control plane component's SPIFFE workload identity, for example. Resources cannot be principals; their acts are performed by this principal. Promoted from control-plane while draft."@en ;
     vs:term_status "draft" .
@@ -125,7 +135,7 @@ core:hasActingIdentity a owl:ObjectProperty ;
 #################################################################
 
 core:identifier a owl:DatatypeProperty ;
-    skos:definition "Canonical firm-wide identifier for the subject (SPIFFE ID for workloads; directory identifier for humans)."@en ;
+    skos:definition "Canonical firm-wide identifier for the subject: SPIFFE ID for workloads, directory identifier for staff, customer identifier for business clients."@en ;
     vs:term_status "draft" .
 
 core:occurredAtTime a owl:DatatypeProperty ;

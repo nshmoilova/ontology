@@ -154,6 +154,31 @@ sa:SubjectIdentifierCollisionShape a sh:NodeShape ;
         """ ;
     ] .
 
+sa:OAuthClientRegistrationShape a sh:NodeShape ;
+    sh:targetClass authn:OAuthClientRegistration ;
+    sh:property [
+        sh:path authn:clientId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:severity sh:Violation ;
+        sh:message "An OAuth client registration must carry exactly one client_id." ;
+    ] ;
+    sh:property [
+        sh:path authn:registeredWith ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authn:IdentityProvider ;
+        sh:severity sh:Violation ;
+        sh:message "An OAuth client registration must be held at exactly one identity provider." ;
+    ] ;
+    sh:property [
+        sh:path authn:forAudience ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "An OAuth client registration serves at most one audience — the platform maintains one registration per audience." ;
+    ] .
+
 sa:ProofOfPossessionKeyShape a sh:NodeShape ;
     sh:targetClass authn:ProofOfPossessionKey ;
     sh:property [
