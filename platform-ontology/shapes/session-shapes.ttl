@@ -1,0 +1,102 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix authn:   <https://w3id.org/examplebank/platform/authn#> .
+@prefix session: <https://w3id.org/examplebank/platform/session#> .
+@prefix ss:      <https://w3id.org/examplebank/platform/shapes/session#> .
+
+ss:SessionShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:property [
+        sh:path session:establishedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class authn:AuthenticationJourneyExecution ;
+        sh:severity sh:Violation ;
+        sh:message "Every session must be established by exactly one authentication journey execution (single-step flows are one-event executions)." ;
+    ] ;
+    sh:property [
+        sh:path session:elevatedBy ;
+        sh:class authn:AuthenticationJourneyExecution ;
+        sh:severity sh:Violation ;
+        sh:message "Session elevations must be authentication journey executions." ;
+    ] ;
+    sh:property [
+        sh:path session:boundToPrincipal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "Every session must be bound to exactly one principal." ;
+    ] ;
+    sh:property [
+        sh:path session:hasState ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class session:SessionState ;
+        sh:severity sh:Violation ;
+        sh:message "Every session must have exactly one lifecycle state." ;
+    ] ;
+    sh:property [
+        sh:path session:expiresAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:severity sh:Violation ;
+        sh:message "Every session must have an expiry." ;
+    ] .
+
+# Cross-entity integrity: the session's principal must match the
+# principal of its originating authentication event.
+ss:SessionPrincipalConsistencyShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Session principal must match the principal of its originating authentication event." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/session#establishedBy> ?x ;
+                      <https://w3id.org/examplebank/platform/session#boundToPrincipal> ?p .
+                ?x <https://w3id.org/examplebank/platform/authn#authenticatedPrincipal> ?ap .
+                FILTER (?p != ?ap)
+            }
+        """ ;
+    ] .
+
+# Cross-entity integrity: an active session may not originate from a
+# failed authentication journey execution.
+ss:ActiveSessionSuccessfulAuthnShape a sh:NodeShape ;
+    sh:targetClass session:Session ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "An active session must originate from a successful authentication journey execution." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/session#hasState>
+                      <https://w3id.org/examplebank/platform/session#state-active> ;
+                      <https://w3id.org/examplebank/platform/session#establishedBy> ?x .
+                ?x <https://w3id.org/examplebank/platform/authn#succeeded> false .
+            }
+        """ ;
+    ] .
+
+ss:TokenShape a sh:NodeShape ;
+    sh:targetClass session:Token ;
+    sh:property [
+        sh:path session:expiresAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:severity sh:Violation ;
+        sh:message "Every token must have an expiry." ;
+    ] ;
+    sh:property [
+        sh:path session:issuedTo ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:AuthorizedParty ;
+        sh:severity sh:Violation ;
+        sh:message "Every token must be issued to exactly one authorized party (the azp claim) — without it, channel evidence and azp-mismatch audits are unanswerable." ;
+    ] .

@@ -1,0 +1,307 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix authz: <https://w3id.org/examplebank/platform/authz#> .
+@prefix cp:    <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/control-plane>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/authz> ;
+    dct:title "Control Plane Module"@en ;
+    dct:description "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+cp:ControlPlaneComponent a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "A component that manages platform configuration or policy (API server, policy service, gateway controller, MCP router control loop)."@en ;
+    vs:term_status "draft" .
+
+cp:AdministrativeScope a owl:Class ;
+    skos:definition "A bounded set of resources over which administrative authority is granted (tenant, namespace, line of business)."@en ;
+    vs:term_status "draft" .
+
+cp:PolicyChangeEvent a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "A mutation of authorization policy or security-relevant configuration."@en ;
+    vs:term_status "draft" .
+
+cp:ChangeApproval a owl:Class ;
+    skos:definition "An approval attached to a change event, given by a principal. Every policy change must carry at least one approval by a human principal (enforced in SHACL)."@en ;
+    vs:term_status "draft" .
+
+cp:ManagementControlPlane a owl:Class ;
+    rdfs:subClassOf cp:ControlPlaneComponent ;
+    skos:definition "The control plane that owns the governance layer: tenant registration, entitlement configuration, and desired-state declarations. It defines; it never actuates a data plane (enforced in SHACL)."@en ;
+    vs:term_status "draft" .
+
+cp:CapabilityControlPlane a owl:Class ;
+    rdfs:subClassOf cp:ControlPlaneComponent ;
+    skos:definition "A control plane governing one platform capability, and the designated writer that actuates governed desired state into that capability's data planes."@en ;
+    vs:term_status "draft" .
+
+cp:DataPlane a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "A runtime plane realizing one capability and serving zero or more tenants; mutated only by its capability control plane's acting identity (sole-writer, enforced in SHACL)."@en ;
+    vs:term_status "draft" .
+
+cp:DesiredStateDeclaration a owl:Class ;
+    skos:definition "A governed statement of intended data-plane state, declared through the management control plane. Data-plane mutations must trace to one (no orphan writes)."@en ;
+    vs:term_status "draft" .
+
+cp:DataPlaneMutation a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "A write into a data plane performed by a control plane's acting identity, realizing a desired-state declaration."@en ;
+    vs:term_status "draft" .
+
+cp:Subscription a owl:Class ;
+    skos:definition "A first-class, scope-free record of a tenant holding a platform capability, with an access-relevant lifecycle (no billing states) and human-approved activation. Where the tenant can actually use the capability is computed: subscription ∩ entitlement grants ∩ offerings. Subscriptions target capabilities only — applications are owned, not subscribed."@en ;
+    vs:term_status "draft" .
+
+cp:SubscriptionState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "Access-relevant lifecycle state of a subscription; members are individuals (Requested, Active, Suspended, Terminated)."@en ;
+    vs:term_status "draft" .
+
+cp:CapabilityBundle a owl:Class ;
+    skos:definition "A named set of capabilities offered for subscription together. Bundles are sales-time convenience: subscribing to one expands to per-capability subscriptions, materialized; enforcement and reachability never see bundles."@en ;
+    vs:term_status "draft" .
+
+cp:CapabilityOffering a owl:Class ;
+    skos:definition "Governed intent that a capability is offered in a scope. No cross-scope parity is assumed: a capability exists where an offering says it does. Data planes are actuation and must conform: deployed-where-not-offered violates; offered-but-undeployed is launch tracking."@en ;
+    vs:term_status "draft" .
+
+cp:CapabilityRequirement a owl:Class ;
+    skos:definition "A capability an application requires, proposed by observed usage and confirmed by a human approval — 'agents observe, humans confirm'. Only confirmed requirements gate enablement; drift against live observation is watched in both directions."@en ;
+    vs:term_status "draft" .
+
+cp:CapabilityUseObservation a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "A windowed aggregate observation, ingested from telemetry, that an application exercised a capability during a time window. Kept in-graph so requirement-drift questions stay answerable in CI; never per-request."@en ;
+    vs:term_status "draft" .
+
+cp:ApplicationEnablement a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    skos:definition "A desired-state declaration enabling an application within the declaration's scope. Enablement inherits the full declaration machinery — scope, approval rigor, supersession; an application is enabled where a current, approved enablement says so, gated on its owner's subscription and offering coverage."@en ;
+    vs:term_status "draft" .
+
+cp:JourneyDefinitionChange a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    skos:definition "A desired-state declaration changing an authentication journey definition. Journey definitions are security-relevant desired state; this subclass gives their changes scope, approval rigor, and supersession through the standard declaration machinery."@en ;
+    vs:term_status "draft" .
+
+cp:Portal a owl:Class ;
+    skos:definition "A tenant-owned presentation grouping of applications, fronted by one or more authorized parties — one per delivery channel it is presented on (the web front and the iOS front of one portal are two authorized parties, each with its own credentials and revocation). Presentation only: admission stays per-application and the enforcement vocabulary never sees portals."@en ;
+    vs:term_status "draft" .
+
+cp:ManagementControlPlane owl:disjointWith cp:CapabilityControlPlane .
+cp:Subscription owl:disjointWith cp:CapabilityOffering .
+
+#################################################################
+# Object properties
+#################################################################
+
+cp:administers a owl:ObjectProperty ;
+    skos:definition "Administrative scope a component or principal is authorized to manage."@en ;
+    vs:term_status "draft" .
+
+cp:scopeIncludes a owl:ObjectProperty ;
+    skos:definition "Resource included in an administrative scope."@en ;
+    vs:term_status "draft" .
+
+cp:changedPolicy a owl:ObjectProperty ;
+    skos:definition "Policy mutated by a change event."@en ;
+    vs:term_status "draft" .
+
+cp:hasApproval a owl:ObjectProperty ;
+    skos:definition "Approval attached to a change event."@en ;
+    vs:term_status "draft" .
+
+cp:approvedBy a owl:ObjectProperty ;
+    skos:definition "Principal who gave an approval."@en ;
+    vs:term_status "draft" .
+
+cp:executedBy a owl:ObjectProperty ;
+    rdfs:subPropertyOf core:performedBy ;
+    skos:definition "Principal (often a workload/agent) that executed the change."@en ;
+    vs:term_status "draft" .
+
+cp:governsCapability a owl:ObjectProperty ;
+    skos:definition "Capability whose configuration and data planes a capability control plane governs."@en ;
+    vs:term_status "draft" .
+
+cp:actuates a owl:ObjectProperty ;
+    skos:definition "Data plane a control plane is the designated writer for. Governance is separated from actuation: only capability control planes actuate (enforced in SHACL)."@en ;
+    vs:term_status "draft" .
+
+cp:realizesCapability a owl:ObjectProperty ;
+    skos:definition "Capability a data plane is a runtime realization of."@en ;
+    vs:term_status "draft" .
+
+cp:servesTenant a owl:ObjectProperty ;
+    skos:definition "Tenant whose workload or data a data plane serves. Cardinality expresses the capability's isolation model (shared plane vs. per-tenant cell) and is constrained per capability in SHACL, not here."@en ;
+    vs:term_status "draft" .
+
+cp:mutatedDataPlane a owl:ObjectProperty ;
+    skos:definition "Data plane a mutation event wrote into."@en ;
+    vs:term_status "draft" .
+
+cp:realizesIntent a owl:ObjectProperty ;
+    skos:definition "Desired-state declaration a data-plane mutation actuates. Every mutation must carry this trace (no orphan writes)."@en ;
+    vs:term_status "draft" .
+
+cp:declaredThrough a owl:ObjectProperty ;
+    skos:definition "Management control plane through which a desired-state declaration was authored and governed."@en ;
+    vs:term_status "draft" .
+
+cp:declaresStateOf a owl:ObjectProperty ;
+    skos:definition "Data plane whose intended state a declaration describes."@en ;
+    vs:term_status "draft" .
+
+cp:declarationScope a owl:ObjectProperty ;
+    skos:definition "Administrative scope a declaration is bound to — mandatory, exactly one (SHACL); 'global' means explicitly naming the root scope, never omitting the triple. Locality: a mutation's data plane must fall inside its declaration's scope."@en ;
+    vs:term_status "draft" .
+
+cp:subScopeOf a owl:ObjectProperty ;
+    skos:definition "Parent scope in the single-parent scope tree. The tree carries authority, locality containment, and approval-rigor inheritance; environment/region facets on scope nodes carry cross-cutting dimensions. Single-parent by design — DAG inheritance is ambiguous."@en ;
+    vs:term_status "draft" .
+
+cp:supersedes a owl:ObjectProperty ;
+    skos:definition "Prior declaration this immutable declaration replaces. Realizing a superseded declaration is a warning (reconciler lag); realizing an unapproved one is a violation."@en ;
+    vs:term_status "draft" .
+
+cp:justifiedBy a owl:ObjectProperty ;
+    skos:definition "Subscription that justifies a tenant-provisioning declaration. Teardown declarations reference the terminated subscription; provisioning requires an active one."@en ;
+    vs:term_status "draft" .
+
+cp:forApplication a owl:ObjectProperty ;
+    skos:definition "Application a declaration provisions for, or that an enablement enables. Makes per-application decommissioning and blast radius a precise query."@en ;
+    vs:term_status "draft" .
+
+cp:subscriber a owl:ObjectProperty ;
+    skos:definition "Tenant holding a subscription — including the platform tenant, which subscribes to its own capabilities so every coverage rule stays uniform."@en ;
+    vs:term_status "draft" .
+
+cp:subscribedCapability a owl:ObjectProperty ;
+    skos:definition "Capability a subscription holds. Hard dependencies are auto-included as their own subscriptions at subscription time (closure, materialized)."@en ;
+    vs:term_status "draft" .
+
+cp:hasSubscriptionState a owl:ObjectProperty ;
+    skos:definition "Current lifecycle state of a subscription."@en ;
+    vs:term_status "draft" .
+
+cp:bundlesCapability a owl:ObjectProperty ;
+    skos:definition "Capability included in a bundle."@en ;
+    vs:term_status "draft" .
+
+cp:dependsOn a owl:ObjectProperty ;
+    skos:definition "Hard dependency between capabilities: the dependent cannot be provisioned without the dependency. Hard-only until a real soft case appears; the dependency graph must be acyclic (SHACL)."@en ;
+    vs:term_status "draft" .
+
+cp:offersCapability a owl:ObjectProperty ;
+    skos:definition "Capability an offering makes available."@en ;
+    vs:term_status "draft" .
+
+cp:offeredInScope a owl:ObjectProperty ;
+    skos:definition "Scope (and thereby its subtree) in which the offering makes the capability available."@en ;
+    vs:term_status "draft" .
+
+cp:ofApplication a owl:ObjectProperty ;
+    skos:definition "Application a capability requirement belongs to."@en ;
+    vs:term_status "draft" .
+
+cp:requiredCapability a owl:ObjectProperty ;
+    skos:definition "Capability a requirement names."@en ;
+    vs:term_status "draft" .
+
+cp:observedApplication a owl:ObjectProperty ;
+    skos:definition "Application a usage observation concerns."@en ;
+    vs:term_status "draft" .
+
+cp:observedCapability a owl:ObjectProperty ;
+    skos:definition "Capability a usage observation saw exercised."@en ;
+    vs:term_status "draft" .
+
+cp:groupsApplication a owl:ObjectProperty ;
+    skos:definition "Application presented within a portal."@en ;
+    vs:term_status "draft" .
+
+cp:declaresDefinition a owl:ObjectProperty ;
+    skos:definition "Authentication journey definition whose intended shape a journey-definition change declares."@en ;
+    vs:term_status "draft" .
+
+cp:frontedBy a owl:ObjectProperty ;
+    skos:definition "Authorized party that fronts a portal on one delivery channel. A portal's channels are derived from its fronts' bindings — stated once, never duplicated on the portal."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+cp:approvedAtTime a owl:DatatypeProperty ;
+    skos:definition "Instant at which an approval was given."@en ;
+    vs:term_status "draft" .
+
+cp:changeTicket a owl:DatatypeProperty ;
+    skos:definition "Reference to the change-management record (e.g., ServiceNow ticket) for auditability."@en ;
+    vs:term_status "draft" .
+
+cp:requiresHumanApproval a owl:DatatypeProperty ;
+    skos:definition "Whether declarations bound to this scope (or its descendants, by inheritance up the tree to the nearest ancestor that says anything) require a human approval. Data-driven rigor: prod's subtree says true, dev's says false — one invariant, no shape exceptions."@en ;
+    vs:term_status "draft" .
+
+cp:inEnvironment a owl:DatatypeProperty ;
+    skos:definition "Environment facet of a scope node (e.g., 'prod', 'uat', 'dev'), for cross-cutting queries; the tree carries containment, facets carry dimensions. To be promoted to a SKOS scheme before stable."@en ;
+    vs:term_status "draft" .
+
+cp:inRegion a owl:DatatypeProperty ;
+    skos:definition "Region facet of a scope node (e.g., 'US', 'EU'), for cross-cutting queries. To be promoted to a SKOS scheme before stable."@en ;
+    vs:term_status "draft" .
+
+cp:isolationModel a owl:DatatypeProperty ;
+    skos:definition "Tenant-isolation model a capability declares ('shared' or 'cell-per-tenant'); the data-driven fact one SPARQL invariant enforces on the capability's data planes."@en ;
+    vs:term_status "draft" .
+
+cp:windowStart a owl:DatatypeProperty ;
+    skos:definition "Start of a usage observation's aggregation window."@en ;
+    vs:term_status "draft" .
+
+cp:windowEnd a owl:DatatypeProperty ;
+    skos:definition "End of a usage observation's aggregation window."@en ;
+    vs:term_status "draft" .
+
+cp:requestCount a owl:DatatypeProperty ;
+    skos:definition "Number of requests aggregated in a usage observation window."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Subscription state vocabulary
+#################################################################
+
+cp:SubscriptionStateScheme a skos:ConceptScheme ;
+    dct:title "Subscription Lifecycle States"@en ;
+    skos:editorialNote "Access-relevant states only; billing and commercial nuance stays in commercial systems. 'Requested' covers awaiting-approval."@en .
+
+cp:substate-requested a cp:SubscriptionState ;
+    skos:inScheme cp:SubscriptionStateScheme ;
+    skos:prefLabel "Requested"@en .
+
+cp:substate-active a cp:SubscriptionState ;
+    skos:inScheme cp:SubscriptionStateScheme ;
+    skos:prefLabel "Active"@en .
+
+cp:substate-suspended a cp:SubscriptionState ;
+    skos:inScheme cp:SubscriptionStateScheme ;
+    skos:prefLabel "Suspended"@en .
+
+cp:substate-terminated a cp:SubscriptionState ;
+    skos:inScheme cp:SubscriptionStateScheme ;
+    skos:prefLabel "Terminated"@en .

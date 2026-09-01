@@ -1,0 +1,21 @@
+name: ontology-ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r ci/requirements.txt
+      - name: Parse, SHACL-validate, run competency suite
+        run: python3 ci/validate.py
+      # Recommended additions once ROBOT is vendored or containerized:
+      # - name: OWL 2 QL profile check + coherence
+      #   run: robot validate-profile --profile QL --input ontology/core.ttl
+      # - name: Generate docs
+      #   run: widoco -ontFile ontology/core.ttl -outFolder docs/site

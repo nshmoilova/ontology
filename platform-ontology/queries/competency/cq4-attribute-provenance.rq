@@ -1,0 +1,11 @@
+# CQ-4: Which attribute assertions back decisions about a principal, and
+# which authoritative source issued each?
+PREFIX authz: <https://w3id.org/examplebank/platform/authz#>
+
+SELECT ?principal ?attrName ?attrValue ?issuer WHERE {
+    ?assertion a authz:AttributeAssertion ;
+               authz:aboutPrincipal ?principal ;
+               authz:attributeName ?attrName ;
+               authz:attributeValue ?attrValue ;
+               authz:assertedBy ?issuer .
+}

@@ -1,0 +1,10 @@
+# CQ-2: For every route, which upstream does it reach and which policy
+# enforcement point mediates it?
+PREFIX core:    <https://w3id.org/examplebank/platform/core#>
+PREFIX ingress: <https://w3id.org/examplebank/platform/ingress#>
+
+SELECT ?route ?upstream ?pep WHERE {
+    ?route a ingress:Route ;
+           ingress:routesTo ?upstream .
+    OPTIONAL { ?route core:enforcedBy ?pep }
+}

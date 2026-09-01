@@ -1,0 +1,199 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix authn: <https://w3id.org/examplebank/platform/authn#> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/authn>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authn/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/core> ;
+    dct:title "Authentication Module"@en ;
+    dct:description "Credentials, authentication events and methods, identity providers, and NIST SP 800-63 assurance levels (modelled as SKOS concepts with numeric ranks for comparison). Since 0.2.0: authentication journeys — governed definitions per delivery channel, and executions comprising the events a principal actually traversed; achieved assurance lives on the execution."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+authn:Credential a owl:Class ;
+    skos:definition "An artifact used to prove an identity claim (password record, FIDO2 key registration, client certificate, workload SVID)."@en ;
+    vs:term_status "draft" .
+
+authn:AuthenticationEvent a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "A discrete attempt (successful or failed) to authenticate a principal."@en ;
+    vs:term_status "draft" .
+
+authn:IdentityProvider a owl:Class ;
+    skos:definition "A system that asserts principal identities (enterprise IdP, workload identity issuer)."@en ;
+    vs:term_status "draft" .
+
+authn:AuthenticationMethod a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "A controlled-vocabulary concept for how authentication was performed. Members are individuals, not subclasses."@en ;
+    vs:term_status "draft" .
+
+authn:AssuranceLevel a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "NIST SP 800-63 assurance level (IAL/AAL/FAL), modelled as an individual with an integer rank for ordering in SHACL-SPARQL constraints."@en ;
+    vs:term_status "draft" .
+
+authn:AuthenticationJourneyDefinition a owl:Class ;
+    skos:definition "A governed template of an authentication flow (e.g., 'web-default: password then OTP, yields AAL2'), bound to the delivery channels it serves. Changes to definitions are security-relevant desired state and flow through the control plane's declaration and approval machinery."@en ;
+    vs:term_status "draft" .
+
+authn:AuthenticationJourneyExecution a owl:Class ;
+    rdfs:subClassOf core:PlatformEvent ;
+    skos:definition "A principal's concrete traversal of a journey definition, comprising the authentication events actually performed. Sessions are established by executions, and step-up elevations are further executions on the same session; achieved assurance is a property of completing the flow, not of any single step."@en ;
+    vs:term_status "draft" .
+
+authn:SubjectIdentifier a owl:Class ;
+    skos:definition "A first-class naming fact: at one issuer, one subject value denotes one principal (RFC 9493 / OIDC sub). Read in reverse at resolution time — a token or security event carries the subject; this node yields the principal. Optionally pairwise: scoped to the authorized party the issuer minted it for. Not a credential (it proves nothing and is presented by no one) and not an attribute assertion (it resolves an unknown subject rather than describing a known principal)."@en ;
+    vs:term_status "draft" .
+
+authn:SubjectIdentifierFormat a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "RFC 9493 subject identifier format; members are individuals in a closed scheme, extended by MINOR bump."@en ;
+    vs:term_status "draft" .
+
+authn:Credential owl:disjointWith authn:AuthenticationEvent .
+authn:AuthenticationJourneyDefinition owl:disjointWith authn:AuthenticationJourneyExecution .
+authn:SubjectIdentifier owl:disjointWith authn:Credential .
+
+#################################################################
+# Object properties
+#################################################################
+
+authn:authenticatedPrincipal a owl:ObjectProperty ;
+    rdfs:subPropertyOf core:performedBy ;
+    skos:definition "The principal that the authentication event concerns."@en ;
+    vs:term_status "draft" .
+
+authn:usedCredential a owl:ObjectProperty ;
+    skos:definition "Credential presented in an authentication event."@en ;
+    vs:term_status "draft" .
+
+authn:usedMethod a owl:ObjectProperty ;
+    skos:definition "Authentication method concept used in an authentication event."@en ;
+    vs:term_status "draft" .
+
+authn:achievedAssuranceLevel a owl:ObjectProperty ;
+    skos:definition "AAL achieved by a successful authentication event or journey execution. For executions, this is the flow's outcome — password alone achieves nothing; password+OTP achieves AAL2."@en ;
+    vs:term_status "draft" .
+
+authn:followsDefinition a owl:ObjectProperty ;
+    skos:definition "Journey definition a journey execution traversed."@en ;
+    vs:term_status "draft" .
+
+authn:comprisesEvent a owl:ObjectProperty ;
+    skos:definition "Authentication event that is a step of a journey execution. Single-step flows (passkey, client credentials) are one-event executions."@en ;
+    vs:term_status "draft" .
+
+authn:servesChannel a owl:ObjectProperty ;
+    skos:definition "Delivery channel a journey definition serves."@en ;
+    vs:term_status "draft" .
+
+authn:atIssuer a owl:ObjectProperty ;
+    skos:definition "Identity provider within whose namespace a subject identifier is unique."@en ;
+    vs:term_status "draft" .
+
+authn:identifies a owl:ObjectProperty ;
+    skos:definition "Principal a subject identifier denotes. One (issuer, value, party-scope) combination must never identify two principals (collision invariant, SHACL); one principal may hold several identifiers, even at one issuer (linking, migration)."@en ;
+    vs:term_status "draft" .
+
+authn:identifierFormat a owl:ObjectProperty ;
+    skos:definition "RFC 9493 format of a subject identifier."@en ;
+    vs:term_status "draft" .
+
+authn:scopedToParty a owl:ObjectProperty ;
+    skos:definition "Authorized party a pairwise subject identifier is minted for; absent means the identifier is public across the issuer's parties."@en ;
+    vs:term_status "draft" .
+
+authn:issuedBy a owl:ObjectProperty ;
+    skos:definition "Identity provider that issued a credential or asserted an identity."@en ;
+    vs:term_status "draft" .
+
+authn:credentialOf a owl:ObjectProperty ;
+    skos:definition "Principal to which a credential is bound."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+authn:succeeded a owl:DatatypeProperty ;
+    skos:definition "Whether the authentication event or journey execution succeeded."@en ;
+    vs:term_status "draft" .
+
+authn:assuranceRank a owl:DatatypeProperty ;
+    skos:definition "Integer rank of an assurance level, used for ordered comparison in constraints (AAL1=1, AAL2=2, AAL3=3)."@en ;
+    vs:term_status "draft" .
+
+authn:subjectValue a owl:DatatypeProperty ;
+    skos:definition "The subject string as the issuer mints it (the sub claim value, an email, an opaque handle)."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Controlled vocabularies (individuals)
+#################################################################
+
+authn:AuthenticationMethodScheme a skos:ConceptScheme ;
+    dct:title "Authentication Methods"@en .
+
+authn:method-password a authn:AuthenticationMethod ;
+    skos:inScheme authn:AuthenticationMethodScheme ;
+    skos:prefLabel "Password"@en .
+
+authn:method-otp a authn:AuthenticationMethod ;
+    skos:inScheme authn:AuthenticationMethodScheme ;
+    skos:prefLabel "One-time passcode"@en .
+
+authn:method-fido2 a authn:AuthenticationMethod ;
+    skos:inScheme authn:AuthenticationMethodScheme ;
+    skos:prefLabel "FIDO2 / passkey"@en .
+
+authn:method-mtls a authn:AuthenticationMethod ;
+    skos:inScheme authn:AuthenticationMethodScheme ;
+    skos:prefLabel "Mutual TLS (workload SVID)"@en .
+
+authn:method-oidc-federated a authn:AuthenticationMethod ;
+    skos:inScheme authn:AuthenticationMethodScheme ;
+    skos:prefLabel "Federated OIDC"@en .
+
+authn:AssuranceLevelScheme a skos:ConceptScheme ;
+    dct:title "NIST 800-63 Authenticator Assurance Levels"@en .
+
+authn:AAL1 a authn:AssuranceLevel ;
+    skos:inScheme authn:AssuranceLevelScheme ;
+    skos:prefLabel "AAL1"@en ;
+    authn:assuranceRank 1 .
+
+authn:AAL2 a authn:AssuranceLevel ;
+    skos:inScheme authn:AssuranceLevelScheme ;
+    skos:prefLabel "AAL2"@en ;
+    authn:assuranceRank 2 .
+
+authn:AAL3 a authn:AssuranceLevel ;
+    skos:inScheme authn:AssuranceLevelScheme ;
+    skos:prefLabel "AAL3"@en ;
+    authn:assuranceRank 3 .
+
+authn:SubjectIdentifierFormatScheme a skos:ConceptScheme ;
+    dct:title "RFC 9493 Subject Identifier Formats"@en .
+
+authn:format-iss-sub a authn:SubjectIdentifierFormat ;
+    skos:inScheme authn:SubjectIdentifierFormatScheme ;
+    skos:prefLabel "iss_sub"@en .
+
+authn:format-email a authn:SubjectIdentifierFormat ;
+    skos:inScheme authn:SubjectIdentifierFormatScheme ;
+    skos:prefLabel "email"@en ;
+    skos:editorialNote "Email subjects are recyclable by issuers — validity windows matter most here."@en .
+
+authn:format-opaque a authn:SubjectIdentifierFormat ;
+    skos:inScheme authn:SubjectIdentifierFormatScheme ;
+    skos:prefLabel "opaque"@en .

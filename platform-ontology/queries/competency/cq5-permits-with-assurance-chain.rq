@@ -1,0 +1,20 @@
+# CQ-5: For each Permit decision, trace the full assurance chain:
+# decision -> session -> journey execution -> comprised events' methods
+# and the execution's achieved AAL. This is the audit answer to "why did
+# the platform believe this access was authorized?"
+PREFIX core:    <https://w3id.org/examplebank/platform/core#>
+PREFIX authn:   <https://w3id.org/examplebank/platform/authn#>
+PREFIX session: <https://w3id.org/examplebank/platform/session#>
+PREFIX authz:   <https://w3id.org/examplebank/platform/authz#>
+
+SELECT ?decision ?principal ?policy ?method ?aal WHERE {
+    ?decision a authz:PolicyDecision ;
+              authz:decisionOutcome authz:outcome-permit ;
+              authz:requestingPrincipal ?principal ;
+              authz:evaluatedPolicy ?policy ;
+              authz:withinSession ?s .
+    ?s session:establishedBy ?x .
+    ?x authn:comprisesEvent ?e ;
+       authn:achievedAssuranceLevel ?aal .
+    ?e authn:usedMethod ?method .
+}

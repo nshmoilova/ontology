@@ -1,0 +1,12 @@
+# CQ-3: Who executed and who approved each policy change, and was any
+# approver human?
+PREFIX core: <https://w3id.org/examplebank/platform/core#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+
+SELECT ?change ?executor ?approver ?humanApproved WHERE {
+    ?change a cp:PolicyChangeEvent ;
+            cp:executedBy ?executor ;
+            cp:hasApproval ?a .
+    ?a cp:approvedBy ?approver .
+    BIND (EXISTS { ?approver a core:HumanPrincipal } AS ?humanApproved)
+}

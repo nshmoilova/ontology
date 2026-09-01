@@ -1,0 +1,79 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix core:    <https://w3id.org/examplebank/platform/core#> .
+@prefix ingress: <https://w3id.org/examplebank/platform/ingress#> .
+@prefix vs:      <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+
+<https://w3id.org/examplebank/platform/ingress>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/core> ;
+    dct:title "Ingress Module"@en ;
+    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Aligns to Kubernetes Gateway API concepts."@en .
+
+#################################################################
+# Classes
+#################################################################
+
+ingress:Gateway a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "A network entry point into the platform (Gateway API Gateway / Envoy listener set)."@en ;
+    vs:term_status "draft" .
+
+ingress:Listener a owl:Class ;
+    skos:definition "A protocol/port binding on a gateway."@en ;
+    vs:term_status "draft" .
+
+ingress:Route a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "A rule mapping matched traffic on a gateway to an upstream service (Gateway API HTTPRoute and kin)."@en ;
+    vs:term_status "draft" .
+
+ingress:UpstreamService a owl:Class ;
+    rdfs:subClassOf core:Resource ;
+    skos:definition "A backend service to which routes forward traffic."@en ;
+    vs:term_status "draft" .
+
+ingress:TLSConfiguration a owl:Class ;
+    skos:definition "TLS settings applied at a listener, including where TLS terminates relative to policy enforcement."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Object properties
+#################################################################
+
+ingress:hasListener a owl:ObjectProperty ;
+    skos:definition "Listener exposed by a gateway."@en ;
+    vs:term_status "draft" .
+
+ingress:exposesRoute a owl:ObjectProperty ;
+    skos:definition "Route attached to a gateway or listener."@en ;
+    vs:term_status "draft" .
+
+ingress:routesTo a owl:ObjectProperty ;
+    skos:definition "Upstream service to which a route forwards traffic."@en ;
+    vs:term_status "draft" .
+
+ingress:hasTLSConfiguration a owl:ObjectProperty ;
+    skos:definition "TLS configuration applied to a listener."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+ingress:port a owl:DatatypeProperty ;
+    skos:definition "Port number of a listener."@en ;
+    vs:term_status "draft" .
+
+ingress:protocol a owl:DatatypeProperty ;
+    skos:definition "Protocol of a listener (HTTPS, TLS, TCP)."@en ;
+    vs:term_status "draft" .
+
+ingress:terminatesTLS a owl:DatatypeProperty ;
+    skos:definition "Whether TLS terminates at this listener (true) or is passed through (false)."@en ;
+    vs:term_status "draft" .
