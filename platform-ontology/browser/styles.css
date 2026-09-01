@@ -323,6 +323,54 @@ table.data code { font-size: .82rem; }
 .vocab .v b { font-weight: 600; }
 .vocab .v .note { color: var(--ink-3); font-family: "IBM Plex Mono", monospace; font-size: .74rem; }
 
+/* guided explainers */
+.stepnav {
+  display: flex; flex-wrap: wrap; gap: 6px; margin: 1.5rem 0 .5rem;
+  padding: 12px 14px; background: var(--panel-2); border: 1px solid var(--rule); border-radius: 10px;
+}
+.stepnav a {
+  text-decoration: none; color: var(--ink-2); font-size: .84rem;
+  padding: 4px 10px; border-radius: 999px; background: var(--panel);
+  border: 1px solid var(--rule);
+}
+.stepnav a:hover { border-color: var(--accent); color: var(--accent-ink); }
+.stepnav a b { color: var(--accent-ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+
+.step { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 18px; margin-top: 2.4rem; scroll-margin-top: 64px; }
+.stepnum {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--ground); font-weight: 600; font-size: .95rem;
+  border: 1px solid var(--accent); font-variant-numeric: tabular-nums;
+  font-family: "IBM Plex Serif", Georgia, serif;
+}
+.stepbody { min-width: 0; }
+.stephead { font-size: 1.35rem; font-weight: 600; margin: .1rem 0 .6rem; }
+.stepbody p { margin: 0 0 .75rem; color: var(--ink-2); max-width: 72ch; }
+.stepbody p:last-of-type { margin-bottom: 0; }
+.stepfig {
+  margin: 0 0 1rem; padding: 16px; background: var(--panel);
+  border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); overflow-x: auto;
+}
+.stepfig svg { display: block; max-width: 100%; height: auto; min-width: 560px; margin: 0 auto; }
+.steprefs { margin-top: 1rem; }
+.refslabel {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; margin-bottom: .4rem;
+}
+/* Tables inside a walkthrough sit mid-page, so a sticky header would
+   overlap the first row rather than help. Full-page tables keep theirs. */
+.stepbody table.data th { position: static; }
+
+ol.openq { margin: .6rem 0 0; padding-left: 1.3rem; }
+ol.openq li { margin-bottom: .7rem; color: var(--ink-2); max-width: 72ch; }
+ol.openq li::marker { color: var(--m-authz); font-weight: 600; }
+
+@media (max-width: 700px) {
+  .step { grid-template-columns: 1fr; gap: 8px; }
+  .stepfig svg { min-width: 480px; }
+}
+
 .loading { padding: 60px 20px; text-align: center; color: var(--ink-3); }
 .err { border-left: 4px solid var(--violation); }
 

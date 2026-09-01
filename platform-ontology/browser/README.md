@@ -28,6 +28,8 @@ terms by local name, and the build joins the two.
 | a term, its definition or annotations | `ontology/*.ttl` |
 | a constraint or its message | `shapes/*.ttl` |
 | the reasoning shown under "Why this exists" | `docs/decisions.json` |
+| a guided explainer / walkthrough | `docs/explainers.json` |
+| an explainer diagram | `docs/diagrams/*.svg` |
 | competency questions | `docs/competency-questions.md` |
 | the app itself | `browser/index.html`, `app.js`, `styles.css` |
 
@@ -39,6 +41,22 @@ python3 ci/build_index.py
 
 Commit `browser/data/index.json` along with your change — CI enforces that it
 matches the sources.
+
+## Guided explainers
+
+`docs/explainers.json` holds walkthroughs for working sessions: a topic
+explained end to end, assembling prose, a diagram, live term links, the
+SHACL messages quoted verbatim, and the open questions worth arguing about.
+
+Each step may carry `heading`, `body` (blank-line-separated paragraphs), a
+`diagram` (a filename in `docs/diagrams/`), a `table`, `terms` (CURIEs) and
+`shapes` (shape names). Terms and shapes are resolved at build time and the
+build warns about any that do not exist, so an explainer cannot quietly
+reference a term that has been renamed.
+
+Diagrams are inlined into the index rather than linked, so they inherit the
+page's theme — author them with `currentColor` and the `--m-*` / `--accent`
+CSS variables rather than literal hex.
 
 ## Running locally
 

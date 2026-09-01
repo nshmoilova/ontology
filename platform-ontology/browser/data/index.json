@@ -11,6 +11,7 @@
   "vocabularies": 9,
   "relationships": 44,
   "decisions": 42,
+  "explainers": 2,
   "formalCQs": 6,
   "backlogCQs": 58
  },
@@ -10441,6 +10442,236 @@
     "core:PlatformEvent",
     "core:occurredAtTime"
    ]
+  }
+ ],
+ "explainers": [
+  {
+   "id": "evaluation-layers",
+   "title": "What is evaluated where",
+   "subtitle": "Platform entitlements at ingress, application authorization inside the boundary",
+   "audience": "Platform and application security architects",
+   "summary": "Ingress answers one question \u2014 may this subject cross this boundary \u2014 using a small, closed, platform-owned vocabulary. Everything about what a subject may then do belongs to the application. This walkthrough covers where the line sits, what sits on each side, and how the model stops the line from moving quietly.",
+   "steps": [
+    {
+     "heading": "The three layers",
+     "diagram": "layers.svg",
+     "body": "One enforcement stack serves many independently developed applications. That only works if the vocabulary ingress evaluates stays small and stable, and if nothing application-specific can enter it. The control plane defines entitlements; ingress enforces them; applications own everything past the boundary.\n\nThe architectural principle: ingress answers \"can this subject reach this platform or application boundary?\" Application security answers \"what can this subject do inside that boundary?\"",
+     "svg": "<svg viewBox=\"0 0 900 430\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Three evaluation layers: the control plane projects entitlement grants to ingress, which evaluates platform entitlements then application admission; what the subject may do inside the application is application-owned and out of scope.\">\n  <defs>\n    <marker id=\"lyArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"lyArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <!-- control plane -->\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"var(--m-control-plane)\" opacity=\".10\"/>\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.4\"/>\n  <text x=\"676\" y=\"41\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-control-plane)\" font-weight=\"600\">Control plane \u2014 defines</text>\n  <text x=\"676\" y=\"60\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".7\">tenants \u00b7 subscriptions \u00b7 offerings \u00b7 enablements \u00b7 registrations</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\" stroke-dasharray=\"5 4\">\n    <path d=\"M 470 52 L 296 52 L 296 106\" marker-end=\"url(#lyArrG)\"/>\n  </g>\n  <text x=\"306\" y=\"86\" font-size=\"11.5\" fill=\"var(--accent-ink)\" font-weight=\"600\">projects grants \u00b7 distributed, timestamped</text>\n\n  <!-- ingress -->\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".08\"/>\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"296\" y=\"131\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-ingress)\" font-weight=\"600\">Unified ingress \u2014 enforces</text>\n\n  <rect x=\"162\" y=\"145\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"166\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 1 \u00b7 platform entitlements</text>\n  <text x=\"296\" y=\"185\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">platform \u00b7 tenant \u00b7 environment</text>\n  <text x=\"296\" y=\"200\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">region \u00b7 channel</text>\n  <text x=\"296\" y=\"212\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">closed scheme \u2014 5 dimensions</text>\n\n  <rect x=\"162\" y=\"231\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"252\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 2 \u00b7 application admission</text>\n  <text x=\"296\" y=\"271\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">enabled for this tenant, in this scope,</text>\n  <text x=\"296\" y=\"286\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">with subscription + offering coverage</text>\n  <text x=\"296\" y=\"298\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">generic: subject \u2192 action \u2192 target</text>\n\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".75\">\n    <line x1=\"48\" y1=\"181\" x2=\"158\" y2=\"181\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"296\" y1=\"217\" x2=\"296\" y2=\"227\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"454\" y1=\"267\" x2=\"556\" y2=\"267\" marker-end=\"url(#lyArr)\"/>\n  </g>\n  <text x=\"103\" y=\"172\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">request + token</text>\n  <text x=\"505\" y=\"258\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">admitted</text>\n\n  <!-- level 3 -->\n  <rect x=\"558\" y=\"231\" width=\"324\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-dasharray=\"6 5\" opacity=\".5\"/>\n  <text x=\"720\" y=\"257\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"currentColor\" opacity=\".82\" font-weight=\"600\">Level 3 \u00b7 inside the application</text>\n  <text x=\"720\" y=\"281\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">roles, scopes, business rules,</text>\n  <text x=\"720\" y=\"298\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">record-level and transactional limits</text>\n  <text x=\"720\" y=\"324\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--violation)\" font-weight=\"600\">application-owned \u00b7 out of scope</text>\n  <text x=\"720\" y=\"344\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".55\">the ontology deliberately refuses this question</text>\n\n  <line x1=\"510\" y1=\"120\" x2=\"510\" y2=\"380\" stroke=\"var(--violation)\" stroke-width=\"1.6\" stroke-dasharray=\"7 5\" opacity=\".65\"/>\n  <text x=\"510\" y=\"112\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"var(--violation)\" font-weight=\"600\">the boundary</text>\n\n  <text x=\"450\" y=\"404\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"currentColor\" opacity=\".7\">Two closure invariants police the line: no entitlement outside the dimension scheme, no action outside the action scheme.</text>\n</svg>"
+    },
+    {
+     "heading": "Level 1 \u2014 platform entitlements",
+     "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.",
+     "terms": [
+      "authz:EntitlementDimension",
+      "authz:EntitlementGrant",
+      "core:DeliveryChannel"
+     ],
+     "table": {
+      "columns": [
+       "Dimension",
+       "Governs",
+       "Resolved from"
+      ],
+      "rows": [
+       [
+        "platform.access",
+        "May this tenant use the platform at all?",
+        "Tenant registration"
+       ],
+       [
+        "tenant.access",
+        "Is this subject acting for a tenant that exists and is active?",
+        "Token org_id \u2192 Tenant"
+       ],
+       [
+        "environment.access",
+        "May this tenant operate in prod / uat / dev?",
+        "Which ingress deployment received the request"
+       ],
+       [
+        "region.access",
+        "May this tenant operate in this region?",
+        "Where the request landed"
+       ],
+       [
+        "channel.access",
+        "May this tenant be served over web / mobile / api / agent?",
+        "The presenting registration (azp), never a claim"
+       ]
+      ]
+     }
+    },
+    {
+     "heading": "Level 2 \u2014 application admission",
+     "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model \u2014 subject, action, target, decision \u2014 against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments \u2014 a capability exists where an offering says it does.",
+     "terms": [
+      "core:Application",
+      "cp:ApplicationEnablement",
+      "cp:Subscription",
+      "cp:CapabilityOffering",
+      "cp:CapabilityRequirement"
+     ],
+     "shapes": [
+      "EnablementGateShape",
+      "EnablementOfferingCoverageShape"
+     ]
+    },
+    {
+     "heading": "Level 3 \u2014 inside the application",
+     "body": "Roles, scopes, record-level rules, transactional limits, four-eyes checks on a payment \u2014 none of it is modelled here, and that is a decision rather than an omission.\n\nThe moment ingress starts interpreting an application's verbs, the small-vocabulary property is gone and every application team acquires a lever on the shared enforcement stack. So the ontology refuses the question: `core:Application` says explicitly that what a subject may do inside is application-owned and out of scope.",
+     "terms": [
+      "core:Application"
+     ]
+    },
+    {
+     "heading": "How the boundary is enforced, not just described",
+     "body": "Two closure invariants keep the line where it is. Both are expected to return nothing, and both have a deliberately broken instance in the negative test corpus \u2014 an invariant that cannot demonstrably fire does not count.\n\nThe first stops a foreign entitlement dimension being evaluated at ingress. The second stops an application verb reaching a platform decision: an action like \"approve payment\" typed into the platform action class is caught even though it is structurally valid RDF.",
+     "shapes": [
+      "ActionVocabularyShape",
+      "PolicyDecisionShape",
+      "IngressAdmissionDecisionShape"
+     ]
+    },
+    {
+     "heading": "The test to apply to a candidate entitlement",
+     "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely \u2014 a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension."
+    }
+   ],
+   "openQuestions": [
+    "Do environment and region belong as entitlement dimensions at all, given they are resolved from where the request landed rather than from tenant configuration \u2014 or are they properly deployment facts that policy reads, with the grant a redundant assertion?",
+    "Application admission currently answers reachability of the application boundary. Do we also need a coarse 'capability class' notion at Level 2 \u2014 for example admitting a tenant to a read-only view of an application \u2014 or does that immediately become Level 3?",
+    "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
+    "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
+   ],
+   "stepCount": 6
+  },
+  {
+   "id": "token-binding",
+   "title": "How platform entitlements bind to the token",
+   "subtitle": "The token is evidence; the grant is authority",
+   "audience": "Identity, ingress and application engineers",
+   "summary": "Entitlements are deliberately not carried in the JWT. The token proves who is calling and in what context; the authority is a set of grants the control plane projects to ingress and can revoke without re-minting anything. This walkthrough covers what each claim resolves to, why the split exists, and where it is enforced.",
+   "steps": [
+    {
+     "heading": "The stance, and why it is not the obvious one",
+     "diagram": "token-binding.svg",
+     "body": "The tempting design is to mint entitlements into the token: it is self-contained, and ingress needs no lookup. The reason we do not is revocation. Claims freeze at issuance, so an entitlement in a token stays true until the token expires \u2014 and access-token lifetimes are exactly the window in which an offboarding or a compromise needs to take effect.\n\nSo the token carries evidence, and the grants \u2014 distributed from the control plane, timestamped, revocable \u2014 carry authority. This is also the continuous-access-evaluation posture that CAEP exists to serve, arrived at from the model's own logic rather than from the standard.",
+     "terms": [
+      "authz:EntitlementGrant",
+      "session:Token"
+     ],
+     "svg": "<svg viewBox=\"0 0 900 470\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"JWT claims resolve to ontology nodes as evidence, while entitlement grants distributed from the control plane supply the authority; the token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <!-- token -->\n  <rect x=\"24\" y=\"60\" width=\"196\" height=\"246\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"24\" y=\"60\" width=\"196\" height=\"246\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"122\" y=\"84\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-session)\" font-weight=\"600\">JWT</text>\n  <text x=\"122\" y=\"101\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".62\">evidence of identity + context</text>\n\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\" fill=\"currentColor\">\n    <text x=\"44\" y=\"128\">iss / aud / exp</text>\n    <text x=\"44\" y=\"152\">sub</text>\n    <text x=\"44\" y=\"176\">org_id</text>\n    <text x=\"44\" y=\"200\">azp</text>\n    <text x=\"44\" y=\"224\">sid</text>\n    <text x=\"44\" y=\"248\">acr / amr</text>\n    <text x=\"44\" y=\"278\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"44\" y=\"294\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- resolution arrows -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".62\">\n    <line x1=\"224\" y1=\"148\" x2=\"326\" y2=\"130\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"224\" y1=\"172\" x2=\"326\" y2=\"172\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"224\" y1=\"196\" x2=\"326\" y2=\"214\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"224\" y1=\"220\" x2=\"326\" y2=\"256\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"224\" y1=\"244\" x2=\"326\" y2=\"298\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"330\" y=\"112\" width=\"212\" height=\"34\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".12\"/>\n    <rect x=\"330\" y=\"112\" width=\"212\" height=\"34\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"436\" y=\"134\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"330\" y=\"155\" width=\"212\" height=\"34\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".12\"/>\n    <rect x=\"330\" y=\"155\" width=\"212\" height=\"34\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"436\" y=\"177\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"330\" y=\"198\" width=\"212\" height=\"34\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".12\"/>\n    <rect x=\"330\" y=\"198\" width=\"212\" height=\"34\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"436\" y=\"220\" text-anchor=\"middle\" fill=\"var(--m-core)\">AuthorizedParty \u2192 channel</text>\n\n    <rect x=\"330\" y=\"241\" width=\"212\" height=\"34\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".12\"/>\n    <rect x=\"330\" y=\"241\" width=\"212\" height=\"34\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"436\" y=\"263\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n\n    <rect x=\"330\" y=\"284\" width=\"212\" height=\"34\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".12\"/>\n    <rect x=\"330\" y=\"284\" width=\"212\" height=\"34\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"436\" y=\"306\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n  </g>\n\n  <text x=\"436\" y=\"98\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"currentColor\" opacity=\".72\" font-weight=\"600\">resolves to \u2014 evidence</text>\n\n  <!-- grants -->\n  <rect x=\"596\" y=\"112\" width=\"282\" height=\"120\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"596\" y=\"112\" width=\"282\" height=\"120\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"737\" y=\"137\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"737\" y=\"156\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">the authority \u2014 never in the token</text>\n  <text x=\"737\" y=\"178\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"737\" y=\"196\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"737\" y=\"218\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting any token</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"546\" y1=\"172\" x2=\"592\" y2=\"172\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"569\" y=\"164\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n  <text x=\"569\" y=\"188\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">against</text>\n\n  <!-- decision -->\n  <rect x=\"596\" y=\"262\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"596\" y=\"262\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"737\" y=\"285\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"737\" y=\"304\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"737\" y1=\"236\" x2=\"737\" y2=\"258\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- aud vs azp -->\n  <rect x=\"24\" y=\"346\" width=\"854\" height=\"96\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"50\" y=\"372\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">The two ends of a token's journey</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"50\" y=\"397\"><tspan font-family=\"IBM Plex Mono, monospace\" font-weight=\"600\">azp</tspan> \u00b7 issuedTo \u2192 AuthorizedParty \u2014 who may PRESENT the token. Channel evidence comes from here, never from a claim.</text>\n    <text x=\"50\" y=\"421\"><tspan font-family=\"IBM Plex Mono, monospace\" font-weight=\"600\">aud</tspan> \u00b7 tokenAudience \u2192 Resource \u2014 who may ACCEPT it. Neither is derivable from the other.</text>\n  </g>\n</svg>"
+    },
+    {
+     "heading": "Claim by claim",
+     "body": "Every claim ingress reads resolves to a node in the model. Nothing resolves to an entitlement.\n\nNote what carries no claim: environment and region come from which ingress deployment received the request. A token asserting \"I am allowed in prod\" would invert the evidence/authority split \u2014 the caller would be supplying its own authority.",
+     "table": {
+      "columns": [
+       "Claim",
+       "Resolves to",
+       "Used for"
+      ],
+      "rows": [
+       [
+        "iss, aud, exp, nbf",
+        "Trusted issuer; session:tokenAudience",
+        "Preconditions \u2014 valid, in window, addressed to this platform"
+       ],
+       [
+        "sub",
+        "authn:SubjectIdentifier \u2192 core:Principal",
+        "Who is calling, per issuer, possibly pairwise"
+       ],
+       [
+        "org_id",
+        "core:Tenant",
+        "tenant.access and platform.access"
+       ],
+       [
+        "azp",
+        "core:AuthorizedParty \u2192 core:DeliveryChannel",
+        "channel.access \u2014 the channel evidence"
+       ],
+       [
+        "sid",
+        "session:Session",
+        "Liveness and revocation; the decision's withinSession link"
+       ],
+       [
+        "acr, amr, auth_time",
+        "authn:AuthenticationJourneyExecution \u2192 AAL",
+        "Assurance comparison against policy"
+       ],
+       [
+        "scope, permissions",
+        "\u2014 deliberately ignored \u2014",
+        "Level 3: application-owned authorization"
+       ]
+      ]
+     },
+     "terms": [
+      "authn:SubjectIdentifier",
+      "core:AuthorizedParty",
+      "session:Session",
+      "authn:AuthenticationJourneyExecution"
+     ]
+    },
+    {
+     "heading": "azp: the binding that makes channel trustworthy",
+     "body": "Channel is the one dimension that is not self-evident from the connection \u2014 \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable \u2014 this was a real gap found during the OAuth/OIDC review and closed.",
+     "terms": [
+      "core:AuthorizedParty",
+      "session:issuedTo",
+      "core:boundToChannel"
+     ],
+     "shapes": [
+      "TokenShape",
+      "AuthorizedPartyShape"
+     ]
+    },
+    {
+     "heading": "aud is not azp",
+     "body": "The most-confused pair. A token travels from the party it was issued to, to the resource that accepts it. `azp` is the caller \u2014 the web front, the mobile app, the partner integration. `aud` is the destination \u2014 the ledger service, a capability endpoint.\n\nNeither is derivable from the other: many callers hold tokens for one audience, and one caller holds tokens for many. They also guard different attacks \u2014 an `aud` violation is replay against the wrong resource; an `azp` mismatch is token theft across callers. One spec subtlety worth knowing: in ID tokens `aud` is the client, which is precisely why OIDC introduced `azp` to disambiguate.",
+     "terms": [
+      "session:tokenAudience",
+      "session:issuedTo"
+     ]
+    },
+    {
+     "heading": "Where the grants come from",
+     "body": "A grant is never hand-authored. It is the materialized projection of upstream governance \u2014 a subscription, a registration, an enablement \u2014 carrying a mandatory derivation link and a distribution timestamp.\n\nThe derivation link is what makes \"why does this tenant have this?\" answerable, and the timestamp is what makes staleness measurable: if ingress is enforcing configuration distributed three days ago, that is visible rather than assumed.",
+     "terms": [
+      "authz:derivedFrom",
+      "authz:distributedAt",
+      "authz:grantedTo",
+      "authz:onDimension"
+     ],
+     "shapes": [
+      "EntitlementGrantShape"
+     ]
+    },
+    {
+     "heading": "What the decision records",
+     "body": "An admission decision is a complete evaluation tuple \u2014 subject, action, target, outcome \u2014 plus the channel it arrived on and the grants it actually evaluated. That last part is what turns an audit question into a query: not just what was decided, but on what authority.",
+     "terms": [
+      "authz:IngressAdmissionDecision",
+      "authz:evaluatedGrant",
+      "authz:viaChannel",
+      "authz:evaluatedAction"
+     ],
+     "shapes": [
+      "IngressAdmissionDecisionShape"
+     ]
+    }
+   ],
+   "openQuestions": [
+    "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension \u2014 a revoked tenant is not a stale region.",
+    "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
+    "Do we need entitlement evaluation results in the token as a cache \u2014 a short-lived assertion of the Level-1 outcome \u2014 and if so, does that reintroduce the freeze problem we designed around?",
+    "For the agent channel, is azp the agent's own registration or the registration of the application it acts for? This decides whether channel evidence survives delegation.",
+    "Token lineage is unmodelled: when a refresh token is revoked, we cannot currently enumerate the access tokens descended from it. Is that a gap worth closing before the first production tenant?"
+   ],
+   "stepCount": 6
   }
  ],
  "competencyQuestions": {

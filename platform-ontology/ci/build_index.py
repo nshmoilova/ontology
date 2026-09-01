@@ -344,6 +344,35 @@ def load_decisions(terms):
     return decisions
 
 
+def load_explainers(terms, shapes):
+    """Guided walkthroughs, with diagrams inlined and references verified."""
+    path = ROOT / "docs" / "explainers.json"
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text())
+    explainers = data.get("explainers", [])
+    known_terms = {t["curie"] for t in terms.values()}
+    known_shapes = {s["name"] for s in shapes}
+    for ex in explainers:
+        for step in ex.get("steps", []):
+            diagram = step.get("diagram")
+            if diagram:
+                svg = ROOT / "docs" / "diagrams" / diagram
+                if svg.exists():
+                    step["svg"] = svg.read_text().strip()
+                else:
+                    print(f"  warn: {ex['id']} references missing diagram {diagram}")
+                    step["svg"] = None
+            for key, known, kind in (("terms", known_terms, "term"),
+                                     ("shapes", known_shapes, "shape")):
+                missing = [x for x in step.get(key, []) if x not in known]
+                if missing:
+                    print(f"  warn: {ex['id']} references unknown {kind}s: "
+                          f"{', '.join(missing)}")
+        ex["stepCount"] = len(ex.get("steps", []))
+    return explainers
+
+
 def load_competency_questions():
     """Formal CQs from the table + their SPARQL; backlog grouped by heading."""
     path = ROOT / "docs" / "competency-questions.md"
@@ -398,6 +427,7 @@ def main() -> int:
     shapes = collect_shapes(gs, terms)
     edges = build_relationships(shapes, terms)
     decisions = load_decisions(terms)
+    explainers = load_explainers(terms, shapes)
     formal, backlog = load_competency_questions()
 
     term_list = sorted(
@@ -421,6 +451,7 @@ def main() -> int:
             "vocabularies": len(schemes),
             "relationships": len(edges),
             "decisions": len(decisions),
+            "explainers": len(explainers),
             "formalCQs": len(formal),
             "backlogCQs": len(backlog),
         },
@@ -430,6 +461,7 @@ def main() -> int:
         "shapes": shapes,
         "relationships": edges,
         "decisions": decisions,
+        "explainers": explainers,
         "competencyQuestions": {"formal": formal, "backlog": backlog},
     }
 

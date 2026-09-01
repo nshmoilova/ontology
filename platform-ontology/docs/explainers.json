@@ -1,0 +1,122 @@
+{
+  "$comment": "Guided walkthroughs rendered by the ontology browser. Each step may carry prose, a diagram (by filename in docs/diagrams/), terms to surface live, shapes whose constraint messages are quoted verbatim, and a table. `openQuestions` seeds working-session discussion. Authored content — the terms and shapes referenced are resolved at build time and warned about if they do not exist.",
+  "explainers": [
+    {
+      "id": "evaluation-layers",
+      "title": "What is evaluated where",
+      "subtitle": "Platform entitlements at ingress, application authorization inside the boundary",
+      "audience": "Platform and application security architects",
+      "summary": "Ingress answers one question — may this subject cross this boundary — using a small, closed, platform-owned vocabulary. Everything about what a subject may then do belongs to the application. This walkthrough covers where the line sits, what sits on each side, and how the model stops the line from moving quietly.",
+      "steps": [
+        {
+          "heading": "The three layers",
+          "diagram": "layers.svg",
+          "body": "One enforcement stack serves many independently developed applications. That only works if the vocabulary ingress evaluates stays small and stable, and if nothing application-specific can enter it. The control plane defines entitlements; ingress enforces them; applications own everything past the boundary.\n\nThe architectural principle: ingress answers \"can this subject reach this platform or application boundary?\" Application security answers \"what can this subject do inside that boundary?\""
+        },
+        {
+          "heading": "Level 1 — platform entitlements",
+          "body": "Five dimensions, and only five. They are members of a closed SKOS scheme, so the set cannot grow by accident: adding a sixth is a deliberate, versioned change to a module that already requires security-architecture review.\n\nEach answers a question ingress can settle without asking the application anything, and each is determinable from evidence the platform controls rather than from anything the caller asserts.",
+          "terms": ["authz:EntitlementDimension", "authz:EntitlementGrant", "core:DeliveryChannel"],
+          "table": {
+            "columns": ["Dimension", "Governs", "Resolved from"],
+            "rows": [
+              ["platform.access", "May this tenant use the platform at all?", "Tenant registration"],
+              ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "Token org_id → Tenant"],
+              ["environment.access", "May this tenant operate in prod / uat / dev?", "Which ingress deployment received the request"],
+              ["region.access", "May this tenant operate in this region?", "Where the request landed"],
+              ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The presenting registration (azp), never a claim"]
+            ]
+          }
+        },
+        {
+          "heading": "Level 2 — application admission",
+          "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model — subject, action, target, decision — against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments — a capability exists where an offering says it does.",
+          "terms": ["core:Application", "cp:ApplicationEnablement", "cp:Subscription", "cp:CapabilityOffering", "cp:CapabilityRequirement"],
+          "shapes": ["EnablementGateShape", "EnablementOfferingCoverageShape"]
+        },
+        {
+          "heading": "Level 3 — inside the application",
+          "body": "Roles, scopes, record-level rules, transactional limits, four-eyes checks on a payment — none of it is modelled here, and that is a decision rather than an omission.\n\nThe moment ingress starts interpreting an application's verbs, the small-vocabulary property is gone and every application team acquires a lever on the shared enforcement stack. So the ontology refuses the question: `core:Application` says explicitly that what a subject may do inside is application-owned and out of scope.",
+          "terms": ["core:Application"]
+        },
+        {
+          "heading": "How the boundary is enforced, not just described",
+          "body": "Two closure invariants keep the line where it is. Both are expected to return nothing, and both have a deliberately broken instance in the negative test corpus — an invariant that cannot demonstrably fire does not count.\n\nThe first stops a foreign entitlement dimension being evaluated at ingress. The second stops an application verb reaching a platform decision: an action like \"approve payment\" typed into the platform action class is caught even though it is structurally valid RDF.",
+          "shapes": ["ActionVocabularyShape", "PolicyDecisionShape", "IngressAdmissionDecisionShape"]
+        },
+        {
+          "heading": "The test to apply to a candidate entitlement",
+          "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely — a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension."
+        }
+      ],
+      "openQuestions": [
+        "Do environment and region belong as entitlement dimensions at all, given they are resolved from where the request landed rather than from tenant configuration — or are they properly deployment facts that policy reads, with the grant a redundant assertion?",
+        "Application admission currently answers reachability of the application boundary. Do we also need a coarse 'capability class' notion at Level 2 — for example admitting a tenant to a read-only view of an application — or does that immediately become Level 3?",
+        "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
+        "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
+      ]
+    },
+    {
+      "id": "token-binding",
+      "title": "How platform entitlements bind to the token",
+      "subtitle": "The token is evidence; the grant is authority",
+      "audience": "Identity, ingress and application engineers",
+      "summary": "Entitlements are deliberately not carried in the JWT. The token proves who is calling and in what context; the authority is a set of grants the control plane projects to ingress and can revoke without re-minting anything. This walkthrough covers what each claim resolves to, why the split exists, and where it is enforced.",
+      "steps": [
+        {
+          "heading": "The stance, and why it is not the obvious one",
+          "diagram": "token-binding.svg",
+          "body": "The tempting design is to mint entitlements into the token: it is self-contained, and ingress needs no lookup. The reason we do not is revocation. Claims freeze at issuance, so an entitlement in a token stays true until the token expires — and access-token lifetimes are exactly the window in which an offboarding or a compromise needs to take effect.\n\nSo the token carries evidence, and the grants — distributed from the control plane, timestamped, revocable — carry authority. This is also the continuous-access-evaluation posture that CAEP exists to serve, arrived at from the model's own logic rather than from the standard.",
+          "terms": ["authz:EntitlementGrant", "session:Token"]
+        },
+        {
+          "heading": "Claim by claim",
+          "body": "Every claim ingress reads resolves to a node in the model. Nothing resolves to an entitlement.\n\nNote what carries no claim: environment and region come from which ingress deployment received the request. A token asserting \"I am allowed in prod\" would invert the evidence/authority split — the caller would be supplying its own authority.",
+          "table": {
+            "columns": ["Claim", "Resolves to", "Used for"],
+            "rows": [
+              ["iss, aud, exp, nbf", "Trusted issuer; session:tokenAudience", "Preconditions — valid, in window, addressed to this platform"],
+              ["sub", "authn:SubjectIdentifier → core:Principal", "Who is calling, per issuer, possibly pairwise"],
+              ["org_id", "core:Tenant", "tenant.access and platform.access"],
+              ["azp", "core:AuthorizedParty → core:DeliveryChannel", "channel.access — the channel evidence"],
+              ["sid", "session:Session", "Liveness and revocation; the decision's withinSession link"],
+              ["acr, amr, auth_time", "authn:AuthenticationJourneyExecution → AAL", "Assurance comparison against policy"],
+              ["scope, permissions", "— deliberately ignored —", "Level 3: application-owned authorization"]
+            ]
+          },
+          "terms": ["authn:SubjectIdentifier", "core:AuthorizedParty", "session:Session", "authn:AuthenticationJourneyExecution"]
+        },
+        {
+          "heading": "azp: the binding that makes channel trustworthy",
+          "body": "Channel is the one dimension that is not self-evident from the connection — \"mobile\" is a fact about the registered software, not about TCP. So it is resolved from the registration the token was issued to, which the control plane governs, rather than from anything the caller sends.\n\nThat requires the token-to-registration edge to exist in the model, which is why every token must name exactly one authorized party. Without it, channel evidence and azp-mismatch auditing are both unanswerable — this was a real gap found during the OAuth/OIDC review and closed.",
+          "terms": ["core:AuthorizedParty", "session:issuedTo", "core:boundToChannel"],
+          "shapes": ["TokenShape", "AuthorizedPartyShape"]
+        },
+        {
+          "heading": "aud is not azp",
+          "body": "The most-confused pair. A token travels from the party it was issued to, to the resource that accepts it. `azp` is the caller — the web front, the mobile app, the partner integration. `aud` is the destination — the ledger service, a capability endpoint.\n\nNeither is derivable from the other: many callers hold tokens for one audience, and one caller holds tokens for many. They also guard different attacks — an `aud` violation is replay against the wrong resource; an `azp` mismatch is token theft across callers. One spec subtlety worth knowing: in ID tokens `aud` is the client, which is precisely why OIDC introduced `azp` to disambiguate.",
+          "terms": ["session:tokenAudience", "session:issuedTo"]
+        },
+        {
+          "heading": "Where the grants come from",
+          "body": "A grant is never hand-authored. It is the materialized projection of upstream governance — a subscription, a registration, an enablement — carrying a mandatory derivation link and a distribution timestamp.\n\nThe derivation link is what makes \"why does this tenant have this?\" answerable, and the timestamp is what makes staleness measurable: if ingress is enforcing configuration distributed three days ago, that is visible rather than assumed.",
+          "terms": ["authz:derivedFrom", "authz:distributedAt", "authz:grantedTo", "authz:onDimension"],
+          "shapes": ["EntitlementGrantShape"]
+        },
+        {
+          "heading": "What the decision records",
+          "body": "An admission decision is a complete evaluation tuple — subject, action, target, outcome — plus the channel it arrived on and the grants it actually evaluated. That last part is what turns an audit question into a query: not just what was decided, but on what authority.",
+          "terms": ["authz:IngressAdmissionDecision", "authz:evaluatedGrant", "authz:viaChannel", "authz:evaluatedAction"],
+          "shapes": ["IngressAdmissionDecisionShape"]
+        }
+      ],
+      "openQuestions": [
+        "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension — a revoked tenant is not a stale region.",
+        "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
+        "Do we need entitlement evaluation results in the token as a cache — a short-lived assertion of the Level-1 outcome — and if so, does that reintroduce the freeze problem we designed around?",
+        "For the agent channel, is azp the agent's own registration or the registration of the application it acts for? This decides whether channel evidence survives delegation.",
+        "Token lineage is unmodelled: when a refresh token is revoked, we cannot currently enumerate the access tokens descended from it. Is that a gap worth closing before the first production tenant?"
+      ]
+    }
+  ]
+}

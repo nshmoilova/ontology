@@ -84,6 +84,24 @@
         hay: [q.question, q.section].join(" ").toLowerCase(), boost: 0.5,
       });
     }
+    for (const e of DB.explainers || []) {
+      const stepText = e.steps.map((s) => `${s.heading} ${s.body || ""}`).join(" ");
+      docs.push({
+        type: "explainer", kind: "Explainer", module: null,
+        title: e.title, sub: e.subtitle, href: `#/explain/${e.id}`,
+        hay: [e.title, e.subtitle, e.summary, stepText, (e.openQuestions || []).join(" ")]
+          .join(" ").toLowerCase(),
+        boost: 4,
+      });
+      e.steps.forEach((s, i) => {
+        docs.push({
+          type: "explainer", kind: `${e.title} · step ${i + 1}`, module: null,
+          title: s.heading, sub: (s.body || "").split("\n")[0],
+          href: `#/explain/${e.id}#step-${i + 1}`,
+          hay: [s.heading, s.body || ""].join(" ").toLowerCase(), boost: 2,
+        });
+      });
+    }
     searchDocs = docs;
   }
 
@@ -128,11 +146,11 @@
       box.innerHTML = `<div class="empty">No matches for <b>${esc(query)}</b></div>`;
       box.hidden = false; return;
     }
-    const groups = { term: [], shape: [], decision: [], question: [] };
+    const groups = { explainer: [], term: [], shape: [], decision: [], question: [] };
     hits.forEach((h) => groups[h.type].push(h));
-    const labels = { term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
+    const labels = { explainer: "Explainers", term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
     let html = "";
-    for (const key of ["term", "shape", "decision", "question"]) {
+    for (const key of ["explainer", "term", "shape", "decision", "question"]) {
       if (!groups[key].length) continue;
       html += `<div class="rgroup">${labels[key]}</div>`;
       for (const d of groups[key]) {
@@ -234,6 +252,13 @@
         <div><div class="n">${s.decisions}</div><div class="l">Decisions</div></div>
         <div><div class="n">${s.formalCQs}+${s.backlogCQs}</div><div class="l">Questions</div></div>
       </div>
+      ${(DB.explainers || []).length ? `<h2 class="sec">Start here · guided explainers</h2>
+      <div class="grid wide">${DB.explainers.map((e) => `<div class="card modcard">
+        <div class="mh"><b style="font-family:'IBM Plex Serif',Georgia,serif;font-size:1.05rem">${esc(e.title)}</b></div>
+        <p style="font-style:italic;color:var(--ink-3);margin:-.2rem 0 .1rem">${esc(e.subtitle)}</p>
+        <p>${esc(e.summary)}</p>
+        <div><a href="#/explain/${esc(e.id)}">Open walkthrough →</a></div>
+      </div>`).join("")}</div>` : ""}
       <h2 class="sec">Modules</h2>
       <div class="grid">${mods}</div>
       <h2 class="sec">How to read this</h2>
@@ -407,6 +432,87 @@
         </div>`).join("")}` : ""}`;
   }
 
+  function shapeCard(name) {
+    const s = DB.shapes.find((x) => x.name === name);
+    if (!s) return "";
+    return `<div class="card" style="margin-bottom:10px">
+      <div style="display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:.45rem">
+        <b class="mono">${esc(s.name)}</b>
+        ${s.targetClass ? link(s.targetClass) : ""}${tag(s.module)}
+      </div>
+      ${s.constraints.filter((c) => c.message).map((c) => `
+        <div class="cons ${c.severity === "Warning" ? "warn" : ""}" style="margin-bottom:7px">
+          <div class="chead"><span class="cpath">${c.kind === "sparql" ? "SPARQL" : (c.path ? esc(c.path) : "—")}</span>${sevPill(c.severity)}</div>
+          <blockquote>${esc(c.message)}</blockquote>
+        </div>`).join("")}
+    </div>`;
+  }
+
+  function viewExplainList() {
+    return `
+      <div class="crumb"><a href="#/">Ontology</a> › Explainers</div>
+      <h1 class="title">Guided explainers</h1>
+      <p class="lede">Walkthroughs that assemble a topic end to end — the narrative, the live terms,
+      the constraint messages verbatim, and the open questions worth arguing about. Built for
+      working sessions rather than reference.</p>
+      <div class="grid wide" style="margin-top:1.4rem">
+        ${DB.explainers.map((e) => `<div class="card modcard">
+          <div class="mh"><b style="font-family:'IBM Plex Serif',Georgia,serif;font-size:1.15rem">${esc(e.title)}</b></div>
+          <p style="font-style:italic;color:var(--ink-3);margin:-.2rem 0 .1rem">${esc(e.subtitle)}</p>
+          <p>${esc(e.summary)}</p>
+          <div class="counts">${e.stepCount} steps · ${(e.openQuestions || []).length} open questions · ${esc(e.audience)}</div>
+          <div><a href="#/explain/${esc(e.id)}">Open walkthrough →</a></div>
+        </div>`).join("")}
+      </div>`;
+  }
+
+  function viewExplainer(id) {
+    const e = DB.explainers.find((x) => x.id === id);
+    if (!e) return `<div class="card err"><b>Unknown explainer</b> <code>${esc(id)}</code>.
+      <a href="#/explain">See all</a>.</div>`;
+    const steps = e.steps.map((st, i) => `
+      <section class="step" id="step-${i + 1}">
+        <div class="stepnum">${i + 1}</div>
+        <div class="stepbody">
+          <h2 class="stephead">${esc(st.heading)}</h2>
+          ${st.svg ? `<figure class="stepfig">${st.svg}</figure>` : ""}
+          ${(st.body || "").split("\n\n").map((p) => `<p>${esc(p)}</p>`).join("")}
+          ${st.table ? `<div class="tablewrap" style="margin-top:.9rem"><table class="data">
+            <tr>${st.table.columns.map((c) => `<th>${esc(c)}</th>`).join("")}</tr>
+            ${st.table.rows.map((r) => `<tr>${r.map((cell, ci) =>
+              `<td>${ci === 0 ? `<code>${esc(cell)}</code>` : esc(cell)}</td>`).join("")}</tr>`).join("")}
+          </table></div>` : ""}
+          ${(st.terms || []).length ? `<div class="steprefs">
+            <div class="refslabel">Terms</div>
+            <div class="chips">${st.terms.map((t) => link(t)).join("")}</div></div>` : ""}
+          ${(st.shapes || []).length ? `<div class="steprefs">
+            <div class="refslabel">Enforced by</div>
+            ${st.shapes.map((s) => shapeCard(s)).join("")}</div>` : ""}
+        </div>
+      </section>`).join("");
+
+    return `
+      <div class="crumb"><a href="#/">Ontology</a> › <a href="#/explain">Explainers</a> › ${esc(e.title)}</div>
+      <h1 class="title">${esc(e.title)}</h1>
+      <p class="lede" style="font-style:italic;color:var(--ink-3);margin-top:.2rem">${esc(e.subtitle)}</p>
+      <p class="lede">${esc(e.summary)}</p>
+      <nav class="stepnav" aria-label="Steps">
+        ${e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
+      </nav>
+      ${steps}
+      ${(e.openQuestions || []).length ? `
+        <section class="step">
+          <div class="stepnum" style="background:var(--m-authz);border-color:var(--m-authz)">?</div>
+          <div class="stepbody">
+            <h2 class="stephead">Open questions for the session</h2>
+            <p>Deliberately unsettled — these are the arguments worth having, not gaps to apologise for.</p>
+            <ol class="openq">${e.openQuestions.map((q) => `<li>${esc(q)}</li>`).join("")}</ol>
+          </div>
+        </section>` : ""}
+      <footer class="pagefoot">Authored in <code>docs/explainers.json</code>; terms, constraint
+      messages and diagrams are resolved from the ontology at build time.</footer>`;
+  }
+
   function viewShapes(q) {
     const query = (q || "").toLowerCase();
     let shapes = DB.shapes;
@@ -557,7 +663,9 @@
     if (!parts.length) html = viewHome();
     else if (parts[0] === "term") html = viewTerm(decodeURIComponent(parts[1] || ""));
     else if (parts[0] === "module") html = viewModule(decodeURIComponent(parts[1] || ""));
-    else if (parts[0] === "shapes") html = viewShapes(q);
+    else if (parts[0] === "explain") {
+      html = parts[1] ? viewExplainer(decodeURIComponent(parts[1])) : viewExplainList();
+    } else if (parts[0] === "shapes") html = viewShapes(q);
     else if (parts[0] === "relationships") html = viewRelationships();
     else if (parts[0] === "decisions") html = viewDecisions(q);
     else if (parts[0] === "questions") html = viewQuestions(q);
