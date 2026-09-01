@@ -181,7 +181,7 @@ ex:admission-6001 a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:viaChannel core:channel-web ;
     authz:evaluatedGrant ex:grant-t123-channel-web ;
-    core:targetsResource ex:app-ledger ;
+    core:targetsResource ex:app-digital-bank ;
     authz:decisionOutcome authz:outcome-permit .
 
 ex:decision-5001 a authz:PolicyDecision ;
@@ -280,13 +280,13 @@ ex:offering-db-prod a cp:CapabilityOffering ;
     cp:offeredInScope ex:scope-prod .
 
 ### Application, confirmed requirement, enablement, portal
-ex:app-ledger a core:Application ;
-    core:displayName "T123 ledger application" ;
+ex:app-digital-bank a core:Application ;
+    core:displayName "T123 digital bank" ;
     core:ownedBy ex:tenant-t123 ;
     core:governedBy ex:policy-ledger-read .
 
-ex:req-ledger-db a cp:CapabilityRequirement ;
-    cp:ofApplication ex:app-ledger ;
+ex:req-digital-bank-db a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-digital-bank ;
     cp:requiredCapability ex:db-capability ;
     cp:hasApproval ex:approval-req-1 .
 
@@ -294,19 +294,19 @@ ex:approval-req-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-20T09:00:00Z"^^xsd:dateTime .
 
-ex:obs-ledger-db a cp:CapabilityUseObservation ;
+ex:obs-digital-bank-db a cp:CapabilityUseObservation ;
     core:occurredAtTime "2026-08-25T00:00:00Z"^^xsd:dateTime ;
-    cp:observedApplication ex:app-ledger ;
+    cp:observedApplication ex:app-digital-bank ;
     cp:observedCapability ex:db-capability ;
     cp:windowStart "2026-08-18T00:00:00Z"^^xsd:dateTime ;
     cp:windowEnd "2026-08-25T00:00:00Z"^^xsd:dateTime ;
     cp:requestCount 48211 .
 
 ex:enable-8002 a cp:ApplicationEnablement ;
-    core:displayName "Enable ledger app for T123 in prod" ;
+    core:displayName "Enable digital bank for T123 in prod" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:forApplication ex:app-ledger ;
+    cp:forApplication ex:app-digital-bank ;
     cp:hasApproval ex:approval-8002 .
 
 ex:approval-8002 a cp:ChangeApproval ;
@@ -316,7 +316,7 @@ ex:approval-8002 a cp:ChangeApproval ;
 ex:portal-t123-web a cp:Portal ;
     core:displayName "T123 web portal" ;
     core:ownedBy ex:tenant-t123 ;
-    cp:groupsApplication ex:app-ledger .
+    cp:groupsApplication ex:app-digital-bank .
 
 ### Entitlement grant (projection, never hand-authored)
 ex:grant-t123-channel-web a authz:EntitlementGrant ;
@@ -349,7 +349,7 @@ ex:decl-8001 a cp:DesiredStateDeclaration ;
     cp:declarationScope ex:scope-prod ;
     cp:declaresStateOf ex:t123-db-plane ;
     cp:justifiedBy ex:sub-9001 ;
-    cp:forApplication ex:app-ledger ;
+    cp:forApplication ex:app-digital-bank ;
     cp:hasApproval ex:approval-8001 .
 
 ex:approval-8001 a cp:ChangeApproval ;
