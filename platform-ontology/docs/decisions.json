@@ -310,6 +310,15 @@
       "terms": ["PolicyChangeEvent", "ChangeApproval", "approvedBy", "approvedAtTime", "hasApproval", "changeTicket"]
     },
     {
+      "id": "D43",
+      "title": "Route-to-tenant binding is governed desired state",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "Ingress resolves tenant context from domain and path, bound to a tenant in ingress route configuration — not from any token claim. That binding is therefore the root of tenant.access: changing it changes who a request is treated as. But it was distributed configuration with no declaration, no approver and no supersession history, while every write into a capability data plane required all three. That asymmetry was not deliberate, and it put the most tenant-sensitive control outside the governance pipeline.\n\nModelled by adding hostname, pathPrefix and boundToTenant to the ingress route, and a RouteBindingChange subclass of DesiredStateDeclaration — the third use of that pattern after application enablement and journey-definition changes — so route bindings inherit scope, approval rigor and supersession for free. Three invariants follow: one address must resolve to exactly one tenant; a tenant-bound route must state the hostname it resolves from; and a tenant binding must have an approved declaration behind it. The control-plane module now imports ingress, which states the governance relationship honestly rather than leaving it implicit.",
+      "terms": ["RouteBindingChange", "declaresRouteBinding", "boundToTenant", "hostname", "pathPrefix", "Route"],
+      "rejected": ["Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.", "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."]
+    },
+    {
       "id": "D42",
       "title": "Implementation-independent, standards-aligned",
       "area": "Foundations",

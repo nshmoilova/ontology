@@ -19,7 +19,7 @@ ontology/          TBox modules (OWL 2 QL target), one file per domain
                      authorized parties (azp), delivery channels, XACML roles
   authn.ttl          credentials, events, journeys, AALs, subject identifiers
   session.ttl        sessions (journey-established), tokens (aud + azp)
-  ingress.ttl        gateways, listeners, routes, upstreams (implementation-neutral)
+  ingress.ttl        gateways, listeners, routes (domain/path → tenant), upstreams
   authz.ttl          policies, attributes, entitlement grants, actions,
                      decisions incl. ingress admission (AuthZEN-aligned)
   control-plane.ttl  scope tree, declarations, subscriptions, offerings,

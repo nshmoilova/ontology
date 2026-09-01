@@ -2,18 +2,18 @@
  "generated": true,
  "stats": {
   "modules": 6,
-  "classes": 64,
-  "objectProperties": 79,
-  "datatypeProperties": 27,
-  "shapes": 51,
-  "violations": 84,
+  "classes": 65,
+  "objectProperties": 81,
+  "datatypeProperties": 29,
+  "shapes": 55,
+  "violations": 88,
   "warnings": 7,
   "vocabularies": 9,
-  "relationships": 44,
-  "decisions": 42,
+  "relationships": 45,
+  "decisions": 43,
   "explainers": 2,
   "formalCQs": 6,
-  "backlogCQs": 62
+  "backlogCQs": 63
  },
  "modules": [
   {
@@ -55,8 +55,8 @@
    "iri": "https://w3id.org/examplebank/platform/ingress",
    "prefix": "ingress",
    "title": "Ingress Module",
-   "version": "0.1.1",
-   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API.",
+   "version": "0.2.0",
+   "description": "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves \u2014 the configuration from which ingress resolves tenant context, and therefore the root of tenant.access.",
    "blurb": "Network entry: gateways, listeners, routes, TLS termination and upstream services \u2014 deliberately implementation-independent.",
    "imports": [
     "core"
@@ -79,11 +79,12 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.3.1",
+   "version": "0.4.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
-    "authz"
+    "authz",
+    "ingress"
    ]
   }
  ],
@@ -3257,9 +3258,30 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "TenantBoundRouteShape",
+    "RouteBindingCollisionShape",
+    "GovernedRouteBindingShape",
     "RouteShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route binds a tenant but declares no hostname \u2014 tenant context cannot be resolved from an address that is not stated.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .\n                FILTER NOT EXISTS {\n                    $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Two routes bind the same domain and path to different tenants \u2014 one address must resolve to exactly one tenant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                      <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t1 .\n                ?other <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                       <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t2 .\n                FILTER (?other != $this)\n                FILTER (?t1 != ?t2)\n                OPTIONAL { $this <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p1 . }\n                OPTIONAL { ?other <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p2 . }\n                FILTER (COALESCE(?p1, \"/\") = COALESCE(?p2, \"/\"))\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route binds a tenant with no route-binding declaration behind it \u2014 tenant resolution must be governed, not configured out of band.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .\n                FILTER NOT EXISTS {\n                    ?d a <https://w3id.org/examplebank/platform/control-plane#RouteBindingChange> ;\n                       <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this .\n                }\n            }"
+    },
     {
      "kind": "property",
      "path": "ingress:routesTo",
@@ -3307,10 +3329,19 @@
      "severity": "Violation"
     }
    ],
-   "incoming": [],
+   "incoming": [
+    {
+     "from": "cp:RouteBindingChange",
+     "property": "cp:declaresRouteBinding",
+     "to": "ingress:Route",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
+    "D43",
     "D42"
    ]
   },
@@ -3372,6 +3403,56 @@
    "vocabulary": [],
    "decisions": [
     "D42"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/ingress#hostname",
+   "name": "hostname",
+   "curie": "ingress:hostname",
+   "kind": "datatypeProperty",
+   "module": "ingress",
+   "label": null,
+   "definition": "Domain a route matches. Together with the path prefix it forms the address a tenant is reached at; a tenant-bound route must carry one (enforced in SHACL).",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D43"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/ingress#pathPrefix",
+   "name": "pathPrefix",
+   "curie": "ingress:pathPrefix",
+   "kind": "datatypeProperty",
+   "module": "ingress",
+   "label": null,
+   "definition": "Path prefix a route matches within its domain. Absent means the whole domain; present, it lets one domain serve several tenants or applications at different paths.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D43"
    ]
   },
   {
@@ -3442,6 +3523,31 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/ingress#boundToTenant",
+   "name": "boundToTenant",
+   "curie": "ingress:boundToTenant",
+   "kind": "objectProperty",
+   "module": "ingress",
+   "label": null,
+   "definition": "Tenant that traffic matching this route is resolved to. This binding \u2014 not any token claim \u2014 is how ingress establishes tenant context, which makes it the root of tenant.access: whoever can change it changes who a request is treated as. Changes must be governed by a route-binding declaration (enforced in SHACL), and no domain and path may bind to two tenants.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D43"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#exposesRoute",
@@ -5460,7 +5566,8 @@
    "disjointWith": [],
    "subClasses": [
     "cp:ApplicationEnablement",
-    "cp:JourneyDefinitionChange"
+    "cp:JourneyDefinitionChange",
+    "cp:RouteBindingChange"
    ],
    "shapes": [
     "DesiredStateDeclarationShape",
@@ -5773,6 +5880,59 @@
    "decisions": [
     "D20",
     "D34"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#RouteBindingChange",
+   "name": "RouteBindingChange",
+   "curie": "cp:RouteBindingChange",
+   "kind": "class",
+   "module": "control-plane",
+   "label": null,
+   "definition": "A desired-state declaration binding an ingress route to a tenant. Route bindings resolve tenant context and are therefore as security-relevant as any data-plane write, so they inherit the full declaration machinery \u2014 scope, approval rigor, supersession \u2014 rather than being distributed configuration with no approver behind it.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "RouteBindingChangeShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:declaresRouteBinding",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ingress:Route",
+     "classIri": "https://w3id.org/examplebank/platform/ingress#Route",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route-binding change must declare exactly one ingress route."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cp:RouteBindingChange",
+     "property": "cp:declaresRouteBinding",
+     "to": "ingress:Route",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D43"
    ]
   },
   {
@@ -6416,6 +6576,39 @@
    "vocabulary": [],
    "decisions": [
     "D37"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding",
+   "name": "declaresRouteBinding",
+   "curie": "cp:declaresRouteBinding",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": null,
+   "definition": "Ingress route whose tenant binding a route-binding change declares. Typing enforced in SHACL, not via rdfs:range.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:RouteBindingChange",
+     "property": "cp:declaresRouteBinding",
+     "to": "ingress:Route",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D43"
    ]
   },
   {
@@ -8670,6 +8863,32 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RouteBindingChangeShape",
+   "name": "RouteBindingChangeShape",
+   "targetClass": "cp:RouteBindingChange",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#RouteBindingChange",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:declaresRouteBinding",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ingress:Route",
+     "classIri": "https://w3id.org/examplebank/platform/ingress#Route",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A route-binding change must declare exactly one ingress route."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ScopeLocalityShape",
    "name": "ScopeLocalityShape",
    "targetClass": "cp:DataPlaneMutation",
@@ -9063,6 +9282,23 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/ingress#GovernedRouteBindingShape",
+   "name": "GovernedRouteBindingShape",
+   "targetClass": "ingress:Route",
+   "targetClassIri": "https://w3id.org/examplebank/platform/ingress#Route",
+   "module": "ingress",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route binds a tenant with no route-binding declaration behind it \u2014 tenant resolution must be governed, not configured out of band.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .\n                FILTER NOT EXISTS {\n                    ?d a <https://w3id.org/examplebank/platform/control-plane#RouteBindingChange> ;\n                       <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#ListenerShape",
    "name": "ListenerShape",
    "targetClass": "ingress:Listener",
@@ -9126,6 +9362,23 @@
    "warnings": 1
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteBindingCollisionShape",
+   "name": "RouteBindingCollisionShape",
+   "targetClass": "ingress:Route",
+   "targetClassIri": "https://w3id.org/examplebank/platform/ingress#Route",
+   "module": "ingress",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Two routes bind the same domain and path to different tenants \u2014 one address must resolve to exactly one tenant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                      <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t1 .\n                ?other <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;\n                       <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t2 .\n                FILTER (?other != $this)\n                FILTER (?t1 != ?t2)\n                OPTIONAL { $this <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p1 . }\n                OPTIONAL { ?other <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p2 . }\n                FILTER (COALESCE(?p1, \"/\") = COALESCE(?p2, \"/\"))\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteShape",
    "name": "RouteShape",
    "targetClass": "ingress:Route",
@@ -9164,6 +9417,23 @@
     }
    ],
    "violations": 2,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/ingress#TenantBoundRouteShape",
+   "name": "TenantBoundRouteShape",
+   "targetClass": "ingress:Route",
+   "targetClassIri": "https://w3id.org/examplebank/platform/ingress#Route",
+   "module": "ingress",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Route binds a tenant but declares no hostname \u2014 tenant context cannot be resolved from an address that is not stated.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .\n                FILTER NOT EXISTS {\n                    $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
    "warnings": 0
   },
   {
@@ -9558,6 +9828,13 @@
    "property": "cp:frontedBy",
    "to": "core:AuthorizedParty",
    "cardinality": "1..*",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:RouteBindingChange",
+   "property": "cp:declaresRouteBinding",
+   "to": "ingress:Route",
+   "cardinality": "1..1",
    "severity": "Violation"
   },
   {
@@ -10404,6 +10681,33 @@
    ]
   },
   {
+   "id": "D43",
+   "title": "Route-to-tenant binding is governed desired state",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "Ingress resolves tenant context from domain and path, bound to a tenant in ingress route configuration \u2014 not from any token claim. That binding is therefore the root of tenant.access: changing it changes who a request is treated as. But it was distributed configuration with no declaration, no approver and no supersession history, while every write into a capability data plane required all three. That asymmetry was not deliberate, and it put the most tenant-sensitive control outside the governance pipeline.\n\nModelled by adding hostname, pathPrefix and boundToTenant to the ingress route, and a RouteBindingChange subclass of DesiredStateDeclaration \u2014 the third use of that pattern after application enablement and journey-definition changes \u2014 so route bindings inherit scope, approval rigor and supersession for free. Three invariants follow: one address must resolve to exactly one tenant; a tenant-bound route must state the hostname it resolves from; and a tenant binding must have an approved declaration behind it. The control-plane module now imports ingress, which states the governance relationship honestly rather than leaving it implicit.",
+   "terms": [
+    "RouteBindingChange",
+    "declaresRouteBinding",
+    "boundToTenant",
+    "hostname",
+    "pathPrefix",
+    "Route"
+   ],
+   "rejected": [
+    "Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.",
+    "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."
+   ],
+   "termCuries": [
+    "cp:RouteBindingChange",
+    "cp:declaresRouteBinding",
+    "ingress:Route",
+    "ingress:boundToTenant",
+    "ingress:hostname",
+    "ingress:pathPrefix"
+   ]
+  },
+  {
    "id": "D42",
    "title": "Implementation-independent, standards-aligned",
    "area": "Foundations",
@@ -10484,7 +10788,7 @@
        [
         "tenant.access",
         "Is this subject acting for a tenant that exists and is active?",
-        "The request host / path \u2014 not a token claim"
+        "The route's domain/path binding \u2014 not a token claim"
        ],
        [
         "environment.access",
@@ -10506,17 +10810,20 @@
     },
     {
      "heading": "Level 2 \u2014 application admission",
-     "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model \u2014 subject, action, target, decision \u2014 against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments \u2014 a capability exists where an offering says it does.",
+     "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model \u2014 subject, action, target, decision \u2014 against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments \u2014 a capability exists where an offering says it does.\n\nUnderneath all of it sits the route binding: the domain and path that resolved the tenant in the first place. That binding is itself a governed declaration, so the chain from address to admitted request is approvable end to end.",
      "terms": [
       "core:Application",
       "cp:ApplicationEnablement",
       "cp:Subscription",
       "cp:CapabilityOffering",
-      "cp:CapabilityRequirement"
+      "cp:CapabilityRequirement",
+      "ingress:boundToTenant",
+      "cp:RouteBindingChange"
      ],
      "shapes": [
       "EnablementGateShape",
-      "EnablementOfferingCoverageShape"
+      "EnablementOfferingCoverageShape",
+      "GovernedRouteBindingShape"
      ]
     },
     {
@@ -10564,7 +10871,7 @@
       "authz:EntitlementGrant",
       "session:Token"
      ],
-     "svg": "<svg viewBox=\"0 0 920 500\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Ingress assembles request context from three evidence sources \u2014 the request URL, the JWT, and the session cookie \u2014 then checks the resolved context against entitlement grants distributed from the control plane. The token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <text x=\"150\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Three evidence sources</text>\n  <text x=\"470\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Resolved context</text>\n  <text x=\"782\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--accent-ink)\" font-weight=\"600\">Authority</text>\n\n  <!-- 1. request URL -->\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"64\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-ingress)\" font-weight=\"600\">1 \u00b7 request URL + landing point</text>\n  <text x=\"36\" y=\"84\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">domain / path \u2192 tenant</text>\n  <text x=\"36\" y=\"102\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">which ingress deployment</text>\n  <text x=\"36\" y=\"120\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">bound in ingress route config</text>\n\n  <!-- 2. JWT -->\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"162\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-session)\" font-weight=\"600\">2 \u00b7 JWT \u2014 identity + assurance</text>\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\">\n    <text x=\"36\" y=\"184\" opacity=\".8\">iss / aud / exp</text>\n    <text x=\"36\" y=\"204\" opacity=\".8\">sub</text>\n    <text x=\"36\" y=\"224\" opacity=\".8\">azp</text>\n    <text x=\"36\" y=\"244\" opacity=\".8\">acr / amr / auth_time</text>\n    <text x=\"36\" y=\"268\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"36\" y=\"283\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- 3. cookie -->\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"var(--m-authn)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"326\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authn)\" font-weight=\"600\">3 \u00b7 session cookie</text>\n  <text x=\"36\" y=\"346\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">opaque handle \u2192 session id</text>\n  <text x=\"36\" y=\"362\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">no sid claim in the token</text>\n\n  <!-- arrows to resolved -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".6\">\n    <line x1=\"286\" y1=\"76\" x2=\"352\" y2=\"76\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"104\" x2=\"352\" y2=\"128\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"204\" x2=\"352\" y2=\"182\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"224\" x2=\"352\" y2=\"234\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"244\" x2=\"352\" y2=\"286\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"337\" x2=\"352\" y2=\"337\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"81\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-control-plane)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"133\" text-anchor=\"middle\" fill=\"var(--m-control-plane)\">environment \u00b7 region</text>\n\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"185\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"237\" text-anchor=\"middle\" fill=\"var(--m-core)\">AuthorizedParty \u2192 channel</text>\n\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"289\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"341\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n  </g>\n\n  <!-- grants -->\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"763\" y=\"122\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"763\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">never in the token, never in the URL</text>\n  <text x=\"763\" y=\"166\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"763\" y=\"184\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"763\" y=\"208\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting anything</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"582\" y1=\"160\" x2=\"618\" y2=\"160\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"600\" y=\"152\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n\n  <!-- decision -->\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"763\" y=\"275\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"763\" y=\"294\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"763\" y1=\"228\" x2=\"763\" y2=\"248\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- footer note -->\n  <rect x=\"18\" y=\"392\" width=\"886\" height=\"92\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"42\" y=\"417\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">Two bindings that exist in configuration but not in the ontology</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"42\" y=\"441\">domain / path \u2192 Tenant \u2014 set in ingress route config; the ingress module models no host or path matching, and no tenant binding.</text>\n    <text x=\"42\" y=\"465\">session cookie \u2192 Session \u2014 the handle is credential-like, but nothing states how a request resolves to a session.</text>\n  </g>\n</svg>"
+     "svg": "<svg viewBox=\"0 0 920 500\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Ingress assembles request context from three evidence sources \u2014 the request URL, the JWT, and the session cookie \u2014 then checks the resolved context against entitlement grants distributed from the control plane. The token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <text x=\"150\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Three evidence sources</text>\n  <text x=\"470\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Resolved context</text>\n  <text x=\"782\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--accent-ink)\" font-weight=\"600\">Authority</text>\n\n  <!-- 1. request URL -->\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"64\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-ingress)\" font-weight=\"600\">1 \u00b7 request URL + landing point</text>\n  <text x=\"36\" y=\"84\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">domain / path \u2192 tenant</text>\n  <text x=\"36\" y=\"102\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">which ingress deployment</text>\n  <text x=\"36\" y=\"120\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">bound in ingress route config</text>\n\n  <!-- 2. JWT -->\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"162\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-session)\" font-weight=\"600\">2 \u00b7 JWT \u2014 identity + assurance</text>\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\">\n    <text x=\"36\" y=\"184\" opacity=\".8\">iss / aud / exp</text>\n    <text x=\"36\" y=\"204\" opacity=\".8\">sub</text>\n    <text x=\"36\" y=\"224\" opacity=\".8\">azp</text>\n    <text x=\"36\" y=\"244\" opacity=\".8\">acr / amr / auth_time</text>\n    <text x=\"36\" y=\"268\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"36\" y=\"283\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- 3. cookie -->\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"var(--m-authn)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"326\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authn)\" font-weight=\"600\">3 \u00b7 session cookie</text>\n  <text x=\"36\" y=\"346\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">opaque handle \u2192 session id</text>\n  <text x=\"36\" y=\"362\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">no sid claim in the token</text>\n\n  <!-- arrows to resolved -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".6\">\n    <line x1=\"286\" y1=\"76\" x2=\"352\" y2=\"76\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"104\" x2=\"352\" y2=\"128\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"204\" x2=\"352\" y2=\"182\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"224\" x2=\"352\" y2=\"234\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"244\" x2=\"352\" y2=\"286\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"337\" x2=\"352\" y2=\"337\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"81\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-control-plane)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"133\" text-anchor=\"middle\" fill=\"var(--m-control-plane)\">environment \u00b7 region</text>\n\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"185\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"237\" text-anchor=\"middle\" fill=\"var(--m-core)\">AuthorizedParty \u2192 channel</text>\n\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"289\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"341\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n  </g>\n\n  <!-- grants -->\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"763\" y=\"122\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"763\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">never in the token, never in the URL</text>\n  <text x=\"763\" y=\"166\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"763\" y=\"184\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"763\" y=\"208\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting anything</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"582\" y1=\"160\" x2=\"618\" y2=\"160\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"600\" y=\"152\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n\n  <!-- decision -->\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"763\" y=\"275\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"763\" y=\"294\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"763\" y1=\"228\" x2=\"763\" y2=\"248\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- footer note -->\n  <rect x=\"18\" y=\"392\" width=\"886\" height=\"92\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"42\" y=\"417\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">Where each binding stands</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"42\" y=\"441\">domain / path \u2192 Tenant \u2014 modelled as a route binding, governed by an approved declaration; one address resolves to one tenant.</text>\n    <text x=\"42\" y=\"465\" fill=\"var(--violation)\">session cookie \u2192 Session \u2014 still unmodelled: the handle is credential-like, but nothing states how a request resolves to a session.</text>\n  </g>\n</svg>"
     },
     {
      "heading": "Three evidence sources, not one",
@@ -10578,7 +10885,7 @@
       "rows": [
        [
         "domain / path",
-        "Ingress route configuration",
+        "Ingress route binding \u2014 a governed declaration",
         "core:Tenant \u2014 tenant.access, platform.access"
        ],
        [
@@ -10675,8 +10982,7 @@
     }
    ],
    "openQuestions": [
-    "Domain and path are bound to a tenant in ingress configuration, but the ingress module models no hostname or path matching and no tenant binding on a route \u2014 so the ontology cannot express the very thing that resolves tenant.access. Should route-to-tenant binding become governed desired state flowing through the declaration machinery, with an invariant catching two tenants bound to the same domain and path?",
-    "If a route binds a tenant, does the existing sole-writer and scope machinery apply to ingress configuration the way it applies to capability data planes? Today ingress config is distributed to enforcement points, but route bindings are not declarations and nothing records who approved one.",
+    "Route bindings are now governed declarations, which closes the approver gap \u2014 but only for the tenant binding. The rest of ingress configuration (listeners, TLS termination, upstream targets) is still distributed out of band. Where should that line sit: is tenant binding uniquely sensitive, or is all ingress config desired state?",
     "Sessions are resolved from a cookie, and the cookie handle is unmodelled. It behaves like a credential \u2014 it is presented, it can be stolen, it should be revocable \u2014 so does it belong alongside authn:Credential, and does session establishment need the same audit trail as authentication?",
     "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension \u2014 a revoked tenant is not a stale region.",
     "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
@@ -10983,17 +11289,22 @@
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "Which domain and path binds to which tenant, on which route, and which governed declaration established that binding? (the binding is set in ingress route configuration; the ingress module models no host or path matching and no tenant binding \u2014 named gap, and it is the root of tenant.access)",
+    "question": "Which domain and path binds to which tenant, on which route, and which governed declaration established that binding?",
     "expectedEmpty": false
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "Which domain and path combinations bind to more than one tenant? (invariant \u2014 expected empty, once the binding is modelled)",
+    "question": "Which domain and path combinations bind to more than one tenant? (collision \u2014 expected empty; two tenants on one address is a tenant-resolution breach)",
     "expectedEmpty": true
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "Which route-to-tenant bindings were changed without an approved declaration behind them? (ingress configuration is distributed to enforcement points but is not currently governed as desired state)",
+    "question": "Which tenant-bound routes have no approved route-binding declaration behind them? (ungoverned binding \u2014 expected empty)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Ingress token contract and channels",
+    "question": "Which route bindings changed without a human approval in a scope that requires one? (inherited from the declaration machinery)",
     "expectedEmpty": false
    },
    {

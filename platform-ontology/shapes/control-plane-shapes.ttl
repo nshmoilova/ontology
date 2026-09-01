@@ -1,6 +1,7 @@
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix core: <https://w3id.org/examplebank/platform/core#> .
+@prefix ingress: <https://w3id.org/examplebank/platform/ingress#> .
 @prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .
 @prefix scp:  <https://w3id.org/examplebank/platform/shapes/control-plane#> .
 
@@ -384,6 +385,17 @@ scp:EnablementGateShape a sh:NodeShape ;
                 }
             }
         """ ;
+    ] .
+
+scp:RouteBindingChangeShape a sh:NodeShape ;
+    sh:targetClass cp:RouteBindingChange ;
+    sh:property [
+        sh:path cp:declaresRouteBinding ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class ingress:Route ;
+        sh:severity sh:Violation ;
+        sh:message "A route-binding change must declare exactly one ingress route." ;
     ] .
 
 scp:PortalShape a sh:NodeShape ;

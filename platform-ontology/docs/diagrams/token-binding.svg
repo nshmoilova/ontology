@@ -103,9 +103,9 @@
 
   <!-- footer note -->
   <rect x="18" y="392" width="886" height="92" rx="9" fill="var(--panel-2)" stroke="var(--rule)" stroke-width="1.2"/>
-  <text x="42" y="417" font-size="12.5" font-weight="600" fill="currentColor">Two bindings that exist in configuration but not in the ontology</text>
+  <text x="42" y="417" font-size="12.5" font-weight="600" fill="currentColor">Where each binding stands</text>
   <g font-size="11.5" fill="currentColor" opacity=".82">
-    <text x="42" y="441">domain / path → Tenant — set in ingress route config; the ingress module models no host or path matching, and no tenant binding.</text>
-    <text x="42" y="465">session cookie → Session — the handle is credential-like, but nothing states how a request resolves to a session.</text>
+    <text x="42" y="441">domain / path → Tenant — modelled as a route binding, governed by an approved declaration; one address resolves to one tenant.</text>
+    <text x="42" y="465" fill="var(--violation)">session cookie → Session — still unmodelled: the handle is credential-like, but nothing states how a request resolves to a session.</text>
   </g>
 </svg>

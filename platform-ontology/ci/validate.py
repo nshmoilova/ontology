@@ -102,6 +102,9 @@ def main() -> int:
             "fronted by a party owned by a different tenant",
             "application owned by another tenant",
             "not covered by any offering",
+            "same domain and path to different tenants",
+            "no route-binding declaration behind it",
+            "binds a tenant but declares no hostname",
         ]
         for frag in expected_fragments:
             if frag in text:

@@ -97,7 +97,22 @@ ex:ledger-service a ingress:UpstreamService ;
 ex:route-ledger a ingress:Route ;
     core:governedBy ex:policy-ledger-read ;
     ingress:routesTo ex:ledger-service ;
+    ingress:hostname "t123.apps.examplebank.com" ;
+    ingress:pathPrefix "/ledger" ;
+    ingress:boundToTenant ex:tenant-t123 ;
     core:enforcedBy ex:pep-edge-east .
+
+### The route binding is governed desired state, not loose config
+ex:route-binding-8003 a cp:RouteBindingChange ;
+    core:displayName "Bind t123.apps.examplebank.com/ledger to tenant T123" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:declaresRouteBinding ex:route-ledger ;
+    cp:hasApproval ex:approval-8003 .
+
+ex:approval-8003 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-28T14:00:00Z"^^xsd:dateTime .
 
 ### Authorization
 ex:hr-pip a core:PolicyInformationPoint ;

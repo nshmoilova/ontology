@@ -272,6 +272,31 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 25. Two tenants reachable at the same domain and path
+###     (RouteBindingCollisionShape)
+ex:tenant-x a core:Tenant .
+ex:tenant-y a core:Tenant .
+ex:route-collide-a a ingress:Route ;
+    ingress:routesTo ex:naked-upstream ;
+    core:enforcedBy ex:pep-x ;
+    ingress:hostname "shared.examplebank.com" ;
+    ingress:pathPrefix "/app" ;
+    ingress:boundToTenant ex:tenant-x .
+ex:route-collide-b a ingress:Route ;
+    ingress:routesTo ex:naked-upstream ;
+    core:enforcedBy ex:pep-x ;
+    ingress:hostname "shared.examplebank.com" ;
+    ingress:pathPrefix "/app" ;
+    ingress:boundToTenant ex:tenant-y .
+ex:pep-x a core:PolicyEnforcementPoint .
+
+### 26. Tenant-bound route with no governing declaration, and no hostname
+###     (GovernedRouteBindingShape, TenantBoundRouteShape)
+ex:route-ungoverned a ingress:Route ;
+    ingress:routesTo ex:naked-upstream ;
+    core:enforcedBy ex:pep-x ;
+    ingress:boundToTenant ex:tenant-x .
+
 ### 24. Portal fronted by another tenant's registration and grouping
 ###     another tenant's application (PortalShape coherence)
 ex:other-tenant a core:Tenant .

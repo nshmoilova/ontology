@@ -21,7 +21,7 @@
             "columns": ["Dimension", "Governs", "Resolved from"],
             "rows": [
               ["platform.access", "May this tenant use the platform at all?", "Tenant registration"],
-              ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "The request host / path — not a token claim"],
+              ["tenant.access", "Is this subject acting for a tenant that exists and is active?", "The route's domain/path binding — not a token claim"],
               ["environment.access", "May this tenant operate in prod / uat / dev?", "Which ingress deployment received the request"],
               ["region.access", "May this tenant operate in this region?", "Where the request landed"],
               ["channel.access", "May this tenant be served over web / mobile / api / agent?", "The presenting registration (azp)"]
@@ -30,9 +30,9 @@
         },
         {
           "heading": "Level 2 — application admission",
-          "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model — subject, action, target, decision — against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments — a capability exists where an offering says it does.",
-          "terms": ["core:Application", "cp:ApplicationEnablement", "cp:Subscription", "cp:CapabilityOffering", "cp:CapabilityRequirement"],
-          "shapes": ["EnablementGateShape", "EnablementOfferingCoverageShape"]
+          "body": "Still enforced by ingress, but defined by the control plane rather than hard-coded. Ingress does not know what any application does; it enforces a generic model — subject, action, target, decision — against governed configuration.\n\nAn application is reachable when four things hold together: the tenant owns it, a current approved enablement covers the scope, the owner holds active subscriptions for the application's confirmed capability requirements, and offerings cover that scope. The last one matters because no parity is assumed across regions and environments — a capability exists where an offering says it does.\n\nUnderneath all of it sits the route binding: the domain and path that resolved the tenant in the first place. That binding is itself a governed declaration, so the chain from address to admitted request is approvable end to end.",
+          "terms": ["core:Application", "cp:ApplicationEnablement", "cp:Subscription", "cp:CapabilityOffering", "cp:CapabilityRequirement", "ingress:boundToTenant", "cp:RouteBindingChange"],
+          "shapes": ["EnablementGateShape", "EnablementOfferingCoverageShape", "GovernedRouteBindingShape"]
         },
         {
           "heading": "Level 3 — inside the application",
@@ -76,7 +76,7 @@
           "table": {
             "columns": ["Evidence", "Source", "Resolves to"],
             "rows": [
-              ["domain / path", "Ingress route configuration", "core:Tenant — tenant.access, platform.access"],
+              ["domain / path", "Ingress route binding — a governed declaration", "core:Tenant — tenant.access, platform.access"],
               ["landing point", "Which ingress deployment", "environment.access, region.access"],
               ["session cookie", "Cookie, opaque handle", "session:Session — liveness, revocation, withinSession"],
               ["sub", "JWT claim", "authn:SubjectIdentifier → core:Principal"],
@@ -113,8 +113,7 @@
         }
       ],
       "openQuestions": [
-        "Domain and path are bound to a tenant in ingress configuration, but the ingress module models no hostname or path matching and no tenant binding on a route — so the ontology cannot express the very thing that resolves tenant.access. Should route-to-tenant binding become governed desired state flowing through the declaration machinery, with an invariant catching two tenants bound to the same domain and path?",
-        "If a route binds a tenant, does the existing sole-writer and scope machinery apply to ingress configuration the way it applies to capability data planes? Today ingress config is distributed to enforcement points, but route bindings are not declarations and nothing records who approved one.",
+        "Route bindings are now governed declarations, which closes the approver gap — but only for the tenant binding. The rest of ingress configuration (listeners, TLS termination, upstream targets) is still distributed out of band. Where should that line sit: is tenant binding uniquely sensitive, or is all ingress config desired state?",
         "Sessions are resolved from a cookie, and the cookie handle is unmodelled. It behaves like a credential — it is presented, it can be stolen, it should be revocable — so does it belong alongside authn:Credential, and does session establishment need the same audit trail as authentication?",
         "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension — a revoked tenant is not a stale region.",
         "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",

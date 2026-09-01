@@ -9,11 +9,11 @@
 
 <https://w3id.org/examplebank/platform/ingress>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.1.1> ;
-    owl:versionInfo "0.1.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> ;
     dct:title "Ingress Module"@en ;
-    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API."@en .
+    dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves — the configuration from which ingress resolves tenant context, and therefore the root of tenant.access."@en .
 
 #################################################################
 # Classes
@@ -58,6 +58,10 @@ ingress:routesTo a owl:ObjectProperty ;
     skos:definition "Upstream service to which a route forwards traffic."@en ;
     vs:term_status "draft" .
 
+ingress:boundToTenant a owl:ObjectProperty ;
+    skos:definition "Tenant that traffic matching this route is resolved to. This binding — not any token claim — is how ingress establishes tenant context, which makes it the root of tenant.access: whoever can change it changes who a request is treated as. Changes must be governed by a route-binding declaration (enforced in SHACL), and no domain and path may bind to two tenants."@en ;
+    vs:term_status "draft" .
+
 ingress:hasTLSConfiguration a owl:ObjectProperty ;
     skos:definition "TLS configuration applied to a listener."@en ;
     vs:term_status "draft" .
@@ -76,4 +80,12 @@ ingress:protocol a owl:DatatypeProperty ;
 
 ingress:terminatesTLS a owl:DatatypeProperty ;
     skos:definition "Whether TLS terminates at this listener (true) or is passed through (false)."@en ;
+    vs:term_status "draft" .
+
+ingress:hostname a owl:DatatypeProperty ;
+    skos:definition "Domain a route matches. Together with the path prefix it forms the address a tenant is reached at; a tenant-bound route must carry one (enforced in SHACL)."@en ;
+    vs:term_status "draft" .
+
+ingress:pathPrefix a owl:DatatypeProperty ;
+    skos:definition "Path prefix a route matches within its domain. Absent means the whole domain; present, it lets one domain serve several tenants or applications at different paths."@en ;
     vs:term_status "draft" .

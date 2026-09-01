@@ -167,15 +167,14 @@ plane. Channels: web, mobile, api, agent.
 - Which tokens carry an audience outside their principal's reachable set at
   issuance time? *(expected empty)*
 - Which domain and path binds to which tenant, on which route, and which
-  governed declaration established that binding? *(the binding is set in
-  ingress route configuration; the ingress module models no host or path
-  matching and no tenant binding — named gap, and it is the root of
-  `tenant.access`)*
+  governed declaration established that binding?
 - Which domain and path combinations bind to more than one tenant?
-  *(invariant — expected empty, once the binding is modelled)*
-- Which route-to-tenant bindings were changed without an approved
-  declaration behind them? *(ingress configuration is distributed to
-  enforcement points but is not currently governed as desired state)*
+  *(collision — expected empty; two tenants on one address is a
+  tenant-resolution breach)*
+- Which tenant-bound routes have no approved route-binding declaration
+  behind them? *(ungoverned binding — expected empty)*
+- Which route bindings changed without a human approval in a scope that
+  requires one? *(inherited from the declaration machinery)*
 - For each session, which presented handle resolved to it, when was that
   handle issued, and is it revocable independently of the session?
   *(cookie→session resolution is not yet modelled — named gap)*

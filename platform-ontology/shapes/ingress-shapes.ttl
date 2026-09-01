@@ -48,6 +48,64 @@ si:PlaintextListenerWarningShape a sh:NodeShape ;
         """ ;
     ] .
 
+# A route that resolves tenant context must carry the address it resolves
+# from — a tenant binding with no hostname is unresolvable configuration.
+si:TenantBoundRouteShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Route binds a tenant but declares no hostname — tenant context cannot be resolved from an address that is not stated." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .
+                FILTER NOT EXISTS {
+                    $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h .
+                }
+            }
+        """ ;
+    ] .
+
+# Two tenants reachable at one address is a tenant-resolution breach.
+si:RouteBindingCollisionShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Two routes bind the same domain and path to different tenants — one address must resolve to exactly one tenant." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;
+                      <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t1 .
+                ?other <https://w3id.org/examplebank/platform/ingress#hostname> ?h ;
+                       <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t2 .
+                FILTER (?other != $this)
+                FILTER (?t1 != ?t2)
+                OPTIONAL { $this <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p1 . }
+                OPTIONAL { ?other <https://w3id.org/examplebank/platform/ingress#pathPrefix> ?p2 . }
+                FILTER (COALESCE(?p1, "/") = COALESCE(?p2, "/"))
+            }
+        """ ;
+    ] .
+
+# Route bindings are governed desired state, not loose configuration.
+si:GovernedRouteBindingShape a sh:NodeShape ;
+    sh:targetClass ingress:Route ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Route binds a tenant with no route-binding declaration behind it — tenant resolution must be governed, not configured out of band." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/ingress#boundToTenant> ?t .
+                FILTER NOT EXISTS {
+                    ?d a <https://w3id.org/examplebank/platform/control-plane#RouteBindingChange> ;
+                       <https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding> $this .
+                }
+            }
+        """ ;
+    ] .
+
 si:RouteShape a sh:NodeShape ;
     sh:targetClass ingress:Route ;
     sh:property [

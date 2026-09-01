@@ -10,9 +10,10 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.3.1> ;
-    owl:versionInfo "0.3.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.4.0> ;
+    owl:versionInfo "0.4.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
+    owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     dct:title "Control Plane Module"@en ;
     dct:description "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft."@en .
 
@@ -96,6 +97,11 @@ cp:ApplicationEnablement a owl:Class ;
 cp:JourneyDefinitionChange a owl:Class ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:definition "A desired-state declaration changing an authentication journey definition. Journey definitions are security-relevant desired state; this subclass gives their changes scope, approval rigor, and supersession through the standard declaration machinery."@en ;
+    vs:term_status "draft" .
+
+cp:RouteBindingChange a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    skos:definition "A desired-state declaration binding an ingress route to a tenant. Route bindings resolve tenant context and are therefore as security-relevant as any data-plane write, so they inherit the full declaration machinery — scope, approval rigor, supersession — rather than being distributed configuration with no approver behind it."@en ;
     vs:term_status "draft" .
 
 cp:Portal a owl:Class ;
@@ -236,6 +242,10 @@ cp:groupsApplication a owl:ObjectProperty ;
 
 cp:declaresDefinition a owl:ObjectProperty ;
     skos:definition "Authentication journey definition whose intended shape a journey-definition change declares."@en ;
+    vs:term_status "draft" .
+
+cp:declaresRouteBinding a owl:ObjectProperty ;
+    skos:definition "Ingress route whose tenant binding a route-binding change declares. Typing enforced in SHACL, not via rdfs:range."@en ;
     vs:term_status "draft" .
 
 cp:frontedBy a owl:ObjectProperty ;
