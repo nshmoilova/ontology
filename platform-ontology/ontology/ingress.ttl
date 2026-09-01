@@ -9,8 +9,8 @@
 
 <https://w3id.org/examplebank/platform/ingress>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/ingress/0.2.1> ;
+    owl:versionInfo "0.2.1" ;
     owl:imports <https://w3id.org/examplebank/platform/core> ;
     dct:title "Ingress Module"@en ;
     dct:description "Gateways, listeners, routes, TLS termination, and upstream services. Deliberately implementation-independent: the terms describe the network entry model itself, not any particular gateway product or API. Since 0.2.0: route matching by domain and path, and the binding from a route to the tenant it serves — the configuration from which ingress resolves tenant context, and therefore the root of tenant.access."@en .
@@ -59,7 +59,7 @@ ingress:routesTo a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 ingress:boundToTenant a owl:ObjectProperty ;
-    skos:definition "Tenant that traffic matching this route is resolved to. This binding — not any token claim — is how ingress establishes tenant context, which makes it the root of tenant.access: whoever can change it changes who a request is treated as. Changes must be governed by a route-binding declaration (enforced in SHACL), and no domain and path may bind to two tenants."@en ;
+    skos:definition "Tenant that traffic matching this route resolves to. Ingress establishes tenant context from this binding, not from any token claim."@en ;
     vs:term_status "draft" .
 
 ingress:hasTLSConfiguration a owl:ObjectProperty ;

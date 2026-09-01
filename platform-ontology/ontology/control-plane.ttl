@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.7.0> ;
-    owl:versionInfo "0.7.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.7.1> ;
+    owl:versionInfo "0.7.1" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     owl:imports <https://w3id.org/examplebank/platform/session> ;
@@ -65,12 +65,12 @@ cp:DataPlaneMutation a owl:Class ;
     vs:term_status "draft" .
 
 cp:ConcurrentSessionPolicy a owl:Class ;
-    skos:definition "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class. Configured per tenant per device class; a device class with no policy is unbounded, which is a stewardship concern rather than a safe default."@en ;
-    skos:editorialNote "Modelled as plain configuration rather than a governed declaration. It is a security control with no approver today, which is the same asymmetry that route bindings had before they were governed — recorded as an open question rather than settled."@en ;
+    skos:definition "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class, configured per tenant per device class."@en ;
+    skos:editorialNote "A device class with no policy is unbounded, which is a stewardship concern rather than a safe default. Modelled as plain configuration rather than a governed declaration — a security control with no approver, the same asymmetry route bindings had before they were governed."@en ;
     vs:term_status "draft" .
 
 cp:TenantMembership a owl:Class ;
-    skos:definition "A governed record that a principal may act for a tenant, in a stated capacity, with a lifecycle and a human approval. Entitlement grants are held by tenants; membership is the separate fact that connects the principal a token resolves to with the tenant a route resolves to. Without it an admission decision can verify what a tenant is entitled to, but not that this principal may act for that tenant at all. One principal may hold memberships in several tenants — the consultant and dual-capacity cases are ordinary, not exceptional."@en ;
+    skos:definition "A governed record that a principal may act for a tenant, in a stated capacity, with a lifecycle and a human approval. One principal may hold memberships in several tenants."@en ;
     vs:term_status "draft" .
 
 cp:MembershipState a owl:Class ;
@@ -79,7 +79,7 @@ cp:MembershipState a owl:Class ;
     vs:term_status "draft" .
 
 cp:Subscription a owl:Class ;
-    skos:definition "A first-class, scope-free record of a tenant holding a platform capability, with an access-relevant lifecycle (no billing states) and human-approved activation. Where the tenant can actually use the capability is computed: subscription ∩ entitlement grants ∩ offerings. Subscriptions target capabilities only — applications are owned, not subscribed."@en ;
+    skos:definition "A first-class, scope-free record of a tenant holding a platform capability, with an access-relevant lifecycle and human-approved activation. Subscriptions target capabilities only — applications are owned, not subscribed."@en ;
     vs:term_status "draft" .
 
 cp:SubscriptionState a owl:Class ;
@@ -116,11 +116,12 @@ cp:JourneyDefinitionChange a owl:Class ;
 
 cp:RouteBindingChange a owl:Class ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
-    skos:definition "A desired-state declaration binding an ingress route to a tenant. Route bindings resolve tenant context and are therefore as security-relevant as any data-plane write, so they inherit the full declaration machinery — scope, approval rigor, supersession — rather than being distributed configuration with no approver behind it."@en ;
+    skos:definition "A desired-state declaration binding an ingress route to a tenant, inheriting scope, approval rigor and supersession from the declaration machinery."@en ;
     vs:term_status "draft" .
 
 cp:Portal a owl:Class ;
-    skos:definition "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals. Whether a portal is per delivery channel is deliberately left open — the channel of a request comes from the session's device class, not from anything the portal declares."@en ;
+    skos:definition "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals."@en ;
+    skos:editorialNote "Whether a portal is per delivery channel is deliberately left open — a request's channel comes from the session's device class, not from anything the portal declares."@en ;
     vs:term_status "draft" .
 
 cp:ManagementControlPlane owl:disjointWith cp:CapabilityControlPlane .

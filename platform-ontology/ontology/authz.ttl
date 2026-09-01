@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/authz>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.2.1> ;
+    owl:versionInfo "0.2.1" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Authorization Module"@en ;
     dct:description "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation — distinct from an attribute assertion, which is an observation."@en .
@@ -56,17 +56,20 @@ authz:EntitlementDimension a owl:Class ;
     vs:term_status "draft" .
 
 authz:EntitlementGrant a owl:Class ;
-    skos:definition "A conferral of platform access to a tenant on one entitlement dimension, with a value and validity window. Always the materialized projection of upstream governance (a subscription, tenant registration, or application enablement) distributed to ingress — never hand-authored (enforced in SHACL). The token is evidence; the grant is authority."@en ;
+    skos:definition "A conferral of platform access to a tenant on one entitlement dimension, with a value and validity window. Always a materialized projection of upstream governance, distributed to ingress."@en ;
+    skos:editorialNote "The token is evidence; the grant is authority."@en ;
     vs:term_status "draft" .
 
 authz:Action a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    skos:definition "An operation a policy decision evaluates — the action slot of the AuthZEN/XACML tuple (subject, action, resource → decision). Members are individuals in a closed, platform-owned scheme; application verbs (transfer, approve) belong to Level-3 application authorization and must never appear here (guard invariant)."@en ;
+    skos:definition "An operation a policy decision evaluates — the action slot of the evaluation tuple. Members are individuals in a closed, platform-owned scheme."@en ;
+    skos:editorialNote "Application verbs such as transfer or approve belong to Level-3 application authorization and must never appear here."@en ;
     vs:term_status "draft" .
 
 authz:IngressAdmissionDecision a owl:Class ;
     rdfs:subClassOf authz:PolicyDecision ;
-    skos:definition "A Level-1/Level-2 decision at the ingress policy enforcement point: subject → action → target → decision (AuthZEN-aligned), evaluated against distributed entitlement grants, with the channel derived from the presenting registration. The evaluated policy is the platform admission policy — the versioned unit of authorization logic the distributed grant configuration realizes — so the policy reference every decision must carry is honest, not synthetic."@en ;
+    skos:definition "A decision at the ingress policy enforcement point admitting a request across a platform or application boundary: subject, action and target evaluated against distributed entitlement grants."@en ;
+    skos:editorialNote "Aligned to the AuthZEN evaluation tuple. The evaluated policy is the platform admission policy — the versioned unit of authorization logic the distributed grant configuration realizes."@en ;
     vs:term_status "draft" .
 
 authz:Policy owl:disjointWith authz:PolicyDecision .
@@ -122,7 +125,8 @@ authz:onDimension a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 authz:derivedFrom a owl:ObjectProperty ;
-    skos:definition "Upstream governance object a grant was projected from: a subscription, an application enablement, a route binding, or — once modelled — the tenant onboarding record, which is where platform, tenant and channel grants properly originate. Mandatory: a grant with no derivation is a hand-authored grant, which violates."@en ;
+    skos:definition "Upstream governance object a grant was projected from: a subscription, an application enablement, or a route binding. Mandatory — a grant with no derivation is hand-authored."@en ;
+    skos:editorialNote "Platform, tenant and channel grants properly originate in the tenant onboarding record, which is not yet modelled."@en ;
     vs:term_status "draft" .
 
 authz:viaChannel a owl:ObjectProperty ;

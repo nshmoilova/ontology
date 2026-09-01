@@ -13,6 +13,29 @@ Every class/property carries `vs:term_status`: `draft` → `testing` → `stable
 exercises the term, a SHACL shape governing its use, positive and negative
 test instances, and steward sign-off.
 
+## Definition style
+
+A `skos:definition` states **what the term denotes** — enough that a reader
+can correctly classify an instance — and nothing else. One or two sentences;
+if it runs past about forty words it is almost certainly carrying content
+that belongs elsewhere.
+
+Everything else has a home, and duplicating it into the definition means the
+browser shows the same argument twice on one page:
+
+| Content | Belongs in |
+|---|---|
+| Why it is modelled this way; rejected alternatives | `docs/decisions.json` |
+| What is enforced, and what violates | the shape's `sh:message` |
+| Contrast with a sibling term | `owl:disjointWith`, plus `skos:editorialNote` if the reason matters |
+| Examples | `skos:example` |
+| Version history, migrations | the module's `dct:description` |
+| Known gaps, open questions | `docs/competency-questions.md` |
+
+A clause that constrains what can be an instance is definitional and stays,
+even when it reads like rationale — "a business client is not itself
+authenticable" is an example.
+
 ## Change control
 - All changes via PR; CI (`ci/validate.py`) is a required check.
 - Changes to `authz` and `control-plane` modules additionally require review

@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.2> ;
-    owl:versionInfo "0.4.2" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.3> ;
+    owl:versionInfo "0.4.3" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -76,7 +76,8 @@ core:Capability a owl:Class ;
 
 core:Application a owl:Class ;
     rdfs:subClassOf core:Resource ;
-    skos:definition "An independently developed application owned by exactly one tenant (possibly the platform tenant), reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements. What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
+    skos:definition "An independently developed application owned by exactly one tenant, reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements."@en ;
+    skos:editorialNote "What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
     vs:term_status "draft" .
 
 core:BusinessClient a owl:Class ;
@@ -88,7 +89,7 @@ core:BusinessClient a owl:Class ;
 
 core:DeliveryChannel a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    skos:definition "The delivery avenue through which platform capabilities are consumed. For interactive sessions it follows from the session's device class, which the session manager sets from what it authenticated — never from a self-asserted claim. Members are individuals in a closed, platform-owned scheme."@en ;
+    skos:definition "The delivery avenue through which platform capabilities are consumed, never a self-asserted claim. For interactive sessions it follows from the session's device class. Members are individuals in a closed, platform-owned scheme."@en ;
     vs:term_status "draft" .
 
 # Disjointness — cheapest consistency checks under reasoning
@@ -124,7 +125,8 @@ core:ownedBy a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 core:actsForClient a owl:ObjectProperty ;
-    skos:definition "Business client a principal acts for. Retail relationships are typically one principal to one client; corporate relationships are many principals to one client. Distinct from tenant membership, which says a principal may act for a platform tenant — whether a business client is ever also a tenant is deliberately left open."@en ;
+    skos:definition "Business client a principal acts for. Retail relationships are typically one principal to one client; corporate relationships many principals to one."@en ;
+    skos:editorialNote "Distinct from tenant membership. Whether a business client is ever also a tenant is deliberately left open."@en ;
     vs:term_status "draft" .
 
 core:hasActingIdentity a owl:ObjectProperty ;
