@@ -1,20 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "b487f18a187e",
+ "sourceDigest": "e057ea6522c7",
  "stats": {
   "modules": 6,
   "classes": 73,
-  "objectProperties": 90,
+  "objectProperties": 91,
   "datatypeProperties": 34,
   "shapes": 72,
-  "violations": 104,
+  "violations": 105,
   "warnings": 8,
   "vocabularies": 11,
-  "relationships": 50,
-  "decisions": 48,
+  "relationships": 51,
+  "decisions": 49,
   "explainers": 2,
   "formalCQs": 7,
-  "backlogCQs": 85
+  "backlogCQs": 88
  },
  "modules": [
   {
@@ -22,7 +22,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.4.3",
+   "version": "0.4.4",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -68,7 +68,7 @@
    "iri": "https://w3id.org/examplebank/platform/authz",
    "prefix": "authz",
    "title": "Authorization Module",
-   "version": "0.2.1",
+   "version": "0.3.0",
    "description": "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation \u2014 distinct from an attribute assertion, which is an observation.",
    "blurb": "ABAC-first authorization plus the platform-owned coarse-grained layer: dimensions, grants, actions and admission decisions.",
    "imports": [
@@ -516,10 +516,20 @@
    "shapes": [],
    "constraints": [],
    "outgoing": [],
-   "incoming": [],
+   "incoming": [
+    {
+     "from": "authz:PolicyDecision",
+     "property": "authz:decidedBy",
+     "to": "core:PolicyDecisionPoint",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D49"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyEnforcementPoint",
@@ -1159,7 +1169,9 @@
    "label": null,
    "definition": "Links an event or policy to the resource it concerns.",
    "editorialNote": null,
-   "altLabels": [],
+   "altLabels": [
+    "resource (XACML)"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1172,6 +1184,7 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
+    "D49",
     "D38"
    ]
   },
@@ -4959,6 +4972,21 @@
      "message": "A policy decision must evaluate exactly one action \u2014 the AuthZEN tuple is incomplete without it."
     },
     {
+     "kind": "property",
+     "path": "authz:decidedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/authz#decidedBy",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:PolicyDecisionPoint",
+     "classIri": "https://w3id.org/examplebank/platform/core#PolicyDecisionPoint",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy decision must name exactly one policy decision point \u2014 a decision nobody can be shown to have made is unattributable."
+    },
+    {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Decision evaluates an action outside the platform-owned action vocabulary \u2014 application verbs are Level-3 and must not reach platform decisions.",
@@ -4990,6 +5018,13 @@
      "from": "authz:PolicyDecision",
      "property": "authz:evaluatedAction",
      "to": "authz:Action",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "authz:PolicyDecision",
+     "property": "authz:decidedBy",
+     "to": "core:PolicyDecisionPoint",
      "cardinality": "1..1",
      "severity": "Violation"
     }
@@ -5250,6 +5285,39 @@
    "decisions": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/authz#decidedBy",
+   "name": "decidedBy",
+   "curie": "authz:decidedBy",
+   "kind": "objectProperty",
+   "module": "authz",
+   "label": null,
+   "definition": "Policy decision point that rendered this decision. Mandatory (SHACL): a decision nobody can be shown to have made is unattributable, and the platform and each application run their own decision point.",
+   "editorialNote": null,
+   "altLabels": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "authz:PolicyDecision",
+     "property": "authz:decidedBy",
+     "to": "core:PolicyDecisionPoint",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D49"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/authz#decisionOutcome",
    "name": "decisionOutcome",
    "curie": "authz:decisionOutcome",
@@ -5315,7 +5383,9 @@
    "label": null,
    "definition": "The action a policy decision evaluated \u2014 exactly one per decision (SHACL), drawn from the platform-owned action scheme. AuthZEN's action name is the concept's skos:notation.",
    "editorialNote": null,
-   "altLabels": [],
+   "altLabels": [
+    "action (XACML)"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5336,6 +5406,7 @@
    ],
    "vocabulary": [],
    "decisions": [
+    "D49",
     "D31"
    ]
   },
@@ -5534,7 +5605,9 @@
    "label": null,
    "definition": "Principal whose access request the decision concerns.",
    "editorialNote": null,
-   "altLabels": [],
+   "altLabels": [
+    "subject (XACML)"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -5548,7 +5621,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [
+    "D49"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#requiredAssuranceLevel",
@@ -9514,9 +9589,24 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A policy decision must evaluate exactly one action \u2014 the AuthZEN tuple is incomplete without it."
+    },
+    {
+     "kind": "property",
+     "path": "authz:decidedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/authz#decidedBy",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:PolicyDecisionPoint",
+     "classIri": "https://w3id.org/examplebank/platform/core#PolicyDecisionPoint",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy decision must name exactly one policy decision point \u2014 a decision nobody can be shown to have made is unattributable."
     }
    ],
-   "violations": 3,
+   "violations": 4,
    "warnings": 0
   },
   {
@@ -11127,6 +11217,13 @@
   },
   {
    "from": "authz:PolicyDecision",
+   "property": "authz:decidedBy",
+   "to": "core:PolicyDecisionPoint",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "authz:PolicyDecision",
    "property": "authz:decisionOutcome",
    "to": "authz:DecisionOutcome",
    "cardinality": "1..1",
@@ -11358,6 +11455,31 @@
   }
  ],
  "decisions": [
+  {
+   "id": "D49",
+   "title": "Decisions name the point that made them; XACML is the settled vocabulary",
+   "area": "Foundations",
+   "invariant": true,
+   "reasoning": "The platform and each application run their own policy decision point, but nothing recorded which one rendered a decision \u2014 PolicyDecisionPoint existed, was generic, and was never instantiated. Only the decision's class distinguished a platform decision from any other, so 'show me everything the platform PDP decided' was unanswerable and an application decision misfiled as a platform one would not have been caught.\n\ndecidedBy is now mandatory on every decision, and the seed instantiates the platform PDP alongside the enforcement point it already had \u2014 the XACML pair, both present.\n\nOn vocabulary: XACML is the settled source. Its four outcomes were already the scheme, and its request-context categories are now alt-labels on the tuple properties \u2014 subject on requestingPrincipal, action on evaluatedAction, resource on targetsResource \u2014 so a reader coming from XACML finds the platform's terms by searching its own. 'Allow' is an alt-label on Permit rather than a rename: the outcome vocabulary stays XACML, and the synonym is there for findability rather than as a second name.",
+   "terms": [
+    "decidedBy",
+    "PolicyDecisionPoint",
+    "requestingPrincipal",
+    "evaluatedAction",
+    "targetsResource"
+   ],
+   "rejected": [
+    "A PlatformPolicyDecisionPoint subclass to separate the two PDPs by type: unnecessary while application decisions are out of scope and never enter the graph, and it would imply a symmetric ApplicationPolicyDecisionPoint that the Level-3 boundary forbids. Worth revisiting only if application decisions are ever ingested for audit.",
+    "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
+   ],
+   "termCuries": [
+    "authz:decidedBy",
+    "authz:evaluatedAction",
+    "authz:requestingPrincipal",
+    "core:PolicyDecisionPoint",
+    "core:targetsResource"
+   ]
+  },
   {
    "id": "D48",
    "title": "A route serving an application is the application access endpoint",
@@ -12752,6 +12874,21 @@
    {
     "section": "Management vs. capability control planes",
     "question": "Which capability control planes administer a scope containing the desired-state declarations that govern their own data planes? (self-governance loop)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Which decision point decided",
+    "question": "Which policy decision point rendered each decision, and over what period?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Which decision point decided",
+    "question": "Which decisions record no deciding policy decision point? (expected empty \u2014 an unattributable decision)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Which decision point decided",
+    "question": "Which decision points have rendered admission decisions, and are any of them not the platform PDP? (the check that would catch an application decision misfiled as a platform one)",
     "expectedEmpty": false
    },
    {

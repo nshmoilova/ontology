@@ -113,6 +113,7 @@ def main() -> int:
             "one session per user per device",
             "exceeds the configured concurrent-session limit",
             "exactly one client_id",
+            "exactly one policy decision point",
             "bound tenant does not own",
             "outside that application's enablement",
         ]

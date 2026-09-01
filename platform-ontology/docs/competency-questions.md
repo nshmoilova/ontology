@@ -79,6 +79,18 @@ Invariants *(each expected empty)*:
   desired-state declarations that govern their own data planes?
   *(self-governance loop)*
 
+### Which decision point decided
+
+The platform and each application run their own PDP. Only platform decisions
+belong in this graph, and every decision must name the point that made it.
+
+- Which policy decision point rendered each decision, and over what period?
+- Which decisions record no deciding policy decision point?
+  *(expected empty — an unattributable decision)*
+- Which decision points have rendered admission decisions, and are any of
+  them not the platform PDP? *(the check that would catch an application
+  decision misfiled as a platform one)*
+
 ### Reachability (flagship)
 
 - For a given token — or principal-session pair — which resources are

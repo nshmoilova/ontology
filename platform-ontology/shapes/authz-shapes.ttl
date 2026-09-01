@@ -81,6 +81,14 @@ sz:PolicyDecisionShape a sh:NodeShape ;
         sh:class authz:Action ;
         sh:severity sh:Violation ;
         sh:message "A policy decision must evaluate exactly one action — the AuthZEN tuple is incomplete without it." ;
+    ] ;
+    sh:property [
+        sh:path authz:decidedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class core:PolicyDecisionPoint ;
+        sh:severity sh:Violation ;
+        sh:message "A policy decision must name exactly one policy decision point — a decision nobody can be shown to have made is unattributable." ;
     ] .
 
 # Level-3 boundary at the decision layer: actions come from the

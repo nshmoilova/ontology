@@ -264,6 +264,15 @@ ex:blind-admission a authz:IngressAdmissionDecision ;
     authz:evaluatedAction authz:action-access ;
     authz:decisionOutcome authz:outcome-deny .
 
+### 37. Decision that names no deciding policy decision point
+###     (PolicyDecisionShape) — unattributable
+ex:anonymous-decision a authz:PolicyDecision ;
+    core:occurredAtTime "2026-08-31T19:00:00Z"^^xsd:dateTime ;
+    authz:requestingPrincipal ex:bob ;
+    authz:evaluatedPolicy ex:policy-hi ;
+    authz:evaluatedAction authz:action-read ;
+    authz:decisionOutcome authz:outcome-deny .
+
 ### 35. OAuth client registration with no client_id and two audiences
 ###     (OAuthClientRegistrationShape)
 ex:vague-reg a authn:OAuthClientRegistration ;

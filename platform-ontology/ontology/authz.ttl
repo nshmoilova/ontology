@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/authz>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.2.1> ;
-    owl:versionInfo "0.2.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Authorization Module"@en ;
     dct:description "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation — distinct from an attribute assertion, which is an observation."@en .
@@ -93,6 +93,7 @@ authz:decisionOutcome a owl:ObjectProperty ;
 
 authz:requestingPrincipal a owl:ObjectProperty ;
     rdfs:subPropertyOf core:performedBy ;
+    skos:altLabel "subject (XACML)"@en ;
     skos:definition "Principal whose access request the decision concerns."@en ;
     vs:term_status "draft" .
 
@@ -137,7 +138,12 @@ authz:evaluatedGrant a owl:ObjectProperty ;
     skos:definition "Entitlement grant an admission decision evaluated."@en ;
     vs:term_status "draft" .
 
+authz:decidedBy a owl:ObjectProperty ;
+    skos:definition "Policy decision point that rendered this decision. Mandatory (SHACL): a decision nobody can be shown to have made is unattributable, and the platform and each application run their own decision point."@en ;
+    vs:term_status "draft" .
+
 authz:evaluatedAction a owl:ObjectProperty ;
+    skos:altLabel "action (XACML)"@en ;
     skos:definition "The action a policy decision evaluated — exactly one per decision (SHACL), drawn from the platform-owned action scheme. AuthZEN's action name is the concept's skos:notation."@en ;
     vs:term_status "draft" .
 
@@ -174,7 +180,8 @@ authz:DecisionOutcomeScheme a skos:ConceptScheme ;
 
 authz:outcome-permit a authz:DecisionOutcome ;
     skos:inScheme authz:DecisionOutcomeScheme ;
-    skos:prefLabel "Permit"@en .
+    skos:prefLabel "Permit"@en ;
+    skos:altLabel "Allow"@en .
 
 authz:outcome-deny a authz:DecisionOutcome ;
     skos:inScheme authz:DecisionOutcomeScheme ;

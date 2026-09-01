@@ -2,6 +2,24 @@
   "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies.",
   "decisions": [
     {
+      "id": "D49",
+      "title": "Decisions name the point that made them; XACML is the settled vocabulary",
+      "area": "Foundations",
+      "invariant": true,
+      "reasoning": "The platform and each application run their own policy decision point, but nothing recorded which one rendered a decision — PolicyDecisionPoint existed, was generic, and was never instantiated. Only the decision's class distinguished a platform decision from any other, so 'show me everything the platform PDP decided' was unanswerable and an application decision misfiled as a platform one would not have been caught.\n\ndecidedBy is now mandatory on every decision, and the seed instantiates the platform PDP alongside the enforcement point it already had — the XACML pair, both present.\n\nOn vocabulary: XACML is the settled source. Its four outcomes were already the scheme, and its request-context categories are now alt-labels on the tuple properties — subject on requestingPrincipal, action on evaluatedAction, resource on targetsResource — so a reader coming from XACML finds the platform's terms by searching its own. 'Allow' is an alt-label on Permit rather than a rename: the outcome vocabulary stays XACML, and the synonym is there for findability rather than as a second name.",
+      "terms": [
+        "decidedBy",
+        "PolicyDecisionPoint",
+        "requestingPrincipal",
+        "evaluatedAction",
+        "targetsResource"
+      ],
+      "rejected": [
+        "A PlatformPolicyDecisionPoint subclass to separate the two PDPs by type: unnecessary while application decisions are out of scope and never enter the graph, and it would imply a symmetric ApplicationPolicyDecisionPoint that the Level-3 boundary forbids. Worth revisiting only if application decisions are ever ingested for audit.",
+        "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
+      ]
+    },
+    {
       "id": "D48",
       "title": "A route serving an application is the application access endpoint",
       "area": "Audit round",

@@ -108,7 +108,10 @@ ex:token-at-1 a session:AccessToken ;
     session:tokenAudience ex:transaction-service ;
     authn:confirmedByKey ex:dpop-key-alice-web .
 
-### Ingress
+### Ingress — the XACML pair: the platform's decision point and its enforcer
+ex:platform-pdp a core:PolicyDecisionPoint ;
+    core:displayName "Platform policy decision point" .
+
 ex:pep-edge-east a core:PolicyEnforcementPoint ;
     core:displayName "Edge enforcement point (east)" .
 
@@ -183,6 +186,7 @@ ex:admission-6001 a authz:IngressAdmissionDecision ;
     authz:viaChannel core:channel-web ;
     authz:evaluatedGrant ex:grant-t123-channel-web ;
     core:targetsResource ex:app-digital-bank ;
+    authz:decidedBy ex:platform-pdp ;
     authz:decisionOutcome authz:outcome-permit .
 
 ex:decision-5001 a authz:PolicyDecision ;
@@ -192,6 +196,7 @@ ex:decision-5001 a authz:PolicyDecision ;
     authz:evaluatedPolicy ex:policy-ledger-read ;
     authz:evaluatedAction authz:action-read ;
     core:targetsResource ex:transaction-service ;
+    authz:decidedBy ex:platform-pdp ;
     authz:decisionOutcome authz:outcome-permit .
 
 ### Control plane
