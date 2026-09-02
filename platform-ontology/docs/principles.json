@@ -516,6 +516,47 @@
         "AuthenticationJourneyExecution",
         "comprisesEvent"
       ]
+    },
+    {
+      "id": "P18",
+      "title": "Intent precedes state",
+      "level": "platform",
+      "statement": "Every provisioned, enabled, granted or admitted state follows from a governance intent that precedes it. It extends no further than that intent's scope, and it ends when the intent ends.",
+      "test": "Which intent does this state follow from, and is it within that intent's scope? A state with no intent behind it, or that could outlive it, is rejected.",
+      "consequences": "Justified: a tenant-provisioning declaration names the subscription that justifies it — commercial intent precedes technical intent (D13); enablement requires confirmed requirements covered by active subscriptions and by offerings in the enablement scope (D18, D19, D35); admission requires an active membership (D45); a grant carries its derivation from a subscription, registration or enablement (D22); an active subscription carries its hard-dependency closure (D14). Bounded: a grant confers one tenant on one dimension; a route reaches only where the application is enabled; a data plane exists only where an offering covers; a client registration serves one audience. Contingent: a teardown declaration references the terminated subscription, grants are revocable projections that do not freeze at issuance (P4), and an inactive membership fails admission. This is provenance and reach, not quantity: the model checks where a privilege came from and how far it extends, and cannot measure whether it is the least that would do, because it holds no statement of need for principals — the Role class is an unused draft stub. Minimality exists only as reconciliation at the application level: capability-use observations propose requirements, humans confirm them, and drift is watched in both directions (D18).",
+      "fitness": "generative (7 decisions, 9 invariants — four of the invariants had no principle at all) · testable · enforced on the data contract",
+      "enforcedBy": [
+        "ProvisioningJustificationShape",
+        "EnablementGateShape",
+        "EnablementOfferingCoverageShape",
+        "SubscriptionClosureShape",
+        "OAuthClientRegistrationShape",
+        "AdmissionRequiresMembershipShape",
+        "EntitlementGrantShape",
+        "RouteEnablementScopeShape",
+        "DataPlaneOfferedShape"
+      ],
+      "appliedIn": [
+        "D13",
+        "D14",
+        "D18",
+        "D19",
+        "D22",
+        "D35",
+        "D45"
+      ],
+      "terms": [
+        "justifiedBy",
+        "CapabilityRequirement",
+        "requiredCapability",
+        "ApplicationEnablement",
+        "Subscription",
+        "dependsOn",
+        "EntitlementGrant",
+        "derivedFrom",
+        "CapabilityOffering",
+        "TenantMembership"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [
@@ -570,6 +611,12 @@
       "verdict": "not promoted — out of scope for this ontology; a resilience principle for the platform's infrastructure",
       "why": "Not generative: no decision or shape follows from it; DNS and CDN do not exist in the model, and the edge — routes, enforcement points, upstream services — carries nothing about substitution or alternate providers. Not testable in practice: 'can this dependency be substituted while active?' cannot be asked of the graph, which has no infrastructure-dependency concept; the one dependency property, hard dependency between capabilities, is about provisioning order. Not enforceable until 'critical dependency' and 'substitute' become terms, which P9 blocks until a competency question asks for them. What the model already says about seams: the intent/actuation split (P2) and subscriptions targeting a capability rather than a data plane (D11) let a realization be swapped without touching a consumer, and a route forwards to at least one upstream, so several may stand behind one — substitution is structurally permitted at those seams, neither required nor forbidden. The seam that matters in this domain is the identity provider, and there the model shows substitution designed out by the standard: a subject identifier is scoped to exactly one issuer (RFC 9493, D30), so substituting the identity provider re-keys every principal's naming fact — a migration with re-issuance, never an active substitution.",
       "todo": "Scoping decision pending: substitutability of infrastructure dependencies belongs to a platform-engineering or resilience ontology this one could link to. The one in-scope piece is recorded as a backlog question under Subject identifiers: which principals' subject identifiers are bound to a given issuer, and what would re-issuance under another require?"
+    },
+    {
+      "candidate": "Least privilege by default",
+      "verdict": "not promoted as worded — the rule underneath is P18 (intent precedes state); 'least' has no baseline here and 'by default' is the undecided deny-by-default question",
+      "why": "'Least' is a comparative that needs a statement of need, and the model has none for principals: authz:Role is a draft stub retained for RBAC interoperability with zero instances, zero shapes and zero decisions. Even the enablement gate checks sufficiency — everything required is subscribed — not minimality. What the model enforces, in nine invariants four of which had no principle, is that every privilege, provision or admission follows from a governance intent, stays within its scope and ends with it: that is P18. Minimality exists only as reconciliation at the application level — observed use proposes requirements, humans confirm them, drift is watched both ways (D18) — never as a default. 'By default' would decide deny-by-default by the back door; that stays its own open question.",
+      "todo": "Two follow-ups: (1) the over-privilege questions are in the backlog under 'Privilege drift' — which grants, memberships or subscriptions show no observed use across a window; (2) authz:Role is exactly what P9 and P10 exist to catch — a term no question asked for and no shape governs — and should gain a question or be deprecated."
     }
   ]
 }

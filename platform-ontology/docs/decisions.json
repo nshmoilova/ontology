@@ -303,7 +303,8 @@
         "forApplication"
       ],
       "principles": [
-        "P2"
+        "P2",
+        "P18"
       ]
     },
     {
@@ -314,6 +315,9 @@
       "reasoning": "Dependencies are hard-only until a real soft case appears (YAGNI applies to edge types too); the closure is auto-included and materialized at subscription time so 'what does this tenant hold' stays a flat read; and the dependency graph must be a DAG, which SHACL checks in one line with a property path.",
       "terms": [
         "dependsOn"
+      ],
+      "principles": [
+        "P18"
       ]
     },
     {
@@ -373,7 +377,8 @@
       ],
       "principles": [
         "P3",
-        "P14"
+        "P14",
+        "P18"
       ]
     },
     {
@@ -387,7 +392,8 @@
         "forApplication"
       ],
       "principles": [
-        "P10"
+        "P10",
+        "P18"
       ]
     },
     {
@@ -441,7 +447,8 @@
         "P2",
         "P4",
         "P12",
-        "P17"
+        "P17",
+        "P18"
       ]
     },
     {
@@ -647,7 +654,8 @@
         "CapabilityOffering"
       ],
       "principles": [
-        "P10"
+        "P10",
+        "P18"
       ]
     },
     {
@@ -717,7 +725,8 @@
       "principles": [
         "P3",
         "P6",
-        "P16"
+        "P16",
+        "P18"
       ]
     },
     {

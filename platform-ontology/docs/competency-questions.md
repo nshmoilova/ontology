@@ -328,3 +328,19 @@ scope tree (a zone spans tenants and a scope spans zones) and not a sixth
 entitlement dimension (subjects hold no zone grants). Environment and region,
 already stated as facets with no rejecting invariant, come first.
 
+### Privilege drift (least privilege as reconciliation)
+
+The model holds no statement of need for principals, so least privilege is
+not a default it can enforce; it is a reconciliation the graph can support
+(P18, D18). These questions make the over-privilege direction answerable.
+
+- Which entitlement grants, tenant memberships or subscriptions show no
+  observed use across a given window? *(standing privilege — descriptive,
+  routed to stewardship)*
+- Which confirmed capability requirements have no capability-use observation
+  in the window, and which observed uses have no confirmed requirement?
+  *(requirement drift in both directions — D18)*
+- Which grants outlived the governance fact they derive from — a terminated
+  subscription, an inactive membership, a superseded enablement?
+  *(expected empty — P18's contingency clause)*
+
