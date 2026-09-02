@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "2636c95c198c",
+ "sourceDigest": "414718765fa8",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15,7 +15,7 @@
   "principles": 16,
   "explainers": 2,
   "formalCQs": 8,
-  "backlogCQs": 91
+  "backlogCQs": 92
  },
  "modules": [
   {
@@ -13844,6 +13844,12 @@
    "verdict": "not promoted \u2014 out of scope for this ontology; revisit pending a scoping decision",
    "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them \u2014 none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 \u2014 offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
    "todo": "Scoping decision pending: does contract versioning enter this ontology, or a separate service-catalogue ontology this one links to (recommended)? If it enters, the route is P9 \u2014 competency questions first (which contract version does this application depend on at this deployment scope; which consumers are affected by deprecating a contract version), then Contract and ContractVersion terms, then shapes."
+  },
+  {
+   "candidate": "Substitutability is designed in at the dependency seams that matter; for critical dependencies such as DNS, CDN and edge services the platform supports active substitution rather than only migration",
+   "verdict": "not promoted \u2014 out of scope for this ontology; a resilience principle for the platform's infrastructure",
+   "why": "Not generative: no decision or shape follows from it; DNS and CDN do not exist in the model, and the edge \u2014 routes, enforcement points, upstream services \u2014 carries nothing about substitution or alternate providers. Not testable in practice: 'can this dependency be substituted while active?' cannot be asked of the graph, which has no infrastructure-dependency concept; the one dependency property, hard dependency between capabilities, is about provisioning order. Not enforceable until 'critical dependency' and 'substitute' become terms, which P9 blocks until a competency question asks for them. What the model already says about seams: the intent/actuation split (P2) and subscriptions targeting a capability rather than a data plane (D11) let a realization be swapped without touching a consumer, and a route forwards to at least one upstream, so several may stand behind one \u2014 substitution is structurally permitted at those seams, neither required nor forbidden. The seam that matters in this domain is the identity provider, and there the model shows substitution designed out by the standard: a subject identifier is scoped to exactly one issuer (RFC 9493, D30), so substituting the identity provider re-keys every principal's naming fact \u2014 a migration with re-issuance, never an active substitution.",
+   "todo": "Scoping decision pending: substitutability of infrastructure dependencies belongs to a platform-engineering or resilience ontology this one could link to. The one in-scope piece is recorded as a backlog question under Subject identifiers: which principals' subject identifiers are bound to a given issuer, and what would re-issuance under another require?"
   }
  ],
  "explainers": [
@@ -14684,6 +14690,11 @@
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which tokens or security events reference subjects with no mapped principal? (needs token subject links and in-graph CAEP events)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Subject identifiers (RFC 9493 / OIDC sub)",
+    "question": "Which principals' subject identifiers are bound to a given issuer, and what would re-issuance under another issuer require? (an identifier is scoped to exactly one issuer, so substituting the identity provider is a migration with re-issuance, never an active substitution)",
     "expectedEmpty": false
    },
    {

@@ -239,6 +239,10 @@ possibly pairwise per authorized party.
   still resolve? *(issuer subject recycling — the classic CAEP hazard)*
 - Which tokens or security events reference subjects with no mapped
   principal? *(needs token subject links and in-graph CAEP events)*
+- Which principals' subject identifiers are bound to a given issuer, and what
+  would re-issuance under another issuer require? *(an identifier is scoped to
+  exactly one issuer, so substituting the identity provider is a migration
+  with re-issuance, never an active substitution)*
 
 ### The two clients
 
