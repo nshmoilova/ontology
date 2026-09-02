@@ -470,6 +470,52 @@
         "servesTenant",
         "DataPlane"
       ]
+    },
+    {
+      "id": "P17",
+      "title": "Every action is traceable",
+      "level": "platform",
+      "statement": "Every request and every security-relevant state change leaves evidence that traces, hop by hop, to the responsible principal — the one who acted and, where P3 applies, the one who authorized. A record whose actor is optional is not evidence.",
+      "test": "For this record, who is the responsible principal, and can the graph walk from the record to them with no optional hop? If any hop is optional, the trace is a hope.",
+      "consequences": "Every platform event is a PROV activity with exactly one timestamp. Authentication events and journey executions name their principal; approvals name their approver; sessions name their principal and the execution that established them; a token inherits its session's confirmation; a grant carries its derivation; a decision names its decision point, policy, action and — from D55 — its requesting principal; a policy change names its executor and its human approver; a mutation with no executor fails the sole-writer constraint. Four formal questions are traces: CQ-3 who executed and approved each change, CQ-4 which source issued each attribute, CQ-5 the full assurance chain behind each permit, CQ-6 which changes each workload executed. Observation records (capability use) are evidence, not actions, and carry no actor by design. Known exception: sessions, credentials, memberships and subscriptions have state schemes but no state-transition events, so revocation, expiry and suspension leave no record in the graph — the credential-lifecycle and CAEP backlog, too large for a promotion. Observability in the metrics-and-logging sense is outside this model; traceability is the half it holds.",
+      "fitness": "generative (9 decisions, 12 invariants, 4 formal questions) · testable — found the optional executor on policy changes and the optional subject on decisions on first application · enforced on the data contract; state-transition events are the known gap",
+      "enforcedBy": [
+        "PlatformEventShape",
+        "AuthenticationEventShape",
+        "JourneyExecutionShape",
+        "ChangeApprovalShape",
+        "SessionShape",
+        "PolicyDecisionShape",
+        "PolicyChangeEventShape",
+        "DataPlaneMutationShape",
+        "SoleWriterShape",
+        "EntitlementGrantShape",
+        "TokenInheritsConfirmationShape",
+        "HumanAuthorizationShape"
+      ],
+      "appliedIn": [
+        "D41",
+        "D49",
+        "D33",
+        "D07",
+        "D22",
+        "D26",
+        "D27",
+        "D44",
+        "D55"
+      ],
+      "terms": [
+        "PlatformEvent",
+        "occurredAtTime",
+        "performedBy",
+        "executedBy",
+        "approvedBy",
+        "requestingPrincipal",
+        "decidedBy",
+        "derivedFrom",
+        "AuthenticationJourneyExecution",
+        "comprisesEvent"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [

@@ -57,7 +57,8 @@
       ],
       "principles": [
         "P8",
-        "P13"
+        "P13",
+        "P17"
       ]
     },
     {
@@ -214,7 +215,8 @@
         "executedBy"
       ],
       "principles": [
-        "P12"
+        "P12",
+        "P17"
       ]
     },
     {
@@ -438,7 +440,8 @@
       "principles": [
         "P2",
         "P4",
-        "P12"
+        "P12",
+        "P17"
       ]
     },
     {
@@ -498,6 +501,9 @@
         "followsDefinition",
         "comprisesEvent",
         "servesChannel"
+      ],
+      "principles": [
+        "P17"
       ]
     },
     {
@@ -510,6 +516,9 @@
         "Session",
         "establishedBy",
         "achievedAssuranceLevel"
+      ],
+      "principles": [
+        "P17"
       ]
     },
     {
@@ -609,7 +618,8 @@
         "WorkloadPrincipal"
       ],
       "principles": [
-        "P14"
+        "P14",
+        "P17"
       ]
     },
     {
@@ -732,7 +742,8 @@
         "P4",
         "P5",
         "P8",
-        "P15"
+        "P15",
+        "P17"
       ]
     },
     {
@@ -768,6 +779,9 @@
       "terms": [
         "PlatformEvent",
         "occurredAtTime"
+      ],
+      "principles": [
+        "P17"
       ]
     },
     {
@@ -823,6 +837,28 @@
       ],
       "principles": [
         "P16",
+        "P10",
+        "P15"
+      ]
+    },
+    {
+      "id": "D55",
+      "title": "Executor and requesting principal are mandatory",
+      "area": "Audit round",
+      "invariant": true,
+      "reasoning": "P17's test — can the graph walk from this record to the responsible principal with no optional hop — failed on the two most security-relevant records. A policy change required its changed policy and a human approval but not its executor, so CQ-3 ('who executed each change') would return nothing for it; a decision required its policy, action, outcome and decision point but not its requesting principal, and the membership check silently passed a decision with no subject because its pattern only matches when one is present. Both properties become mandatory with a typed principal; the positive corpus already carried them on every instance, and two negative instances make the invariants fire.",
+      "rejected": [
+        "Requiring performedBy on every platform event instead: observations (capability use) are evidence rather than actions and carry no actor by design; the actor property differs per event type, so the requirement belongs on each shape.",
+        "Leaving the executor optional because a workload may execute under automation: automation still runs as a workload principal (P14), and an unnamed one is exactly what the sole-writer invariant exists to catch."
+      ],
+      "terms": [
+        "executedBy",
+        "requestingPrincipal",
+        "PolicyChangeEvent",
+        "PolicyDecision"
+      ],
+      "principles": [
+        "P17",
         "P10",
         "P15"
       ]

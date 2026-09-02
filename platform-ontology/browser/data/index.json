@@ -1,18 +1,18 @@
 {
  "generated": true,
- "sourceDigest": "414718765fa8",
+ "sourceDigest": "108bfb3adc01",
  "stats": {
   "modules": 6,
   "classes": 73,
   "objectProperties": 92,
   "datatypeProperties": 34,
   "shapes": 75,
-  "violations": 109,
+  "violations": 111,
   "warnings": 7,
   "vocabularies": 11,
-  "relationships": 51,
-  "decisions": 50,
-  "principles": 16,
+  "relationships": 53,
+  "decisions": 51,
+  "principles": 17,
   "explainers": 2,
   "formalCQs": 8,
   "backlogCQs": 92
@@ -459,7 +459,9 @@
    "decisions": [
     "D41"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PlatformTenant",
@@ -694,10 +696,24 @@
      "severity": "Violation"
     },
     {
+     "from": "authz:PolicyDecision",
+     "property": "authz:requestingPrincipal",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    },
+    {
      "from": "cp:ChangeApproval",
      "property": "cp:approvedBy",
      "to": "core:Principal",
      "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:PolicyChangeEvent",
+     "property": "cp:executedBy",
+     "to": "core:Principal",
+     "cardinality": "1..*",
      "severity": "Violation"
     },
     {
@@ -970,7 +986,9 @@
    "decisions": [
     "D41"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#validFrom",
@@ -1219,7 +1237,8 @@
    "vocabulary": [],
    "decisions": [],
    "principles": [
-    "P6"
+    "P6",
+    "P17"
    ]
   },
   {
@@ -1592,7 +1611,9 @@
    "decisions": [
     "D26"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#AuthenticationMethod",
@@ -2451,7 +2472,9 @@
    "decisions": [
     "D26"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#confirmedByKey",
@@ -5237,6 +5260,21 @@
      "message": "A policy decision must name exactly one policy decision point \u2014 a decision nobody can be shown to have made is unattributable."
     },
     {
+     "kind": "property",
+     "path": "authz:requestingPrincipal",
+     "pathIri": "https://w3id.org/examplebank/platform/authz#requestingPrincipal",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy decision must name the requesting principal \u2014 a decision with no subject cannot be traced to anyone (P17)."
+    },
+    {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Decision evaluates an action outside the platform-owned action vocabulary \u2014 application verbs are Level-3 and must not reach platform decisions.",
@@ -5277,13 +5315,21 @@
      "to": "core:PolicyDecisionPoint",
      "cardinality": "1..1",
      "severity": "Violation"
+    },
+    {
+     "from": "authz:PolicyDecision",
+     "property": "authz:requestingPrincipal",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
     }
    ],
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D25"
+    "D25",
+    "D55"
    ],
    "principles": [
     "P13",
@@ -5582,7 +5628,8 @@
     "D49"
    ],
    "principles": [
-    "P13"
+    "P13",
+    "P17"
    ]
   },
   {
@@ -5644,7 +5691,8 @@
    ],
    "principles": [
     "P2",
-    "P12"
+    "P12",
+    "P17"
    ]
   },
   {
@@ -5899,12 +5947,23 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "authz:PolicyDecision",
+     "property": "authz:requestingPrincipal",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": [
-    "D49"
+    "D49",
+    "D55"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#requiredAssuranceLevel",
@@ -6887,17 +6946,42 @@
      "message": "Policy change has no change-management ticket reference \u2014 flag for audit follow-up."
     },
     {
+     "kind": "property",
+     "path": "cp:executedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#executedBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy change must name the principal that executed it \u2014 a change nobody can be shown to have made is untraceable (P17)."
+    },
+    {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Policy change lacks approval by a human principal \u2014 agents execute, humans authorize.",
      "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS {\n                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .\n                }\n            }"
     }
    ],
-   "outgoing": [],
+   "outgoing": [
+    {
+     "from": "cp:PolicyChangeEvent",
+     "property": "cp:executedBy",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [],
+   "decisions": [
+    "D55"
+   ],
    "principles": [
     "P3"
    ]
@@ -7739,7 +7823,8 @@
    "vocabulary": [],
    "decisions": [],
    "principles": [
-    "P3"
+    "P3",
+    "P17"
    ]
   },
   {
@@ -7995,12 +8080,23 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "cp:PolicyChangeEvent",
+     "property": "cp:executedBy",
+     "to": "core:Principal",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": [
-    "D07"
+    "D07",
+    "D55"
    ],
-   "principles": []
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#forApplication",
@@ -9397,7 +9493,8 @@
    "violations": 3,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -9515,7 +9612,8 @@
    "violations": 4,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -9919,7 +10017,8 @@
     "P2",
     "P4",
     "P12",
-    "P16"
+    "P16",
+    "P17"
    ]
   },
   {
@@ -10053,13 +10152,29 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A policy decision must name exactly one policy decision point \u2014 a decision nobody can be shown to have made is unattributable."
+    },
+    {
+     "kind": "property",
+     "path": "authz:requestingPrincipal",
+     "pathIri": "https://w3id.org/examplebank/platform/authz#requestingPrincipal",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy decision must name the requesting principal \u2014 a decision with no subject cannot be traced to anyone (P17)."
     }
    ],
-   "violations": 4,
+   "violations": 5,
    "warnings": 0,
    "principles": [
     "P13",
-    "P15"
+    "P15",
+    "P17"
    ]
   },
   {
@@ -10205,7 +10320,8 @@
    "violations": 2,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -10250,7 +10366,8 @@
    "warnings": 0,
    "principles": [
     "P2",
-    "P12"
+    "P12",
+    "P17"
    ]
   },
   {
@@ -10415,7 +10532,8 @@
    "warnings": 0,
    "principles": [
     "P3",
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -10541,10 +10659,28 @@
      "maxInclusive": null,
      "severity": "Warning",
      "message": "Policy change has no change-management ticket reference \u2014 flag for audit follow-up."
+    },
+    {
+     "kind": "property",
+     "path": "cp:executedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#executedBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Principal",
+     "classIri": "https://w3id.org/examplebank/platform/core#Principal",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A policy change must name the principal that executed it \u2014 a change nobody can be shown to have made is untraceable (P17)."
     }
    ],
-   "violations": 1,
-   "warnings": 1
+   "violations": 2,
+   "warnings": 1,
+   "principles": [
+    "P17"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#PortalShape",
@@ -10709,7 +10845,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P12"
+    "P12",
+    "P17"
    ]
   },
   {
@@ -11009,7 +11146,8 @@
    "violations": 2,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -11665,7 +11803,8 @@
    "violations": 5,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ]
   },
   {
@@ -11686,7 +11825,8 @@
    "warnings": 0,
    "principles": [
     "P4",
-    "P15"
+    "P15",
+    "P17"
    ]
   },
   {
@@ -11865,6 +12005,13 @@
    "severity": "Violation"
   },
   {
+   "from": "authz:PolicyDecision",
+   "property": "authz:requestingPrincipal",
+   "to": "core:Principal",
+   "cardinality": "1..*",
+   "severity": "Violation"
+  },
+  {
    "from": "core:Application",
    "property": "core:ownedBy",
    "to": "core:Tenant",
@@ -11925,6 +12072,13 @@
    "property": "cp:declaredThrough",
    "to": "cp:ManagementControlPlane",
    "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:PolicyChangeEvent",
+   "property": "cp:executedBy",
+   "to": "core:Principal",
+   "cardinality": "1..*",
    "severity": "Violation"
   },
   {
@@ -12143,7 +12297,8 @@
    ],
    "principles": [
     "P8",
-    "P13"
+    "P13",
+    "P17"
    ],
    "termCuries": [
     "authz:decidedBy",
@@ -12354,7 +12509,8 @@
     "executedBy"
    ],
    "principles": [
-    "P12"
+    "P12",
+    "P17"
    ],
    "rejected": [],
    "termCuries": [
@@ -12671,7 +12827,8 @@
    "principles": [
     "P2",
     "P4",
-    "P12"
+    "P12",
+    "P17"
    ],
    "rejected": [],
    "termCuries": [
@@ -12760,6 +12917,9 @@
     "comprisesEvent",
     "servesChannel"
    ],
+   "principles": [
+    "P17"
+   ],
    "invariant": false,
    "rejected": [],
    "termCuries": [
@@ -12780,6 +12940,9 @@
     "Session",
     "establishedBy",
     "achievedAssuranceLevel"
+   ],
+   "principles": [
+    "P17"
    ],
    "rejected": [],
    "termCuries": [
@@ -12910,7 +13073,8 @@
     "WorkloadPrincipal"
    ],
    "principles": [
-    "P14"
+    "P14",
+    "P17"
    ],
    "invariant": false,
    "rejected": [],
@@ -13078,7 +13242,8 @@
     "P4",
     "P5",
     "P8",
-    "P15"
+    "P15",
+    "P17"
    ],
    "termCuries": [
     "authn:ProofOfPossessionKey",
@@ -13130,6 +13295,9 @@
    "terms": [
     "PlatformEvent",
     "occurredAtTime"
+   ],
+   "principles": [
+    "P17"
    ],
    "invariant": false,
    "rejected": [],
@@ -13205,6 +13373,34 @@
     "cp:isolationModel",
     "cp:scopeIncludes",
     "cp:servesTenant"
+   ]
+  },
+  {
+   "id": "D55",
+   "title": "Executor and requesting principal are mandatory",
+   "area": "Audit round",
+   "invariant": true,
+   "reasoning": "P17's test \u2014 can the graph walk from this record to the responsible principal with no optional hop \u2014 failed on the two most security-relevant records. A policy change required its changed policy and a human approval but not its executor, so CQ-3 ('who executed each change') would return nothing for it; a decision required its policy, action, outcome and decision point but not its requesting principal, and the membership check silently passed a decision with no subject because its pattern only matches when one is present. Both properties become mandatory with a typed principal; the positive corpus already carried them on every instance, and two negative instances make the invariants fire.",
+   "rejected": [
+    "Requiring performedBy on every platform event instead: observations (capability use) are evidence rather than actions and carry no actor by design; the actor property differs per event type, so the requirement belongs on each shape.",
+    "Leaving the executor optional because a workload may execute under automation: automation still runs as a workload principal (P14), and an unnamed one is exactly what the sole-writer invariant exists to catch."
+   ],
+   "terms": [
+    "executedBy",
+    "requestingPrincipal",
+    "PolicyChangeEvent",
+    "PolicyDecision"
+   ],
+   "principles": [
+    "P17",
+    "P10",
+    "P15"
+   ],
+   "termCuries": [
+    "authz:PolicyDecision",
+    "authz:requestingPrincipal",
+    "cp:PolicyChangeEvent",
+    "cp:executedBy"
    ]
   }
  ],
@@ -13795,6 +13991,64 @@
     "cp:scopeIncludes",
     "cp:servesTenant",
     "cp:subScopeOf"
+   ]
+  },
+  {
+   "id": "P17",
+   "title": "Every action is traceable",
+   "level": "platform",
+   "statement": "Every request and every security-relevant state change leaves evidence that traces, hop by hop, to the responsible principal \u2014 the one who acted and, where P3 applies, the one who authorized. A record whose actor is optional is not evidence.",
+   "test": "For this record, who is the responsible principal, and can the graph walk from the record to them with no optional hop? If any hop is optional, the trace is a hope.",
+   "consequences": "Every platform event is a PROV activity with exactly one timestamp. Authentication events and journey executions name their principal; approvals name their approver; sessions name their principal and the execution that established them; a token inherits its session's confirmation; a grant carries its derivation; a decision names its decision point, policy, action and \u2014 from D55 \u2014 its requesting principal; a policy change names its executor and its human approver; a mutation with no executor fails the sole-writer constraint. Four formal questions are traces: CQ-3 who executed and approved each change, CQ-4 which source issued each attribute, CQ-5 the full assurance chain behind each permit, CQ-6 which changes each workload executed. Observation records (capability use) are evidence, not actions, and carry no actor by design. Known exception: sessions, credentials, memberships and subscriptions have state schemes but no state-transition events, so revocation, expiry and suspension leave no record in the graph \u2014 the credential-lifecycle and CAEP backlog, too large for a promotion. Observability in the metrics-and-logging sense is outside this model; traceability is the half it holds.",
+   "fitness": "generative (9 decisions, 12 invariants, 4 formal questions) \u00b7 testable \u2014 found the optional executor on policy changes and the optional subject on decisions on first application \u00b7 enforced on the data contract; state-transition events are the known gap",
+   "enforcedBy": [
+    "PlatformEventShape",
+    "AuthenticationEventShape",
+    "JourneyExecutionShape",
+    "ChangeApprovalShape",
+    "SessionShape",
+    "PolicyDecisionShape",
+    "PolicyChangeEventShape",
+    "DataPlaneMutationShape",
+    "SoleWriterShape",
+    "EntitlementGrantShape",
+    "TokenInheritsConfirmationShape",
+    "HumanAuthorizationShape"
+   ],
+   "appliedIn": [
+    "D41",
+    "D49",
+    "D33",
+    "D07",
+    "D22",
+    "D26",
+    "D27",
+    "D44",
+    "D55"
+   ],
+   "terms": [
+    "PlatformEvent",
+    "occurredAtTime",
+    "performedBy",
+    "executedBy",
+    "approvedBy",
+    "requestingPrincipal",
+    "decidedBy",
+    "derivedFrom",
+    "AuthenticationJourneyExecution",
+    "comprisesEvent"
+   ],
+   "termCuries": [
+    "authn:AuthenticationJourneyExecution",
+    "authn:comprisesEvent",
+    "authz:decidedBy",
+    "authz:derivedFrom",
+    "authz:requestingPrincipal",
+    "core:PlatformEvent",
+    "core:occurredAtTime",
+    "core:performedBy",
+    "cp:approvedBy",
+    "cp:executedBy"
    ]
   }
  ],

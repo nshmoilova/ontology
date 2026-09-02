@@ -19,6 +19,13 @@ scp:PolicyChangeEventShape a sh:NodeShape ;
         sh:datatype xsd:string ;
         sh:severity sh:Warning ;
         sh:message "Policy change has no change-management ticket reference — flag for audit follow-up." ;
+    ] ;
+    sh:property [
+        sh:path cp:executedBy ;
+        sh:minCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "A policy change must name the principal that executed it — a change nobody can be shown to have made is untraceable (P17)." ;
     ] .
 
 # "Agents execute, humans authorize": every policy change event must carry

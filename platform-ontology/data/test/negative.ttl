@@ -487,3 +487,19 @@ ex:cell-plane-bad a cp:DataPlane ;
     cp:realizesCapability ex:cell-capability ;
     cp:servesTenant ex:bad-tenant , ex:tenant-y .
 
+### 42. Policy change with no executing principal (PolicyChangeEventShape)
+ex:change-no-executor a cp:PolicyChangeEvent ;
+    core:occurredAtTime "2026-08-30T09:00:00Z"^^xsd:dateTime ;
+    cp:changedPolicy ex:policy-ledger-read ;
+    cp:changeTicket "CHG0042117" ;
+    cp:hasApproval ex:approval-7001a .
+
+### 43. Policy decision with no requesting principal (PolicyDecisionShape)
+ex:decision-no-subject a authz:PolicyDecision ;
+    core:occurredAtTime "2026-08-31T13:06:10Z"^^xsd:dateTime ;
+    authz:withinSession ex:session-9001 ;
+    authz:evaluatedPolicy ex:policy-ledger-read ;
+    authz:evaluatedAction authz:action-read ;
+    core:targetsResource ex:transaction-service ;
+    authz:decidedBy ex:platform-pdp ;
+    authz:decisionOutcome authz:outcome-permit .

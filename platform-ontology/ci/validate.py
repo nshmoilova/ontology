@@ -121,6 +121,8 @@ def main() -> int:
             "outside that application's enablement",
             "must not also be a policy enforcement point",
             "more than one tenant under a cell-per-tenant",
+            "must name the principal that executed it",
+            "must name the requesting principal",
         ]
         for frag in expected_fragments:
             if frag in text:

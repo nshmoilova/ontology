@@ -89,6 +89,13 @@ sz:PolicyDecisionShape a sh:NodeShape ;
         sh:class core:PolicyDecisionPoint ;
         sh:severity sh:Violation ;
         sh:message "A policy decision must name exactly one policy decision point — a decision nobody can be shown to have made is unattributable." ;
+    ] ;
+    sh:property [
+        sh:path authz:requestingPrincipal ;
+        sh:minCount 1 ;
+        sh:class core:Principal ;
+        sh:severity sh:Violation ;
+        sh:message "A policy decision must name the requesting principal — a decision with no subject cannot be traced to anyone (P17)." ;
     ] .
 
 # Level-3 boundary at the decision layer: actions come from the
