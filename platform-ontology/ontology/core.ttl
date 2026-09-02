@@ -10,10 +10,10 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.4.5> ;
-    owl:versionInfo "0.4.5" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.5.0> ;
+    owl:versionInfo "0.5.0" ;
     dct:title "Platform Core Ontology"@en ;
-    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft."@en ;
+    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13)."@en ;
     dct:created "2026-08-31"^^xsd:date ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> .
 
@@ -98,6 +98,7 @@ core:DeliveryChannel a owl:Class ;
 
 core:HumanPrincipal owl:disjointWith core:WorkloadPrincipal .
 core:Tenant owl:disjointWith core:Capability .
+core:PolicyDecisionPoint owl:disjointWith core:PolicyEnforcementPoint .
 
 #################################################################
 # Object properties

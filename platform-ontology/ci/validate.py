@@ -119,6 +119,7 @@ def main() -> int:
             "implies a different channel",
             "bound tenant does not own",
             "outside that application's enablement",
+            "must not also be a policy enforcement point",
         ]
         for frag in expected_fragments:
             if frag in text:

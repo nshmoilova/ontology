@@ -473,3 +473,8 @@ ex:foreign-app a core:Application ;
 ex:sneaky-portal a cp:Portal ;
     core:ownedBy ex:bad-tenant ;
     cp:groupsApplication ex:foreign-app .
+
+### 40. One component that both decides and enforces — decision fused with enforcement
+ex:pdp-pep-fused a core:PolicyDecisionPoint, core:PolicyEnforcementPoint ;
+    core:displayName "Fused decision and enforcement point" .
+

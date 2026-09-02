@@ -56,7 +56,8 @@
         "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
       ],
       "principles": [
-        "P8"
+        "P8",
+        "P13"
       ]
     },
     {
@@ -580,7 +581,8 @@
         "evaluatedPolicy"
       ],
       "principles": [
-        "P6"
+        "P6",
+        "P13"
       ]
     },
     {
@@ -743,6 +745,25 @@
       "terms": [
         "PlatformEvent",
         "occurredAtTime"
+      ]
+    },
+    {
+      "id": "D52",
+      "title": "Decision point and enforcement point are disjoint",
+      "area": "Standards alignment",
+      "invariant": true,
+      "reasoning": "P13 requires that the component rendering a decision differs from the one acting on it, and the vocabulary already had both roles — but nothing forbade one individual carrying both types, so a fused decide-and-enforce component passed every shape. Closed with an OWL disjointness axiom in core and a SHACL shape on the decision point, with a negative instance so the invariant demonstrably fires (P10). Core moves to 0.5.0.",
+      "rejected": [
+        "Leaving separation as a review-time test: the fitness criterion is 'enforced or enforceable', and this one was cheap to enforce.",
+        "A shape on the enforcement point instead: equivalent; the decision point is the side the principle names first."
+      ],
+      "terms": [
+        "PolicyDecisionPoint",
+        "PolicyEnforcementPoint"
+      ],
+      "principles": [
+        "P13",
+        "P10"
       ]
     }
   ]

@@ -315,6 +315,36 @@
         "servesApplication",
         "derivedFrom"
       ]
+    },
+    {
+      "id": "P13",
+      "title": "Decisions are policy-based and externalized",
+      "level": "platform",
+      "statement": "Every authorization decision evaluates a named policy and is rendered by a named decision point. The enforcement point that acts on it is a different component. No platform decision lives in the code that enforces it.",
+      "test": "Which policy does this decision evaluate, which decision point renders it, and which enforcement point acts on it? If any answer is 'the code', or two answers are the same component, the design is wrong.",
+      "consequences": "Every decision references the policy it evaluated, names exactly one decision point and has exactly one outcome; a permit below the policy's required assurance level is a violation; every route is mediated by exactly one enforcement point; a decision point is never also an enforcement point. The distributed entitlement configuration is itself a policy, so admission decisions satisfy the same shape as every other decision. Scope: platform decisions are the only decisions in the graph — for application decisions the rule is an architectural expectation, not an invariant, because P1 keeps application internals out of the graph.",
+      "fitness": "generative (3 decisions, 5 invariants) · testable · enforced — the decision/enforcement separation became enforceable only at promotion (D52)",
+      "enforcedBy": [
+        "PolicyDecisionShape",
+        "PolicyShape",
+        "PermitMeetsRequiredAssuranceShape",
+        "RouteShape",
+        "DecisionEnforcementSeparationShape"
+      ],
+      "appliedIn": [
+        "D32",
+        "D49",
+        "D52"
+      ],
+      "terms": [
+        "PolicyDecisionPoint",
+        "PolicyEnforcementPoint",
+        "PolicyAdministrationPoint",
+        "Policy",
+        "PolicyDecision",
+        "decidedBy",
+        "enforcedBy"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [

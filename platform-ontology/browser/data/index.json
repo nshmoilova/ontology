@@ -1,18 +1,18 @@
 {
  "generated": true,
- "sourceDigest": "e4a50e65ab21",
+ "sourceDigest": "61c75858f009",
  "stats": {
   "modules": 6,
   "classes": 73,
   "objectProperties": 92,
   "datatypeProperties": 34,
-  "shapes": 73,
+  "shapes": 74,
   "violations": 108,
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 47,
-  "principles": 12,
+  "decisions": 48,
+  "principles": 13,
   "explainers": 2,
   "formalCQs": 7,
   "backlogCQs": 90
@@ -23,8 +23,8 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.4.5",
-   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft.",
+   "version": "0.5.0",
+   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13).",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
   },
@@ -509,7 +509,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyDecisionPoint",
@@ -524,9 +526,13 @@
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
-   "disjointWith": [],
+   "disjointWith": [
+    "core:PolicyEnforcementPoint"
+   ],
    "subClasses": [],
-   "shapes": [],
+   "shapes": [
+    "DecisionEnforcementSeparationShape"
+   ],
    "constraints": [],
    "outgoing": [],
    "incoming": [
@@ -541,9 +547,12 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D49"
+    "D49",
+    "D52"
    ],
-   "principles": []
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyEnforcementPoint",
@@ -574,9 +583,12 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [],
+   "decisions": [
+    "D52"
+   ],
    "principles": [
-    "P12"
+    "P12",
+    "P13"
    ]
   },
   {
@@ -1055,7 +1067,8 @@
    "vocabulary": [],
    "decisions": [],
    "principles": [
-    "P6"
+    "P6",
+    "P13"
    ]
   },
   {
@@ -5110,7 +5123,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#PolicyDecision",
@@ -5246,7 +5261,9 @@
    "decisions": [
     "D25"
    ],
-   "principles": []
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#PolicyRule",
@@ -5537,7 +5554,9 @@
    "decisions": [
     "D49"
    ],
-   "principles": []
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#decisionOutcome",
@@ -9881,7 +9900,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#PolicyDecisionShape",
@@ -9952,7 +9974,10 @@
     }
    ],
    "violations": 4,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#PolicyRuleShape",
@@ -10007,7 +10032,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P13"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#CapabilityControlPlaneShape",
@@ -10792,6 +10820,19 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/core#DecisionEnforcementSeparationShape",
+   "name": "DecisionEnforcementSeparationShape",
+   "targetClass": "core:PolicyDecisionPoint",
+   "targetClassIri": "https://w3id.org/examplebank/platform/core#PolicyDecisionPoint",
+   "module": "core",
+   "constraints": [],
+   "violations": 0,
+   "warnings": 0,
+   "principles": [
+    "P13"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#PlatformEventShape",
    "name": "PlatformEventShape",
    "targetClass": "core:PlatformEvent",
@@ -11137,7 +11178,8 @@
    "warnings": 0,
    "principles": [
     "P5",
-    "P12"
+    "P12",
+    "P13"
    ]
   },
   {
@@ -11943,7 +11985,8 @@
     "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
    ],
    "principles": [
-    "P8"
+    "P8",
+    "P13"
    ],
    "termCuries": [
     "authz:decidedBy",
@@ -12677,7 +12720,8 @@
     "evaluatedPolicy"
    ],
    "principles": [
-    "P6"
+    "P6",
+    "P13"
    ],
    "rejected": [],
    "termCuries": [
@@ -12913,6 +12957,29 @@
    "termCuries": [
     "core:PlatformEvent",
     "core:occurredAtTime"
+   ]
+  },
+  {
+   "id": "D52",
+   "title": "Decision point and enforcement point are disjoint",
+   "area": "Standards alignment",
+   "invariant": true,
+   "reasoning": "P13 requires that the component rendering a decision differs from the one acting on it, and the vocabulary already had both roles \u2014 but nothing forbade one individual carrying both types, so a fused decide-and-enforce component passed every shape. Closed with an OWL disjointness axiom in core and a SHACL shape on the decision point, with a negative instance so the invariant demonstrably fires (P10). Core moves to 0.5.0.",
+   "rejected": [
+    "Leaving separation as a review-time test: the fitness criterion is 'enforced or enforceable', and this one was cheap to enforce.",
+    "A shape on the enforcement point instead: equivalent; the decision point is the side the principle names first."
+   ],
+   "terms": [
+    "PolicyDecisionPoint",
+    "PolicyEnforcementPoint"
+   ],
+   "principles": [
+    "P13",
+    "P10"
+   ],
+   "termCuries": [
+    "core:PolicyDecisionPoint",
+    "core:PolicyEnforcementPoint"
    ]
   }
  ],
@@ -13307,6 +13374,45 @@
     "ingress:Route",
     "ingress:UpstreamService",
     "ingress:servesApplication"
+   ]
+  },
+  {
+   "id": "P13",
+   "title": "Decisions are policy-based and externalized",
+   "level": "platform",
+   "statement": "Every authorization decision evaluates a named policy and is rendered by a named decision point. The enforcement point that acts on it is a different component. No platform decision lives in the code that enforces it.",
+   "test": "Which policy does this decision evaluate, which decision point renders it, and which enforcement point acts on it? If any answer is 'the code', or two answers are the same component, the design is wrong.",
+   "consequences": "Every decision references the policy it evaluated, names exactly one decision point and has exactly one outcome; a permit below the policy's required assurance level is a violation; every route is mediated by exactly one enforcement point; a decision point is never also an enforcement point. The distributed entitlement configuration is itself a policy, so admission decisions satisfy the same shape as every other decision. Scope: platform decisions are the only decisions in the graph \u2014 for application decisions the rule is an architectural expectation, not an invariant, because P1 keeps application internals out of the graph.",
+   "fitness": "generative (3 decisions, 5 invariants) \u00b7 testable \u00b7 enforced \u2014 the decision/enforcement separation became enforceable only at promotion (D52)",
+   "enforcedBy": [
+    "PolicyDecisionShape",
+    "PolicyShape",
+    "PermitMeetsRequiredAssuranceShape",
+    "RouteShape",
+    "DecisionEnforcementSeparationShape"
+   ],
+   "appliedIn": [
+    "D32",
+    "D49",
+    "D52"
+   ],
+   "terms": [
+    "PolicyDecisionPoint",
+    "PolicyEnforcementPoint",
+    "PolicyAdministrationPoint",
+    "Policy",
+    "PolicyDecision",
+    "decidedBy",
+    "enforcedBy"
+   ],
+   "termCuries": [
+    "authz:Policy",
+    "authz:PolicyDecision",
+    "authz:decidedBy",
+    "core:PolicyAdministrationPoint",
+    "core:PolicyDecisionPoint",
+    "core:PolicyEnforcementPoint",
+    "core:enforcedBy"
    ]
   }
  ],

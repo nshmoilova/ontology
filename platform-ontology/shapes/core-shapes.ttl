@@ -77,3 +77,12 @@ sc:ResourceGovernanceShape a sh:NodeShape ;
         sh:severity sh:Warning ;
         sh:message "Resource has no governing policy — flag for stewardship review." ;
     ] .
+
+# P13 — decisions are policy-based and externalized. The enforcement point that
+# acts on a decision is a different component from the one that rendered it.
+sc:DecisionEnforcementSeparationShape a sh:NodeShape ;
+    sh:targetClass core:PolicyDecisionPoint ;
+    sh:not [ sh:class core:PolicyEnforcementPoint ] ;
+    sh:severity sh:Violation ;
+    sh:message "A policy decision point must not also be a policy enforcement point — the decision is rendered by one component and acted on by another." .
+
