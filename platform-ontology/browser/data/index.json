@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "163e204f1fd1",
+ "sourceDigest": "653b1f10f391",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -13284,6 +13284,11 @@
    "candidate": "Deny by default",
    "verdict": "not declared",
    "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group."
+  },
+  {
+   "candidate": "Controls are enforced by platform, not delegated to applications",
+   "verdict": "not promoted \u2014 a corollary of P1 and P2; its one novel clause is unenforceable by construction",
+   "why": "Unqualified, 'controls' includes resource authorization, which P1 assigns to the application and which the platform never evaluates; the statement only holds once narrowed to platform controls (tenant resolution, session and token binding, platform entitlements, application admission). At that scope it is not generative: every decision it would claim is already attributed \u2014 route serves application (D48) and decisions name their PDP (D49) to P1, ingress as the enforcement point to P2, sender-constrained sessions to P4. Its residual clause, that applications do not re-enforce platform controls, has produced no decision and no shape, and cannot: P1 states the platform never learns what is inside an application, so no shape or gate can observe an application re-checking tenant or session. As worded it also fails testability in the wrong direction \u2014 'is this control enforced by the platform?' answers yes for resource authorization, steering proposals toward the platform doing more. 'Delegated' additionally collides with P3, where delegation is a transfer of authority between agents. What survives is a consequence of P1, not a principle: a request that reaches an application has already passed every platform control, so the application neither re-enforces them nor is relied upon to."
   }
  ],
  "explainers": [
