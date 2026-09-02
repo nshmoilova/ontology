@@ -705,10 +705,10 @@
       </div>
       ${body}
       ${notP.length ? `<h2 class="sec">Evaluated and not promoted</h2>
-        <p class="lede">Candidates assessed against the criteria and kept as decisions — recorded so the evaluation is not repeated.</p>
+        <p class="lede">Candidates assessed against the criteria and not promoted — kept as decisions, or out of scope — recorded so the evaluation is not repeated.</p>
         <div class="card"><table class="data" style="border:none;box-shadow:none">
           <tr><th>Candidate</th><th>Verdict</th><th>Why</th></tr>
-          ${notP.map((n) => `<tr><td>${esc(n.candidate)}</td><td><span class="pill draft">${esc(n.verdict)}</span></td><td>${esc(n.why)}</td></tr>`).join("")}
+          ${notP.map((n) => `<tr><td>${esc(n.candidate)}</td><td><span class="pill draft">${esc(n.verdict)}</span></td><td>${esc(n.why)}${n.todo ? `<div class="todo"><span class="pill draft">TODO</span> ${esc(n.todo)}</div>` : ""}</td></tr>`).join("")}
         </table></div>` : ""}`;
   }
 

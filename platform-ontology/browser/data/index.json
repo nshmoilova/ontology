@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "74635a0e9b54",
+ "sourceDigest": "e4a50e65ab21",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -13350,6 +13350,12 @@
    "candidate": "Controls are enforced by platform, not delegated to applications",
    "verdict": "not promoted \u2014 a corollary of P1 and P2; its one novel clause is unenforceable by construction",
    "why": "Unqualified, 'controls' includes resource authorization, which P1 assigns to the application and which the platform never evaluates; the statement only holds once narrowed to platform controls (tenant resolution, session and token binding, platform entitlements, application admission). At that scope it is not generative: every decision it would claim is already attributed \u2014 route serves application (D48) and decisions name their PDP (D49) to P1, ingress as the enforcement point to P2, sender-constrained sessions to P4. Its residual clause, that applications do not re-enforce platform controls, has produced no decision and no shape, and cannot: P1 states the platform never learns what is inside an application, so no shape or gate can observe an application re-checking tenant or session. As worded it also fails testability in the wrong direction \u2014 'is this control enforced by the platform?' answers yes for resource authorization, steering proposals toward the platform doing more. 'Delegated' additionally collides with P3, where delegation is a transfer of authority between agents. What survives is a consequence of P1, not a principle: a request that reaches an application has already passed every platform control, so the application neither re-enforces them nor is relied upon to."
+  },
+  {
+   "candidate": "Capabilities are consumed through published contracts; consumers depend on contracts, not implementations; contracts are versioned and managed through a published change process",
+   "verdict": "not promoted \u2014 out of scope for this ontology; revisit pending a scoping decision",
+   "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them \u2014 none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 \u2014 offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
+   "todo": "Scoping decision pending: does contract versioning enter this ontology, or a separate service-catalogue ontology this one links to (recommended)? If it enters, the route is P9 \u2014 competency questions first (which contract version does this application depend on at this deployment scope; which consumers are affected by deprecating a contract version), then Contract and ContractVersion terms, then shapes."
   }
  ],
  "explainers": [
