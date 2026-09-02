@@ -305,3 +305,22 @@ execution's.
   authority was it exercising, and under what delegation?
 - Which agent-channel grants permit autonomous action versus delegated-only
   action?
+
+### Trust zones (terms deliberately deferred)
+
+Zone here means a network trust zone — internet-facing, DMZ, internal,
+restricted — the meaning a zone crossing gives an enforcement point. P16
+records that zone is not modelled. These two questions are the trigger for
+adding it; until one is needed, the term stays out (P9).
+
+- Which routes cross a trust-zone boundary, and which policy enforcement
+  point mediates each crossing?
+- Which restricted-zone data planes are reachable from an internet-facing
+  route? *(blast radius across zones — an extension of CQ-8)*
+
+When zone enters: it is a placement fact on upstream services and data
+planes with an allowed-crossing invariant tied to routes — not a facet on the
+scope tree (a zone spans tenants and a scope spans zones) and not a sixth
+entitlement dimension (subjects hold no zone grants). Environment and region,
+already stated as facets with no rejecting invariant, come first.
+

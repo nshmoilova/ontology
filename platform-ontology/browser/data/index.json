@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "003984b98ae4",
+ "sourceDigest": "2636c95c198c",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15,7 +15,7 @@
   "principles": 16,
   "explainers": 2,
   "formalCQs": 8,
-  "backlogCQs": 89
+  "backlogCQs": 91
  },
  "modules": [
   {
@@ -14784,6 +14784,16 @@
    {
     "section": "Agent channel (terms deliberately deferred)",
     "question": "Which agent-channel grants permit autonomous action versus delegated-only action?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Trust zones (terms deliberately deferred)",
+    "question": "Which routes cross a trust-zone boundary, and which policy enforcement point mediates each crossing?",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Trust zones (terms deliberately deferred)",
+    "question": "Which restricted-zone data planes are reachable from an internet-facing route? (blast radius across zones \u2014 an extension of CQ-8)",
     "expectedEmpty": false
    }
   ]
