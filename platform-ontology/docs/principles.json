@@ -42,10 +42,9 @@
       "statement": "Whatever defines desired state or entitlement never actuates or enforces it, and whatever enforces never defines. The control plane defines and ingress enforces; the management plane declares and capability control planes write; offerings are intent and data planes are actuation.",
       "test": "Which component defines this, and which executes it? If the answer is the same component, the design is wrong.",
       "consequences": "Every data-plane write traces to a declaration; every entitlement grant traces to the governance object it was projected from; route bindings are declarations rather than loose configuration; the management plane holds no write path into a data plane.",
-      "fitness": "generative (7 decisions, 6 invariants) · testable · enforced",
+      "fitness": "generative (6 decisions, 5 invariants) · testable · enforced",
       "enforcedBy": [
         "ManagementPlaneNoActuationShape",
-        "SoleWriterShape",
         "SelfGovernanceLoopShape",
         "DataPlaneMutationShape",
         "GovernedRouteBindingShape",
@@ -54,7 +53,6 @@
       "appliedIn": [
         "D01",
         "D02",
-        "D07",
         "D13",
         "D16",
         "D22",
@@ -284,6 +282,39 @@
       "enforcedBy": [],
       "appliedIn": [],
       "terms": []
+    },
+    {
+      "id": "P12",
+      "title": "One path, no bypass",
+      "level": "platform",
+      "statement": "Every governed target — an application boundary, a data plane, an entitlement, a route binding — is reached through exactly one governed path. Anything arriving outside it is a violation, never an exception.",
+      "test": "Name the one governed path to this target. Can the proposal reach it any other way? Then either the invariant that rejects that way exists, or the proposal is not admissible.",
+      "consequences": "Every route is mediated by exactly one policy enforcement point before its upstream; a data plane has exactly one designated writer and a mutation with no declaration behind it is an orphan write; a grant without a derivation link is forbidden; a route binding with no declaration behind it is configured out of band; one address resolves to exactly one tenant. Bypass-class constraints carry violation severity, never warning: a bypass is rejected, not queued for stewardship. Where the bypass leaves no trace in the graph — an undeclared route — the rule is enforced as 'every declared path is mediated' and 'there is no undeclared path' stays a deployment assertion.",
+      "fitness": "generative (4 decisions, 6 invariants across request, write, authority and configuration paths) · testable · enforced — request-path instance enforced on declared paths only",
+      "enforcedBy": [
+        "RouteShape",
+        "SoleWriterShape",
+        "DataPlaneMutationShape",
+        "EntitlementGrantShape",
+        "GovernedRouteBindingShape",
+        "RouteBindingCollisionShape"
+      ],
+      "appliedIn": [
+        "D07",
+        "D22",
+        "D43",
+        "D48"
+      ],
+      "terms": [
+        "Route",
+        "UpstreamService",
+        "PolicyEnforcementPoint",
+        "DataPlaneMutation",
+        "EntitlementGrant",
+        "RouteBindingChange",
+        "servesApplication",
+        "derivedFrom"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [

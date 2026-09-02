@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "653b1f10f391",
+ "sourceDigest": "74635a0e9b54",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -12,7 +12,7 @@
   "vocabularies": 11,
   "relationships": 51,
   "decisions": 47,
-  "principles": 11,
+  "principles": 12,
   "explainers": 2,
   "formalCQs": 7,
   "backlogCQs": 90
@@ -575,7 +575,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P12"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyInformationPoint",
@@ -4078,7 +4080,8 @@
     "D43"
    ],
    "principles": [
-    "P8"
+    "P8",
+    "P12"
    ]
   },
   {
@@ -4140,7 +4143,8 @@
    "vocabulary": [],
    "decisions": [],
    "principles": [
-    "P8"
+    "P8",
+    "P12"
    ]
   },
   {
@@ -4448,7 +4452,8 @@
     "D48"
    ],
    "principles": [
-    "P1"
+    "P1",
+    "P12"
    ]
   },
   {
@@ -4933,7 +4938,8 @@
    ],
    "principles": [
     "P2",
-    "P4"
+    "P4",
+    "P12"
    ]
   },
   {
@@ -5591,7 +5597,8 @@
     "D36"
    ],
    "principles": [
-    "P2"
+    "P2",
+    "P12"
    ]
   },
   {
@@ -6498,7 +6505,9 @@
    "decisions": [
     "D04"
    ],
-   "principles": []
+   "principles": [
+    "P12"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#DesiredStateDeclaration",
@@ -6953,7 +6962,8 @@
     "D43"
    ],
    "principles": [
-    "P2"
+    "P2",
+    "P12"
    ]
   },
   {
@@ -9811,7 +9821,8 @@
    "principles": [
     "P1",
     "P2",
-    "P4"
+    "P4",
+    "P12"
    ]
   },
   {
@@ -10121,7 +10132,8 @@
    "violations": 2,
    "warnings": 0,
    "principles": [
-    "P2"
+    "P2",
+    "P12"
    ]
   },
   {
@@ -10541,7 +10553,7 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P2"
+    "P12"
    ]
   },
   {
@@ -10932,7 +10944,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P2"
+    "P2",
+    "P12"
    ]
   },
   {
@@ -11030,7 +11043,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P12"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteEnablementScopeShape",
@@ -11120,7 +11136,8 @@
    "violations": 4,
    "warnings": 0,
    "principles": [
-    "P5"
+    "P5",
+    "P12"
    ]
   },
   {
@@ -11953,7 +11970,8 @@
    "principles": [
     "P1",
     "P9",
-    "P10"
+    "P10",
+    "P12"
    ],
    "termCuries": [
     "ingress:Route",
@@ -12131,7 +12149,7 @@
     "executedBy"
    ],
    "principles": [
-    "P2"
+    "P12"
    ],
    "rejected": [],
    "termCuries": [
@@ -12440,7 +12458,8 @@
    ],
    "principles": [
     "P2",
-    "P4"
+    "P4",
+    "P12"
    ],
    "rejected": [],
    "termCuries": [
@@ -12868,7 +12887,8 @@
    ],
    "principles": [
     "P2",
-    "P5"
+    "P5",
+    "P12"
    ],
    "termCuries": [
     "cp:RouteBindingChange",
@@ -12939,10 +12959,9 @@
    "statement": "Whatever defines desired state or entitlement never actuates or enforces it, and whatever enforces never defines. The control plane defines and ingress enforces; the management plane declares and capability control planes write; offerings are intent and data planes are actuation.",
    "test": "Which component defines this, and which executes it? If the answer is the same component, the design is wrong.",
    "consequences": "Every data-plane write traces to a declaration; every entitlement grant traces to the governance object it was projected from; route bindings are declarations rather than loose configuration; the management plane holds no write path into a data plane.",
-   "fitness": "generative (7 decisions, 6 invariants) \u00b7 testable \u00b7 enforced",
+   "fitness": "generative (6 decisions, 5 invariants) \u00b7 testable \u00b7 enforced",
    "enforcedBy": [
     "ManagementPlaneNoActuationShape",
-    "SoleWriterShape",
     "SelfGovernanceLoopShape",
     "DataPlaneMutationShape",
     "GovernedRouteBindingShape",
@@ -12951,7 +12970,6 @@
    "appliedIn": [
     "D01",
     "D02",
-    "D07",
     "D13",
     "D16",
     "D22",
@@ -13247,6 +13265,49 @@
    "appliedIn": [],
    "terms": [],
    "termCuries": []
+  },
+  {
+   "id": "P12",
+   "title": "One path, no bypass",
+   "level": "platform",
+   "statement": "Every governed target \u2014 an application boundary, a data plane, an entitlement, a route binding \u2014 is reached through exactly one governed path. Anything arriving outside it is a violation, never an exception.",
+   "test": "Name the one governed path to this target. Can the proposal reach it any other way? Then either the invariant that rejects that way exists, or the proposal is not admissible.",
+   "consequences": "Every route is mediated by exactly one policy enforcement point before its upstream; a data plane has exactly one designated writer and a mutation with no declaration behind it is an orphan write; a grant without a derivation link is forbidden; a route binding with no declaration behind it is configured out of band; one address resolves to exactly one tenant. Bypass-class constraints carry violation severity, never warning: a bypass is rejected, not queued for stewardship. Where the bypass leaves no trace in the graph \u2014 an undeclared route \u2014 the rule is enforced as 'every declared path is mediated' and 'there is no undeclared path' stays a deployment assertion.",
+   "fitness": "generative (4 decisions, 6 invariants across request, write, authority and configuration paths) \u00b7 testable \u00b7 enforced \u2014 request-path instance enforced on declared paths only",
+   "enforcedBy": [
+    "RouteShape",
+    "SoleWriterShape",
+    "DataPlaneMutationShape",
+    "EntitlementGrantShape",
+    "GovernedRouteBindingShape",
+    "RouteBindingCollisionShape"
+   ],
+   "appliedIn": [
+    "D07",
+    "D22",
+    "D43",
+    "D48"
+   ],
+   "terms": [
+    "Route",
+    "UpstreamService",
+    "PolicyEnforcementPoint",
+    "DataPlaneMutation",
+    "EntitlementGrant",
+    "RouteBindingChange",
+    "servesApplication",
+    "derivedFrom"
+   ],
+   "termCuries": [
+    "authz:EntitlementGrant",
+    "authz:derivedFrom",
+    "core:PolicyEnforcementPoint",
+    "cp:DataPlaneMutation",
+    "cp:RouteBindingChange",
+    "ingress:Route",
+    "ingress:UpstreamService",
+    "ingress:servesApplication"
+   ]
   }
  ],
  "evaluatedNotPrinciples": [
