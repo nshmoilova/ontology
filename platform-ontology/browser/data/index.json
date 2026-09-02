@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "8bbec94086be",
+ "sourceDigest": "3ae05f64d2fe",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15,7 +15,7 @@
   "principles": 18,
   "explainers": 2,
   "formalCQs": 8,
-  "backlogCQs": 95
+  "backlogCQs": 97
  },
  "modules": [
   {
@@ -13772,7 +13772,7 @@
    "level": "method",
    "statement": "Every violation-level constraint has a deliberately broken instance in the negative corpus, and CI asserts that it fires. A constraint that has never been seen to reject anything is a hope, not a control.",
    "test": "Which negative-test instance trips this constraint, and does CI assert that it does?",
-   "consequences": "The negative corpus grows with every invariant; CI gate three names each expected violation by a fragment of its own message; the count of firing invariants is a reported metric.",
+   "consequences": "The negative corpus grows with every invariant; CI gate three names each expected violation by a fragment of its own message; the count of firing invariants is a reported metric. The validator's fourth gate is the same rule applied to questions: a formal competency question must execute and, where registered, return rows on the seed data \u2014 a question that has never returned an answer is documentation, not a capability.",
    "fitness": "generative (every invariant) \u00b7 testable \u00b7 CI-enforced",
    "enforcedBy": [],
    "appliedIn": [
@@ -13941,7 +13941,7 @@
    "level": "platform",
    "statement": "When a security decision cannot be made \u2014 because evidence is absent or stale, or the outcome is indeterminate \u2014 the request is denied. Loss of an input or component never silently lowers assurance: it is a rejection or a visible failure, never a warning that lets the request through.",
    "test": "If this input is absent or stale, or the decision is indeterminate, what happens? If the answer is 'the request proceeds' or 'a warning', the design is wrong.",
-   "consequences": "Missing evidence is a violation, not a warning: an attribute without an authoritative issuer cannot be used in a decision; a decision names its decision point or is unattributable; admission without grants is admission without authority; a permit below the policy's required assurance level is rejected; a session with no proof-of-possession key, or a token bound to a different key or none, is rejected \u2014 sender constraining must not be lost at issuance; an active session must originate from a successful authentication. The method layer fails closed too: CI fails on a positive violation, a negative corpus that conforms, or an invariant that does not fire, and the index build fails on any dangling reference between principles, decisions, shapes, terms and explainers (D53). Known exception: a grant with no distribution timestamp is a warning, so a grant whose freshness cannot be shown is still enforceable; the open question 'how stale may a distributed grant be before ingress fails closed' must be answered \u2014 probably per dimension \u2014 before that severity is raised. Scope: the data contract and CI fail closed; the runtime half \u2014 what the enforcement point does on an Indeterminate or NotApplicable outcome \u2014 is not expressible in the graph, which records decisions and evidence, not behaviour in their absence.",
+   "consequences": "Missing evidence is a violation, not a warning: an attribute without an authoritative issuer cannot be used in a decision; a decision names its decision point or is unattributable; admission without grants is admission without authority; a permit below the policy's required assurance level is rejected; a session with no proof-of-possession key, or a token bound to a different key or none, is rejected \u2014 sender constraining must not be lost at issuance; an active session must originate from a successful authentication. The method layer fails closed too: CI fails on a positive violation, a negative corpus that conforms, or an invariant that does not fire, and the index build fails on any dangling reference between principles, decisions, shapes, terms and explainers (D53). Known exception \u2014 the temporal family: every time bound the model records is a source without a validator. A grant with no distribution timestamp is a warning, so a grant whose freshness cannot be shown is still enforceable, and the staleness threshold is open (probably per dimension); session and token expiry must exist but nothing compares them to a point in time; validity windows on assertions, subscriptions and subject identifiers are never checked at decision time; assurance freshness decay was deferred in D28. Only assurance rank and session count are validated. The missing questions are consolidated in the backlog under Temporal validation; each becomes a violation or a running query before P15 can claim the family. Scope: the data contract and CI fail closed; the runtime half \u2014 what the enforcement point does on an Indeterminate or NotApplicable outcome \u2014 is not expressible in the graph, which records decisions and evidence, not behaviour in their absence.",
    "fitness": "generative (7 invariants embody it; 2 decisions) \u00b7 testable \u2014 found the fail-open build and the staleness warning on first application \u00b7 enforced on the data contract and in CI; runtime denial is asserted",
    "enforcedBy": [
     "AttributeAssertionShape",
@@ -14206,6 +14206,12 @@
    "verdict": "not promoted as worded \u2014 the rule underneath is P18 (intent precedes state); 'least' has no baseline here and 'by default' is the undecided deny-by-default question",
    "why": "'Least' is a comparative that needs a statement of need, and the model has none for principals: authz:Role is a draft stub retained for RBAC interoperability with zero instances, zero shapes and zero decisions. Even the enablement gate checks sufficiency \u2014 everything required is subscribed \u2014 not minimality. What the model enforces, in nine invariants four of which had no principle, is that every privilege, provision or admission follows from a governance intent, stays within its scope and ends with it: that is P18. Minimality exists only as reconciliation at the application level \u2014 observed use proposes requirements, humans confirm them, drift is watched both ways (D18) \u2014 never as a default. 'By default' would decide deny-by-default by the back door; that stays its own open question.",
    "todo": "Two follow-ups: (1) the over-privilege questions are in the backlog under 'Privilege drift' \u2014 which grants, memberships or subscriptions show no observed use across a window; (2) authz:Role is exactly what P9 and P10 exist to catch \u2014 a term no question asked for and no shape governs \u2014 and should gain a question or be deprecated."
+  },
+  {
+   "candidate": "Every guarantee is measured \u2014 any non-functional commitment has a measurable source and a validation mechanism; unmeasured claims are aspirational, not guarantees",
+   "verdict": "not promoted \u2014 at method level it is P10 restated; at platform level its subject, non-functional commitments, is out of scope",
+   "why": "At method level the candidate's closing sentence is P10's own: a constraint never seen to reject anything is a hope, not a control \u2014 and the validator's question gate (a formal question must return rows on the seed data) is the same idea applied to questions. At platform level no decision follows from it, because the model has no non-functional vocabulary: no availability, latency, recovery objective or service level anywhere, and no question asks for one (P9). Its test does bite on one in-scope family: the model records seven measurable sources and validates two. Assurance rank (a permit below the required level fires; CQ-1) and session count (the concurrent-session limit fires) are checked. Session and token expiry, validity windows on assertions, subscriptions and subject identifiers, grant distribution time, observation windows and assurance freshness decay (D28, 'flagged for revisiting') are recorded and never compared to any point in time. That is one coherent gap \u2014 every time bound is a source without a validator \u2014 and it is recorded as P15's known exception and consolidated in the backlog under Temporal validation, rather than promoted as a principle that would restate P10 and immediately own an exception larger than its enforced content.",
+   "todo": "Scoping decision pending: non-functional commitments belong in a sibling service-level ontology that imports core (capability, offering, scope), uses SOSA/SSN, QUDT and PROV, and holds commitments as governed intent with a measurement source and a validation query \u2014 where 'every guarantee is measured' becomes a shape. It enters only once a question is asked of a graph rather than a dashboard, e.g. which tenants are subscribed in a scope whose commitment is weaker than their contract requires."
   }
  ],
  "explainers": [
@@ -15177,6 +15183,16 @@
     "section": "Privilege drift (least privilege as reconciliation)",
     "question": "Which grants outlived the governance fact they derive from \u2014 a terminated subscription, an inactive membership, a superseded enablement? (expected empty \u2014 P18's contingency clause)",
     "expectedEmpty": true
+   },
+   {
+    "section": "Temporal validation (recorded bounds with no validator)",
+    "question": "Which sessions or tokens are in an active state past their expiry? (expected empty \u2014 presence of an expiry is enforced, its passing is not)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Temporal validation (recorded bounds with no validator)",
+    "question": "Which permits relied on an elevation older than the policy's freshness requirement? (assurance decay \u2014 D28 deferred it; needs a per-policy freshness bound before it is answerable)",
+    "expectedEmpty": false
    }
   ]
  }

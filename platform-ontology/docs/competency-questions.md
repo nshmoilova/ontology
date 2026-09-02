@@ -344,3 +344,22 @@ not a default it can enforce; it is a reconciliation the graph can support
   subscription, an inactive membership, a superseded enablement?
   *(expected empty — P18's contingency clause)*
 
+### Temporal validation (recorded bounds with no validator)
+
+Every time bound the model records — expiry, validity windows, distribution
+time, observation windows, elevation time — is a source nothing checks; only
+assurance rank and session count are validated. P15 carries the family as
+its known exception. Existing questions stay in their own sections: expired
+attribute assertions behind a permit (*Platform vs. application
+authorization*), subject-identifier mappings past their validity window
+(*Subject identifiers*), sessions outliving a rotated confirmation key
+(*Ingress token contract*), grants outliving their governing fact
+(*Privilege drift*), and the grant-staleness threshold (open, in the
+'What is evaluated where' explainer). The two below were missing.
+
+- Which sessions or tokens are in an active state past their expiry?
+  *(expected empty — presence of an expiry is enforced, its passing is not)*
+- Which permits relied on an elevation older than the policy's freshness
+  requirement? *(assurance decay — D28 deferred it; needs a per-policy
+  freshness bound before it is answerable)*
+
