@@ -179,7 +179,8 @@
         "hasApproval"
       ],
       "principles": [
-        "P3"
+        "P3",
+        "P14"
       ]
     },
     {
@@ -192,7 +193,8 @@
         "requiresHumanApproval"
       ],
       "principles": [
-        "P3"
+        "P3",
+        "P14"
       ]
     },
     {
@@ -277,7 +279,8 @@
         "ChangeApproval"
       ],
       "principles": [
-        "P3"
+        "P3",
+        "P14"
       ]
     },
     {
@@ -359,7 +362,8 @@
         "requestCount"
       ],
       "principles": [
-        "P3"
+        "P3",
+        "P14"
       ]
     },
     {
@@ -547,7 +551,8 @@
       ],
       "principles": [
         "P5",
-        "P8"
+        "P8",
+        "P14"
       ]
     },
     {
@@ -593,6 +598,9 @@
       "terms": [
         "hasActingIdentity",
         "WorkloadPrincipal"
+      ],
+      "principles": [
+        "P14"
       ]
     },
     {

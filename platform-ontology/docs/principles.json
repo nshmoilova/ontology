@@ -345,6 +345,51 @@
         "decidedBy",
         "enforcedBy"
       ]
+    },
+    {
+      "id": "P14",
+      "title": "Principals are modelled uniformly",
+      "level": "platform",
+      "statement": "Humans, services and agents share one identity and authorization model. They differ by attributes and by permitted flows, never by separate mechanisms.",
+      "test": "Does this proposal add a class, property or shape that exists for one kind of principal only? Then is it a subtype, an attribute, or a permitted flow on the common model — or a second mechanism? Only the last is rejected.",
+      "consequences": "One Principal class with disjoint human and workload subclasses; every binding in authentication, sessions, membership and decisions types to the common class, so a mechanism that excluded a kind would need a new class to exist at all. Identifiers are naming facts under one property whatever their format — directory identifier or SPIFFE ID; credentials span passwords, FIDO2 registrations, client certificates and workload SVIDs; identity providers span the enterprise directory and the workload issuer. Kind-specific behaviour lives only in flows: approvals require a human principal (P3), a capability control plane's acting identity is a workload, devices exist only on interactive channels. Scope: agents are workloads until delegation enters the model — the agent-channel terms are deferred and 'under what delegation was this authority exercised' is a backlog question; machine-to-machine sessions are out of scope, so workload flows are modelled thinly beyond the acting-identity pattern.",
+      "fitness": "generative (2 decisions on uniformity, 4 on permitted flows) · testable · enforced structurally — the common class is the only binding target",
+      "enforcedBy": [
+        "AttributeAssertionShape",
+        "AuthenticationEventShape",
+        "ChangeApprovalShape",
+        "CredentialShape",
+        "JourneyExecutionShape",
+        "PlatformEventShape",
+        "PrincipalShape",
+        "SessionShape",
+        "SubjectIdentifierShape",
+        "TenantMembershipShape",
+        "CapabilityControlPlaneShape",
+        "HumanAuthorizationShape",
+        "MembershipApprovalShape",
+        "ScopeRigorShape",
+        "SubscriptionActivationApprovalShape"
+      ],
+      "appliedIn": [
+        "D30",
+        "D33",
+        "D05",
+        "D06",
+        "D12",
+        "D18"
+      ],
+      "terms": [
+        "Principal",
+        "HumanPrincipal",
+        "WorkloadPrincipal",
+        "identifier",
+        "hasActingIdentity",
+        "SubjectIdentifier",
+        "Credential",
+        "IdentityProvider",
+        "AuthenticationMethod"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [

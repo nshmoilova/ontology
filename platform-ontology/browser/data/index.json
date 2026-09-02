@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "61c75858f009",
+ "sourceDigest": "449c3f8c206a",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -12,7 +12,7 @@
   "vocabularies": 11,
   "relationships": 51,
   "decisions": 48,
-  "principles": 13,
+  "principles": 14,
   "explainers": 2,
   "formalCQs": 7,
   "backlogCQs": 90
@@ -381,7 +381,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PlatformEvent",
@@ -722,7 +724,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#Resource",
@@ -880,7 +884,9 @@
    "decisions": [
     "D33"
    ],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#displayName",
@@ -931,7 +937,8 @@
     "D50"
    ],
    "principles": [
-    "P5"
+    "P5",
+    "P14"
    ]
   },
   {
@@ -1130,7 +1137,9 @@
     "D02",
     "D33"
    ],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#ownedBy",
@@ -1676,7 +1685,8 @@
    ],
    "decisions": [],
    "principles": [
-    "P7"
+    "P7",
+    "P14"
    ]
   },
   {
@@ -1751,7 +1761,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#IdentityProvider",
@@ -1797,7 +1809,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#OAuthClientRegistration",
@@ -2066,7 +2080,8 @@
     "D30"
    ],
    "principles": [
-    "P5"
+    "P5",
+    "P14"
    ]
   },
   {
@@ -9337,7 +9352,10 @@
     }
    ],
    "violations": 3,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#CredentialShape",
@@ -9378,7 +9396,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#JourneyExecutionShape",
@@ -9449,7 +9470,10 @@
     }
    ],
    "violations": 4,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#OAuthClientRegistrationShape",
@@ -9622,7 +9646,10 @@
     }
    ],
    "violations": 4,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#SuccessfulAuthnAssuranceShape",
@@ -9765,7 +9792,10 @@
     }
    ],
    "violations": 4,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#EntitlementGrantShape",
@@ -10076,7 +10106,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ChangeApprovalShape",
@@ -10117,7 +10150,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneMutationShape",
@@ -10316,7 +10352,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ]
   },
   {
@@ -10365,7 +10402,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ]
   },
   {
@@ -10541,7 +10579,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ]
   },
   {
@@ -10601,7 +10640,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ]
   },
   {
@@ -10748,7 +10788,10 @@
     }
    ],
    "violations": 3,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#AcyclicDependencyShape",
@@ -10871,7 +10914,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#PrincipalShape",
@@ -10897,7 +10943,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#ResourceGovernanceShape",
@@ -11510,7 +11559,10 @@
     }
    ],
    "violations": 5,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P14"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#TokenInheritsConfirmationShape",
@@ -12152,7 +12204,8 @@
     "hasApproval"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ],
    "rejected": [],
    "termCuries": [
@@ -12171,7 +12224,8 @@
     "requiresHumanApproval"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ],
    "rejected": [],
    "termCuries": [
@@ -12294,7 +12348,8 @@
     "ChangeApproval"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ],
    "rejected": [],
    "termCuries": [
@@ -12409,7 +12464,8 @@
     "requestCount"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P14"
    ],
    "invariant": false,
    "rejected": [],
@@ -12674,7 +12730,8 @@
    ],
    "principles": [
     "P5",
-    "P8"
+    "P8",
+    "P14"
    ],
    "termCuries": [
     "authn:SubjectIdentifier",
@@ -12738,6 +12795,9 @@
    "terms": [
     "hasActingIdentity",
     "WorkloadPrincipal"
+   ],
+   "principles": [
+    "P14"
    ],
    "invariant": false,
    "rejected": [],
@@ -13413,6 +13473,62 @@
     "core:PolicyDecisionPoint",
     "core:PolicyEnforcementPoint",
     "core:enforcedBy"
+   ]
+  },
+  {
+   "id": "P14",
+   "title": "Principals are modelled uniformly",
+   "level": "platform",
+   "statement": "Humans, services and agents share one identity and authorization model. They differ by attributes and by permitted flows, never by separate mechanisms.",
+   "test": "Does this proposal add a class, property or shape that exists for one kind of principal only? Then is it a subtype, an attribute, or a permitted flow on the common model \u2014 or a second mechanism? Only the last is rejected.",
+   "consequences": "One Principal class with disjoint human and workload subclasses; every binding in authentication, sessions, membership and decisions types to the common class, so a mechanism that excluded a kind would need a new class to exist at all. Identifiers are naming facts under one property whatever their format \u2014 directory identifier or SPIFFE ID; credentials span passwords, FIDO2 registrations, client certificates and workload SVIDs; identity providers span the enterprise directory and the workload issuer. Kind-specific behaviour lives only in flows: approvals require a human principal (P3), a capability control plane's acting identity is a workload, devices exist only on interactive channels. Scope: agents are workloads until delegation enters the model \u2014 the agent-channel terms are deferred and 'under what delegation was this authority exercised' is a backlog question; machine-to-machine sessions are out of scope, so workload flows are modelled thinly beyond the acting-identity pattern.",
+   "fitness": "generative (2 decisions on uniformity, 4 on permitted flows) \u00b7 testable \u00b7 enforced structurally \u2014 the common class is the only binding target",
+   "enforcedBy": [
+    "AttributeAssertionShape",
+    "AuthenticationEventShape",
+    "ChangeApprovalShape",
+    "CredentialShape",
+    "JourneyExecutionShape",
+    "PlatformEventShape",
+    "PrincipalShape",
+    "SessionShape",
+    "SubjectIdentifierShape",
+    "TenantMembershipShape",
+    "CapabilityControlPlaneShape",
+    "HumanAuthorizationShape",
+    "MembershipApprovalShape",
+    "ScopeRigorShape",
+    "SubscriptionActivationApprovalShape"
+   ],
+   "appliedIn": [
+    "D30",
+    "D33",
+    "D05",
+    "D06",
+    "D12",
+    "D18"
+   ],
+   "terms": [
+    "Principal",
+    "HumanPrincipal",
+    "WorkloadPrincipal",
+    "identifier",
+    "hasActingIdentity",
+    "SubjectIdentifier",
+    "Credential",
+    "IdentityProvider",
+    "AuthenticationMethod"
+   ],
+   "termCuries": [
+    "authn:AuthenticationMethod",
+    "authn:Credential",
+    "authn:IdentityProvider",
+    "authn:SubjectIdentifier",
+    "core:HumanPrincipal",
+    "core:Principal",
+    "core:WorkloadPrincipal",
+    "core:hasActingIdentity",
+    "core:identifier"
    ]
   }
  ],
