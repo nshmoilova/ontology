@@ -141,6 +141,7 @@ def collect_terms(g: Graph):
                 "definition": lit(g, s, SKOS.definition),
                 "editorialNote": lit(g, s, SKOS.editorialNote),
                 "altLabels": lits(g, s, SKOS.altLabel),
+                "conformsTo": sorted(str(o) for o in g.objects(s, DCTERMS.conformsTo)),
                 "status": lit(g, s, VS) or "draft",
                 "subClassOf": [
                     curie(str(o)) for o in g.objects(s, RDFS.subClassOf)
@@ -355,6 +356,27 @@ def problem(msg: str) -> None:
     print(f"  FAIL: {msg}")
 
 
+STANDARD_MENTION = re.compile(r"RFC ?\d{4}|NIST SP ?800-63|XACML|AuthZEN|SPIFFE|DPoP|OpenID Connect|\bOIDC\b|\bOAuth\b|\bPROV-O\b", re.I)
+
+
+def check_standards(terms, decisions):
+    """P8: a definition that names a specification adopts it — the term must say so
+    machine-readably (dct:conformsTo); a recorded deviation must name the standard
+    and its justification."""
+    for t in terms.values():
+        if STANDARD_MENTION.search(t.get("definition") or "") and not t["conformsTo"]:
+            problem(f"{t['curie']} names a specification in its definition but declares no dct:conformsTo")
+    for d in decisions:
+        dev = d.get("deviatesFrom")
+        if dev is not None and not (dev.get("standard") and dev.get("justification")):
+            problem(f"{d['id']} records a deviation without both 'standard' and 'justification'")
+    standards = {}
+    for t in terms.values():
+        for u in t["conformsTo"]:
+            standards.setdefault(u, []).append(t["curie"])
+    return [{"url": u, "terms": sorted(v)} for u, v in sorted(standards.items())]
+
+
 def load_principles(terms, shapes, decisions):
     """The principles layer: stated once, joined to the terms they cover, the
     shapes that enforce them and the decisions that apply them."""
@@ -535,6 +557,7 @@ def main() -> int:
     shapes = collect_shapes(gs, terms)
     edges = build_relationships(shapes, terms)
     decisions = load_decisions(terms)
+    standards = check_standards(terms, decisions)
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
     formal, backlog = load_competency_questions()
@@ -564,6 +587,7 @@ def main() -> int:
             "relationships": len(edges),
             "decisions": len(decisions),
             "principles": len(principles),
+            "standards": len(standards),
             "explainers": len(explainers),
             "formalCQs": len(formal),
             "backlogCQs": len(backlog),
@@ -575,6 +599,7 @@ def main() -> int:
         "relationships": edges,
         "decisions": decisions,
         "principles": principles,
+        "standards": standards,
         "evaluatedNotPrinciples": not_principles,
         "explainers": explainers,
         "competencyQuestions": {"formal": formal, "backlog": backlog},
@@ -598,6 +623,7 @@ def main() -> int:
     if undocumented:
         print(f"  note: {len(undocumented)} terms have no recorded decision "
               f"(shown as 'no recorded rationale' in the browser)")
+    print(f"  {sum(len(x['terms']) for x in standards)} terms conform to {len(standards)} specifications")
     print(f"  wrote {OUT.relative_to(ROOT)}")
     return 0
 

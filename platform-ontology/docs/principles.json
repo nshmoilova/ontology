@@ -216,19 +216,24 @@
     },
     {
       "id": "P8",
-      "title": "Specifications, never products",
+      "title": "Specifications first, never products",
       "level": "modelling",
       "formerly": "D42",
-      "statement": "The ontology aligns to public specifications and names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
-      "test": "Is this a public specification, or a vendor's product? Specifications may be named; products may not.",
-      "consequences": "Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
-      "fitness": "generative (applies to every term) · testable · review-time",
+      "statement": "The ontology aligns to open specifications first, then to recorded platform decisions, and only then to custom terms; it names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple, PROV and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. Any departure from a specification the model otherwise adopts is recorded as a decision with its justification. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
+      "test": "Which specification covers this? If one does and the model adopts it, the term declares it (dct:conformsTo); if one does and the model departs from it, which decision records why? If none does, is there a recorded platform decision, or is this custom — and bridged to the nearest standard? Products may never be named.",
+      "consequences": "Adoption is machine-readable: every term whose definition names a specification carries dct:conformsTo, and the index lists which terms conform to which specification; the build fails on a definition that names a specification without declaring it (D53's gate). A recorded deviation carries the standard and its justification, and the build fails on one that lacks either — D56, the session identifier kept out of the token, is the exemplar. Platform decisions are the middle tier: the token contract (D24), route-based tenant resolution (D43) and the session handle (D46) are platform standards because decisions state them; a term with neither a specification nor a decision is custom, which the build already reports as 'no recorded rationale'. Custom vocabularies bridge to the nearest standard: the action scheme carries AuthZEN wire names as notations (D31); the entitlement dimensions are platform-owned by design (D21). Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
+      "fitness": "generative (9 decisions) · testable — found the unrecorded session-identifier deviation on first application of the widened test · enforced by the build's standards gate (adoption declared, deviations justified)",
       "enforcedBy": [],
       "appliedIn": [
         "D29",
         "D30",
         "D44",
-        "D49"
+        "D49",
+        "D21",
+        "D24",
+        "D31",
+        "D41",
+        "D56"
       ],
       "terms": [
         "Gateway",

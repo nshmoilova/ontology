@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.5.0> ;
-    owl:versionInfo "0.5.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.5.1> ;
+    owl:versionInfo "0.5.1" ;
     dct:title "Platform Core Ontology"@en ;
     dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13)."@en ;
     dct:created "2026-08-31"^^xsd:date ;
@@ -32,6 +32,7 @@ core:HumanPrincipal a owl:Class ;
     vs:term_status "draft" .
 
 core:WorkloadPrincipal a owl:Class ;
+    dct:conformsTo <https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md> ;
     rdfs:subClassOf core:Principal ;
     skos:definition "A principal representing a non-human workload (service, agent, job), identified via a workload identity such as a SPIFFE ID."@en ;
     vs:term_status "draft" .
@@ -41,23 +42,28 @@ core:Resource a owl:Class ;
     vs:term_status "draft" .
 
 core:PlatformEvent a owl:Class ;
+    dct:conformsTo <https://www.w3.org/TR/prov-o/> ;
     rdfs:subClassOf prov:Activity ;
     skos:definition "An auditable occurrence on the platform. Subclassed by domain modules (AuthenticationEvent, PolicyDecision, PolicyChangeEvent)."@en ;
     vs:term_status "draft" .
 
 core:PolicyDecisionPoint a owl:Class ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that evaluates policy and renders authorization decisions (XACML PDP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyEnforcementPoint a owl:Class ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that intercepts access and enforces PDP decisions (XACML PEP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyInformationPoint a owl:Class ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that supplies attribute values used in policy evaluation (XACML PIP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyAdministrationPoint a owl:Class ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component through which policy is authored and managed (XACML PAP)."@en ;
     vs:term_status "draft" .
 
@@ -105,11 +111,13 @@ core:PolicyDecisionPoint owl:disjointWith core:PolicyEnforcementPoint .
 #################################################################
 
 core:performedBy a owl:ObjectProperty ;
+    dct:conformsTo <https://www.w3.org/TR/prov-o/> ;
     rdfs:subPropertyOf prov:wasAssociatedWith ;
     skos:definition "Links a platform event to the principal that performed it. Typing enforced in SHACL, not via rdfs:domain/range."@en ;
     vs:term_status "draft" .
 
 core:targetsResource a owl:ObjectProperty ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:altLabel "resource (XACML)"@en ;
     skos:definition "Links an event or policy to the resource it concerns."@en ;
     vs:term_status "draft" .
@@ -132,6 +140,7 @@ core:actsForClient a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 core:hasActingIdentity a owl:ObjectProperty ;
+    dct:conformsTo <https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md> ;
     skos:definition "Principal under whose identity a resource acts — a control plane component's SPIFFE workload identity, for example. Resources cannot be principals; their acts are performed by this principal. Promoted from control-plane while draft."@en ;
     vs:term_status "draft" .
 
@@ -140,10 +149,12 @@ core:hasActingIdentity a owl:ObjectProperty ;
 #################################################################
 
 core:identifier a owl:DatatypeProperty ;
+    dct:conformsTo <https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md> ;
     skos:definition "The canonical identifier for this entity in the firm's registry for its kind — a SPIFFE ID, a directory identifier, a customer identifier, a device registration."@en ;
     vs:term_status "draft" .
 
 core:occurredAtTime a owl:DatatypeProperty ;
+    dct:conformsTo <https://www.w3.org/TR/prov-o/> ;
     rdfs:subPropertyOf prov:startedAtTime ;
     skos:definition "Timestamp at which a platform event occurred."@en ;
     vs:term_status "draft" .

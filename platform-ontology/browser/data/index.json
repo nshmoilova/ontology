@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "8f6b57d74dfd",
+ "sourceDigest": "4538ca0b6de5",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -11,8 +11,9 @@
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 53,
-  "decisions": 51,
+  "decisions": 52,
   "principles": 18,
+  "standards": 11,
   "explainers": 2,
   "formalCQs": 8,
   "backlogCQs": 97
@@ -23,7 +24,7 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.5.0",
+   "version": "0.5.1",
    "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13).",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
@@ -33,7 +34,7 @@
    "iri": "https://w3id.org/examplebank/platform/authn",
    "prefix": "authn",
    "title": "Authentication Module",
-   "version": "0.5.2",
+   "version": "0.5.3",
    "description": "Credentials, authentication events and methods, identity providers, and NIST SP 800-63 assurance levels (modelled as SKOS concepts with numeric ranks for comparison). Since 0.2.0: authentication journeys \u2014 governed definitions per delivery channel, and executions comprising the events a principal actually traversed; achieved assurance lives on the execution. Since 0.3.0: proof-of-possession keys, the confirmation binding of RFC 7800 as used by DPoP (RFC 9449), which sender-constrains sessions and tokens so a stolen artifact is useless without the private key.",
    "blurb": "Credentials, identity providers, assurance levels, authentication journeys and issuer-scoped subject identifiers.",
    "imports": [
@@ -45,7 +46,7 @@
    "iri": "https://w3id.org/examplebank/platform/session",
    "prefix": "session",
    "title": "Session Module",
-   "version": "0.6.0",
+   "version": "0.6.1",
    "description": "Sessions, tokens, lifecycle states, and the binding between a session and its originating authentication. Since 0.2.0 sessions are established by an authentication journey EXECUTION rather than a single event (a structural retarget performed while all terms are draft); step-up elevations are further executions on the same session, and the effective AAL is the latest successful execution's. Since 0.3.0: session handles \u2014 the opaque value a cookie carries \u2014 and DPoP-style sender constraining, so a handle identifies a session while the proof-of-possession key authenticates the presenter.",
    "blurb": "Sessions established by journey executions, step-up elevations, and tokens carrying both ends of their journey.",
    "imports": [
@@ -69,7 +70,7 @@
    "iri": "https://w3id.org/examplebank/platform/authz",
    "prefix": "authz",
    "title": "Authorization Module",
-   "version": "0.3.0",
+   "version": "0.3.1",
    "description": "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation \u2014 distinct from an attribute assertion, which is an observation.",
    "blurb": "ABAC-first authorization plus the platform-owned coarse-grained layer: dimensions, grants, actions and admission decisions.",
    "imports": [
@@ -102,6 +103,7 @@
    "definition": "An independently developed application owned by exactly one tenant, reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements.",
    "editorialNote": "What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -170,6 +172,7 @@
     "counterparty",
     "customer"
    ],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -221,6 +224,7 @@
    "definition": "A platform offering provided to tenants via subscription. Each capability is governed by exactly one capability control plane.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -278,6 +282,7 @@
    "definition": "The delivery avenue through which platform capabilities are consumed, never a self-asserted claim. For interactive sessions it follows from the session's device class. Members are individuals in a closed, platform-owned scheme.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -365,6 +370,7 @@
    "definition": "A principal representing a human user, identified via the firm's directory (e.g., SID/HR identifier).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Principal"
@@ -395,6 +401,9 @@
    "definition": "An auditable occurrence on the platform. Subclassed by domain modules (AuthenticationEvent, PolicyDecision, PolicyChangeEvent).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.w3.org/TR/prov-o/"
+   ],
    "status": "draft",
    "subClassOf": [
     "prov:Activity"
@@ -473,6 +482,7 @@
    "definition": "The distinguished singleton tenant representing the platform itself. Platform-owned applications are owned by it, and it holds capability subscriptions like any tenant, keeping every ownership and coverage rule uniform. Exactly one individual is expected (stewardship-enforced).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Tenant"
@@ -501,6 +511,9 @@
    "definition": "Component through which policy is authored and managed (XACML PAP).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -527,6 +540,9 @@
    "definition": "Component that evaluates policy and renders authorization decisions (XACML PDP).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -568,6 +584,9 @@
    "definition": "Component that intercepts access and enforces PDP decisions (XACML PEP).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -606,6 +625,9 @@
    "definition": "Component that supplies attribute values used in policy evaluation (XACML PIP).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -630,6 +652,7 @@
    "definition": "An entity that can be authenticated and to which authorization decisions apply.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -755,6 +778,7 @@
    "definition": "Anything access to which is governed by policy: services, routes, data assets, control-plane operations.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -804,6 +828,7 @@
    "definition": "An organizational unit onboarded to the platform, to which subscriptions, applications, entitlement grants, and data planes are scoped.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -879,6 +904,9 @@
    "definition": "A principal representing a non-human workload (service, agent, job), identified via a workload identity such as a SPIFFE ID.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
+   ],
    "status": "draft",
    "subClassOf": [
     "core:Principal"
@@ -917,6 +945,7 @@
    "definition": "Human-readable label for governance and stewardship UIs.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -941,6 +970,9 @@
    "definition": "The canonical identifier for this entity in the firm's registry for its kind \u2014 a SPIFFE ID, a directory identifier, a customer identifier, a device registration.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -970,6 +1002,9 @@
    "definition": "Timestamp at which a platform event occurred.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.w3.org/TR/prov-o/"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -1000,6 +1035,7 @@
    "definition": "Start of a validity window (attribute assertions, subscriptions, subject identifiers). Promoted from authz while draft \u2014 generic temporal vocabulary belongs in the upper module.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1024,6 +1060,7 @@
    "definition": "End of a validity window.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1048,6 +1085,7 @@
    "definition": "Business client a principal acts for. Retail relationships are typically one principal to one client; corporate relationships many principals to one.",
    "editorialNote": "Distinct from tenant membership. Whether a business client is ever also a tenant is deliberately left open.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1074,6 +1112,7 @@
    "definition": "Links a resource or route to the policy enforcement point that mediates access to it.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1109,6 +1148,7 @@
    "definition": "Links a resource to a policy that governs access to it.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1135,6 +1175,9 @@
    "definition": "Principal under whose identity a resource acts \u2014 a control plane component's SPIFFE workload identity, for example. Resources cannot be principals; their acts are performed by this principal. Promoted from control-plane while draft.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1172,6 +1215,7 @@
    "definition": "Tenant that owns an application or portal \u2014 exactly one (enforced in SHACL); ownership transfer is a supersession of declarations, never co-ownership. Platform assets are owned by the distinguished platform tenant.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1214,6 +1258,9 @@
    "definition": "Links a platform event to the principal that performed it. Typing enforced in SHACL, not via rdfs:domain/range.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.w3.org/TR/prov-o/"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -1253,6 +1300,9 @@
    "altLabels": [
     "resource (XACML)"
    ],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1281,6 +1331,9 @@
    "definition": "NIST SP 800-63 assurance level (IAL/AAL/FAL), modelled as an individual with an integer rank for ordering in SHACL-SPARQL constraints.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://pages.nist.gov/800-63-3/"
+   ],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -1348,6 +1401,7 @@
    "definition": "A discrete attempt (successful or failed) to authenticate a principal.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -1452,6 +1506,7 @@
    "definition": "A governed template of an authentication flow (e.g., 'web-default: password then OTP, yields AAL2'), bound to the delivery channels it serves. Changes to definitions are security-relevant desired state and flow through the control plane's declaration and approval machinery.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1488,6 +1543,7 @@
    "definition": "A principal's concrete traversal of a journey definition, comprising the authentication events actually performed. Achieved assurance is a property of the completed flow, not of any single step.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -1625,6 +1681,7 @@
    "definition": "A controlled-vocabulary concept for how authentication was performed. Members are individuals, not subclasses.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -1723,6 +1780,7 @@
    "definition": "An artifact used to prove an identity claim (password record, FIDO2 key registration, client certificate, workload SVID).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1799,6 +1857,7 @@
    "definition": "A system that asserts principal identities (enterprise IdP, workload identity issuer).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1848,6 +1907,9 @@
    "editorialNote": "Protocol bookkeeping, deliberately thin. Its client_id identifies the registration and nothing else \u2014 no tenancy, no channel, no caller identity \u2014 and is derivable from the audience. Entitlement decisions must never be made from it. The firm's customer is core:BusinessClient.",
    "altLabels": [
     "client_id"
+   ],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc6749"
    ],
    "status": "draft",
    "subClassOf": [],
@@ -1939,6 +2001,7 @@
     "DPoP key",
     "confirmation key (cnf)"
    ],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1995,6 +2058,10 @@
    "definition": "A naming fact: at one issuer, one subject value denotes one principal (RFC 9493 / OIDC sub). Read in reverse at resolution time \u2014 a token or security event carries the subject, and this yields the principal.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://openid.net/specs/openid-connect-core-1_0.html",
+    "https://www.rfc-editor.org/rfc/rfc9493"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2118,6 +2185,9 @@
    "definition": "RFC 9493 subject identifier format; members are individuals in a closed scheme, extended by MINOR bump.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc9493"
+   ],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -2193,6 +2263,7 @@
    "definition": "Integer rank of an assurance level, used for ordered comparison in constraints (AAL1=1, AAL2=2, AAL3=3).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2221,6 +2292,9 @@
    "definition": "The client_id of an OAuth client registration \u2014 a protocol identifier, not a platform-semantic one.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc6749"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2247,6 +2321,7 @@
    "definition": "Signature algorithm the proof-of-possession key is used with (for example ES256).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2273,6 +2348,9 @@
    "definition": "JWK SHA-256 thumbprint identifying a proof-of-possession key (RFC 7638) \u2014 the jkt value a confirmation claim carries. Identifies the key without disclosing it, and is what an enforcement point compares a presented proof against.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc7638"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2299,6 +2377,7 @@
    "definition": "The subject string as the issuer mints it (the sub claim value, an email, an opaque handle).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2325,6 +2404,7 @@
    "definition": "Whether the authentication event or journey execution succeeded.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2349,6 +2429,7 @@
    "definition": "AAL achieved by a successful authentication event or journey execution. For executions, this is the flow's outcome \u2014 password alone achieves nothing; password+OTP achieves AAL2.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2375,6 +2456,7 @@
    "definition": "Identity provider within whose namespace a subject identifier is unique.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2409,6 +2491,7 @@
    "definition": "The principal that the authentication event concerns.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -2450,6 +2533,7 @@
    "definition": "Authentication event that is a step of a journey execution. Single-step flows (passkey, client credentials) are one-event executions.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2486,6 +2570,10 @@
    "definition": "Proof-of-possession key a session or token is sender-constrained to \u2014 the cnf binding of RFC 7800, carried as cnf.jkt under DPoP. A session or token without one is a bearer artifact: whoever holds it can use it.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc7800",
+    "https://www.rfc-editor.org/rfc/rfc9449"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2520,6 +2608,7 @@
    "definition": "Principal to which a credential is bound.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2552,6 +2641,7 @@
    "definition": "Journey definition a journey execution traversed. Mandatory (SHACL): the definition states the channel it serves, so a session with no definition behind it has no established channel and no governed authentication path.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2587,6 +2677,9 @@
    "definition": "Audience an OAuth client registration obtains tokens for. The platform maintains one registration per audience.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc6749"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2613,6 +2706,9 @@
    "definition": "RFC 9493 format of a subject identifier.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc9493"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2647,6 +2743,7 @@
    "definition": "Principal a subject identifier denotes. One (issuer, value, party-scope) combination must never identify two principals (collision invariant, SHACL); one principal may hold several identifiers, even at one issuer (linking, migration).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2681,6 +2778,7 @@
    "definition": "Identity provider that issued a credential or asserted an identity.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2713,6 +2811,9 @@
    "definition": "Identity provider an OAuth client registration is held at.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc6749"
+   ],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2747,6 +2848,7 @@
    "definition": "Delivery channel a journey definition serves. This is what establishes a session's channel, for every channel \u2014 a client-credentials definition serves api, a passkey definition serves web \u2014 so the derivation does not depend on the session having a device.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2774,6 +2876,7 @@
    "definition": "Credential presented in an authentication event.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2798,6 +2901,7 @@
    "definition": "Authentication method concept used in an authentication event.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2830,6 +2934,9 @@
    "definition": "Token presented to resource servers to authorize requests (e.g., OAuth 2.0 access token).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://www.rfc-editor.org/rfc/rfc6749"
+   ],
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -2860,6 +2967,7 @@
    "definition": "The requesting client a principal holds a session on, identified in the firm's registry and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2938,6 +3046,7 @@
    "definition": "The kind of requesting client a session runs on \u2014 browser or mobile \u2014 as a closed vocabulary. It classifies the client software rather than the hardware or operating system, and corroborates the channel its journey definition establishes. Concurrency limits are configured per device class.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -3003,6 +3112,9 @@
    "definition": "OIDC ID token asserting the authentication of a principal.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://openid.net/specs/openid-connect-core-1_0.html"
+   ],
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -3017,7 +3129,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D24"
+    "D24",
+    "D56"
    ],
    "principles": []
   },
@@ -3031,6 +3144,7 @@
    "definition": "Token exchanged for new access tokens without re-authentication.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -3057,6 +3171,7 @@
    "definition": "A bounded period of authenticated interaction between a principal and the platform, established by an authentication event.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3281,7 +3396,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D27"
+    "D27",
+    "D56"
    ],
    "principles": [
     "P15"
@@ -3297,6 +3413,7 @@
    "definition": "The opaque value presented to identify a session, typically carried in a cookie. It identifies but does not authenticate; several handles may resolve to one session across rotations.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3353,6 +3470,7 @@
    "definition": "Lifecycle state of a session; members are individuals (Active, Expired, Revoked, Suspended) rather than subclasses.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -3438,6 +3556,7 @@
    "definition": "A signed artifact carrying claims, issued within a session.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3488,6 +3607,7 @@
    "definition": "Instant at which the session or token expires.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3512,6 +3632,7 @@
    "definition": "Instant before which the session or token is not valid.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3536,6 +3657,7 @@
    "definition": "Principal to which the session is bound.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3568,6 +3690,7 @@
    "definition": "A step-up elevation journey execution performed within this session after establishment. The session's effective AAL is the latest successful execution's (establishing or elevating); elevation freshness is a policy concern, not session structure.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3602,6 +3725,7 @@
    "definition": "The authentication journey execution that established this session. Mandatory, exactly one (enforced in SHACL). Retargeted from AuthenticationEvent to AuthenticationJourneyExecution in 0.2.0, while draft.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3636,6 +3760,7 @@
    "definition": "Class of a device, from the closed device-class vocabulary.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3670,6 +3795,7 @@
    "definition": "Current lifecycle state of the session.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3702,6 +3828,7 @@
    "definition": "Delivery channel a device class corroborates. The channel a session was served over is established by its journey definition; where a session also has a device, its class must imply the same channel.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3728,6 +3855,7 @@
    "definition": "Token issued within this session.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3752,6 +3880,7 @@
    "definition": "Device the session runs on. At most one, and a principal may hold at most one active session per device (enforced in SHACL). Absent for non-interactive sessions.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3786,6 +3915,7 @@
    "definition": "Session a presented handle identifies. Exactly one (enforced in SHACL) \u2014 a handle resolving to two sessions is a session-fixation hazard.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3820,6 +3950,7 @@
    "definition": "Resource for which a token is intended \u2014 the aud claim: who may accept the token.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3848,6 +3979,7 @@
    "definition": "A network entry point into the platform, exposing one or more listeners through which external traffic arrives.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -3902,6 +4034,7 @@
    "definition": "A protocol/port binding on a gateway.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3983,6 +4116,7 @@
    "altLabels": [
     "application access endpoint"
    ],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -4150,6 +4284,7 @@
    "definition": "TLS settings applied at a listener, including where TLS terminates relative to policy enforcement.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4176,6 +4311,7 @@
    "definition": "A backend service to which routes forward traffic.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -4213,6 +4349,7 @@
    "definition": "Domain a route matches. Together with the path prefix it forms the address a tenant is reached at; a tenant-bound route must carry one (enforced in SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4239,6 +4376,7 @@
    "definition": "Path prefix a route matches within its domain. Absent means the whole domain; present, it lets one domain serve several tenants or applications at different paths.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4265,6 +4403,7 @@
    "definition": "Port number of a listener.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4289,6 +4428,7 @@
    "definition": "Protocol of a listener (HTTPS, TLS, TCP).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4313,6 +4453,7 @@
    "definition": "Whether TLS terminates at this listener (true) or is passed through (false).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4337,6 +4478,7 @@
    "definition": "Tenant that traffic matching this route resolves to. Ingress establishes tenant context from this binding, not from any token claim.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4373,6 +4515,7 @@
    "definition": "Route attached to a gateway or listener.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4397,6 +4540,7 @@
    "definition": "Listener exposed by a gateway.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4429,6 +4573,7 @@
    "definition": "TLS configuration applied to a listener.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4453,6 +4598,7 @@
    "definition": "Upstream service to which a route forwards traffic.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4485,6 +4631,7 @@
    "definition": "Application reachable through this route. With the tenant binding, this makes the route the endpoint an application is entered at, so admission can ask whether a subject may enter THIS application through THIS endpoint rather than merely whether the tenant owns some enabled application.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4522,6 +4669,7 @@
    "definition": "An operation a policy decision evaluates \u2014 the action slot of the evaluation tuple. Members are individuals in a closed, platform-owned scheme.",
    "editorialNote": "Application verbs such as transfer or approve belong to Level-3 application authorization and must never appear here.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -4610,6 +4758,7 @@
    "definition": "A first-class attribute statement about a principal or resource: name, value, issuer, and validity window. Attributes carry provenance rather than being baked into role hierarchies.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4707,6 +4856,9 @@
    "definition": "XACML decision outcome; members are individuals.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
+   ],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -4793,6 +4945,7 @@
    "definition": "A coarse-grained access dimension ingress validates at the platform boundary. Members are individuals in a closed, platform-owned scheme; applications cannot introduce dimensions \u2014 extension is a deliberate MINOR-versioned act behind security-architecture review.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -4893,6 +5046,7 @@
    "definition": "A conferral of platform access to a tenant on one entitlement dimension, with a value and validity window. Always a materialized projection of upstream governance, distributed to ingress.",
    "editorialNote": "The token is evidence; the grant is authority.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5013,6 +5167,9 @@
    "definition": "A decision at the ingress policy enforcement point admitting a request across a platform or application boundary: subject, action and target evaluated against distributed entitlement grants.",
    "editorialNote": "Aligned to the AuthZEN evaluation tuple. The evaluated policy is the platform admission policy \u2014 the versioned unit of authorization logic the distributed grant configuration realizes.",
    "altLabels": [],
+   "conformsTo": [
+    "https://openid.net/specs/authorization-api-1_0.html"
+   ],
    "status": "draft",
    "subClassOf": [
     "authz:PolicyDecision"
@@ -5099,6 +5256,7 @@
    "definition": "An action the enforcement point must perform alongside enforcing a decision (log, step-up, watermark).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5123,6 +5281,7 @@
    "definition": "A named, versioned unit of authorization logic governing one or more resources.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5185,6 +5344,7 @@
    "definition": "An evaluation of policy for a specific access request, with an outcome.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -5347,6 +5507,7 @@
    "definition": "A single rule within a policy, with an effect (permit/deny) and conditions over attributes.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5400,6 +5561,7 @@
    "definition": "A named collection of permissions; retained for RBAC interop, but modelled as one source of attribute assertions among others.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5424,6 +5586,7 @@
    "definition": "Name of the asserted attribute (e.g., 'lineOfBusiness', 'clearance').",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5448,6 +5611,7 @@
    "definition": "Value of the asserted attribute.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5472,6 +5636,7 @@
    "definition": "Instant this grant projection was last distributed to the enforcement point; anchors staleness queries.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5500,6 +5665,7 @@
    "definition": "Effect of a rule: 'permit' or 'deny'.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5524,6 +5690,7 @@
    "definition": "Value a grant confers on its dimension (e.g., 'US' on region, 'prod' on environment, 'web' on channel).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5550,6 +5717,7 @@
    "definition": "Principal an attribute assertion describes.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5582,6 +5750,7 @@
    "definition": "Authoritative source (PIP, IdP, HR system) that issued an attribute assertion.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5606,6 +5775,7 @@
    "definition": "Policy decision point that rendered this decision. Mandatory (SHACL): a decision nobody can be shown to have made is unattributable, and the platform and each application run their own decision point.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5643,6 +5813,7 @@
    "definition": "Outcome concept of a policy decision.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5675,6 +5846,7 @@
    "definition": "Upstream governance object a grant was projected from: a subscription, an application enablement, or a route binding. Mandatory \u2014 a grant with no derivation is hand-authored.",
    "editorialNote": "Platform, tenant and channel grants properly originate in the tenant onboarding record, which is not yet modelled.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5708,6 +5880,10 @@
    "editorialNote": null,
    "altLabels": [
     "action (XACML)"
+   ],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html",
+    "https://openid.net/specs/authorization-api-1_0.html"
    ],
    "status": "draft",
    "subClassOf": [],
@@ -5744,6 +5920,7 @@
    "definition": "Entitlement grant an admission decision evaluated.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5778,6 +5955,7 @@
    "definition": "Policy evaluated to produce a decision.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5812,6 +5990,7 @@
    "definition": "Tenant to which an entitlement grant confers access.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5846,6 +6025,7 @@
    "definition": "Rule contained in a policy.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5878,6 +6058,7 @@
    "definition": "Obligation attached to a rule or decision.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5902,6 +6083,7 @@
    "definition": "Entitlement dimension a grant confers access on; must be drawn from the platform-owned scheme.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5937,6 +6119,9 @@
    "editorialNote": null,
    "altLabels": [
     "subject (XACML)"
+   ],
+   "conformsTo": [
+    "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
    "status": "draft",
    "subClassOf": [],
@@ -5977,6 +6162,7 @@
    "definition": "Minimum AAL a policy requires of the session's originating authentication.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6001,6 +6187,7 @@
    "definition": "Delivery channel through which an admission decision's request arrived, derived from the presenting registration.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6035,6 +6222,7 @@
    "definition": "Session in which the access request was made.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6059,6 +6247,7 @@
    "definition": "A bounded set of resources over which administrative authority is granted (tenant, namespace, line of business).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6095,6 +6284,7 @@
    "definition": "A desired-state declaration enabling an application within the declaration's scope. Enablement inherits the full declaration machinery \u2014 scope, approval rigor, supersession; an application is enabled where a current, approved enablement says so, gated on its owner's subscription and offering coverage.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -6142,6 +6332,7 @@
    "definition": "A named set of capabilities offered for subscription together. Bundles are sales-time convenience: subscribing to one expands to per-capability subscriptions, materialized; enforcement and reachability never see bundles.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6168,6 +6359,7 @@
    "definition": "A control plane governing one platform capability, and the designated writer that actuates governed desired state into that capability's data planes.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "cp:ControlPlaneComponent"
@@ -6253,6 +6445,7 @@
    "definition": "Governed intent that a capability is offered in a scope. No cross-scope parity is assumed: a capability exists where an offering says it does. Data planes are actuation and must conform: deployed-where-not-offered violates; offered-but-undeployed is launch tracking.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6292,6 +6485,7 @@
    "definition": "A capability an application requires, proposed by observed usage and confirmed by a human approval \u2014 'agents observe, humans confirm'. Only confirmed requirements gate enablement; drift against live observation is watched in both directions.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6320,6 +6514,7 @@
    "definition": "A windowed aggregate observation, ingested from telemetry, that an application exercised a capability during a time window. Kept in-graph so requirement-drift questions stay answerable in CI; never per-request.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -6348,6 +6543,7 @@
    "definition": "An approval attached to a change event, given by a principal. Every policy change must carry at least one approval by a human principal (enforced in SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6417,6 +6613,7 @@
    "definition": "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class, configured per tenant per device class.",
    "editorialNote": "A device class with no policy is unbounded, which is a stewardship concern rather than a safe default. Modelled as plain configuration rather than a governed declaration \u2014 a security control with no approver, the same asymmetry route bindings had before they were governed.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6443,6 +6640,7 @@
    "definition": "A component that manages platform configuration or policy (API server, policy service, gateway controller, MCP router control loop).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -6472,6 +6670,7 @@
    "definition": "A runtime plane realizing one capability and serving zero or more tenants; mutated only by its capability control plane's acting identity (sole-writer, enforced in SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -6551,6 +6750,7 @@
    "definition": "A write into a data plane performed by a control plane's acting identity, realizing a desired-state declaration.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -6643,6 +6843,7 @@
    "definition": "A governed statement of intended data-plane state, declared through the management control plane. Data-plane mutations must trace to one (no orphan writes).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6737,6 +6938,7 @@
    "definition": "A desired-state declaration changing an authentication journey definition. Journey definitions are security-relevant desired state; this subclass gives their changes scope, approval rigor, and supersession through the standard declaration machinery.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -6765,6 +6967,7 @@
    "definition": "The control plane that owns the governance layer: tenant registration, entitlement configuration, and desired-state declarations. It defines; it never actuates a data plane (enforced in SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "cp:ControlPlaneComponent"
@@ -6823,6 +7026,7 @@
    "definition": "Lifecycle state of a tenant membership; members are individuals (Requested, Active, Suspended, Terminated). Kept separate from subscription and session state vocabularies: overlapping member names do not make them one vocabulary, and each must be able to evolve independently.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -6910,6 +7114,7 @@
    "definition": "A mutation of authorization policy or security-relevant configuration.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -7003,6 +7208,7 @@
    "definition": "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals.",
    "editorialNote": "Whether a portal is per delivery channel is deliberately left open \u2014 a request's channel comes from the session's device class, not from anything the portal declares.",
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7068,6 +7274,7 @@
    "definition": "A desired-state declaration binding an ingress route to a tenant, inheriting scope, approval rigor and supersession from the declaration machinery.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -7125,6 +7332,7 @@
    "definition": "A first-class, scope-free record of a tenant holding a platform capability, with an access-relevant lifecycle and human-approved activation. Subscriptions target capabilities only \u2014 applications are owned, not subscribed.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7240,6 +7448,7 @@
    "definition": "Access-relevant lifecycle state of a subscription; members are individuals (Requested, Active, Suspended, Terminated).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -7327,6 +7536,7 @@
    "definition": "A governed record that a principal may act for a tenant, in a stated capacity, with a lifecycle and a human approval. One principal may hold memberships in several tenants.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7439,6 +7649,7 @@
    "definition": "Instant at which an approval was given.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7465,6 +7676,7 @@
    "definition": "Reference to the change-management record in the firm's change system, for auditability.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7492,6 +7704,7 @@
    "definition": "Environment facet of a scope node (e.g., 'prod', 'uat', 'dev'), for cross-cutting queries; the tree carries containment, facets carry dimensions. To be promoted to a SKOS scheme before stable.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7520,6 +7733,7 @@
    "definition": "Region facet of a scope node (e.g., 'US', 'EU'), for cross-cutting queries. To be promoted to a SKOS scheme before stable.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7548,6 +7762,7 @@
    "definition": "Tenant-isolation model a capability declares ('shared' or 'cell-per-tenant'); the data-driven fact one SPARQL invariant enforces on the capability's data planes.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7577,6 +7792,7 @@
    "definition": "Maximum concurrent active sessions one principal may hold on devices of the policy's class.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7603,6 +7819,7 @@
    "definition": "Capacity in which the principal acts for the tenant (for example 'employee', 'contractor', 'delegate'). Descriptive at the platform layer: capacity does not grant anything by itself, and what it means inside an application is Level-3.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7629,6 +7846,7 @@
    "definition": "Number of requests aggregated in a usage observation window.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7655,6 +7873,7 @@
    "definition": "Whether declarations bound to this scope (or its descendants, by inheritance up the tree to the nearest ancestor that says anything) require a human approval. Data-driven rigor: prod's subtree says true, dev's says false \u2014 one invariant, no shape exceptions.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7683,6 +7902,7 @@
    "definition": "End of a usage observation's aggregation window.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7709,6 +7929,7 @@
    "definition": "Start of a usage observation's aggregation window.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7735,6 +7956,7 @@
    "definition": "Data plane a control plane is the designated writer for. Governance is separated from actuation: only capability control planes actuate (enforced in SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7763,6 +7985,7 @@
    "definition": "Administrative scope a component or principal is authorized to manage.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7787,6 +8010,7 @@
    "definition": "Device class a concurrent-session policy limits.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7813,6 +8037,7 @@
    "definition": "Principal who gave an approval.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7848,6 +8073,7 @@
    "definition": "Capability included in a bundle.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7874,6 +8100,7 @@
    "definition": "Policy mutated by a change event.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7898,6 +8125,7 @@
    "definition": "Administrative scope a declaration is bound to \u2014 mandatory, exactly one (SHACL); 'global' means explicitly naming the root scope, never omitting the triple. Locality: a mutation's data plane must fall inside its declaration's scope.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7936,6 +8164,7 @@
    "definition": "Management control plane through which a desired-state declaration was authored and governed.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7970,6 +8199,7 @@
    "definition": "Authentication journey definition whose intended shape a journey-definition change declares.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7996,6 +8226,7 @@
    "definition": "Ingress route whose tenant binding a route-binding change declares. Typing enforced in SHACL, not via rdfs:range.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8030,6 +8261,7 @@
    "definition": "Data plane whose intended state a declaration describes.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8054,6 +8286,7 @@
    "definition": "Hard dependency between capabilities: the dependent cannot be provisioned without the dependency. Hard-only until a real soft case appears; the dependency graph must be acyclic (SHACL).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8082,6 +8315,7 @@
    "definition": "Principal (often a workload/agent) that executed the change.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -8121,6 +8355,7 @@
    "definition": "Application a declaration provisions for, or that an enablement enables. Makes per-application decommissioning and blast radius a precise query.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8148,6 +8383,7 @@
    "definition": "Capability whose configuration and data planes a capability control plane governs.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8182,6 +8418,7 @@
    "definition": "Application presented within a portal.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8209,6 +8446,7 @@
    "definition": "Approval attached to a change event.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8238,6 +8476,7 @@
    "definition": "Current lifecycle state of a tenant membership.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8272,6 +8511,7 @@
    "definition": "Current lifecycle state of a subscription.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8306,6 +8546,7 @@
    "definition": "Subscription that justifies a tenant-provisioning declaration. Teardown declarations reference the terminated subscription; provisioning requires an active one.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8334,6 +8575,7 @@
    "definition": "Tenant a membership admits the principal to act for.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8368,6 +8610,7 @@
    "definition": "Principal a tenant membership admits \u2014 the party that may act for the tenant.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8402,6 +8645,7 @@
    "definition": "Data plane a mutation event wrote into.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8436,6 +8680,7 @@
    "definition": "Application a usage observation concerns.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8462,6 +8707,7 @@
    "definition": "Capability a usage observation saw exercised.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8488,6 +8734,7 @@
    "definition": "Application a capability requirement belongs to.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8514,6 +8761,7 @@
    "definition": "Scope (and thereby its subtree) in which the offering makes the capability available.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8540,6 +8788,7 @@
    "definition": "Capability an offering makes available.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8566,6 +8815,7 @@
    "definition": "Tenant a concurrent-session policy applies to.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8592,6 +8842,7 @@
    "definition": "Capability a data plane is a runtime realization of.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8624,6 +8875,7 @@
    "definition": "Desired-state declaration a data-plane mutation actuates. Every mutation must carry this trace (no orphan writes).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8650,6 +8902,7 @@
    "definition": "Capability a requirement names.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8678,6 +8931,7 @@
    "definition": "Resource included in an administrative scope.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8706,6 +8960,7 @@
    "definition": "Tenant whose workload or data a data plane serves. Cardinality expresses the capability's isolation model (shared plane vs. per-tenant cell) and is constrained per capability in SHACL, not here.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8735,6 +8990,7 @@
    "definition": "Parent scope in the single-parent scope tree. The tree carries authority, locality containment, and approval-rigor inheritance; environment/region facets on scope nodes carry cross-cutting dimensions. Single-parent by design \u2014 DAG inheritance is ambiguous.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8763,6 +9019,7 @@
    "definition": "Capability a subscription holds. Hard dependencies are auto-included as their own subscriptions at subscription time (closure, materialized).",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8797,6 +9054,7 @@
    "definition": "Tenant holding a subscription \u2014 including the platform tenant, which subscribes to its own capabilities so every coverage rule stays uniform.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8831,6 +9089,7 @@
    "definition": "Prior declaration this immutable declaration replaces. Realizing a superseded declaration is a warning (reconciler lag); realizing an unapproved one is a violation.",
    "editorialNote": null,
    "altLabels": [],
+   "conformsTo": [],
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -12843,7 +13102,8 @@
    "principles": [
     "P1",
     "P7",
-    "P16"
+    "P16",
+    "P8"
    ],
    "invariant": false,
    "termCuries": [
@@ -12916,7 +13176,8 @@
     "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."
    ],
    "principles": [
-    "P4"
+    "P4",
+    "P8"
    ],
    "invariant": false,
    "termCuries": [
@@ -13075,7 +13336,8 @@
    ],
    "principles": [
     "P1",
-    "P7"
+    "P7",
+    "P8"
    ],
    "termCuries": [
     "authz:Action",
@@ -13340,7 +13602,8 @@
     "occurredAtTime"
    ],
    "principles": [
-    "P17"
+    "P17",
+    "P8"
    ],
    "invariant": false,
    "rejected": [],
@@ -13444,6 +13707,34 @@
     "authz:requestingPrincipal",
     "cp:PolicyChangeEvent",
     "cp:executedBy"
+   ]
+  },
+  {
+   "id": "D56",
+   "title": "The session identifier is not a token claim",
+   "area": "Standards alignment",
+   "invariant": false,
+   "deviatesFrom": {
+    "standard": "OpenID Connect Session Management 1.0 \u2014 the sid claim",
+    "url": "https://openid.net/specs/openid-connect-session-1_0.html",
+    "justification": "The platform issues sessions; the identity provider does not. A sid claim would make the token carry session state, which freezes at issuance while the session does not (P4), would duplicate the handle the session cookie already carries, and would bind nothing \u2014 the cookie handle is sender-constrained (D44) and a claim cannot be. Ingress resolves the session from the cookie's opaque handle and the token contributes identity and assurance only (D24)."
+   },
+   "reasoning": "OpenID Connect Session Management defines a sid claim so a relying party can correlate a token with an identity-provider session. This platform's sessions are its own: the session manager issues one per user per device (D46), binds it to a proof-of-possession key (D44), and resolves it at ingress from the cookie's opaque handle (D24). Carrying sid would put session state into a token that freezes at issuance, duplicate the handle, and add nothing a sender-constrained handle does not already do better. The departure was made deliberately during the ingress corrections but was recorded only in conversation; P8's widened test \u2014 a departure from an adopted specification is recorded as a decision \u2014 surfaced it. Recorded structurally (deviatesFrom) so the build can require every deviation to name its standard and its justification.",
+   "rejected": [
+    "Carrying sid alongside the handle for correlation: two identifiers for one session is the session-fixation surface the handle shapes exist to close.",
+    "Treating the omission as unremarkable because sid is optional in the specification: optional or not, the model adopts OIDC for the ID token and departs from its session pattern \u2014 that is a deviation, and unrecorded deviations are what P8 now forbids."
+   ],
+   "terms": [
+    "Session",
+    "IDToken"
+   ],
+   "principles": [
+    "P8",
+    "P4"
+   ],
+   "termCuries": [
+    "session:IDToken",
+    "session:Session"
    ]
   }
  ],
@@ -13719,19 +14010,24 @@
   },
   {
    "id": "P8",
-   "title": "Specifications, never products",
+   "title": "Specifications first, never products",
    "level": "modelling",
    "formerly": "D42",
-   "statement": "The ontology aligns to public specifications and names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
-   "test": "Is this a public specification, or a vendor's product? Specifications may be named; products may not.",
-   "consequences": "Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
-   "fitness": "generative (applies to every term) \u00b7 testable \u00b7 review-time",
+   "statement": "The ontology aligns to open specifications first, then to recorded platform decisions, and only then to custom terms; it names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple, PROV and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. Any departure from a specification the model otherwise adopts is recorded as a decision with its justification. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
+   "test": "Which specification covers this? If one does and the model adopts it, the term declares it (dct:conformsTo); if one does and the model departs from it, which decision records why? If none does, is there a recorded platform decision, or is this custom \u2014 and bridged to the nearest standard? Products may never be named.",
+   "consequences": "Adoption is machine-readable: every term whose definition names a specification carries dct:conformsTo, and the index lists which terms conform to which specification; the build fails on a definition that names a specification without declaring it (D53's gate). A recorded deviation carries the standard and its justification, and the build fails on one that lacks either \u2014 D56, the session identifier kept out of the token, is the exemplar. Platform decisions are the middle tier: the token contract (D24), route-based tenant resolution (D43) and the session handle (D46) are platform standards because decisions state them; a term with neither a specification nor a decision is custom, which the build already reports as 'no recorded rationale'. Custom vocabularies bridge to the nearest standard: the action scheme carries AuthZEN wire names as notations (D31); the entitlement dimensions are platform-owned by design (D21). Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
+   "fitness": "generative (9 decisions) \u00b7 testable \u2014 found the unrecorded session-identifier deviation on first application of the widened test \u00b7 enforced by the build's standards gate (adoption declared, deviations justified)",
    "enforcedBy": [],
    "appliedIn": [
     "D29",
     "D30",
     "D44",
-    "D49"
+    "D49",
+    "D21",
+    "D24",
+    "D31",
+    "D41",
+    "D56"
    ],
    "terms": [
     "Gateway",
@@ -14145,6 +14441,93 @@
     "cp:dependsOn",
     "cp:justifiedBy",
     "cp:requiredCapability"
+   ]
+  }
+ ],
+ "standards": [
+  {
+   "url": "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html",
+   "terms": [
+    "authz:DecisionOutcome",
+    "authz:evaluatedAction",
+    "authz:requestingPrincipal",
+    "core:PolicyAdministrationPoint",
+    "core:PolicyDecisionPoint",
+    "core:PolicyEnforcementPoint",
+    "core:PolicyInformationPoint",
+    "core:targetsResource"
+   ]
+  },
+  {
+   "url": "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md",
+   "terms": [
+    "core:WorkloadPrincipal",
+    "core:hasActingIdentity",
+    "core:identifier"
+   ]
+  },
+  {
+   "url": "https://openid.net/specs/authorization-api-1_0.html",
+   "terms": [
+    "authz:IngressAdmissionDecision",
+    "authz:evaluatedAction"
+   ]
+  },
+  {
+   "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+   "terms": [
+    "authn:SubjectIdentifier",
+    "session:IDToken"
+   ]
+  },
+  {
+   "url": "https://pages.nist.gov/800-63-3/",
+   "terms": [
+    "authn:AssuranceLevel"
+   ]
+  },
+  {
+   "url": "https://www.rfc-editor.org/rfc/rfc6749",
+   "terms": [
+    "authn:OAuthClientRegistration",
+    "authn:clientId",
+    "authn:forAudience",
+    "authn:registeredWith",
+    "session:AccessToken"
+   ]
+  },
+  {
+   "url": "https://www.rfc-editor.org/rfc/rfc7638",
+   "terms": [
+    "authn:keyThumbprint"
+   ]
+  },
+  {
+   "url": "https://www.rfc-editor.org/rfc/rfc7800",
+   "terms": [
+    "authn:confirmedByKey"
+   ]
+  },
+  {
+   "url": "https://www.rfc-editor.org/rfc/rfc9449",
+   "terms": [
+    "authn:confirmedByKey"
+   ]
+  },
+  {
+   "url": "https://www.rfc-editor.org/rfc/rfc9493",
+   "terms": [
+    "authn:SubjectIdentifier",
+    "authn:SubjectIdentifierFormat",
+    "authn:identifierFormat"
+   ]
+  },
+  {
+   "url": "https://www.w3.org/TR/prov-o/",
+   "terms": [
+    "core:PlatformEvent",
+    "core:occurredAtTime",
+    "core:performedBy"
    ]
   }
  ],

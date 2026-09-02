@@ -426,7 +426,8 @@
       "principles": [
         "P1",
         "P7",
-        "P16"
+        "P16",
+        "P8"
       ]
     },
     {
@@ -480,7 +481,8 @@
         "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."
       ],
       "principles": [
-        "P4"
+        "P4",
+        "P8"
       ]
     },
     {
@@ -596,7 +598,8 @@
       ],
       "principles": [
         "P1",
-        "P7"
+        "P7",
+        "P8"
       ]
     },
     {
@@ -790,7 +793,8 @@
         "occurredAtTime"
       ],
       "principles": [
-        "P17"
+        "P17",
+        "P8"
       ]
     },
     {
@@ -870,6 +874,30 @@
         "P17",
         "P10",
         "P15"
+      ]
+    },
+    {
+      "id": "D56",
+      "title": "The session identifier is not a token claim",
+      "area": "Standards alignment",
+      "invariant": false,
+      "deviatesFrom": {
+        "standard": "OpenID Connect Session Management 1.0 — the sid claim",
+        "url": "https://openid.net/specs/openid-connect-session-1_0.html",
+        "justification": "The platform issues sessions; the identity provider does not. A sid claim would make the token carry session state, which freezes at issuance while the session does not (P4), would duplicate the handle the session cookie already carries, and would bind nothing — the cookie handle is sender-constrained (D44) and a claim cannot be. Ingress resolves the session from the cookie's opaque handle and the token contributes identity and assurance only (D24)."
+      },
+      "reasoning": "OpenID Connect Session Management defines a sid claim so a relying party can correlate a token with an identity-provider session. This platform's sessions are its own: the session manager issues one per user per device (D46), binds it to a proof-of-possession key (D44), and resolves it at ingress from the cookie's opaque handle (D24). Carrying sid would put session state into a token that freezes at issuance, duplicate the handle, and add nothing a sender-constrained handle does not already do better. The departure was made deliberately during the ingress corrections but was recorded only in conversation; P8's widened test — a departure from an adopted specification is recorded as a decision — surfaced it. Recorded structurally (deviatesFrom) so the build can require every deviation to name its standard and its justification.",
+      "rejected": [
+        "Carrying sid alongside the handle for correlation: two identifiers for one session is the session-fixation surface the handle shapes exist to close.",
+        "Treating the omission as unremarkable because sid is optional in the specification: optional or not, the model adopts OIDC for the ID token and departs from its session pattern — that is a deviation, and unrecorded deviations are what P8 now forbids."
+      ],
+      "terms": [
+        "Session",
+        "IDToken"
+      ],
+      "principles": [
+        "P8",
+        "P4"
       ]
     }
   ]

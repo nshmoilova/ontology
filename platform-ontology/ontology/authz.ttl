@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/authz>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.3.0> ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.3.1> ;
+    owl:versionInfo "0.3.1" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Authorization Module"@en ;
     dct:description "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation — distinct from an attribute assertion, which is an observation."@en .
@@ -46,6 +46,7 @@ authz:Obligation a owl:Class ;
     vs:term_status "draft" .
 
 authz:DecisionOutcome a owl:Class ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     rdfs:subClassOf skos:Concept ;
     skos:definition "XACML decision outcome; members are individuals."@en ;
     vs:term_status "draft" .
@@ -67,6 +68,7 @@ authz:Action a owl:Class ;
     vs:term_status "draft" .
 
 authz:IngressAdmissionDecision a owl:Class ;
+    dct:conformsTo <https://openid.net/specs/authorization-api-1_0.html> ;
     rdfs:subClassOf authz:PolicyDecision ;
     skos:definition "A decision at the ingress policy enforcement point admitting a request across a platform or application boundary: subject, action and target evaluated against distributed entitlement grants."@en ;
     skos:editorialNote "Aligned to the AuthZEN evaluation tuple. The evaluated policy is the platform admission policy — the versioned unit of authorization logic the distributed grant configuration realizes."@en ;
@@ -92,6 +94,7 @@ authz:decisionOutcome a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 authz:requestingPrincipal a owl:ObjectProperty ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     rdfs:subPropertyOf core:performedBy ;
     skos:altLabel "subject (XACML)"@en ;
     skos:definition "Principal whose access request the decision concerns."@en ;
@@ -143,6 +146,7 @@ authz:decidedBy a owl:ObjectProperty ;
     vs:term_status "draft" .
 
 authz:evaluatedAction a owl:ObjectProperty ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> , <https://openid.net/specs/authorization-api-1_0.html> ;
     skos:altLabel "action (XACML)"@en ;
     skos:definition "The action a policy decision evaluated — exactly one per decision (SHACL), drawn from the platform-owned action scheme. AuthZEN's action name is the concept's skos:notation."@en ;
     vs:term_status "draft" .
@@ -176,6 +180,7 @@ authz:distributedAt a owl:DatatypeProperty ;
 #################################################################
 
 authz:DecisionOutcomeScheme a skos:ConceptScheme ;
+    dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     dct:title "XACML Decision Outcomes"@en .
 
 authz:outcome-permit a authz:DecisionOutcome ;
