@@ -390,6 +390,37 @@
         "IdentityProvider",
         "AuthenticationMethod"
       ]
+    },
+    {
+      "id": "P15",
+      "title": "Trust boundaries fail closed",
+      "level": "platform",
+      "statement": "When a security decision cannot be made — because evidence is absent or stale, or the outcome is indeterminate — the request is denied. Loss of an input or component never silently lowers assurance: it is a rejection or a visible failure, never a warning that lets the request through.",
+      "test": "If this input is absent or stale, or the decision is indeterminate, what happens? If the answer is 'the request proceeds' or 'a warning', the design is wrong.",
+      "consequences": "Missing evidence is a violation, not a warning: an attribute without an authoritative issuer cannot be used in a decision; a decision names its decision point or is unattributable; admission without grants is admission without authority; a permit below the policy's required assurance level is rejected; a session with no proof-of-possession key, or a token bound to a different key or none, is rejected — sender constraining must not be lost at issuance; an active session must originate from a successful authentication. The method layer fails closed too: CI fails on a positive violation, a negative corpus that conforms, or an invariant that does not fire, and the index build fails on any dangling reference between principles, decisions, shapes, terms and explainers (D53). Known exception: a grant with no distribution timestamp is a warning, so a grant whose freshness cannot be shown is still enforceable; the open question 'how stale may a distributed grant be before ingress fails closed' must be answered — probably per dimension — before that severity is raised. Scope: the data contract and CI fail closed; the runtime half — what the enforcement point does on an Indeterminate or NotApplicable outcome — is not expressible in the graph, which records decisions and evidence, not behaviour in their absence.",
+      "fitness": "generative (7 invariants embody it; 2 decisions) · testable — found the fail-open build and the staleness warning on first application · enforced on the data contract and in CI; runtime denial is asserted",
+      "enforcedBy": [
+        "AttributeAssertionShape",
+        "PolicyDecisionShape",
+        "IngressAdmissionDecisionShape",
+        "PermitMeetsRequiredAssuranceShape",
+        "SenderConstrainedSessionShape",
+        "TokenInheritsConfirmationShape",
+        "ActiveSessionSuccessfulAuthnShape"
+      ],
+      "appliedIn": [
+        "D44",
+        "D53"
+      ],
+      "terms": [
+        "PolicyDecision",
+        "DecisionOutcome",
+        "AttributeAssertion",
+        "EntitlementGrant",
+        "distributedAt",
+        "Session",
+        "PolicyEnforcementPoint"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [
@@ -426,7 +457,7 @@
     {
       "candidate": "Deny by default",
       "verdict": "not declared",
-      "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group."
+      "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group. Distinct from P15 (fail closed): P15 is the absence-of-decision rule — evidence missing or outcome indeterminate — not the absence-of-grant rule. Whether the absence of any grant is itself a deny remains this open question."
     },
     {
       "candidate": "Controls are enforced by platform, not delegated to applications",

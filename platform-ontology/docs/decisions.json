@@ -718,7 +718,8 @@
       "principles": [
         "P4",
         "P5",
-        "P8"
+        "P8",
+        "P15"
       ]
     },
     {
@@ -772,6 +773,21 @@
       "principles": [
         "P13",
         "P10"
+      ]
+    },
+    {
+      "id": "D53",
+      "title": "The index build fails on a dangling reference",
+      "area": "Foundations",
+      "invariant": true,
+      "reasoning": "Principles, decisions, shapes, terms and explainer steps reference one another by name, and the build resolved those references but only warned when one was missing — so a principle claiming a shape that did not exist passed CI. Under P15 a lost input must not silently lower assurance: the build now records every unresolved reference, prints it as a failure, writes no index and exits non-zero. Demonstrated to fire at promotion by injecting a bogus shape name.",
+      "rejected": [
+        "Keeping the warning and adding a separate lint step: two places to look, and CI already runs the build.",
+        "Writing the index anyway and failing afterwards: a half-correct index in the working tree invites committing it."
+      ],
+      "terms": [],
+      "principles": [
+        "P15"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "449c3f8c206a",
+ "sourceDigest": "f4e1a7796e2f",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -11,8 +11,8 @@
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 48,
-  "principles": 14,
+  "decisions": 49,
+  "principles": 15,
   "explainers": 2,
   "formalCQs": 7,
   "backlogCQs": 90
@@ -590,7 +590,8 @@
    ],
    "principles": [
     "P12",
-    "P13"
+    "P13",
+    "P15"
    ]
   },
   {
@@ -3257,7 +3258,9 @@
    "decisions": [
     "D27"
    ],
-   "principles": []
+   "principles": [
+    "P15"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#SessionHandle",
@@ -4665,7 +4668,9 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P15"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#DecisionOutcome",
@@ -4749,7 +4754,8 @@
    ],
    "decisions": [],
    "principles": [
-    "P7"
+    "P7",
+    "P15"
    ]
   },
   {
@@ -4967,7 +4973,8 @@
    "principles": [
     "P2",
     "P4",
-    "P12"
+    "P12",
+    "P15"
    ]
   },
   {
@@ -5277,7 +5284,8 @@
     "D25"
    ],
    "principles": [
-    "P13"
+    "P13",
+    "P15"
    ]
   },
   {
@@ -5429,7 +5437,9 @@
    "decisions": [
     "D22"
    ],
-   "principles": []
+   "principles": [
+    "P15"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#effect",
@@ -9794,7 +9804,8 @@
    "violations": 4,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P15"
    ]
   },
   {
@@ -9913,7 +9924,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P15"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#PermitMeetsRequiredAssuranceShape",
@@ -9932,7 +9946,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P13"
+    "P13",
+    "P15"
    ]
   },
   {
@@ -10006,7 +10021,8 @@
    "violations": 4,
    "warnings": 0,
    "principles": [
-    "P13"
+    "P13",
+    "P15"
    ]
   },
   {
@@ -11263,7 +11279,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P15"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#ChannelDeviceAgreementShape",
@@ -11400,7 +11419,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P4"
+    "P4",
+    "P15"
    ]
   },
   {
@@ -11581,7 +11601,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P4"
+    "P4",
+    "P15"
    ]
   },
   {
@@ -12960,7 +12981,8 @@
    "principles": [
     "P4",
     "P5",
-    "P8"
+    "P8",
+    "P15"
    ],
    "termCuries": [
     "authn:ProofOfPossessionKey",
@@ -13041,6 +13063,22 @@
     "core:PolicyDecisionPoint",
     "core:PolicyEnforcementPoint"
    ]
+  },
+  {
+   "id": "D53",
+   "title": "The index build fails on a dangling reference",
+   "area": "Foundations",
+   "invariant": true,
+   "reasoning": "Principles, decisions, shapes, terms and explainer steps reference one another by name, and the build resolved those references but only warned when one was missing \u2014 so a principle claiming a shape that did not exist passed CI. Under P15 a lost input must not silently lower assurance: the build now records every unresolved reference, prints it as a failure, writes no index and exits non-zero. Demonstrated to fire at promotion by injecting a bogus shape name.",
+   "rejected": [
+    "Keeping the warning and adding a separate lint step: two places to look, and CI already runs the build.",
+    "Writing the index anyway and failing afterwards: a half-correct index in the working tree invites committing it."
+   ],
+   "terms": [],
+   "principles": [
+    "P15"
+   ],
+   "termCuries": []
   }
  ],
  "principles": [
@@ -13530,6 +13568,46 @@
     "core:hasActingIdentity",
     "core:identifier"
    ]
+  },
+  {
+   "id": "P15",
+   "title": "Trust boundaries fail closed",
+   "level": "platform",
+   "statement": "When a security decision cannot be made \u2014 because evidence is absent or stale, or the outcome is indeterminate \u2014 the request is denied. Loss of an input or component never silently lowers assurance: it is a rejection or a visible failure, never a warning that lets the request through.",
+   "test": "If this input is absent or stale, or the decision is indeterminate, what happens? If the answer is 'the request proceeds' or 'a warning', the design is wrong.",
+   "consequences": "Missing evidence is a violation, not a warning: an attribute without an authoritative issuer cannot be used in a decision; a decision names its decision point or is unattributable; admission without grants is admission without authority; a permit below the policy's required assurance level is rejected; a session with no proof-of-possession key, or a token bound to a different key or none, is rejected \u2014 sender constraining must not be lost at issuance; an active session must originate from a successful authentication. The method layer fails closed too: CI fails on a positive violation, a negative corpus that conforms, or an invariant that does not fire, and the index build fails on any dangling reference between principles, decisions, shapes, terms and explainers (D53). Known exception: a grant with no distribution timestamp is a warning, so a grant whose freshness cannot be shown is still enforceable; the open question 'how stale may a distributed grant be before ingress fails closed' must be answered \u2014 probably per dimension \u2014 before that severity is raised. Scope: the data contract and CI fail closed; the runtime half \u2014 what the enforcement point does on an Indeterminate or NotApplicable outcome \u2014 is not expressible in the graph, which records decisions and evidence, not behaviour in their absence.",
+   "fitness": "generative (7 invariants embody it; 2 decisions) \u00b7 testable \u2014 found the fail-open build and the staleness warning on first application \u00b7 enforced on the data contract and in CI; runtime denial is asserted",
+   "enforcedBy": [
+    "AttributeAssertionShape",
+    "PolicyDecisionShape",
+    "IngressAdmissionDecisionShape",
+    "PermitMeetsRequiredAssuranceShape",
+    "SenderConstrainedSessionShape",
+    "TokenInheritsConfirmationShape",
+    "ActiveSessionSuccessfulAuthnShape"
+   ],
+   "appliedIn": [
+    "D44",
+    "D53"
+   ],
+   "terms": [
+    "PolicyDecision",
+    "DecisionOutcome",
+    "AttributeAssertion",
+    "EntitlementGrant",
+    "distributedAt",
+    "Session",
+    "PolicyEnforcementPoint"
+   ],
+   "termCuries": [
+    "authz:AttributeAssertion",
+    "authz:DecisionOutcome",
+    "authz:EntitlementGrant",
+    "authz:PolicyDecision",
+    "authz:distributedAt",
+    "core:PolicyEnforcementPoint",
+    "session:Session"
+   ]
   }
  ],
  "evaluatedNotPrinciples": [
@@ -13566,7 +13644,7 @@
   {
    "candidate": "Deny by default",
    "verdict": "not declared",
-   "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group."
+   "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group. Distinct from P15 (fail closed): P15 is the absence-of-decision rule \u2014 evidence missing or outcome indeterminate \u2014 not the absence-of-grant rule. Whether the absence of any grant is itself a deny remains this open question."
   },
   {
    "candidate": "Controls are enforced by platform, not delegated to applications",

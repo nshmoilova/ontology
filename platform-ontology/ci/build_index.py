@@ -342,8 +342,17 @@ def load_decisions(terms):
         d["termCuries"] = sorted(set(resolved))
         missing = [n for n in d.get("terms", []) if n not in by_name]
         if missing:
-            print(f"  warn: {d['id']} references unknown terms: {', '.join(missing)}")
+            problem(f"{d['id']} references unknown terms: {', '.join(missing)}")
     return decisions
+
+
+PROBLEMS: list[str] = []
+
+
+def problem(msg: str) -> None:
+    """A dangling reference is a failure, not a warning (P15 — fail closed)."""
+    PROBLEMS.append(msg)
+    print(f"  FAIL: {msg}")
 
 
 def load_principles(terms, shapes, decisions):
@@ -370,16 +379,16 @@ def load_principles(terms, shapes, decisions):
         pr["termCuries"] = sorted(set(resolved))
         missing = [n for n in pr["terms"] if n not in by_name]
         if missing:
-            print(f"  warn: {pr['id']} references unknown terms: {', '.join(missing)}")
+            problem(f"{pr['id']} references unknown terms: {', '.join(missing)}")
         bad = [s for s in pr["enforcedBy"] if s not in known_shapes]
         if bad:
-            print(f"  warn: {pr['id']} references unknown shapes: {', '.join(bad)}")
+            problem(f"{pr['id']} references unknown shapes: {', '.join(bad)}")
         for s in pr["enforcedBy"]:
             if s in known_shapes:
                 known_shapes[s].setdefault("principles", []).append(pr["id"])
         bad = [d for d in pr["appliedIn"] if d not in known_decisions]
         if bad:
-            print(f"  warn: {pr['id']} references unknown decisions: {', '.join(bad)}")
+            problem(f"{pr['id']} references unknown decisions: {', '.join(bad)}")
         for did in pr["appliedIn"]:
             if did in known_decisions:
                 ps = known_decisions[did].setdefault("principles", [])
@@ -390,7 +399,7 @@ def load_principles(terms, shapes, decisions):
     for d in decisions:
         bad = [x for x in d.get("principles", []) if x not in known_p]
         if bad:
-            print(f"  warn: {d['id']} applies unknown principles: {', '.join(bad)}")
+            problem(f"{d['id']} applies unknown principles: {', '.join(bad)}")
     return principles, data.get("evaluatedNotPrinciples", [])
 
 
@@ -413,14 +422,14 @@ def load_explainers(terms, shapes):
                 if svg.exists():
                     step["svg"] = svg.read_text().strip()
                 else:
-                    print(f"  warn: {ex['id']} references missing diagram {diagram}")
+                    problem(f"{ex['id']} references missing diagram {diagram}")
                     step["svg"] = None
             for key, known, kind in (("terms", known_terms, "term"),
                                      ("shapes", known_shapes, "shape"),
                                      ("principles", known_principles, "principle")):
                 missing = [x for x in step.get(key, []) if x not in known]
                 if missing:
-                    print(f"  warn: {ex['id']} references unknown {kind}s: "
+                    problem(f"{ex['id']} references unknown {kind}s: "
                           f"{', '.join(missing)}")
         ex["stepCount"] = len(ex.get("steps", []))
     return explainers
@@ -572,6 +581,9 @@ def main() -> int:
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    if PROBLEMS:
+        print(f"\nBUILD FAILED ({len(PROBLEMS)} unresolved reference(s)); index not written")
+        return 1
     OUT.write_text(json.dumps(index, indent=1, sort_keys=False))
     stamp = stamp_asset_versions()
     if stamp:
