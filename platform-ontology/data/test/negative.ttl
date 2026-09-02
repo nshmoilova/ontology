@@ -478,3 +478,12 @@ ex:sneaky-portal a cp:Portal ;
 ex:pdp-pep-fused a core:PolicyDecisionPoint, core:PolicyEnforcementPoint ;
     core:displayName "Fused decision and enforcement point" .
 
+### 41. Cell-per-tenant capability whose data plane serves two tenants
+###     (IsolationModelShape)
+ex:cell-capability a core:Capability ;
+    core:displayName "Cell-isolated capability" ;
+    cp:isolationModel "cell-per-tenant" .
+ex:cell-plane-bad a cp:DataPlane ;
+    cp:realizesCapability ex:cell-capability ;
+    cp:servesTenant ex:bad-tenant , ex:tenant-y .
+

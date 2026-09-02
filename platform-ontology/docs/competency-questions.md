@@ -14,6 +14,7 @@ scope creep.
 | CQ-5 | For each Permit decision, what is the full assurance chain (decision → session → authentication → method/AAL)? | `cq5-permits-with-assurance-chain.rq` | authz, session, authn |
 | CQ-6 | Which workload principals exist, what are their SPIFFE identities, and which changes have they executed? | `cq6-workload-principals.rq` | core, control-plane |
 | CQ-7 | Does this subject's tenant have the right to enter this application through this platform-controlled endpoint and deployment scope? | `cq7-application-entry-rights.rq` | core, ingress, control-plane |
+| CQ-8 | Which tenants' data planes are reachable from a given desired-state declaration (blast radius)? | `cq8-blast-radius.rq` | control-plane, core |
 
 ## Backlog (draft, not yet modelled)
 
@@ -64,8 +65,6 @@ Descriptive:
   planes does it actuate, and which tenants does each data plane serve?
 - For each data-plane mutation, which principal executed it and which
   desired-state declaration does it realize?
-- Which tenants' data planes are reachable from a given management-plane
-  desired-state declaration (blast radius)?
 
 Invariants *(each expected empty)*:
 

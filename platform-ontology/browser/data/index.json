@@ -1,21 +1,21 @@
 {
  "generated": true,
- "sourceDigest": "f4e1a7796e2f",
+ "sourceDigest": "003984b98ae4",
  "stats": {
   "modules": 6,
   "classes": 73,
   "objectProperties": 92,
   "datatypeProperties": 34,
-  "shapes": 74,
-  "violations": 108,
+  "shapes": 75,
+  "violations": 109,
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 49,
-  "principles": 15,
+  "decisions": 50,
+  "principles": 16,
   "explainers": 2,
-  "formalCQs": 7,
-  "backlogCQs": 90
+  "formalCQs": 8,
+  "backlogCQs": 89
  },
  "modules": [
   {
@@ -849,7 +849,9 @@
    "decisions": [
     "D09"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#WorkloadPrincipal",
@@ -6018,7 +6020,9 @@
    "decisions": [
     "D03"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement",
@@ -6411,7 +6415,8 @@
    "subClasses": [],
    "shapes": [
     "DataPlaneShape",
-    "DataPlaneOfferedShape"
+    "DataPlaneOfferedShape",
+    "IsolationModelShape"
    ],
    "constraints": [
     {
@@ -6434,6 +6439,12 @@
      "severity": "Violation",
      "message": "Data plane realizes a capability in a scope no offering covers \u2014 deployed where not offered.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .\n                FILTER NOT EXISTS {\n                    ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> $this ;\n                       <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane serves more than one tenant under a cell-per-tenant capability \u2014 the declared isolation model is violated.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .\n                ?c <https://w3id.org/examplebank/platform/control-plane#isolationModel> \"cell-per-tenant\" .\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t1 , ?t2 .\n                FILTER(?t1 != ?t2)\n            }"
     }
    ],
    "outgoing": [
@@ -6457,9 +6468,12 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D07"
+    "D07",
+    "D54"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#DataPlaneMutation",
@@ -7397,7 +7411,9 @@
    "decisions": [
     "D03"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#inRegion",
@@ -7423,7 +7439,9 @@
    "decisions": [
     "D03"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#isolationModel",
@@ -7447,9 +7465,12 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D08"
+    "D08",
+    "D54"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions",
@@ -7802,9 +7823,12 @@
    "vocabulary": [],
    "decisions": [
     "D03",
-    "D04"
+    "D04",
+    "D54"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declaredThrough",
@@ -8552,8 +8576,12 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [],
-   "principles": []
+   "decisions": [
+    "D54"
+   ],
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#servesTenant",
@@ -8577,9 +8605,12 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D08"
+    "D08",
+    "D54"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#subScopeOf",
@@ -8605,7 +8636,9 @@
    "decisions": [
     "D03"
    ],
-   "principles": []
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#subscribedCapability",
@@ -9731,7 +9764,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#AttributeAssertionShape",
@@ -9882,7 +9918,8 @@
     "P1",
     "P2",
     "P4",
-    "P12"
+    "P12",
+    "P16"
    ]
   },
   {
@@ -10231,7 +10268,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneShape",
@@ -10298,7 +10338,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DuplicateMembershipShape",
@@ -10349,7 +10392,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#HumanAuthorizationShape",
@@ -10370,6 +10416,26 @@
    "principles": [
     "P3",
     "P14"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#IsolationModelShape",
+   "name": "IsolationModelShape",
+   "targetClass": "cp:DataPlane",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#DataPlane",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane serves more than one tenant under a cell-per-tenant capability \u2014 the declared isolation model is violated.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .\n                ?c <https://w3id.org/examplebank/platform/control-plane#isolationModel> \"cell-per-tenant\" .\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t1 , ?t2 .\n                FILTER(?t1 != ?t2)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P16"
    ]
   },
   {
@@ -10516,7 +10582,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 1
+   "warnings": 1,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ProvisioningJustificationShape",
@@ -10576,7 +10645,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ScopeRigorShape",
@@ -10616,7 +10688,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P2"
+    "P2",
+    "P16"
    ]
   },
   {
@@ -10806,7 +10879,8 @@
    "violations": 3,
    "warnings": 0,
    "principles": [
-    "P14"
+    "P14",
+    "P16"
    ]
   },
   {
@@ -10850,7 +10924,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#BusinessClientShape",
@@ -11132,7 +11209,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteBindingCollisionShape",
@@ -11151,7 +11231,8 @@
    "violations": 1,
    "warnings": 0,
    "principles": [
-    "P12"
+    "P12",
+    "P16"
    ]
   },
   {
@@ -11169,7 +11250,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#RouteShape",
@@ -12087,7 +12171,8 @@
     "P1",
     "P9",
     "P10",
-    "P12"
+    "P12",
+    "P16"
    ],
    "termCuries": [
     "ingress:Route",
@@ -12184,7 +12269,8 @@
     "Flat named scopes: no inheritance or containment reasoning; all meaning trapped in naming conventions."
    ],
    "principles": [
-    "P6"
+    "P6",
+    "P16"
    ],
    "termCuries": [
     "cp:AdministrativeScope",
@@ -12205,7 +12291,8 @@
     "declarationScope"
    ],
    "principles": [
-    "P10"
+    "P10",
+    "P16"
    ],
    "rejected": [],
    "termCuries": [
@@ -12282,12 +12369,15 @@
    "id": "D08",
    "title": "Data-driven isolation models",
    "area": "Planes & scoped governance",
-   "reasoning": "Each capability declares its isolation model ('shared' or 'cell-per-tenant') and one constraint enforces whatever the capability claims, rather than a hand-written shape per capability. The invariant count stays constant as capabilities multiply, and the isolation model becomes a governed, queryable fact.",
+   "reasoning": "Each capability declares its isolation model ('shared' or 'cell-per-tenant') and one constraint enforces whatever the capability claims, rather than a hand-written shape per capability. The invariant count stays constant as capabilities multiply, and the isolation model becomes a governed, queryable fact. The constraint this decision describes was not in the shapes until P16's promotion surfaced the gap; IsolationModelShape now exists and demonstrably fires (D54).",
    "terms": [
     "isolationModel",
     "servesTenant"
    ],
-   "invariant": false,
+   "principles": [
+    "P16"
+   ],
+   "invariant": true,
    "rejected": [],
    "termCuries": [
     "cp:isolationModel",
@@ -12440,7 +12530,8 @@
     "offeredInScope"
    ],
    "principles": [
-    "P2"
+    "P2",
+    "P16"
    ],
    "rejected": [],
    "termCuries": [
@@ -12555,7 +12646,8 @@
    ],
    "principles": [
     "P1",
-    "P7"
+    "P7",
+    "P16"
    ],
    "invariant": false,
    "termCuries": [
@@ -12837,6 +12929,9 @@
     "Portal",
     "groupsApplication"
    ],
+   "principles": [
+    "P16"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:Portal",
@@ -12949,7 +13044,8 @@
    ],
    "principles": [
     "P3",
-    "P6"
+    "P6",
+    "P16"
    ],
    "termCuries": [
     "cp:MembershipState",
@@ -13014,7 +13110,8 @@
    "principles": [
     "P2",
     "P5",
-    "P12"
+    "P12",
+    "P16"
    ],
    "termCuries": [
     "cp:RouteBindingChange",
@@ -13079,6 +13176,36 @@
     "P15"
    ],
    "termCuries": []
+  },
+  {
+   "id": "D54",
+   "title": "The isolation model is enforced; blast radius is a formal question",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "reasoning": "D08 recorded that one data-driven constraint enforces whatever isolation model a capability declares, but no shape referenced the property: the model was declared, instantiated once, and enforced nowhere \u2014 a hope, not a control (P10), and a recorded enforcement that did not exist (P15). IsolationModelShape rejects a data plane serving more than one tenant under a cell-per-tenant capability, with a negative instance so it fires. The backlog question 'which tenants' data planes are reachable from a declaration' is the principle's testability clause made concrete; it is promoted to CQ-8 with a query CI runs, answering reach as scope containment exactly as D04 defines it.",
+   "rejected": [
+    "A shape per isolation model value: D08's point was one constraint whatever the capability claims; 'shared' needs no constraint, so one shape covers the closed set.",
+    "Amending D08 to drop the enforcement claim: the claim was the right design, only undelivered."
+   ],
+   "terms": [
+    "isolationModel",
+    "servesTenant",
+    "DataPlane",
+    "declarationScope",
+    "scopeIncludes"
+   ],
+   "principles": [
+    "P16",
+    "P10",
+    "P15"
+   ],
+   "termCuries": [
+    "cp:DataPlane",
+    "cp:declarationScope",
+    "cp:isolationModel",
+    "cp:scopeIncludes",
+    "cp:servesTenant"
+   ]
   }
  ],
  "principles": [
@@ -13607,6 +13734,67 @@
     "authz:distributedAt",
     "core:PolicyEnforcementPoint",
     "session:Session"
+   ]
+  },
+  {
+   "id": "P16",
+   "title": "Isolation boundaries are explicit and enforced",
+   "level": "platform",
+   "statement": "Every isolation boundary is stated in the model, and every crossing of it is rejected by an invariant. Tenant, administrative scope and a capability's isolation model are enforced today; environment and region are stated as scope facets pending their own invariants; zone is not modelled. The reach of any one declaration is bounded by scope containment.",
+   "test": "Which boundary does this cross, and which invariant rejects the crossing? A boundary with no rejecting invariant is a label, not a boundary.",
+   "consequences": "Tenant: a route serves only its bound tenant's applications, one address resolves to one tenant, admission requires membership, a grant confers exactly one tenant, a portal groups only its owner's applications. Scope: a declaration is bound to exactly one scope, a mutation's data plane must lie inside its declaration's scope (locality, D04), enablement and deployment outside offered scope are violations, and a control plane may not administer the scope holding its own declarations. Isolation model: a data plane under a cell-per-tenant capability serves at most one tenant (D54). Blast radius: the data planes reachable from a declaration are exactly those its scope contains \u2014 CQ-8 answers it, and the sole-writer and self-governance invariants bound who can act on them. Not yet enforced: environment and region are facets on scope nodes, to be promoted to closed schemes with rejecting invariants before stable; zone does not exist in the model. Runtime enforcement is asserted; the graph enforces the data contract and CI.",
+   "fitness": "generative (9 decisions, 14 invariants) \u00b7 testable \u2014 found D08's undelivered invariant on first application \u00b7 enforced for tenant, scope and isolation model; environment and region stated only",
+   "enforcedBy": [
+    "RouteApplicationOwnershipShape",
+    "RouteBindingCollisionShape",
+    "AdmissionRequiresMembershipShape",
+    "EntitlementGrantShape",
+    "PortalShape",
+    "TenantMembershipShape",
+    "ApplicationShape",
+    "DesiredStateDeclarationShape",
+    "ScopeLocalityShape",
+    "RouteEnablementScopeShape",
+    "EnablementOfferingCoverageShape",
+    "DataPlaneOfferedShape",
+    "SelfGovernanceLoopShape",
+    "IsolationModelShape"
+   ],
+   "appliedIn": [
+    "D03",
+    "D04",
+    "D08",
+    "D16",
+    "D21",
+    "D34",
+    "D43",
+    "D45",
+    "D48",
+    "D54"
+   ],
+   "terms": [
+    "Tenant",
+    "AdministrativeScope",
+    "subScopeOf",
+    "declarationScope",
+    "scopeIncludes",
+    "inEnvironment",
+    "inRegion",
+    "isolationModel",
+    "servesTenant",
+    "DataPlane"
+   ],
+   "termCuries": [
+    "core:Tenant",
+    "cp:AdministrativeScope",
+    "cp:DataPlane",
+    "cp:declarationScope",
+    "cp:inEnvironment",
+    "cp:inRegion",
+    "cp:isolationModel",
+    "cp:scopeIncludes",
+    "cp:servesTenant",
+    "cp:subScopeOf"
    ]
   }
  ],
@@ -14140,6 +14328,16 @@
      "ingress",
      "control-plane"
     ]
+   },
+   {
+    "id": "CQ-8",
+    "question": "Which tenants' data planes are reachable from a given desired-state declaration (blast radius)?",
+    "query": "cq8-blast-radius.rq",
+    "sparql": "# CQ-8 \u2014 Which tenants' data planes are reachable from a given desired-state\n# declaration (blast radius)? Reach is scope containment (D04): every data\n# plane included in the declaration's scope or any scope beneath it.\nPREFIX core:    <https://w3id.org/examplebank/platform/core#>\nPREFIX ingress: <https://w3id.org/examplebank/platform/ingress#>\nPREFIX cp:      <https://w3id.org/examplebank/platform/control-plane#>\n\nSELECT ?declaration ?scope ?dataPlane ?tenant WHERE {\n  ?declaration cp:declarationScope ?scope .\n  ?sub cp:subScopeOf* ?scope ;\n       cp:scopeIncludes ?dataPlane .\n  ?dataPlane a cp:DataPlane .\n  OPTIONAL { ?dataPlane cp:servesTenant ?tenant }\n}\nORDER BY ?declaration ?dataPlane ?tenant",
+    "modules": [
+     "control-plane",
+     "core"
+    ]
    }
   ],
   "backlog": [
@@ -14206,11 +14404,6 @@
    {
     "section": "Management vs. capability control planes",
     "question": "For each data-plane mutation, which principal executed it and which desired-state declaration does it realize?",
-    "expectedEmpty": false
-   },
-   {
-    "section": "Management vs. capability control planes",
-    "question": "Which tenants' data planes are reachable from a given management-plane desired-state declaration (blast radius)?",
     "expectedEmpty": false
    },
    {

@@ -555,3 +555,23 @@ scp:ChangeApprovalShape a sh:NodeShape ;
         sh:severity sh:Violation ;
         sh:message "An approval must be timestamped." ;
     ] .
+
+# P16 — isolation boundaries are explicit and enforced. D08 declared that one
+# data-driven constraint enforces whatever isolation model a capability claims;
+# this is that constraint (written at P16 promotion, D54).
+scp:IsolationModelShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data plane serves more than one tenant under a cell-per-tenant capability — the declared isolation model is violated." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .
+                ?c <https://w3id.org/examplebank/platform/control-plane#isolationModel> "cell-per-tenant" .
+                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t1 , ?t2 .
+                FILTER(?t1 != ?t2)
+            }
+        """ ;
+    ] .
+

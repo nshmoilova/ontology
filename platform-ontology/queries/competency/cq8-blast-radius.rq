@@ -1,0 +1,15 @@
+# CQ-8 — Which tenants' data planes are reachable from a given desired-state
+# declaration (blast radius)? Reach is scope containment (D04): every data
+# plane included in the declaration's scope or any scope beneath it.
+PREFIX core:    <https://w3id.org/examplebank/platform/core#>
+PREFIX ingress: <https://w3id.org/examplebank/platform/ingress#>
+PREFIX cp:      <https://w3id.org/examplebank/platform/control-plane#>
+
+SELECT ?declaration ?scope ?dataPlane ?tenant WHERE {
+  ?declaration cp:declarationScope ?scope .
+  ?sub cp:subScopeOf* ?scope ;
+       cp:scopeIncludes ?dataPlane .
+  ?dataPlane a cp:DataPlane .
+  OPTIONAL { ?dataPlane cp:servesTenant ?tenant }
+}
+ORDER BY ?declaration ?dataPlane ?tenant

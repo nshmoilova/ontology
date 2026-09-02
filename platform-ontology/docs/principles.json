@@ -421,6 +421,55 @@
         "Session",
         "PolicyEnforcementPoint"
       ]
+    },
+    {
+      "id": "P16",
+      "title": "Isolation boundaries are explicit and enforced",
+      "level": "platform",
+      "statement": "Every isolation boundary is stated in the model, and every crossing of it is rejected by an invariant. Tenant, administrative scope and a capability's isolation model are enforced today; environment and region are stated as scope facets pending their own invariants; zone is not modelled. The reach of any one declaration is bounded by scope containment.",
+      "test": "Which boundary does this cross, and which invariant rejects the crossing? A boundary with no rejecting invariant is a label, not a boundary.",
+      "consequences": "Tenant: a route serves only its bound tenant's applications, one address resolves to one tenant, admission requires membership, a grant confers exactly one tenant, a portal groups only its owner's applications. Scope: a declaration is bound to exactly one scope, a mutation's data plane must lie inside its declaration's scope (locality, D04), enablement and deployment outside offered scope are violations, and a control plane may not administer the scope holding its own declarations. Isolation model: a data plane under a cell-per-tenant capability serves at most one tenant (D54). Blast radius: the data planes reachable from a declaration are exactly those its scope contains — CQ-8 answers it, and the sole-writer and self-governance invariants bound who can act on them. Not yet enforced: environment and region are facets on scope nodes, to be promoted to closed schemes with rejecting invariants before stable; zone does not exist in the model. Runtime enforcement is asserted; the graph enforces the data contract and CI.",
+      "fitness": "generative (9 decisions, 14 invariants) · testable — found D08's undelivered invariant on first application · enforced for tenant, scope and isolation model; environment and region stated only",
+      "enforcedBy": [
+        "RouteApplicationOwnershipShape",
+        "RouteBindingCollisionShape",
+        "AdmissionRequiresMembershipShape",
+        "EntitlementGrantShape",
+        "PortalShape",
+        "TenantMembershipShape",
+        "ApplicationShape",
+        "DesiredStateDeclarationShape",
+        "ScopeLocalityShape",
+        "RouteEnablementScopeShape",
+        "EnablementOfferingCoverageShape",
+        "DataPlaneOfferedShape",
+        "SelfGovernanceLoopShape",
+        "IsolationModelShape"
+      ],
+      "appliedIn": [
+        "D03",
+        "D04",
+        "D08",
+        "D16",
+        "D21",
+        "D34",
+        "D43",
+        "D45",
+        "D48",
+        "D54"
+      ],
+      "terms": [
+        "Tenant",
+        "AdministrativeScope",
+        "subScopeOf",
+        "declarationScope",
+        "scopeIncludes",
+        "inEnvironment",
+        "inRegion",
+        "isolationModel",
+        "servesTenant",
+        "DataPlane"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [

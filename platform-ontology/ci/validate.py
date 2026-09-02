@@ -120,6 +120,7 @@ def main() -> int:
             "bound tenant does not own",
             "outside that application's enablement",
             "must not also be a policy enforcement point",
+            "more than one tenant under a cell-per-tenant",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -138,6 +139,7 @@ def main() -> int:
         "cq4-attribute-provenance.rq", "cq5-permits-with-assurance-chain.rq",
         "cq6-workload-principals.rq",
         "cq7-application-entry-rights.rq",
+        "cq8-blast-radius.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:
