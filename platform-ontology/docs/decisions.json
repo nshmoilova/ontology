@@ -1,5 +1,5 @@
 {
-  "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies.",
+  "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies. D38, D39, D40 and D42 were promoted to principles P6, P7, P3 and P8 in docs/principles.json — a decision picks once, a principle constrains every pick — so their ids are retired rather than reused. A decision's `principles` lists the principles it applies.",
   "decisions": [
     {
       "id": "D51",
@@ -33,6 +33,9 @@
       "rejected": [
         "Splitting client type from device entirely, per Microsoft's three-way division into client apps, device platforms and device filters: the right end state, but it churns invariants and is a decision to take with the review group.",
         "Leaving Device unnameable: a concurrency limit that counts per device cannot count anonymous ones."
+      ],
+      "principles": [
+        "P5"
       ]
     },
     {
@@ -51,6 +54,9 @@
       "rejected": [
         "A PlatformPolicyDecisionPoint subclass to separate the two PDPs by type: unnecessary while application decisions are out of scope and never enter the graph, and it would imply a symmetric ApplicationPolicyDecisionPoint that the Level-3 boundary forbids. Worth revisiting only if application decisions are ever ingested for audit.",
         "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
+      ],
+      "principles": [
+        "P8"
       ]
     },
     {
@@ -66,6 +72,11 @@
       "rejected": [
         "Linking UpstreamService to Application instead: an upstream is a backend the route forwards to, and several may serve one application; the endpoint is what a subject enters through.",
         "Leaving the join implicit through shared tenant ownership: it returns rows, which is precisely why it is dangerous — the answer looks right and fails open."
+      ],
+      "principles": [
+        "P1",
+        "P9",
+        "P10"
       ]
     },
     {
@@ -86,6 +97,10 @@
         "One Client class covering both: the two share a word and nothing else — one is protocol bookkeeping, the other is a business relationship with a lifecycle.",
         "Making BusinessClient a subclass of Principal: a corporate client is not authenticable and has many users, so principals act for a client rather than being one.",
         "Leaving the OAuth registration unmodelled as pure plumbing: it is plumbing, but naming it explicitly is what stops the two senses of 'client' collapsing back together in conversation."
+      ],
+      "principles": [
+        "P4",
+        "P5"
       ]
     },
     {
@@ -96,6 +111,9 @@
       "terms": [
         "ManagementControlPlane",
         "declaredThrough"
+      ],
+      "principles": [
+        "P2"
       ]
     },
     {
@@ -107,6 +125,9 @@
         "CapabilityControlPlane",
         "governsCapability",
         "hasActingIdentity"
+      ],
+      "principles": [
+        "P2"
       ]
     },
     {
@@ -125,6 +146,9 @@
       "rejected": [
         "Two orthogonal axis-properties (environment + region): clean for env×region, silent on tenants, and every future axis needs invariant surgery.",
         "Flat named scopes: no inheritance or containment reasoning; all meaning trapped in naming conventions."
+      ],
+      "principles": [
+        "P6"
       ]
     },
     {
@@ -136,6 +160,9 @@
       "terms": [
         "DataPlaneMutation",
         "declarationScope"
+      ],
+      "principles": [
+        "P10"
       ]
     },
     {
@@ -148,6 +175,9 @@
         "DesiredStateDeclaration",
         "supersedes",
         "hasApproval"
+      ],
+      "principles": [
+        "P3"
       ]
     },
     {
@@ -158,6 +188,9 @@
       "reasoning": "Scopes carry the approval requirement, inherited to the nearest ancestor that says anything: prod strict, dev light, one constraint, zero shape exceptions. Data-driven rigor keeps the invariant count constant and makes 'which scopes waive human approval' a governed, queryable fact — an auditor question you want answerable.",
       "terms": [
         "requiresHumanApproval"
+      ],
+      "principles": [
+        "P3"
       ]
     },
     {
@@ -172,6 +205,9 @@
         "mutatedDataPlane",
         "realizesIntent",
         "executedBy"
+      ],
+      "principles": [
+        "P2"
       ]
     },
     {
@@ -222,6 +258,9 @@
       ],
       "rejected": [
         "Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule — a design smell."
+      ],
+      "principles": [
+        "P7"
       ]
     },
     {
@@ -234,6 +273,9 @@
         "Subscription",
         "hasApproval",
         "ChangeApproval"
+      ],
+      "principles": [
+        "P3"
       ]
     },
     {
@@ -245,6 +287,9 @@
       "terms": [
         "justifiedBy",
         "forApplication"
+      ],
+      "principles": [
+        "P2"
       ]
     },
     {
@@ -277,6 +322,9 @@
         "CapabilityOffering",
         "offersCapability",
         "offeredInScope"
+      ],
+      "principles": [
+        "P2"
       ]
     },
     {
@@ -287,6 +335,9 @@
       "terms": [
         "Application",
         "ownedBy"
+      ],
+      "principles": [
+        "P1"
       ]
     },
     {
@@ -304,6 +355,9 @@
         "windowStart",
         "windowEnd",
         "requestCount"
+      ],
+      "principles": [
+        "P3"
       ]
     },
     {
@@ -315,6 +369,9 @@
       "terms": [
         "ApplicationEnablement",
         "forApplication"
+      ],
+      "principles": [
+        "P10"
       ]
     },
     {
@@ -326,6 +383,9 @@
       "terms": [
         "Portal",
         "groupsApplication"
+      ],
+      "principles": [
+        "P1"
       ]
     },
     {
@@ -340,6 +400,10 @@
         "A subclass per dimension: no benefit over ranked individuals, and every new dimension becomes a class-hierarchy change.",
         "Reusing AttributeAssertion: conflates an observation (the HR system reports a fact) with a conferral (someone granted access), and loses the closed-vocabulary check since attribute names are open strings by design.",
         "client.access as a sixth dimension: the registration is the evidence for the channel dimension, not a dimension itself."
+      ],
+      "principles": [
+        "P1",
+        "P7"
       ]
     },
     {
@@ -355,6 +419,10 @@
         "derivedFrom",
         "distributedAt",
         "entitlementValue"
+      ],
+      "principles": [
+        "P2",
+        "P4"
       ]
     },
     {
@@ -365,6 +433,9 @@
       "terms": [
         "DeliveryChannel",
         "viaChannel"
+      ],
+      "principles": [
+        "P7"
       ]
     },
     {
@@ -381,6 +452,9 @@
       "rejected": [
         "Minting entitlements into the token: claims freeze at issuance, so an entitlement stays true until expiry — exactly the window in which offboarding or compromise must take effect.",
         "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."
+      ],
+      "principles": [
+        "P4"
       ]
     },
     {
@@ -391,6 +465,10 @@
       "terms": [
         "PolicyDecision",
         "IngressAdmissionDecision"
+      ],
+      "principles": [
+        "P1",
+        "P9"
       ]
     },
     {
@@ -440,7 +518,10 @@
         "Keeping a hollowed-out AuthorizedParty with the false properties stripped: what remained was an OAuth registration identifier derivable from the audience, adding nothing the model needs.",
         "Retargeting it to the session manager's per-audience registration: that is real, but it is protocol bookkeeping with no competency question behind it."
       ],
-      "termCuries": []
+      "termCuries": [],
+      "principles": [
+        "P8"
+      ]
     },
     {
       "id": "D30",
@@ -460,6 +541,10 @@
         "A multi-valued datatype property: stringly-typed, with no home for pairwise scoping, formats or validity, and uniqueness unenforceable without string surgery.",
         "A Credential subclass: a subject identifier proves nothing and is presented by no one — it is a naming fact, not an authentication artifact.",
         "AttributeAssertion reuse: assertions describe a known principal to feed decisions; identifiers resolve an unknown subject to a principal — opposite direction, different consumer."
+      ],
+      "principles": [
+        "P5",
+        "P8"
       ]
     },
     {
@@ -475,6 +560,10 @@
       "rejected": [
         "A datatype property with a string action name: free strings drift (read/READ/view) and the Level-3 boundary becomes unenforceable.",
         "Reifying the whole request as an AccessRequest node: no competency question demands it, and PolicyDecision already is the reified evaluation record."
+      ],
+      "principles": [
+        "P1",
+        "P7"
       ]
     },
     {
@@ -487,6 +576,9 @@
         "IngressAdmissionDecision",
         "evaluatedGrant",
         "evaluatedPolicy"
+      ],
+      "principles": [
+        "P6"
       ]
     },
     {
@@ -519,6 +611,9 @@
       "terms": [
         "ApplicationEnablement",
         "CapabilityOffering"
+      ],
+      "principles": [
+        "P10"
       ]
     },
     {
@@ -541,46 +636,6 @@
       ]
     },
     {
-      "id": "D38",
-      "title": "OWL for semantics, SHACL for contracts",
-      "area": "Foundations",
-      "reasoning": "OWL defines meaning and licenses inference; rdfs:domain and rdfs:range are deliberately kept off shared properties, because under OWL semantics a domain axiom does not reject bad data — it infers a (wrong) type. Typing and cardinality live in SHACL, where a breach is a report rather than a silent inference. sh:Violation rejects at ingestion; sh:Warning admits but routes to the stewardship queue.",
-      "terms": [
-        "performedBy",
-        "targetsResource",
-        "governedBy",
-        "enforcedBy"
-      ]
-    },
-    {
-      "id": "D39",
-      "title": "States and vocabularies are individuals, not subclasses",
-      "area": "Foundations",
-      "reasoning": "Session and subscription states, decision outcomes, authentication methods, assurance levels, entitlement dimensions, actions, channels and subject-identifier formats are all SKOS individuals in closed schemes. Individuals keep generic queries simple, make extension a data change rather than a hierarchy change, and — crucially — make closure checkable: 'is this term in the platform-owned scheme' is a one-line constraint, which is how the ingress vocabulary boundary is enforced. Assurance levels additionally carry an integer rank so SHACL-SPARQL can compare them in order.",
-      "terms": [
-        "SessionState",
-        "DecisionOutcome",
-        "AuthenticationMethod",
-        "AssuranceLevel",
-        "assuranceRank"
-      ]
-    },
-    {
-      "id": "D40",
-      "title": "Agents execute, humans authorize",
-      "area": "Foundations",
-      "invariant": true,
-      "reasoning": "Every policy change must carry an approval by a human principal; approvals by workload principals alone do not satisfy the invariant. The pattern recurs across the model — declarations in rigor-requiring scopes, subscription activations, requirement confirmations — because the same asymmetry holds each time: automation may act, but a person must be accountable for the grant of authority. The planned counterpart is deliberately asymmetric: revocation should need no approval, since taking access away fast is safe, while reinstatement does.",
-      "terms": [
-        "PolicyChangeEvent",
-        "ChangeApproval",
-        "approvedBy",
-        "approvedAtTime",
-        "hasApproval",
-        "changeTicket"
-      ]
-    },
-    {
       "id": "D46",
       "title": "Sessions are per user per device; channel comes from device class",
       "area": "Audit round",
@@ -600,6 +655,9 @@
         "Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device — one vocabulary would have members that cannot be devices.",
         "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.",
         "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver — the same asymmetry route bindings had before D43."
+      ],
+      "principles": [
+        "P7"
       ]
     },
     {
@@ -621,6 +679,10 @@
         "A Persona class that entitlement grants are held by, replacing tenant-held grants: more expressive and handles dual capacity natively, but it reopens the settled grant model, and a tenant's subscriptions genuinely are tenant-level — that was never the missing fact.",
         "An Identity class as a synonym for Principal: two words for one concept.",
         "An Identity class merging the canonical identifier with issuer-scoped subjects: re-conflates exactly what the subject-identifier work separated, since one says what we call a principal and the other resolves an unknown subject to one."
+      ],
+      "principles": [
+        "P3",
+        "P6"
       ]
     },
     {
@@ -640,6 +702,11 @@
       "rejected": [
         "Modelling the proof-of-possession key as a Credential subclass: a credential is issued by an identity provider and proves an identity claim, while this key is presenter-generated and proves possession — merging them would make issuedBy meaningless for half the instances.",
         "Modelling the per-request DPoP proof as a first-class node: per-request volume with no competency question behind it; replay prevention via jti is an enforcement concern, not a governance one."
+      ],
+      "principles": [
+        "P4",
+        "P5",
+        "P8"
       ]
     },
     {
@@ -659,24 +726,10 @@
       "rejected": [
         "Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.",
         "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."
-      ]
-    },
-    {
-      "id": "D42",
-      "title": "Implementation-independent, standards-aligned",
-      "area": "Foundations",
-      "reasoning": "The ontology aligns to specifications but names no products. Alignment claims to a particular gateway API were removed from the ingress module, along with product names in definitions and seed data, because a vocabulary that encodes today's implementation ages badly: the terms would need renaming the moment the platform changed gateway, and readers would mistake an implementation detail for a modelling commitment. Gateways, listeners, routes and upstream services are real concepts in their own right and stand without borrowing anyone's product vocabulary. The distinction held is specification versus product: XACML's PDP/PEP/PIP/PAP roles, OAuth and OIDC claims, NIST SP 800-63 assurance levels, RFC 9493 subject identifiers, AuthZEN's evaluation tuple and SPIFFE workload identity all stay, because they are stable public specifications the firm has deliberately adopted — and in SPIFFE's case, the identifier strategy is a recorded governance decision, not incidental coupling.",
-      "terms": [
-        "Gateway",
-        "Listener",
-        "Route",
-        "UpstreamService",
-        "TLSConfiguration",
-        "changeTicket"
       ],
-      "rejected": [
-        "Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.",
-        "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."
+      "principles": [
+        "P2",
+        "P5"
       ]
     },
     {

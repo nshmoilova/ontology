@@ -28,6 +28,7 @@ terms by local name, and the build joins the two.
 | a term, its definition or annotations | `ontology/*.ttl` |
 | a constraint or its message | `shapes/*.ttl` |
 | the reasoning shown under "Why this exists" | `docs/decisions.json` |
+| a principle, its test, or what enforces it | `docs/principles.json` |
 | a guided explainer / walkthrough | `docs/explainers.json` |
 | an explainer diagram | `docs/diagrams/*.svg` |
 | competency questions | `docs/competency-questions.md` |

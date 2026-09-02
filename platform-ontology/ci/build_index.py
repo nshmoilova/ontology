@@ -162,6 +162,7 @@ def collect_terms(g: Graph):
                 "usedBy": [],
                 "vocabulary": [],
                 "decisions": [],
+                "principles": [],
             }
     # invert the class hierarchy
     by_curie = {t["curie"]: t for t in terms.values()}
@@ -345,6 +346,54 @@ def load_decisions(terms):
     return decisions
 
 
+def load_principles(terms, shapes, decisions):
+    """The principles layer: stated once, joined to the terms they cover, the
+    shapes that enforce them and the decisions that apply them."""
+    path = ROOT / "docs" / "principles.json"
+    if not path.exists():
+        return [], []
+    data = json.loads(path.read_text())
+    principles = data.get("principles", [])
+    by_name = defaultdict(list)
+    for t in terms.values():
+        by_name[t["name"]].append(t)
+    known_shapes = {s["name"]: s for s in shapes}
+    known_decisions = {d["id"]: d for d in decisions}
+    for pr in principles:
+        pr.setdefault("enforcedBy", []); pr.setdefault("appliedIn", []); pr.setdefault("terms", [])
+        resolved = []
+        for name in pr["terms"]:
+            for t in by_name.get(name, []):
+                resolved.append(t["curie"])
+                if pr["id"] not in t["principles"]:
+                    t["principles"].append(pr["id"])
+        pr["termCuries"] = sorted(set(resolved))
+        missing = [n for n in pr["terms"] if n not in by_name]
+        if missing:
+            print(f"  warn: {pr['id']} references unknown terms: {', '.join(missing)}")
+        bad = [s for s in pr["enforcedBy"] if s not in known_shapes]
+        if bad:
+            print(f"  warn: {pr['id']} references unknown shapes: {', '.join(bad)}")
+        for s in pr["enforcedBy"]:
+            if s in known_shapes:
+                known_shapes[s].setdefault("principles", []).append(pr["id"])
+        bad = [d for d in pr["appliedIn"] if d not in known_decisions]
+        if bad:
+            print(f"  warn: {pr['id']} references unknown decisions: {', '.join(bad)}")
+        for did in pr["appliedIn"]:
+            if did in known_decisions:
+                ps = known_decisions[did].setdefault("principles", [])
+                if pr["id"] not in ps:
+                    ps.append(pr["id"])
+    # a decision may also declare principles it applies that the principle did not list
+    known_p = {pr["id"] for pr in principles}
+    for d in decisions:
+        bad = [x for x in d.get("principles", []) if x not in known_p]
+        if bad:
+            print(f"  warn: {d['id']} applies unknown principles: {', '.join(bad)}")
+    return principles, data.get("evaluatedNotPrinciples", [])
+
+
 def load_explainers(terms, shapes):
     """Guided walkthroughs, with diagrams inlined and references verified."""
     path = ROOT / "docs" / "explainers.json"
@@ -354,6 +403,8 @@ def load_explainers(terms, shapes):
     explainers = data.get("explainers", [])
     known_terms = {t["curie"] for t in terms.values()}
     known_shapes = {s["name"] for s in shapes}
+    pfile = ROOT / "docs" / "principles.json"
+    known_principles = {p["id"] for p in json.loads(pfile.read_text()).get("principles", [])} if pfile.exists() else set()
     for ex in explainers:
         for step in ex.get("steps", []):
             diagram = step.get("diagram")
@@ -365,7 +416,8 @@ def load_explainers(terms, shapes):
                     print(f"  warn: {ex['id']} references missing diagram {diagram}")
                     step["svg"] = None
             for key, known, kind in (("terms", known_terms, "term"),
-                                     ("shapes", known_shapes, "shape")):
+                                     ("shapes", known_shapes, "shape"),
+                                     ("principles", known_principles, "principle")):
                 missing = [x for x in step.get(key, []) if x not in known]
                 if missing:
                     print(f"  warn: {ex['id']} references unknown {kind}s: "
@@ -424,7 +476,7 @@ def source_digest() -> str:
             if f.is_file():
                 h.update(f.name.encode())
                 h.update(f.read_bytes())
-    for rel in ("docs/decisions.json", "docs/explainers.json",
+    for rel in ("docs/decisions.json", "docs/principles.json", "docs/explainers.json",
                 "docs/competency-questions.md"):
         f = ROOT / rel
         if f.exists():
@@ -474,6 +526,7 @@ def main() -> int:
     shapes = collect_shapes(gs, terms)
     edges = build_relationships(shapes, terms)
     decisions = load_decisions(terms)
+    principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
     formal, backlog = load_competency_questions()
 
@@ -501,6 +554,7 @@ def main() -> int:
             "vocabularies": len(schemes),
             "relationships": len(edges),
             "decisions": len(decisions),
+            "principles": len(principles),
             "explainers": len(explainers),
             "formalCQs": len(formal),
             "backlogCQs": len(backlog),
@@ -511,6 +565,8 @@ def main() -> int:
         "shapes": shapes,
         "relationships": edges,
         "decisions": decisions,
+        "principles": principles,
+        "evaluatedNotPrinciples": not_principles,
         "explainers": explainers,
         "competencyQuestions": {"formal": formal, "backlog": backlog},
     }
@@ -524,8 +580,9 @@ def main() -> int:
     print(f"  {s['modules']} modules · {s['classes']} classes · "
           f"{s['objectProperties']}+{s['datatypeProperties']} properties")
     print(f"  {s['shapes']} shapes · {s['relationships']} relationships · "
-          f"{s['decisions']} decisions · {s['formalCQs']}+{s['backlogCQs']} questions")
-    undocumented = [t["curie"] for t in term_list if not t["decisions"]]
+          f"{s['decisions']} decisions · {s['principles']} principles · "
+          f"{s['formalCQs']}+{s['backlogCQs']} questions")
+    undocumented = [t["curie"] for t in term_list if not t["decisions"] and not t["principles"]]
     if undocumented:
         print(f"  note: {len(undocumented)} terms have no recorded decision "
               f"(shown as 'no recorded rationale' in the browser)")

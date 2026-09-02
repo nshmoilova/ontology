@@ -16,6 +16,9 @@
             "authz:Action",
             "authz:IngressAdmissionDecision",
             "core:Application"
+          ],
+          "principles": [
+            "P1"
           ]
         },
         {
@@ -217,11 +220,19 @@
             "ActionVocabularyShape",
             "PolicyDecisionShape",
             "IngressAdmissionDecisionShape"
+          ],
+          "principles": [
+            "P1",
+            "P7"
           ]
         },
         {
           "heading": "The test to apply to a candidate entitlement",
-          "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely — a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension."
+          "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely — a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension.",
+          "principles": [
+            "P1",
+            "P9"
+          ]
         }
       ],
       "openQuestions": [

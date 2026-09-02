@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "b42e1c0e25d2",
+ "sourceDigest": "163e204f1fd1",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -11,7 +11,8 @@
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 51,
-  "decisions": 51,
+  "decisions": 47,
+  "principles": 11,
   "explainers": 2,
   "formalCQs": 7,
   "backlogCQs": 90
@@ -151,6 +152,9 @@
    "decisions": [
     "D09",
     "D17"
+   ],
+   "principles": [
+    "P1"
    ]
   },
   {
@@ -204,7 +208,8 @@
    "vocabulary": [],
    "decisions": [
     "D47"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#Capability",
@@ -260,7 +265,8 @@
    "vocabulary": [],
    "decisions": [
     "D09"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#DeliveryChannel",
@@ -344,6 +350,9 @@
    ],
    "decisions": [
     "D23"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -371,7 +380,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PlatformEvent",
@@ -446,7 +456,8 @@
    "vocabulary": [],
    "decisions": [
     "D41"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PlatformTenant",
@@ -473,7 +484,8 @@
    "vocabulary": [],
    "decisions": [
     "D10"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyAdministrationPoint",
@@ -496,7 +508,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyDecisionPoint",
@@ -529,7 +542,8 @@
    "vocabulary": [],
    "decisions": [
     "D49"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyEnforcementPoint",
@@ -560,7 +574,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PolicyInformationPoint",
@@ -583,7 +598,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#Principal",
@@ -691,7 +707,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#Resource",
@@ -739,7 +756,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#Tenant",
@@ -811,7 +829,8 @@
    "vocabulary": [],
    "decisions": [
     "D09"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#WorkloadPrincipal",
@@ -846,7 +865,8 @@
    "vocabulary": [],
    "decisions": [
     "D33"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#displayName",
@@ -869,7 +889,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#identifier",
@@ -894,6 +915,9 @@
    "vocabulary": [],
    "decisions": [
     "D50"
+   ],
+   "principles": [
+    "P5"
    ]
   },
   {
@@ -921,7 +945,8 @@
    "vocabulary": [],
    "decisions": [
     "D41"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#validFrom",
@@ -944,7 +969,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#validUntil",
@@ -967,7 +993,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#actsForClient",
@@ -992,7 +1019,8 @@
    "vocabulary": [],
    "decisions": [
     "D47"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#enforcedBy",
@@ -1023,8 +1051,9 @@
     }
    ],
    "vocabulary": [],
-   "decisions": [
-    "D38"
+   "decisions": [],
+   "principles": [
+    "P6"
    ]
   },
   {
@@ -1048,8 +1077,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D38"
+   "decisions": [],
+   "principles": [
+    "P6"
    ]
   },
   {
@@ -1084,7 +1114,8 @@
    "decisions": [
     "D02",
     "D33"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#ownedBy",
@@ -1125,7 +1156,8 @@
    "decisions": [
     "D10",
     "D17"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#performedBy",
@@ -1158,8 +1190,9 @@
     }
    ],
    "vocabulary": [],
-   "decisions": [
-    "D38"
+   "decisions": [],
+   "principles": [
+    "P6"
    ]
   },
   {
@@ -1186,8 +1219,10 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D49",
-    "D38"
+    "D49"
+   ],
+   "principles": [
+    "P6"
    ]
   },
   {
@@ -1251,8 +1286,10 @@
     }
    ],
    "decisions": [
-    "D28",
-    "D39"
+    "D28"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -1356,7 +1393,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#AuthenticationJourneyDefinition",
@@ -1391,7 +1429,8 @@
    "vocabulary": [],
    "decisions": [
     "D26"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#AuthenticationJourneyExecution",
@@ -1525,7 +1564,8 @@
    "vocabulary": [],
    "decisions": [
     "D26"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#AuthenticationMethod",
@@ -1619,8 +1659,9 @@
      ]
     }
    ],
-   "decisions": [
-    "D39"
+   "decisions": [],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -1694,7 +1735,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#IdentityProvider",
@@ -1739,7 +1781,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#OAuthClientRegistration",
@@ -1824,6 +1867,10 @@
    "vocabulary": [],
    "decisions": [
     "D47"
+   ],
+   "principles": [
+    "P4",
+    "P5"
    ]
   },
   {
@@ -1880,6 +1927,9 @@
    "vocabulary": [],
    "decisions": [
     "D44"
+   ],
+   "principles": [
+    "P4"
    ]
   },
   {
@@ -1999,6 +2049,9 @@
    "vocabulary": [],
    "decisions": [
     "D30"
+   ],
+   "principles": [
+    "P5"
    ]
   },
   {
@@ -2071,6 +2124,9 @@
    ],
    "decisions": [
     "D30"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -2095,8 +2151,10 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D28",
-    "D39"
+    "D28"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -2122,7 +2180,8 @@
    "vocabulary": [],
    "decisions": [
     "D47"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#keyAlgorithm",
@@ -2147,7 +2206,8 @@
    "vocabulary": [],
    "decisions": [
     "D44"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#keyThumbprint",
@@ -2172,7 +2232,8 @@
    "vocabulary": [],
    "decisions": [
     "D44"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#subjectValue",
@@ -2197,7 +2258,8 @@
    "vocabulary": [],
    "decisions": [
     "D30"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#succeeded",
@@ -2220,7 +2282,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#achievedAssuranceLevel",
@@ -2245,7 +2308,8 @@
    "vocabulary": [],
    "decisions": [
     "D27"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#atIssuer",
@@ -2278,7 +2342,8 @@
    "vocabulary": [],
    "decisions": [
     "D30"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#authenticatedPrincipal",
@@ -2318,7 +2383,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#comprisesEvent",
@@ -2351,7 +2417,8 @@
    "vocabulary": [],
    "decisions": [
     "D26"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#confirmedByKey",
@@ -2384,7 +2451,8 @@
    "vocabulary": [],
    "decisions": [
     "D44"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#credentialOf",
@@ -2415,7 +2483,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#followsDefinition",
@@ -2449,7 +2518,8 @@
    "decisions": [
     "D51",
     "D26"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#forAudience",
@@ -2474,7 +2544,8 @@
    "vocabulary": [],
    "decisions": [
     "D47"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#identifierFormat",
@@ -2507,7 +2578,8 @@
    "vocabulary": [],
    "decisions": [
     "D30"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#identifies",
@@ -2540,7 +2612,8 @@
    "vocabulary": [],
    "decisions": [
     "D30"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#issuedBy",
@@ -2571,7 +2644,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#registeredWith",
@@ -2604,7 +2678,8 @@
    "vocabulary": [],
    "decisions": [
     "D47"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#servesChannel",
@@ -2630,7 +2705,8 @@
    "decisions": [
     "D51",
     "D26"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#usedCredential",
@@ -2653,7 +2729,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#usedMethod",
@@ -2684,7 +2761,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#AccessToken",
@@ -2711,6 +2789,9 @@
    "vocabulary": [],
    "decisions": [
     "D24"
+   ],
+   "principles": [
+    "P4"
    ]
   },
   {
@@ -2786,6 +2867,9 @@
    "decisions": [
     "D50",
     "D46"
+   ],
+   "principles": [
+    "P5"
    ]
   },
   {
@@ -2848,6 +2932,9 @@
     "D51",
     "D50",
     "D46"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -2875,7 +2962,8 @@
    "vocabulary": [],
    "decisions": [
     "D24"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#RefreshToken",
@@ -2900,7 +2988,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#Session",
@@ -3137,7 +3226,8 @@
    "vocabulary": [],
    "decisions": [
     "D27"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#SessionHandle",
@@ -3190,6 +3280,9 @@
    "vocabulary": [],
    "decisions": [
     "D44"
+   ],
+   "principles": [
+    "P5"
    ]
   },
   {
@@ -3272,8 +3365,9 @@
      ]
     }
    ],
-   "decisions": [
-    "D39"
+   "decisions": [],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -3321,6 +3415,9 @@
    "vocabulary": [],
    "decisions": [
     "D24"
+   ],
+   "principles": [
+    "P4"
    ]
   },
   {
@@ -3344,7 +3441,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#notBefore",
@@ -3367,7 +3465,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#boundToPrincipal",
@@ -3398,7 +3497,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#elevatedBy",
@@ -3431,7 +3531,8 @@
    "vocabulary": [],
    "decisions": [
     "D28"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#establishedBy",
@@ -3464,7 +3565,8 @@
    "vocabulary": [],
    "decisions": [
     "D27"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#hasDeviceClass",
@@ -3497,7 +3599,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#hasState",
@@ -3528,7 +3631,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#impliesChannel",
@@ -3553,7 +3657,8 @@
    "vocabulary": [],
    "decisions": [
     "D51"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#issuedToken",
@@ -3576,7 +3681,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#onDevice",
@@ -3609,7 +3715,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#resolvesToSession",
@@ -3642,7 +3749,8 @@
    "vocabulary": [],
    "decisions": [
     "D44"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/session#tokenAudience",
@@ -3667,6 +3775,9 @@
    "vocabulary": [],
    "decisions": [
     "D24"
+   ],
+   "principles": [
+    "P4"
    ]
   },
   {
@@ -3718,8 +3829,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D42"
+   "decisions": [],
+   "principles": [
+    "P8"
    ]
   },
   {
@@ -3796,8 +3908,9 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D42"
+   "decisions": [],
+   "principles": [
+    "P8"
    ]
   },
   {
@@ -3962,8 +4075,10 @@
    "vocabulary": [],
    "decisions": [
     "D48",
-    "D43",
-    "D42"
+    "D43"
+   ],
+   "principles": [
+    "P8"
    ]
   },
   {
@@ -3987,8 +4102,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D42"
+   "decisions": [],
+   "principles": [
+    "P8"
    ]
   },
   {
@@ -4022,8 +4138,9 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D42"
+   "decisions": [],
+   "principles": [
+    "P8"
    ]
   },
   {
@@ -4049,7 +4166,8 @@
    "vocabulary": [],
    "decisions": [
     "D43"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#pathPrefix",
@@ -4074,7 +4192,8 @@
    "vocabulary": [],
    "decisions": [
     "D43"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#port",
@@ -4097,7 +4216,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#protocol",
@@ -4120,7 +4240,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#terminatesTLS",
@@ -4143,7 +4264,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#boundToTenant",
@@ -4176,6 +4298,9 @@
    "vocabulary": [],
    "decisions": [
     "D43"
+   ],
+   "principles": [
+    "P5"
    ]
   },
   {
@@ -4199,7 +4324,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#hasListener",
@@ -4230,7 +4356,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#hasTLSConfiguration",
@@ -4253,7 +4380,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#routesTo",
@@ -4284,7 +4412,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/ingress#servesApplication",
@@ -4317,6 +4446,9 @@
    "vocabulary": [],
    "decisions": [
     "D48"
+   ],
+   "principles": [
+    "P1"
    ]
   },
   {
@@ -4401,6 +4533,10 @@
    ],
    "decisions": [
     "D31"
+   ],
+   "principles": [
+    "P1",
+    "P7"
    ]
   },
   {
@@ -4495,7 +4631,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#DecisionOutcome",
@@ -4577,8 +4714,9 @@
      ]
     }
    ],
-   "decisions": [
-    "D39"
+   "decisions": [],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -4675,6 +4813,10 @@
    ],
    "decisions": [
     "D21"
+   ],
+   "principles": [
+    "P1",
+    "P7"
    ]
   },
   {
@@ -4788,6 +4930,10 @@
    "vocabulary": [],
    "decisions": [
     "D22"
+   ],
+   "principles": [
+    "P2",
+    "P4"
    ]
   },
   {
@@ -4871,6 +5017,9 @@
    "decisions": [
     "D25",
     "D32"
+   ],
+   "principles": [
+    "P1"
    ]
   },
   {
@@ -4894,7 +5043,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#Policy",
@@ -4953,7 +5103,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#PolicyDecision",
@@ -5088,7 +5239,8 @@
    "vocabulary": [],
    "decisions": [
     "D25"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#PolicyRule",
@@ -5140,7 +5292,8 @@
    ],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#Role",
@@ -5163,7 +5316,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#attributeName",
@@ -5186,7 +5340,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#attributeValue",
@@ -5209,7 +5364,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#distributedAt",
@@ -5234,7 +5390,8 @@
    "vocabulary": [],
    "decisions": [
     "D22"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#effect",
@@ -5257,7 +5414,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#entitlementValue",
@@ -5282,7 +5440,8 @@
    "vocabulary": [],
    "decisions": [
     "D22"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#aboutPrincipal",
@@ -5313,7 +5472,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#assertedBy",
@@ -5336,7 +5496,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#decidedBy",
@@ -5369,7 +5530,8 @@
    "vocabulary": [],
    "decisions": [
     "D49"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#decisionOutcome",
@@ -5400,7 +5562,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#derivedFrom",
@@ -5426,6 +5589,9 @@
    "decisions": [
     "D22",
     "D36"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -5462,7 +5628,8 @@
    "decisions": [
     "D49",
     "D31"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#evaluatedGrant",
@@ -5495,7 +5662,8 @@
    "vocabulary": [],
    "decisions": [
     "D32"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#evaluatedPolicy",
@@ -5528,7 +5696,8 @@
    "vocabulary": [],
    "decisions": [
     "D32"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#grantedTo",
@@ -5561,7 +5730,8 @@
    "vocabulary": [],
    "decisions": [
     "D22"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#hasRule",
@@ -5592,7 +5762,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#imposesObligation",
@@ -5615,7 +5786,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#onDimension",
@@ -5648,7 +5820,8 @@
    "vocabulary": [],
    "decisions": [
     "D22"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#requestingPrincipal",
@@ -5677,7 +5850,8 @@
    "vocabulary": [],
    "decisions": [
     "D49"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#requiredAssuranceLevel",
@@ -5700,7 +5874,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#viaChannel",
@@ -5733,7 +5908,8 @@
    "vocabulary": [],
    "decisions": [
     "D23"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authz#withinSession",
@@ -5756,7 +5932,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#AdministrativeScope",
@@ -5789,7 +5966,8 @@
    "vocabulary": [],
    "decisions": [
     "D03"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement",
@@ -5833,7 +6011,8 @@
    "decisions": [
     "D19",
     "D35"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#CapabilityBundle",
@@ -5858,7 +6037,8 @@
    "vocabulary": [],
    "decisions": [
     "D15"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#CapabilityControlPlane",
@@ -5940,6 +6120,9 @@
    "vocabulary": [],
    "decisions": [
     "D02"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -5975,6 +6158,9 @@
    "decisions": [
     "D16",
     "D35"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -6000,7 +6186,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#CapabilityUseObservation",
@@ -6027,7 +6214,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ChangeApproval",
@@ -6092,8 +6280,10 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D12",
-    "D40"
+    "D12"
+   ],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -6119,7 +6309,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ControlPlaneComponent",
@@ -6147,7 +6338,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#DataPlane",
@@ -6215,7 +6407,8 @@
    "vocabulary": [],
    "decisions": [
     "D07"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#DataPlaneMutation",
@@ -6304,7 +6497,8 @@
    "vocabulary": [],
    "decisions": [
     "D04"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#DesiredStateDeclaration",
@@ -6395,6 +6589,9 @@
    "vocabulary": [],
    "decisions": [
     "D05"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -6422,7 +6619,8 @@
    "vocabulary": [],
    "decisions": [
     "D37"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ManagementControlPlane",
@@ -6477,6 +6675,9 @@
    "vocabulary": [],
    "decisions": [
     "D01"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -6561,6 +6762,9 @@
    ],
    "decisions": [
     "D45"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -6626,8 +6830,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D40"
+   "decisions": [],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -6692,7 +6897,8 @@
    "decisions": [
     "D20",
     "D34"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#RouteBindingChange",
@@ -6745,6 +6951,9 @@
    "vocabulary": [],
    "decisions": [
     "D43"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -6857,7 +7066,8 @@
    "decisions": [
     "D11",
     "D12"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#SubscriptionState",
@@ -6941,6 +7151,9 @@
    ],
    "decisions": [
     "D11"
+   ],
+   "principles": [
+    "P7"
    ]
   },
   {
@@ -7050,7 +7263,8 @@
    "vocabulary": [],
    "decisions": [
     "D45"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#approvedAtTime",
@@ -7073,8 +7287,9 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D40"
+   "decisions": [],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -7098,9 +7313,10 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": [
-    "D40",
-    "D42"
+   "decisions": [],
+   "principles": [
+    "P3",
+    "P8"
    ]
   },
   {
@@ -7126,7 +7342,8 @@
    "vocabulary": [],
    "decisions": [
     "D03"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#inRegion",
@@ -7151,7 +7368,8 @@
    "vocabulary": [],
    "decisions": [
     "D03"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#isolationModel",
@@ -7176,7 +7394,8 @@
    "vocabulary": [],
    "decisions": [
     "D08"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#maxConcurrentSessions",
@@ -7201,7 +7420,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#memberCapacity",
@@ -7226,7 +7446,8 @@
    "vocabulary": [],
    "decisions": [
     "D45"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#requestCount",
@@ -7251,7 +7472,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#requiresHumanApproval",
@@ -7276,6 +7498,9 @@
    "vocabulary": [],
    "decisions": [
     "D06"
+   ],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -7301,7 +7526,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#windowStart",
@@ -7326,7 +7552,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#actuates",
@@ -7351,6 +7578,9 @@
    "vocabulary": [],
    "decisions": [
     "D07"
+   ],
+   "principles": [
+    "P2"
    ]
   },
   {
@@ -7374,7 +7604,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#appliesToDeviceClass",
@@ -7399,7 +7630,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#approvedBy",
@@ -7430,8 +7662,9 @@
     }
    ],
    "vocabulary": [],
-   "decisions": [
-    "D40"
+   "decisions": [],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -7457,7 +7690,8 @@
    "vocabulary": [],
    "decisions": [
     "D15"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#changedPolicy",
@@ -7480,7 +7714,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declarationScope",
@@ -7514,7 +7749,8 @@
    "decisions": [
     "D03",
     "D04"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declaredThrough",
@@ -7547,7 +7783,8 @@
    "vocabulary": [],
    "decisions": [
     "D01"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declaresDefinition",
@@ -7572,7 +7809,8 @@
    "vocabulary": [],
    "decisions": [
     "D37"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declaresRouteBinding",
@@ -7605,7 +7843,8 @@
    "vocabulary": [],
    "decisions": [
     "D43"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#declaresStateOf",
@@ -7628,7 +7867,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#dependsOn",
@@ -7653,7 +7893,8 @@
    "vocabulary": [],
    "decisions": [
     "D14"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#executedBy",
@@ -7680,7 +7921,8 @@
    "vocabulary": [],
    "decisions": [
     "D07"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#forApplication",
@@ -7706,7 +7948,8 @@
    "decisions": [
     "D13",
     "D19"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#governsCapability",
@@ -7739,7 +7982,8 @@
    "vocabulary": [],
    "decisions": [
     "D02"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#groupsApplication",
@@ -7765,7 +8009,8 @@
    "decisions": [
     "D20",
     "D34"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#hasApproval",
@@ -7790,8 +8035,10 @@
    "vocabulary": [],
    "decisions": [
     "D05",
-    "D12",
-    "D40"
+    "D12"
+   ],
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -7825,7 +8072,8 @@
    "vocabulary": [],
    "decisions": [
     "D45"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState",
@@ -7858,7 +8106,8 @@
    "vocabulary": [],
    "decisions": [
     "D11"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#justifiedBy",
@@ -7883,7 +8132,8 @@
    "vocabulary": [],
    "decisions": [
     "D13"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#memberOfTenant",
@@ -7916,7 +8166,8 @@
    "vocabulary": [],
    "decisions": [
     "D45"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#memberPrincipal",
@@ -7949,7 +8200,8 @@
    "vocabulary": [],
    "decisions": [
     "D45"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#mutatedDataPlane",
@@ -7982,7 +8234,8 @@
    "vocabulary": [],
    "decisions": [
     "D07"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#observedApplication",
@@ -8007,7 +8260,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#observedCapability",
@@ -8032,7 +8286,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#ofApplication",
@@ -8057,7 +8312,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#offeredInScope",
@@ -8082,7 +8338,8 @@
    "vocabulary": [],
    "decisions": [
     "D16"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#offersCapability",
@@ -8107,7 +8364,8 @@
    "vocabulary": [],
    "decisions": [
     "D16"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#policyForTenant",
@@ -8132,7 +8390,8 @@
    "vocabulary": [],
    "decisions": [
     "D46"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#realizesCapability",
@@ -8163,7 +8422,8 @@
     }
    ],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#realizesIntent",
@@ -8188,7 +8448,8 @@
    "vocabulary": [],
    "decisions": [
     "D07"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#requiredCapability",
@@ -8213,7 +8474,8 @@
    "vocabulary": [],
    "decisions": [
     "D18"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#scopeIncludes",
@@ -8236,7 +8498,8 @@
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
-   "decisions": []
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#servesTenant",
@@ -8261,7 +8524,8 @@
    "vocabulary": [],
    "decisions": [
     "D08"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#subScopeOf",
@@ -8286,7 +8550,8 @@
    "vocabulary": [],
    "decisions": [
     "D03"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#subscribedCapability",
@@ -8319,7 +8584,8 @@
    "vocabulary": [],
    "decisions": [
     "D11"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#subscriber",
@@ -8352,7 +8618,8 @@
    "vocabulary": [],
    "decisions": [
     "D11"
-   ]
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#supersedes",
@@ -8377,7 +8644,8 @@
    "vocabulary": [],
    "decisions": [
     "D05"
-   ]
+   ],
+   "principles": []
   }
  ],
  "vocabularies": [
@@ -9251,7 +9519,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P5"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authn#SubjectIdentifierShape",
@@ -9373,7 +9644,11 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P1",
+    "P7"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#AdmissionRequiresMembershipShape",
@@ -9532,7 +9807,12 @@
     }
    ],
    "violations": 3,
-   "warnings": 1
+   "warnings": 1,
+   "principles": [
+    "P1",
+    "P2",
+    "P4"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#IngressAdmissionDecisionShape",
@@ -9839,7 +10119,10 @@
     }
    ],
    "violations": 2,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P2"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneOfferedShape",
@@ -9991,7 +10274,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ManagementPlaneNoActuationShape",
@@ -10017,7 +10303,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P2"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#MembershipApprovalShape",
@@ -10034,7 +10323,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#OfferingSupplyClosureShape",
@@ -10207,7 +10499,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SelfGovernanceLoopShape",
@@ -10224,7 +10519,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P2"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SoleWriterShape",
@@ -10241,7 +10539,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P2"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SubscriptionActivationApprovalShape",
@@ -10258,7 +10559,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SubscriptionClosureShape",
@@ -10626,7 +10930,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P2"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#ListenerShape",
@@ -10811,7 +11118,10 @@
     }
    ],
    "violations": 4,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P5"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/ingress#TenantBoundRouteShape",
@@ -10980,7 +11290,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P4"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#SessionDeviceShape",
@@ -11032,7 +11345,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P5"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#SessionPrincipalConsistencyShape",
@@ -11152,7 +11468,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P4"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/session#TokenShape",
@@ -11580,6 +11899,9 @@
     "Splitting client type from device entirely, per Microsoft's three-way division into client apps, device platforms and device filters: the right end state, but it churns invariants and is a decision to take with the review group.",
     "Leaving Device unnameable: a concurrency limit that counts per device cannot count anonymous ones."
    ],
+   "principles": [
+    "P5"
+   ],
    "termCuries": [
     "core:identifier",
     "session:Device",
@@ -11603,6 +11925,9 @@
     "A PlatformPolicyDecisionPoint subclass to separate the two PDPs by type: unnecessary while application decisions are out of scope and never enter the graph, and it would imply a symmetric ApplicationPolicyDecisionPoint that the Level-3 boundary forbids. Worth revisiting only if application decisions are ever ingested for audit.",
     "Renaming the Permit outcome to Allow: the outcome scheme is XACML's, and renaming one member would leave the vocabulary half-aligned."
    ],
+   "principles": [
+    "P8"
+   ],
    "termCuries": [
     "authz:decidedBy",
     "authz:evaluatedAction",
@@ -11624,6 +11949,11 @@
    "rejected": [
     "Linking UpstreamService to Application instead: an upstream is a backend the route forwards to, and several may serve one application; the endpoint is what a subject enters through.",
     "Leaving the join implicit through shared tenant ownership: it returns rows, which is precisely why it is dangerous \u2014 the answer looks right and fails open."
+   ],
+   "principles": [
+    "P1",
+    "P9",
+    "P10"
    ],
    "termCuries": [
     "ingress:Route",
@@ -11649,6 +11979,10 @@
     "Making BusinessClient a subclass of Principal: a corporate client is not authenticable and has many users, so principals act for a client rather than being one.",
     "Leaving the OAuth registration unmodelled as pure plumbing: it is plumbing, but naming it explicitly is what stops the two senses of 'client' collapsing back together in conversation."
    ],
+   "principles": [
+    "P4",
+    "P5"
+   ],
    "termCuries": [
     "authn:OAuthClientRegistration",
     "authn:clientId",
@@ -11667,6 +12001,9 @@
     "ManagementControlPlane",
     "declaredThrough"
    ],
+   "principles": [
+    "P2"
+   ],
    "invariant": false,
    "rejected": [],
    "termCuries": [
@@ -11683,6 +12020,9 @@
     "CapabilityControlPlane",
     "governsCapability",
     "hasActingIdentity"
+   ],
+   "principles": [
+    "P2"
    ],
    "invariant": false,
    "rejected": [],
@@ -11709,6 +12049,9 @@
     "Two orthogonal axis-properties (environment + region): clean for env\u00d7region, silent on tenants, and every future axis needs invariant surgery.",
     "Flat named scopes: no inheritance or containment reasoning; all meaning trapped in naming conventions."
    ],
+   "principles": [
+    "P6"
+   ],
    "termCuries": [
     "cp:AdministrativeScope",
     "cp:declarationScope",
@@ -11727,6 +12070,9 @@
     "DataPlaneMutation",
     "declarationScope"
    ],
+   "principles": [
+    "P10"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:DataPlaneMutation",
@@ -11744,6 +12090,9 @@
     "supersedes",
     "hasApproval"
    ],
+   "principles": [
+    "P3"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:DesiredStateDeclaration",
@@ -11759,6 +12108,9 @@
    "reasoning": "Scopes carry the approval requirement, inherited to the nearest ancestor that says anything: prod strict, dev light, one constraint, zero shape exceptions. Data-driven rigor keeps the invariant count constant and makes 'which scopes waive human approval' a governed, queryable fact \u2014 an auditor question you want answerable.",
    "terms": [
     "requiresHumanApproval"
+   ],
+   "principles": [
+    "P3"
    ],
    "rejected": [],
    "termCuries": [
@@ -11777,6 +12129,9 @@
     "mutatedDataPlane",
     "realizesIntent",
     "executedBy"
+   ],
+   "principles": [
+    "P2"
    ],
    "rejected": [],
    "termCuries": [
@@ -11854,6 +12209,9 @@
    "rejected": [
     "Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule \u2014 a design smell."
    ],
+   "principles": [
+    "P7"
+   ],
    "invariant": false,
    "termCuries": [
     "cp:Subscription",
@@ -11874,6 +12232,9 @@
     "hasApproval",
     "ChangeApproval"
    ],
+   "principles": [
+    "P3"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:ChangeApproval",
@@ -11890,6 +12251,9 @@
    "terms": [
     "justifiedBy",
     "forApplication"
+   ],
+   "principles": [
+    "P2"
    ],
    "rejected": [],
    "termCuries": [
@@ -11938,6 +12302,9 @@
     "offersCapability",
     "offeredInScope"
    ],
+   "principles": [
+    "P2"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:CapabilityOffering",
@@ -11953,6 +12320,9 @@
    "terms": [
     "Application",
     "ownedBy"
+   ],
+   "principles": [
+    "P1"
    ],
    "invariant": false,
    "rejected": [],
@@ -11976,6 +12346,9 @@
     "windowStart",
     "windowEnd",
     "requestCount"
+   ],
+   "principles": [
+    "P3"
    ],
    "invariant": false,
    "rejected": [],
@@ -12001,6 +12374,9 @@
     "ApplicationEnablement",
     "forApplication"
    ],
+   "principles": [
+    "P10"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:ApplicationEnablement",
@@ -12016,6 +12392,9 @@
    "terms": [
     "Portal",
     "groupsApplication"
+   ],
+   "principles": [
+    "P1"
    ],
    "rejected": [],
    "termCuries": [
@@ -12036,6 +12415,10 @@
     "Reusing AttributeAssertion: conflates an observation (the HR system reports a fact) with a conferral (someone granted access), and loses the closed-vocabulary check since attribute names are open strings by design.",
     "client.access as a sixth dimension: the registration is the evidence for the channel dimension, not a dimension itself."
    ],
+   "principles": [
+    "P1",
+    "P7"
+   ],
    "invariant": false,
    "termCuries": [
     "authz:EntitlementDimension"
@@ -12055,6 +12438,10 @@
     "distributedAt",
     "entitlementValue"
    ],
+   "principles": [
+    "P2",
+    "P4"
+   ],
    "rejected": [],
    "termCuries": [
     "authz:EntitlementGrant",
@@ -12073,6 +12460,9 @@
    "terms": [
     "DeliveryChannel",
     "viaChannel"
+   ],
+   "principles": [
+    "P7"
    ],
    "invariant": false,
    "rejected": [],
@@ -12096,6 +12486,9 @@
     "Minting entitlements into the token: claims freeze at issuance, so an entitlement stays true until expiry \u2014 exactly the window in which offboarding or compromise must take effect.",
     "Treating tenancy as a token claim: tenant context comes from the request URL in this platform, so a claim would duplicate it and the two could disagree."
    ],
+   "principles": [
+    "P4"
+   ],
    "invariant": false,
    "termCuries": [
     "session:AccessToken",
@@ -12112,6 +12505,10 @@
    "terms": [
     "PolicyDecision",
     "IngressAdmissionDecision"
+   ],
+   "principles": [
+    "P1",
+    "P9"
    ],
    "invariant": false,
    "rejected": [],
@@ -12189,7 +12586,10 @@
     "Keeping a hollowed-out AuthorizedParty with the false properties stripped: what remained was an OAuth registration identifier derivable from the audience, adding nothing the model needs.",
     "Retargeting it to the session manager's per-audience registration: that is real, but it is protocol bookkeeping with no competency question behind it."
    ],
-   "termCuries": []
+   "termCuries": [],
+   "principles": [
+    "P8"
+   ]
   },
   {
    "id": "D30",
@@ -12209,6 +12609,10 @@
     "A multi-valued datatype property: stringly-typed, with no home for pairwise scoping, formats or validity, and uniqueness unenforceable without string surgery.",
     "A Credential subclass: a subject identifier proves nothing and is presented by no one \u2014 it is a naming fact, not an authentication artifact.",
     "AttributeAssertion reuse: assertions describe a known principal to feed decisions; identifiers resolve an unknown subject to a principal \u2014 opposite direction, different consumer."
+   ],
+   "principles": [
+    "P5",
+    "P8"
    ],
    "termCuries": [
     "authn:SubjectIdentifier",
@@ -12233,6 +12637,10 @@
     "A datatype property with a string action name: free strings drift (read/READ/view) and the Level-3 boundary becomes unenforceable.",
     "Reifying the whole request as an AccessRequest node: no competency question demands it, and PolicyDecision already is the reified evaluation record."
    ],
+   "principles": [
+    "P1",
+    "P7"
+   ],
    "termCuries": [
     "authz:Action",
     "authz:evaluatedAction"
@@ -12248,6 +12656,9 @@
     "IngressAdmissionDecision",
     "evaluatedGrant",
     "evaluatedPolicy"
+   ],
+   "principles": [
+    "P6"
    ],
    "rejected": [],
    "termCuries": [
@@ -12298,6 +12709,9 @@
     "ApplicationEnablement",
     "CapabilityOffering"
    ],
+   "principles": [
+    "P10"
+   ],
    "rejected": [],
    "termCuries": [
     "cp:ApplicationEnablement",
@@ -12335,72 +12749,6 @@
    ]
   },
   {
-   "id": "D38",
-   "title": "OWL for semantics, SHACL for contracts",
-   "area": "Foundations",
-   "reasoning": "OWL defines meaning and licenses inference; rdfs:domain and rdfs:range are deliberately kept off shared properties, because under OWL semantics a domain axiom does not reject bad data \u2014 it infers a (wrong) type. Typing and cardinality live in SHACL, where a breach is a report rather than a silent inference. sh:Violation rejects at ingestion; sh:Warning admits but routes to the stewardship queue.",
-   "terms": [
-    "performedBy",
-    "targetsResource",
-    "governedBy",
-    "enforcedBy"
-   ],
-   "invariant": false,
-   "rejected": [],
-   "termCuries": [
-    "core:enforcedBy",
-    "core:governedBy",
-    "core:performedBy",
-    "core:targetsResource"
-   ]
-  },
-  {
-   "id": "D39",
-   "title": "States and vocabularies are individuals, not subclasses",
-   "area": "Foundations",
-   "reasoning": "Session and subscription states, decision outcomes, authentication methods, assurance levels, entitlement dimensions, actions, channels and subject-identifier formats are all SKOS individuals in closed schemes. Individuals keep generic queries simple, make extension a data change rather than a hierarchy change, and \u2014 crucially \u2014 make closure checkable: 'is this term in the platform-owned scheme' is a one-line constraint, which is how the ingress vocabulary boundary is enforced. Assurance levels additionally carry an integer rank so SHACL-SPARQL can compare them in order.",
-   "terms": [
-    "SessionState",
-    "DecisionOutcome",
-    "AuthenticationMethod",
-    "AssuranceLevel",
-    "assuranceRank"
-   ],
-   "invariant": false,
-   "rejected": [],
-   "termCuries": [
-    "authn:AssuranceLevel",
-    "authn:AuthenticationMethod",
-    "authn:assuranceRank",
-    "authz:DecisionOutcome",
-    "session:SessionState"
-   ]
-  },
-  {
-   "id": "D40",
-   "title": "Agents execute, humans authorize",
-   "area": "Foundations",
-   "invariant": true,
-   "reasoning": "Every policy change must carry an approval by a human principal; approvals by workload principals alone do not satisfy the invariant. The pattern recurs across the model \u2014 declarations in rigor-requiring scopes, subscription activations, requirement confirmations \u2014 because the same asymmetry holds each time: automation may act, but a person must be accountable for the grant of authority. The planned counterpart is deliberately asymmetric: revocation should need no approval, since taking access away fast is safe, while reinstatement does.",
-   "terms": [
-    "PolicyChangeEvent",
-    "ChangeApproval",
-    "approvedBy",
-    "approvedAtTime",
-    "hasApproval",
-    "changeTicket"
-   ],
-   "rejected": [],
-   "termCuries": [
-    "cp:ChangeApproval",
-    "cp:PolicyChangeEvent",
-    "cp:approvedAtTime",
-    "cp:approvedBy",
-    "cp:changeTicket",
-    "cp:hasApproval"
-   ]
-  },
-  {
    "id": "D46",
    "title": "Sessions are per user per device; channel comes from device class",
    "area": "Audit round",
@@ -12420,6 +12768,9 @@
     "Merging device class into the delivery-channel vocabulary: they overlap for browser and mobile but differ in extension, since api and agent are channels with no device \u2014 one vocabulary would have members that cannot be devices.",
     "Deriving channel from the OAuth client registration: the client_id is a protocol identifier for the session manager's registration, one per audience, carrying no channel information at all.",
     "Modelling concurrent-session policy as a governed declaration: left as plain configuration for now and recorded as an open question, since it is a security control with no approver \u2014 the same asymmetry route bindings had before D43."
+   ],
+   "principles": [
+    "P7"
    ],
    "termCuries": [
     "cp:ConcurrentSessionPolicy",
@@ -12452,6 +12803,10 @@
     "An Identity class as a synonym for Principal: two words for one concept.",
     "An Identity class merging the canonical identifier with issuer-scoped subjects: re-conflates exactly what the subject-identifier work separated, since one says what we call a principal and the other resolves an unknown subject to one."
    ],
+   "principles": [
+    "P3",
+    "P6"
+   ],
    "termCuries": [
     "cp:MembershipState",
     "cp:TenantMembership",
@@ -12478,6 +12833,11 @@
    "rejected": [
     "Modelling the proof-of-possession key as a Credential subclass: a credential is issued by an identity provider and proves an identity claim, while this key is presenter-generated and proves possession \u2014 merging them would make issuedBy meaningless for half the instances.",
     "Modelling the per-request DPoP proof as a first-class node: per-request volume with no competency question behind it; replay prevention via jti is an enforcement concern, not a governance one."
+   ],
+   "principles": [
+    "P4",
+    "P5",
+    "P8"
    ],
    "termCuries": [
     "authn:ProofOfPossessionKey",
@@ -12506,6 +12866,10 @@
     "Modelling route matching without governing it: describes reality but leaves tenant resolution as the one security-critical control with no approver, which is the asymmetry that prompted the work.",
     "Leaving the binding unmodelled and treating it as infrastructure detail: tenant.access cannot be explained, let alone audited, without the binding that resolves the tenant."
    ],
+   "principles": [
+    "P2",
+    "P5"
+   ],
    "termCuries": [
     "cp:RouteBindingChange",
     "cp:declaresRouteBinding",
@@ -12513,33 +12877,6 @@
     "ingress:boundToTenant",
     "ingress:hostname",
     "ingress:pathPrefix"
-   ]
-  },
-  {
-   "id": "D42",
-   "title": "Implementation-independent, standards-aligned",
-   "area": "Foundations",
-   "reasoning": "The ontology aligns to specifications but names no products. Alignment claims to a particular gateway API were removed from the ingress module, along with product names in definitions and seed data, because a vocabulary that encodes today's implementation ages badly: the terms would need renaming the moment the platform changed gateway, and readers would mistake an implementation detail for a modelling commitment. Gateways, listeners, routes and upstream services are real concepts in their own right and stand without borrowing anyone's product vocabulary. The distinction held is specification versus product: XACML's PDP/PEP/PIP/PAP roles, OAuth and OIDC claims, NIST SP 800-63 assurance levels, RFC 9493 subject identifiers, AuthZEN's evaluation tuple and SPIFFE workload identity all stay, because they are stable public specifications the firm has deliberately adopted \u2014 and in SPIFFE's case, the identifier strategy is a recorded governance decision, not incidental coupling.",
-   "terms": [
-    "Gateway",
-    "Listener",
-    "Route",
-    "UpstreamService",
-    "TLSConfiguration",
-    "changeTicket"
-   ],
-   "rejected": [
-    "Naming the specific gateway API the ingress terms were first modelled against: it made a structural claim about the model that would be false the moment the implementation changed.",
-    "Removing SPIFFE and XACML alongside the product names: those are specifications rather than implementations, and SPIFFE is the recorded workload identifier strategy in the governance policy."
-   ],
-   "invariant": false,
-   "termCuries": [
-    "cp:changeTicket",
-    "ingress:Gateway",
-    "ingress:Listener",
-    "ingress:Route",
-    "ingress:TLSConfiguration",
-    "ingress:UpstreamService"
    ]
   },
   {
@@ -12559,6 +12896,396 @@
    ]
   }
  ],
+ "principles": [
+  {
+   "id": "P1",
+   "title": "The boundary, not the resource",
+   "level": "platform",
+   "statement": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. The platform never learns what is inside an application.",
+   "test": "Could the platform still evaluate this check if every application were replaced by an opaque identifier with no documentation? If not, it is not a platform entitlement.",
+   "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary.",
+   "fitness": "generative (6 decisions, 2 invariants) \u00b7 testable (the opacity question) \u00b7 enforced",
+   "enforcedBy": [
+    "ActionVocabularyShape",
+    "EntitlementGrantShape"
+   ],
+   "appliedIn": [
+    "D17",
+    "D20",
+    "D21",
+    "D25",
+    "D31",
+    "D48"
+   ],
+   "terms": [
+    "Application",
+    "Action",
+    "EntitlementDimension",
+    "IngressAdmissionDecision",
+    "servesApplication"
+   ],
+   "termCuries": [
+    "authz:Action",
+    "authz:EntitlementDimension",
+    "authz:IngressAdmissionDecision",
+    "core:Application",
+    "ingress:servesApplication"
+   ]
+  },
+  {
+   "id": "P2",
+   "title": "Governance defines; enforcement actuates",
+   "level": "platform",
+   "statement": "Whatever defines desired state or entitlement never actuates or enforces it, and whatever enforces never defines. The control plane defines and ingress enforces; the management plane declares and capability control planes write; offerings are intent and data planes are actuation.",
+   "test": "Which component defines this, and which executes it? If the answer is the same component, the design is wrong.",
+   "consequences": "Every data-plane write traces to a declaration; every entitlement grant traces to the governance object it was projected from; route bindings are declarations rather than loose configuration; the management plane holds no write path into a data plane.",
+   "fitness": "generative (7 decisions, 6 invariants) \u00b7 testable \u00b7 enforced",
+   "enforcedBy": [
+    "ManagementPlaneNoActuationShape",
+    "SoleWriterShape",
+    "SelfGovernanceLoopShape",
+    "DataPlaneMutationShape",
+    "GovernedRouteBindingShape",
+    "EntitlementGrantShape"
+   ],
+   "appliedIn": [
+    "D01",
+    "D02",
+    "D07",
+    "D13",
+    "D16",
+    "D22",
+    "D43"
+   ],
+   "terms": [
+    "ManagementControlPlane",
+    "CapabilityControlPlane",
+    "DesiredStateDeclaration",
+    "EntitlementGrant",
+    "RouteBindingChange",
+    "CapabilityOffering",
+    "actuates",
+    "derivedFrom"
+   ],
+   "termCuries": [
+    "authz:EntitlementGrant",
+    "authz:derivedFrom",
+    "cp:CapabilityControlPlane",
+    "cp:CapabilityOffering",
+    "cp:DesiredStateDeclaration",
+    "cp:ManagementControlPlane",
+    "cp:RouteBindingChange",
+    "cp:actuates"
+   ]
+  },
+  {
+   "id": "P3",
+   "title": "Agents execute; humans authorize",
+   "level": "platform",
+   "formerly": "D40",
+   "statement": "Automation may act, but a human must be accountable for every grant of authority: policy changes, declarations in rigor-requiring scopes, subscription activations, membership admissions and requirement confirmations all carry a human approval. Revocation is the deliberate exception \u2014 taking access away fast is safe; giving it back is the boundary.",
+   "test": "Does this change grant authority? Then which human is accountable for it?",
+   "consequences": "Approvals by workload principals alone never satisfy an invariant. The same asymmetry recurs wherever authority is conferred, and its planned counterpart is that revocation needs no approval while reinstatement does.",
+   "fitness": "generative (5 decisions, 4 invariants) \u00b7 testable \u00b7 enforced",
+   "enforcedBy": [
+    "HumanAuthorizationShape",
+    "ScopeRigorShape",
+    "SubscriptionActivationApprovalShape",
+    "MembershipApprovalShape"
+   ],
+   "appliedIn": [
+    "D05",
+    "D06",
+    "D12",
+    "D18",
+    "D45"
+   ],
+   "terms": [
+    "PolicyChangeEvent",
+    "ChangeApproval",
+    "approvedBy",
+    "approvedAtTime",
+    "hasApproval",
+    "changeTicket",
+    "requiresHumanApproval"
+   ],
+   "termCuries": [
+    "cp:ChangeApproval",
+    "cp:PolicyChangeEvent",
+    "cp:approvedAtTime",
+    "cp:approvedBy",
+    "cp:changeTicket",
+    "cp:hasApproval",
+    "cp:requiresHumanApproval"
+   ]
+  },
+  {
+   "id": "P4",
+   "title": "The token is evidence; the grant is authority",
+   "level": "platform",
+   "statement": "A token proves who is calling and in what context; it never carries what they may do. Authority is a grant the control plane projects to the enforcement point, revocable without re-minting anything. Claims freeze at issuance; grants do not.",
+   "test": "Would this decision change if the token were re-minted? If yes, authority has leaked into evidence.",
+   "consequences": "Entitlements are never minted into tokens; scope and permissions claims are ignored at ingress; the OAuth client_id is a protocol identifier and never a basis for a decision; sender-constraining makes a stolen token useless rather than merely short-lived.",
+   "fitness": "generative (4 decisions, 3 invariants) \u00b7 testable \u00b7 enforced",
+   "enforcedBy": [
+    "EntitlementGrantShape",
+    "SenderConstrainedSessionShape",
+    "TokenInheritsConfirmationShape"
+   ],
+   "appliedIn": [
+    "D22",
+    "D24",
+    "D44",
+    "D47"
+   ],
+   "terms": [
+    "EntitlementGrant",
+    "Token",
+    "AccessToken",
+    "ProofOfPossessionKey",
+    "OAuthClientRegistration",
+    "tokenAudience"
+   ],
+   "termCuries": [
+    "authn:OAuthClientRegistration",
+    "authn:ProofOfPossessionKey",
+    "authz:EntitlementGrant",
+    "session:AccessToken",
+    "session:Token",
+    "session:tokenAudience"
+   ]
+  },
+  {
+   "id": "P5",
+   "title": "An identifier resolves to an entity; it does not substitute for one",
+   "level": "modelling",
+   "statement": "A domain resolves to a tenant, a subject value to a principal, a handle to a session, a client_id to a registration. Each is evidence that resolves to an entity the model holds separately, with its own lifecycle and relationships. Collapsing the two loses everything the entity carries beyond that one resolution path.",
+   "test": "Is this thing the entity, or a way of finding it? If it is a way of finding it, model the entity and the resolution separately.",
+   "consequences": "Tenants are first-class rather than route bindings; subject identifiers are reified rather than strings on principals; session handles resolve to sessions rather than being sessions; a device is nameable rather than only classified.",
+   "fitness": "generative (5 decisions, 3 invariants) \u00b7 testable \u00b7 enforced",
+   "enforcedBy": [
+    "SubjectIdentifierCollisionShape",
+    "SessionHandleShape",
+    "RouteShape"
+   ],
+   "appliedIn": [
+    "D30",
+    "D43",
+    "D44",
+    "D47",
+    "D50"
+   ],
+   "terms": [
+    "SubjectIdentifier",
+    "SessionHandle",
+    "boundToTenant",
+    "OAuthClientRegistration",
+    "Device",
+    "identifier"
+   ],
+   "termCuries": [
+    "authn:OAuthClientRegistration",
+    "authn:SubjectIdentifier",
+    "core:identifier",
+    "ingress:boundToTenant",
+    "session:Device",
+    "session:SessionHandle"
+   ]
+  },
+  {
+   "id": "P6",
+   "title": "OWL for semantics, SHACL for contracts",
+   "level": "modelling",
+   "formerly": "D38",
+   "statement": "OWL defines meaning and licenses inference; SHACL is the data contract. rdfs:domain and rdfs:range are kept off shared properties, because under OWL semantics a domain axiom does not reject bad data \u2014 it infers a wrong type. Typing and cardinality live in shapes, where a breach is a report. sh:Violation rejects at ingestion; sh:Warning admits but routes to stewardship.",
+   "test": "Should a breach of this be rejected, or inferred around? If rejected, it is a shape, not an axiom.",
+   "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import.",
+   "fitness": "generative (every shape) \u00b7 testable \u00b7 enforced structurally \u2014 no shared property carries a domain or range",
+   "enforcedBy": [],
+   "appliedIn": [
+    "D03",
+    "D32",
+    "D45"
+   ],
+   "terms": [
+    "performedBy",
+    "targetsResource",
+    "governedBy",
+    "enforcedBy"
+   ],
+   "termCuries": [
+    "core:enforcedBy",
+    "core:governedBy",
+    "core:performedBy",
+    "core:targetsResource"
+   ]
+  },
+  {
+   "id": "P7",
+   "title": "Vocabularies are closed schemes of individuals",
+   "level": "modelling",
+   "formerly": "D39",
+   "statement": "States, levels, outcomes, methods, dimensions, actions, channels, device classes and identifier formats are SKOS individuals in closed schemes, never subclasses. Individuals keep generic queries simple, make extension a data change rather than a hierarchy change, and \u2014 decisively \u2014 make closure checkable: 'is this term in the platform-owned scheme' is a one-line constraint.",
+   "test": "Is this a fixed set of governed values? Then a scheme of individuals, extended by a MINOR bump \u2014 not a class hierarchy.",
+   "consequences": "Nine schemes. Assurance levels additionally carry an integer rank so SHACL-SPARQL can compare them in order.",
+   "fitness": "generative (9 schemes, 5 decisions) \u00b7 testable \u00b7 enforced by scheme-membership checks",
+   "enforcedBy": [
+    "ActionVocabularyShape"
+   ],
+   "appliedIn": [
+    "D11",
+    "D21",
+    "D23",
+    "D31",
+    "D46"
+   ],
+   "terms": [
+    "SessionState",
+    "DecisionOutcome",
+    "AuthenticationMethod",
+    "AssuranceLevel",
+    "assuranceRank",
+    "Action",
+    "EntitlementDimension",
+    "DeliveryChannel",
+    "DeviceClass",
+    "SubscriptionState",
+    "MembershipState",
+    "SubjectIdentifierFormat"
+   ],
+   "termCuries": [
+    "authn:AssuranceLevel",
+    "authn:AuthenticationMethod",
+    "authn:SubjectIdentifierFormat",
+    "authn:assuranceRank",
+    "authz:Action",
+    "authz:DecisionOutcome",
+    "authz:EntitlementDimension",
+    "core:DeliveryChannel",
+    "cp:MembershipState",
+    "cp:SubscriptionState",
+    "session:DeviceClass",
+    "session:SessionState"
+   ]
+  },
+  {
+   "id": "P8",
+   "title": "Specifications, never products",
+   "level": "modelling",
+   "formerly": "D42",
+   "statement": "The ontology aligns to public specifications and names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
+   "test": "Is this a public specification, or a vendor's product? Specifications may be named; products may not.",
+   "consequences": "Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
+   "fitness": "generative (applies to every term) \u00b7 testable \u00b7 review-time",
+   "enforcedBy": [],
+   "appliedIn": [
+    "D29",
+    "D30",
+    "D44",
+    "D49"
+   ],
+   "terms": [
+    "Gateway",
+    "Listener",
+    "Route",
+    "UpstreamService",
+    "TLSConfiguration",
+    "changeTicket"
+   ],
+   "termCuries": [
+    "cp:changeTicket",
+    "ingress:Gateway",
+    "ingress:Listener",
+    "ingress:Route",
+    "ingress:TLSConfiguration",
+    "ingress:UpstreamService"
+   ]
+  },
+  {
+   "id": "P9",
+   "title": "Questions before terms",
+   "level": "method",
+   "statement": "A term exists to answer a competency question. Add the question first; a term with no question behind it is scope creep. Promotion to stable additionally requires a shape, positive and negative instances, and a recorded rationale.",
+   "test": "Which competency question does this term answer? If none, do not add it.",
+   "consequences": "Every modelling pass in this ontology began by writing the questions into the backlog. The build warns about terms with no recorded rationale so the gap is visible rather than silent.",
+   "fitness": "generative (every modelling pass) \u00b7 testable \u00b7 build-checked",
+   "enforcedBy": [],
+   "appliedIn": [
+    "D25",
+    "D48"
+   ],
+   "terms": [],
+   "termCuries": []
+  },
+  {
+   "id": "P10",
+   "title": "An invariant that cannot demonstrably fire does not count",
+   "level": "method",
+   "statement": "Every violation-level constraint has a deliberately broken instance in the negative corpus, and CI asserts that it fires. A constraint that has never been seen to reject anything is a hope, not a control.",
+   "test": "Which negative-test instance trips this constraint, and does CI assert that it does?",
+   "consequences": "The negative corpus grows with every invariant; CI gate three names each expected violation by a fragment of its own message; the count of firing invariants is a reported metric.",
+   "fitness": "generative (every invariant) \u00b7 testable \u00b7 CI-enforced",
+   "enforcedBy": [],
+   "appliedIn": [
+    "D04",
+    "D19",
+    "D35",
+    "D48"
+   ],
+   "terms": [],
+   "termCuries": []
+  },
+  {
+   "id": "P11",
+   "title": "Every kind of statement has exactly one home",
+   "level": "method",
+   "statement": "A definition denotes; rationale lives in decisions; enforcement in the shape's message; principles here; open questions in the competency backlog; examples in skos:example; history in the module description. Anything stated in two places drifts into two versions \u2014 and this layer exists because 'the token is evidence' had been restated in five.",
+   "test": "Where is the one home for this statement? Put it there, and reference it everywhere else.",
+   "consequences": "Definitions were cut to their denotation; the browser renders each home beside the others so duplication is visible; this file is the home for principles.",
+   "fitness": "generative (the definition-style pass, this layer) \u00b7 testable \u00b7 build-checked for references",
+   "enforcedBy": [],
+   "appliedIn": [],
+   "terms": [],
+   "termCuries": []
+  }
+ ],
+ "evaluatedNotPrinciples": [
+  {
+   "candidate": "D41 \u2014 Events are PROV activities",
+   "verdict": "decision",
+   "why": "One alignment axiom, applied once. It does not generate further decisions and offers no test to apply to a proposal. It is a well-chosen decision and stays one."
+  },
+  {
+   "candidate": "D47 \u2014 Two clients, kept apart",
+   "verdict": "decision, applies P5",
+   "why": "A specific vocabulary split. What is generative in it is the rule it applies \u2014 an identifier resolves to an entity and does not substitute for one \u2014 which is P5. The split itself is one decision."
+  },
+  {
+   "candidate": "D49 \u2014 Decisions name the deciding PDP; XACML is the settled vocabulary",
+   "verdict": "decision, applies P8",
+   "why": "Two specific choices: one required property, one vocabulary selection. The vocabulary half is an application of 'specifications, never products'. Neither half constrains future choices beyond itself."
+  },
+  {
+   "candidate": "D16 \u2014 No cross-scope parity",
+   "verdict": "decision, applies P2",
+   "why": "A fact about the platform \u2014 capabilities are not everywhere \u2014 rather than a rule of design. Its modelling (offerings as intent, data planes as actuation) applies P2."
+  },
+  {
+   "candidate": "D01 \u2014 One logical management plane",
+   "verdict": "decision, applies P2",
+   "why": "A topology choice with a stated condition for reversal. Generative only through P2, which it applies."
+  },
+  {
+   "candidate": "Definition style: a definition denotes, nothing else",
+   "verdict": "absorbed into P11",
+   "why": "Testable and generative, but a prose-quality rule rather than a design principle on its own. Its underlying rule \u2014 one home per kind of statement \u2014 is the principle, and it covers this and more."
+  },
+  {
+   "candidate": "Deny by default",
+   "verdict": "not declared",
+   "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group."
+  }
+ ],
  "explainers": [
   {
    "id": "evaluation-layers",
@@ -12575,6 +13302,9 @@
       "authz:Action",
       "authz:IngressAdmissionDecision",
       "core:Application"
+     ],
+     "principles": [
+      "P1"
      ],
      "svg": "<svg viewBox=\"0 0 900 430\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Three evaluation layers: the control plane projects entitlement grants to ingress, which evaluates platform entitlements then application admission; what the subject may do inside the application is application-owned and out of scope.\">\n  <defs>\n    <marker id=\"lyArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"lyArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <!-- control plane -->\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"var(--m-control-plane)\" opacity=\".10\"/>\n  <rect x=\"470\" y=\"18\" width=\"412\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.4\"/>\n  <text x=\"676\" y=\"41\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-control-plane)\" font-weight=\"600\">Control plane \u2014 defines</text>\n  <text x=\"676\" y=\"60\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".7\">tenants \u00b7 subscriptions \u00b7 offerings \u00b7 enablements \u00b7 registrations</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\" stroke-dasharray=\"5 4\">\n    <path d=\"M 470 52 L 296 52 L 296 106\" marker-end=\"url(#lyArrG)\"/>\n  </g>\n  <text x=\"306\" y=\"86\" font-size=\"11.5\" fill=\"var(--accent-ink)\" font-weight=\"600\">projects grants \u00b7 distributed, timestamped</text>\n\n  <!-- ingress -->\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".08\"/>\n  <rect x=\"140\" y=\"108\" width=\"312\" height=\"212\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"296\" y=\"131\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--m-ingress)\" font-weight=\"600\">Unified ingress \u2014 enforces</text>\n\n  <rect x=\"162\" y=\"145\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"166\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 1 \u00b7 platform entitlements</text>\n  <text x=\"296\" y=\"185\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">platform \u00b7 tenant \u00b7 environment</text>\n  <text x=\"296\" y=\"200\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">region \u00b7 channel</text>\n  <text x=\"296\" y=\"212\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">closed scheme \u2014 5 dimensions</text>\n\n  <rect x=\"162\" y=\"231\" width=\"268\" height=\"72\" rx=\"7\" fill=\"var(--panel)\" stroke=\"var(--m-authz)\" stroke-width=\"1.3\"/>\n  <text x=\"296\" y=\"252\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authz)\" font-weight=\"600\">Level 2 \u00b7 application admission</text>\n  <text x=\"296\" y=\"271\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">enabled for this tenant, in this scope,</text>\n  <text x=\"296\" y=\"286\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".72\">with subscription + offering coverage</text>\n  <text x=\"296\" y=\"298\" text-anchor=\"middle\" font-size=\"9.5\" fill=\"currentColor\" opacity=\".5\">generic: subject \u2192 action \u2192 target</text>\n\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".75\">\n    <line x1=\"48\" y1=\"181\" x2=\"158\" y2=\"181\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"296\" y1=\"217\" x2=\"296\" y2=\"227\" marker-end=\"url(#lyArr)\"/>\n    <line x1=\"454\" y1=\"267\" x2=\"556\" y2=\"267\" marker-end=\"url(#lyArr)\"/>\n  </g>\n  <text x=\"103\" y=\"172\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">request + token</text>\n  <text x=\"505\" y=\"258\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">admitted</text>\n\n  <!-- level 3 -->\n  <rect x=\"558\" y=\"231\" width=\"324\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-dasharray=\"6 5\" opacity=\".5\"/>\n  <text x=\"720\" y=\"257\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"currentColor\" opacity=\".82\" font-weight=\"600\">Level 3 \u00b7 inside the application</text>\n  <text x=\"720\" y=\"281\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">roles, scopes, business rules,</text>\n  <text x=\"720\" y=\"298\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".65\">record-level and transactional limits</text>\n  <text x=\"720\" y=\"324\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--violation)\" font-weight=\"600\">application-owned \u00b7 out of scope</text>\n  <text x=\"720\" y=\"344\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".55\">the ontology deliberately refuses this question</text>\n\n  <line x1=\"510\" y1=\"120\" x2=\"510\" y2=\"380\" stroke=\"var(--violation)\" stroke-width=\"1.6\" stroke-dasharray=\"7 5\" opacity=\".65\"/>\n  <text x=\"510\" y=\"112\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"var(--violation)\" font-weight=\"600\">the boundary</text>\n\n  <text x=\"450\" y=\"404\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"currentColor\" opacity=\".7\">Two closure invariants police the line: no entitlement outside the dimension scheme, no action outside the action scheme.</text>\n</svg>"
     },
@@ -12778,11 +13508,19 @@
       "ActionVocabularyShape",
       "PolicyDecisionShape",
       "IngressAdmissionDecisionShape"
+     ],
+     "principles": [
+      "P1",
+      "P7"
      ]
     },
     {
      "heading": "The test to apply to a candidate entitlement",
-     "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely \u2014 a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension."
+     "body": "When someone proposes a new coarse-grained entitlement, four questions decide whether it belongs at Level 1:\n\n1. Can ingress determine it without trusting the application or the caller? Region, environment and channel pass; \"is this user a supervisor\" does not.\n2. Is it about crossing a boundary, or about what happens past it? Crossing is Level 1 or 2; anything else is Level 3.\n3. Is it stable? The vocabulary's value is that it changes rarely \u2014 a dimension that needs new members per product is an application concern.\n4. Is it platform-owned? If an application team would maintain its values, it does not belong in the platform scheme.\n\nA proposal that fails any of these is usually an attribute assertion feeding application policy, not a platform dimension.",
+     "principles": [
+      "P1",
+      "P9"
+     ]
     }
    ],
    "openQuestions": [

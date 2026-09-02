@@ -231,6 +231,8 @@ h2.sec:first-of-type { margin-top: 1.6rem; }
 .pill.warning { color: var(--warning); background: color-mix(in srgb, var(--warning) 15%, transparent); }
 .pill.sparql { color: var(--accent-ink); background: var(--accent-soft); }
 .pill.draft { color: var(--ink-3); background: var(--panel-2); }
+.pill.prin { color: var(--m-control-plane); background: color-mix(in srgb, var(--m-control-plane) 13%, transparent); text-decoration: none; }
+.why.principle { border-left-color: var(--m-control-plane); }
 .pill.inv { color: var(--m-authn); background: color-mix(in srgb, var(--m-authn) 13%, transparent); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }

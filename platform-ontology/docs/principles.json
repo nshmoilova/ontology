@@ -1,0 +1,326 @@
+{
+  "$comment": "The architectural principles the ontology obeys — each stated exactly once. A principle is not a decision: a decision picks among alternatives at one point; a principle constrains every future pick. Decisions record which principles they apply; shapes record which they enforce; the browser joins them. Add a principle only if it passes the fitness criteria below, and record candidates that failed so the evaluation is not repeated.",
+  "fitnessCriteria": {
+    "generative": "It has produced more than one decision or invariant. A rule applied once is a decision.",
+    "testable": "It can be phrased as a question a new proposal is checked against, with a yes or no answer.",
+    "a commitment, not a choice": "It does not select among alternatives at one moment; it constrains all future selections.",
+    "enforced or enforceable": "At least one invariant, build check or CI gate realises it — or it is a review-time test with a stated question."
+  },
+  "principles": [
+    {
+      "id": "P1",
+      "title": "The boundary, not the resource",
+      "level": "platform",
+      "statement": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. The platform never learns what is inside an application.",
+      "test": "Could the platform still evaluate this check if every application were replaced by an opaque identifier with no documentation? If not, it is not a platform entitlement.",
+      "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary.",
+      "fitness": "generative (6 decisions, 2 invariants) · testable (the opacity question) · enforced",
+      "enforcedBy": [
+        "ActionVocabularyShape",
+        "EntitlementGrantShape"
+      ],
+      "appliedIn": [
+        "D17",
+        "D20",
+        "D21",
+        "D25",
+        "D31",
+        "D48"
+      ],
+      "terms": [
+        "Application",
+        "Action",
+        "EntitlementDimension",
+        "IngressAdmissionDecision",
+        "servesApplication"
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Governance defines; enforcement actuates",
+      "level": "platform",
+      "statement": "Whatever defines desired state or entitlement never actuates or enforces it, and whatever enforces never defines. The control plane defines and ingress enforces; the management plane declares and capability control planes write; offerings are intent and data planes are actuation.",
+      "test": "Which component defines this, and which executes it? If the answer is the same component, the design is wrong.",
+      "consequences": "Every data-plane write traces to a declaration; every entitlement grant traces to the governance object it was projected from; route bindings are declarations rather than loose configuration; the management plane holds no write path into a data plane.",
+      "fitness": "generative (7 decisions, 6 invariants) · testable · enforced",
+      "enforcedBy": [
+        "ManagementPlaneNoActuationShape",
+        "SoleWriterShape",
+        "SelfGovernanceLoopShape",
+        "DataPlaneMutationShape",
+        "GovernedRouteBindingShape",
+        "EntitlementGrantShape"
+      ],
+      "appliedIn": [
+        "D01",
+        "D02",
+        "D07",
+        "D13",
+        "D16",
+        "D22",
+        "D43"
+      ],
+      "terms": [
+        "ManagementControlPlane",
+        "CapabilityControlPlane",
+        "DesiredStateDeclaration",
+        "EntitlementGrant",
+        "RouteBindingChange",
+        "CapabilityOffering",
+        "actuates",
+        "derivedFrom"
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "Agents execute; humans authorize",
+      "level": "platform",
+      "formerly": "D40",
+      "statement": "Automation may act, but a human must be accountable for every grant of authority: policy changes, declarations in rigor-requiring scopes, subscription activations, membership admissions and requirement confirmations all carry a human approval. Revocation is the deliberate exception — taking access away fast is safe; giving it back is the boundary.",
+      "test": "Does this change grant authority? Then which human is accountable for it?",
+      "consequences": "Approvals by workload principals alone never satisfy an invariant. The same asymmetry recurs wherever authority is conferred, and its planned counterpart is that revocation needs no approval while reinstatement does.",
+      "fitness": "generative (5 decisions, 4 invariants) · testable · enforced",
+      "enforcedBy": [
+        "HumanAuthorizationShape",
+        "ScopeRigorShape",
+        "SubscriptionActivationApprovalShape",
+        "MembershipApprovalShape"
+      ],
+      "appliedIn": [
+        "D05",
+        "D06",
+        "D12",
+        "D18",
+        "D45"
+      ],
+      "terms": [
+        "PolicyChangeEvent",
+        "ChangeApproval",
+        "approvedBy",
+        "approvedAtTime",
+        "hasApproval",
+        "changeTicket",
+        "requiresHumanApproval"
+      ]
+    },
+    {
+      "id": "P4",
+      "title": "The token is evidence; the grant is authority",
+      "level": "platform",
+      "statement": "A token proves who is calling and in what context; it never carries what they may do. Authority is a grant the control plane projects to the enforcement point, revocable without re-minting anything. Claims freeze at issuance; grants do not.",
+      "test": "Would this decision change if the token were re-minted? If yes, authority has leaked into evidence.",
+      "consequences": "Entitlements are never minted into tokens; scope and permissions claims are ignored at ingress; the OAuth client_id is a protocol identifier and never a basis for a decision; sender-constraining makes a stolen token useless rather than merely short-lived.",
+      "fitness": "generative (4 decisions, 3 invariants) · testable · enforced",
+      "enforcedBy": [
+        "EntitlementGrantShape",
+        "SenderConstrainedSessionShape",
+        "TokenInheritsConfirmationShape"
+      ],
+      "appliedIn": [
+        "D22",
+        "D24",
+        "D44",
+        "D47"
+      ],
+      "terms": [
+        "EntitlementGrant",
+        "Token",
+        "AccessToken",
+        "ProofOfPossessionKey",
+        "OAuthClientRegistration",
+        "tokenAudience"
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "An identifier resolves to an entity; it does not substitute for one",
+      "level": "modelling",
+      "statement": "A domain resolves to a tenant, a subject value to a principal, a handle to a session, a client_id to a registration. Each is evidence that resolves to an entity the model holds separately, with its own lifecycle and relationships. Collapsing the two loses everything the entity carries beyond that one resolution path.",
+      "test": "Is this thing the entity, or a way of finding it? If it is a way of finding it, model the entity and the resolution separately.",
+      "consequences": "Tenants are first-class rather than route bindings; subject identifiers are reified rather than strings on principals; session handles resolve to sessions rather than being sessions; a device is nameable rather than only classified.",
+      "fitness": "generative (5 decisions, 3 invariants) · testable · enforced",
+      "enforcedBy": [
+        "SubjectIdentifierCollisionShape",
+        "SessionHandleShape",
+        "RouteShape"
+      ],
+      "appliedIn": [
+        "D30",
+        "D43",
+        "D44",
+        "D47",
+        "D50"
+      ],
+      "terms": [
+        "SubjectIdentifier",
+        "SessionHandle",
+        "boundToTenant",
+        "OAuthClientRegistration",
+        "Device",
+        "identifier"
+      ]
+    },
+    {
+      "id": "P6",
+      "title": "OWL for semantics, SHACL for contracts",
+      "level": "modelling",
+      "formerly": "D38",
+      "statement": "OWL defines meaning and licenses inference; SHACL is the data contract. rdfs:domain and rdfs:range are kept off shared properties, because under OWL semantics a domain axiom does not reject bad data — it infers a wrong type. Typing and cardinality live in shapes, where a breach is a report. sh:Violation rejects at ingestion; sh:Warning admits but routes to stewardship.",
+      "test": "Should a breach of this be rejected, or inferred around? If rejected, it is a shape, not an axiom.",
+      "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import.",
+      "fitness": "generative (every shape) · testable · enforced structurally — no shared property carries a domain or range",
+      "enforcedBy": [],
+      "appliedIn": [
+        "D03",
+        "D32",
+        "D45"
+      ],
+      "terms": [
+        "performedBy",
+        "targetsResource",
+        "governedBy",
+        "enforcedBy"
+      ]
+    },
+    {
+      "id": "P7",
+      "title": "Vocabularies are closed schemes of individuals",
+      "level": "modelling",
+      "formerly": "D39",
+      "statement": "States, levels, outcomes, methods, dimensions, actions, channels, device classes and identifier formats are SKOS individuals in closed schemes, never subclasses. Individuals keep generic queries simple, make extension a data change rather than a hierarchy change, and — decisively — make closure checkable: 'is this term in the platform-owned scheme' is a one-line constraint.",
+      "test": "Is this a fixed set of governed values? Then a scheme of individuals, extended by a MINOR bump — not a class hierarchy.",
+      "consequences": "Nine schemes. Assurance levels additionally carry an integer rank so SHACL-SPARQL can compare them in order.",
+      "fitness": "generative (9 schemes, 5 decisions) · testable · enforced by scheme-membership checks",
+      "enforcedBy": [
+        "ActionVocabularyShape"
+      ],
+      "appliedIn": [
+        "D11",
+        "D21",
+        "D23",
+        "D31",
+        "D46"
+      ],
+      "terms": [
+        "SessionState",
+        "DecisionOutcome",
+        "AuthenticationMethod",
+        "AssuranceLevel",
+        "assuranceRank",
+        "Action",
+        "EntitlementDimension",
+        "DeliveryChannel",
+        "DeviceClass",
+        "SubscriptionState",
+        "MembershipState",
+        "SubjectIdentifierFormat"
+      ]
+    },
+    {
+      "id": "P8",
+      "title": "Specifications, never products",
+      "level": "modelling",
+      "formerly": "D42",
+      "statement": "The ontology aligns to public specifications and names no products. XACML's roles, OAuth and OIDC claims, NIST SP 800-63 levels, RFC 9493 subject identifiers, DPoP, AuthZEN's tuple and SPIFFE identity stay; a gateway API, an IdP vendor or a ticketing product does not. A vocabulary that encodes today's implementation ages badly and misleads readers into taking an implementation detail for a modelling commitment.",
+      "test": "Is this a public specification, or a vendor's product? Specifications may be named; products may not.",
+      "consequences": "Ingress terms describe the entry model itself; product names in definitions and seed data were removed; SPIFFE stays because it is a specification and the recorded identifier strategy.",
+      "fitness": "generative (applies to every term) · testable · review-time",
+      "enforcedBy": [],
+      "appliedIn": [
+        "D29",
+        "D30",
+        "D44",
+        "D49"
+      ],
+      "terms": [
+        "Gateway",
+        "Listener",
+        "Route",
+        "UpstreamService",
+        "TLSConfiguration",
+        "changeTicket"
+      ]
+    },
+    {
+      "id": "P9",
+      "title": "Questions before terms",
+      "level": "method",
+      "statement": "A term exists to answer a competency question. Add the question first; a term with no question behind it is scope creep. Promotion to stable additionally requires a shape, positive and negative instances, and a recorded rationale.",
+      "test": "Which competency question does this term answer? If none, do not add it.",
+      "consequences": "Every modelling pass in this ontology began by writing the questions into the backlog. The build warns about terms with no recorded rationale so the gap is visible rather than silent.",
+      "fitness": "generative (every modelling pass) · testable · build-checked",
+      "enforcedBy": [],
+      "appliedIn": [
+        "D25",
+        "D48"
+      ],
+      "terms": []
+    },
+    {
+      "id": "P10",
+      "title": "An invariant that cannot demonstrably fire does not count",
+      "level": "method",
+      "statement": "Every violation-level constraint has a deliberately broken instance in the negative corpus, and CI asserts that it fires. A constraint that has never been seen to reject anything is a hope, not a control.",
+      "test": "Which negative-test instance trips this constraint, and does CI assert that it does?",
+      "consequences": "The negative corpus grows with every invariant; CI gate three names each expected violation by a fragment of its own message; the count of firing invariants is a reported metric.",
+      "fitness": "generative (every invariant) · testable · CI-enforced",
+      "enforcedBy": [],
+      "appliedIn": [
+        "D04",
+        "D19",
+        "D35",
+        "D48"
+      ],
+      "terms": []
+    },
+    {
+      "id": "P11",
+      "title": "Every kind of statement has exactly one home",
+      "level": "method",
+      "statement": "A definition denotes; rationale lives in decisions; enforcement in the shape's message; principles here; open questions in the competency backlog; examples in skos:example; history in the module description. Anything stated in two places drifts into two versions — and this layer exists because 'the token is evidence' had been restated in five.",
+      "test": "Where is the one home for this statement? Put it there, and reference it everywhere else.",
+      "consequences": "Definitions were cut to their denotation; the browser renders each home beside the others so duplication is visible; this file is the home for principles.",
+      "fitness": "generative (the definition-style pass, this layer) · testable · build-checked for references",
+      "enforcedBy": [],
+      "appliedIn": [],
+      "terms": []
+    }
+  ],
+  "evaluatedNotPrinciples": [
+    {
+      "candidate": "D41 — Events are PROV activities",
+      "verdict": "decision",
+      "why": "One alignment axiom, applied once. It does not generate further decisions and offers no test to apply to a proposal. It is a well-chosen decision and stays one."
+    },
+    {
+      "candidate": "D47 — Two clients, kept apart",
+      "verdict": "decision, applies P5",
+      "why": "A specific vocabulary split. What is generative in it is the rule it applies — an identifier resolves to an entity and does not substitute for one — which is P5. The split itself is one decision."
+    },
+    {
+      "candidate": "D49 — Decisions name the deciding PDP; XACML is the settled vocabulary",
+      "verdict": "decision, applies P8",
+      "why": "Two specific choices: one required property, one vocabulary selection. The vocabulary half is an application of 'specifications, never products'. Neither half constrains future choices beyond itself."
+    },
+    {
+      "candidate": "D16 — No cross-scope parity",
+      "verdict": "decision, applies P2",
+      "why": "A fact about the platform — capabilities are not everywhere — rather than a rule of design. Its modelling (offerings as intent, data planes as actuation) applies P2."
+    },
+    {
+      "candidate": "D01 — One logical management plane",
+      "verdict": "decision, applies P2",
+      "why": "A topology choice with a stated condition for reversal. Generative only through P2, which it applies."
+    },
+    {
+      "candidate": "Definition style: a definition denotes, nothing else",
+      "verdict": "absorbed into P11",
+      "why": "Testable and generative, but a prose-quality rule rather than a design principle on its own. Its underlying rule — one home per kind of statement — is the principle, and it covers this and more."
+    },
+    {
+      "candidate": "Deny by default",
+      "verdict": "not declared",
+      "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group."
+    }
+  ]
+}

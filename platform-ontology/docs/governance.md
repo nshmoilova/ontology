@@ -36,6 +36,32 @@ A clause that constrains what can be an instance is definitional and stays,
 even when it reads like rationale — "a business client is not itself
 authenticable" is an example.
 
+## Principles
+
+`docs/principles.json` holds the rules the ontology obeys, each stated
+exactly once. A **decision** picks among alternatives at one point; a
+**principle** constrains every future pick. Decisions list the principles
+they apply; shapes are listed by the principles they enforce; the browser
+joins them so "which invariants realise this principle" is answerable.
+
+A candidate is promoted only if it passes all four fitness criteria:
+
+| Criterion | Meaning |
+|---|---|
+| Generative | It has produced more than one decision or invariant. A rule applied once is a decision. |
+| Testable | It can be phrased as a question a new proposal is checked against. |
+| A commitment, not a choice | It constrains all future selections rather than making one. |
+| Enforced or enforceable | An invariant, build check or CI gate realises it, or it is a stated review-time test. |
+
+Candidates that fail are recorded under `evaluatedNotPrinciples` with the
+reason, so the evaluation is not repeated. Decisions promoted to principles
+keep their retired ids (D38, D39, D40, D42 → P6, P7, P3, P8); ids are never
+reused.
+
+State a principle in this file and reference it everywhere else. A principle
+restated in a definition, a README and an explainer is three versions waiting
+to disagree — which is the observation that created this layer.
+
 ## Change control
 - All changes via PR; CI (`ci/validate.py`) is a required check.
 - Changes to `authz` and `control-plane` modules additionally require review

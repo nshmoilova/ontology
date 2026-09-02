@@ -8,6 +8,7 @@
   let DB = null;
   const byCurie = new Map();
   const decById = new Map();
+  const prinById = new Map();
   let searchDocs = [];
 
   /* ---------- helpers ---------- */
@@ -84,6 +85,15 @@
         hay: [q.question, q.section].join(" ").toLowerCase(), boost: 0.5,
       });
     }
+    for (const p of DB.principles || []) {
+      docs.push({
+        type: "principle", kind: "Principle", module: null,
+        title: `${p.id} · ${p.title}`, sub: p.statement,
+        href: `#/principles#${p.id}`,
+        hay: [p.id, p.title, p.statement, p.test, p.consequences || "", p.level].join(" ").toLowerCase(),
+        boost: 4,
+      });
+    }
     for (const e of DB.explainers || []) {
       const stepText = e.steps.map((s) => `${s.heading} ${s.body || ""}`).join(" ");
       docs.push({
@@ -146,11 +156,11 @@
       box.innerHTML = `<div class="empty">No matches for <b>${esc(query)}</b></div>`;
       box.hidden = false; return;
     }
-    const groups = { explainer: [], term: [], shape: [], decision: [], question: [] };
+    const groups = { explainer: [], principle: [], term: [], shape: [], decision: [], question: [] };
     hits.forEach((h) => groups[h.type].push(h));
-    const labels = { explainer: "Explainers", term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
+    const labels = { explainer: "Explainers", principle: "Principles", term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
     let html = "";
-    for (const key of ["explainer", "term", "shape", "decision", "question"]) {
+    for (const key of ["explainer", "principle", "term", "shape", "decision", "question"]) {
       if (!groups[key].length) continue;
       html += `<div class="rgroup">${labels[key]}</div>`;
       for (const d of groups[key]) {
@@ -250,6 +260,7 @@
         <div><div class="n">${s.shapes}</div><div class="l">Shapes</div></div>
         <div><div class="n">${s.relationships}</div><div class="l">Relationships</div></div>
         <div><div class="n">${s.decisions}</div><div class="l">Decisions</div></div>
+        <div><div class="n">${s.principles || 0}</div><div class="l">Principles</div></div>
         <div><div class="n">${s.formalCQs}+${s.backlogCQs}</div><div class="l">Questions</div></div>
       </div>
       ${(DB.explainers || []).length ? `<h2 class="sec">Start here · guided explainers</h2>
@@ -270,6 +281,10 @@
         <p style="margin:0 0 .6rem"><b>That is why relationships come from SHACL.</b>
         The <a href="#/relationships">relationship graph</a> is derived from shape constraints
         that name a target class — the only place typed relationships are actually stated.</p>
+        <p style="margin:0 0 .6rem"><b>Principles are stated once and linked, not restated.</b>
+        The <a href="#/principles">principles</a> are the rules the model obeys; decisions record
+        which they apply and shapes record which they enforce, so a rule cannot drift into several
+        slightly different versions.</p>
         <p style="margin:0"><b>Questions come before terms.</b> A term with no competency
         question behind it is scope creep, so each term links to the
         <a href="#/decisions">decision</a> that justified it.</p>
@@ -284,14 +299,27 @@
     const t = byCurie.get(curie);
     if (!t) return `<div class="card err"><b>Unknown term</b><p>No term named <code>${esc(curie)}</code>.</p></div>`;
 
+    const principles = (t.principles || []).map((id) => prinById.get(id)).filter(Boolean);
+    const principlesHtml = principles.map((p) => `
+      <div class="why principle">
+        <div class="whyhead">
+          <span class="did">${esc(p.id)}</span>
+          <span class="wtitle">${esc(p.title)}</span>
+          <span class="pill prin">principle · ${esc(p.level)}</span>
+        </div>
+        <p>${esc(p.statement)}</p>
+        <div class="rej"><div class="rejlabel">The test</div><p style="margin:.3rem 0 0;font-size:.88rem">${esc(p.test)}</p></div>
+        <div class="rej"><div class="rejlabel">See</div><div class="chips" style="margin-top:.35rem"><a href="#/principles#${esc(p.id)}">all of ${esc(p.id)}</a></div></div>
+      </div>`).join("");
     const decisions = (t.decisions || []).map((id) => decById.get(id)).filter(Boolean);
-    const whyHtml = decisions.length ? decisions.map((d) => `
+    const whyHtml = (decisions.length || principles.length) ? principlesHtml + decisions.map((d) => `
       <div class="why">
         <div class="whyhead">
           <span class="did">${esc(d.id)}</span>
           <span class="wtitle">${esc(d.title)}</span>
           ${d.invariant ? '<span class="pill inv">invariant</span>' : ""}
           <span class="pill draft">${esc(d.area)}</span>
+          ${(d.principles || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">applies ${esc(x)}</a>`).join("")}
         </div>
         <p>${esc(d.reasoning)}</p>
         ${(d.rejected || []).length ? `<div class="rej">
@@ -304,7 +332,8 @@
       </div>`).join("")
       : `<div class="norationale">No decision record references this term yet. Per the project's
          governance, a term should have a competency question and a recorded rationale before it
-         is promoted beyond <code>draft</code> — add it to <code>docs/decisions.json</code>.</div>`;
+         is promoted beyond <code>draft</code> — add it to <code>docs/decisions.json</code>, or link it
+         from a principle in <code>docs/principles.json</code>.</div>`;
 
     const cons = (t.constraints || []);
     const consHtml = cons.length ? cons.map((c) => {
@@ -486,6 +515,9 @@
             ${st.table.rows.map((r) => `<tr>${r.map((cell, ci) =>
               `<td>${ci === 0 ? `<code>${esc(cell)}</code>` : esc(cell)}</td>`).join("")}</tr>`).join("")}
           </table></div>` : ""}
+          ${(st.principles || []).length ? `<div class="steprefs">
+            <div class="reflabel">Principles</div>
+            <div class="chips">${st.principles.map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
           ${(st.terms || []).length ? `<div class="steprefs">
             <div class="refslabel">Terms</div>
             <div class="chips">${st.terms.map((t) => link(t)).join("")}</div></div>` : ""}
@@ -600,6 +632,7 @@
             <span class="did">${esc(d.id)}</span>
             <span class="wtitle">${esc(d.title)}</span>
             ${d.invariant ? '<span class="pill inv">invariant</span>' : ""}
+            ${(d.principles || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">applies ${esc(x)}</a>`).join("")}
           </div>
           <p>${esc(d.reasoning)}</p>
           ${(d.rejected || []).length ? `<div class="rej">
@@ -617,6 +650,66 @@
       ${query ? `<p class="lede"><b>Filtered by “${esc(q)}”</b> — ${ds.length} of ${DB.decisions.length}.
         <a href="#/decisions">Clear</a></p>` : ""}
       ${body || '<div class="norationale">No decisions match.</div>'}`;
+  }
+
+  function viewPrinciples() {
+    const levels = [["platform", "Platform principles — what the platform obeys"],
+                    ["modelling", "Modelling principles — how the ontology is built"],
+                    ["method", "Method principles — how the work is done"]];
+    const card = (p) => `
+      <div class="why principle" id="${esc(p.id)}">
+        <div class="whyhead">
+          <span class="did">${esc(p.id)}</span>
+          <span class="wtitle">${esc(p.title)}</span>
+          ${p.formerly ? `<span class="pill draft">formerly ${esc(p.formerly)}</span>` : ""}
+        </div>
+        <p><b>${esc(p.statement)}</b></p>
+        <div class="rej"><div class="rejlabel">The test to apply</div>
+          <p style="margin:.3rem 0 0;font-size:.9rem">${esc(p.test)}</p></div>
+        ${p.consequences ? `<div class="rej"><div class="rejlabel">Consequences</div>
+          <p style="margin:.3rem 0 0;font-size:.88rem;color:var(--ink-2)">${esc(p.consequences)}</p></div>` : ""}
+        ${(p.enforcedBy || []).length ? `<div class="rej"><div class="rejlabel">Enforced by</div>
+          <div class="chips" style="margin-top:.35rem">${p.enforcedBy.map((s) =>
+            `<a href="#/shapes?q=${encodeURIComponent(s)}">${esc(s)}</a>`).join("")}</div></div>`
+          : `<div class="rej"><div class="rejlabel">Enforced by</div>
+          <p style="margin:.3rem 0 0;font-size:.85rem;color:var(--ink-3)">No SHACL invariant — ${esc((p.fitness || "").split("·").pop().trim() || "review-time")}.</p></div>`}
+        ${(p.appliedIn || []).length ? `<div class="rej"><div class="rejlabel">Applied in</div>
+          <div class="chips" style="margin-top:.35rem">${p.appliedIn.map((d) =>
+            `<a href="#/decisions?q=${esc(d)}"><code>${esc(d)}</code></a>`).join("")}</div></div>` : ""}
+        ${(p.termCuries || []).length ? `<div class="rej"><div class="rejlabel">Terms</div>
+          <div class="chips" style="margin-top:.35rem">${p.termCuries.map((c) => link(c)).join("")}</div></div>` : ""}
+        ${p.fitness ? `<div class="rej"><div class="rejlabel">Fitness</div>
+          <p style="margin:.3rem 0 0;font-size:.82rem;color:var(--ink-3)">${esc(p.fitness)}</p></div>` : ""}
+      </div>`;
+    const body = levels.map(([lvl, label]) => {
+      const ps = DB.principles.filter((p) => p.level === lvl);
+      return ps.length ? `<h2 class="sec">${esc(label)}</h2>${ps.map(card).join("")}` : "";
+    }).join("");
+    const crit = DB.principlesCriteria || {};
+    const notP = (DB.evaluatedNotPrinciples || []);
+    return `
+      <div class="crumb"><a href="#/">Ontology</a> › Principles</div>
+      <h1 class="title">Principles</h1>
+      <p class="lede">${DB.principles.length} rules the ontology obeys, each stated exactly once. A decision
+      picks among alternatives at one point; a principle constrains every future pick. Each links to
+      the invariants that enforce it and the decisions that apply it — so "which constraints realise
+      this principle" is a click, not an archaeology exercise.</p>
+      <div class="card" style="margin-top:1rem">
+        <b style="font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)">Fitness criteria</b>
+        <ul style="margin:.5rem 0 0;padding-left:1.1rem;font-size:.9rem;color:var(--ink-2)">
+          <li><b>Generative</b> — it has produced more than one decision or invariant; a rule applied once is a decision.</li>
+          <li><b>Testable</b> — it can be phrased as a question a proposal is checked against.</li>
+          <li><b>A commitment, not a choice</b> — it constrains all future selections rather than making one.</li>
+          <li><b>Enforced or enforceable</b> — an invariant, build check or CI gate realises it, or it is a stated review-time test.</li>
+        </ul>
+      </div>
+      ${body}
+      ${notP.length ? `<h2 class="sec">Evaluated and not promoted</h2>
+        <p class="lede">Candidates assessed against the criteria and kept as decisions — recorded so the evaluation is not repeated.</p>
+        <div class="card"><table class="data" style="border:none;box-shadow:none">
+          <tr><th>Candidate</th><th>Verdict</th><th>Why</th></tr>
+          ${notP.map((n) => `<tr><td>${esc(n.candidate)}</td><td><span class="pill draft">${esc(n.verdict)}</span></td><td>${esc(n.why)}</td></tr>`).join("")}
+        </table></div>` : ""}`;
   }
 
   function viewQuestions(q) {
@@ -671,6 +764,7 @@
       html = parts[1] ? viewExplainer(decodeURIComponent(parts[1])) : viewExplainList();
     } else if (parts[0] === "shapes") html = viewShapes(q);
     else if (parts[0] === "relationships") html = viewRelationships();
+    else if (parts[0] === "principles") html = viewPrinciples();
     else if (parts[0] === "decisions") html = viewDecisions(q);
     else if (parts[0] === "questions") html = viewQuestions(q);
     else html = `<div class="card err"><b>Not found</b><p>Nothing at <code>${esc(path)}</code>. <a href="#/">Start over</a>.</p></div>`;
@@ -755,6 +849,7 @@
       DB = data;
       DB.terms.forEach((t) => byCurie.set(t.curie, t));
       DB.decisions.forEach((d) => decById.set(d.id, d));
+      (DB.principles || []).forEach((p) => prinById.set(p.id, p));
       buildSearchDocs();
       wire();
       renderTree();
