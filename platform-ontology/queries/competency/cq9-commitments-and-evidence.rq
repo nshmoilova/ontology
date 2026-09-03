@@ -1,0 +1,19 @@
+# CQ-9 — Which commitments does each offering carry, with metric, target, source
+# and validation, and what is the latest observation of each? A committed
+# commitment with no source or no validation is a violation before this runs.
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?offering ?commitment ?metric ?comparator ?target ?unit ?window ?source ?validation ?latestResult WHERE {
+  ?commitment a cmt:Commitment ;
+      cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:target ?target ; cmt:unit ?unit ;
+      cmt:comparator ?cmp ; cmt:window ?window ; cmt:measuredBy ?source ; cmt:validatedBy ?validation .
+  ?m skos:notation ?metric . ?cmp skos:notation ?comparator .
+  OPTIONAL {
+    ?obs cmt:observationOf ?commitment ; sosa:hasSimpleResult ?latestResult ; cp:windowEnd ?end .
+    FILTER NOT EXISTS { ?obs2 cmt:observationOf ?commitment ; cp:windowEnd ?end2 . FILTER(?end2 > ?end) }
+  }
+}
+ORDER BY ?offering ?commitment

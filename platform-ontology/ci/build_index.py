@@ -26,7 +26,8 @@ BASE = "https://w3id.org/examplebank/platform/"
 SH = "http://www.w3.org/ns/shacl#"
 VS = URIRef("http://www.w3.org/2003/06/sw-vocab-status/ns#term_status")
 
-MODULE_ORDER = ["core", "authn", "session", "ingress", "authz", "control-plane"]
+MODULE_ORDER = ["core", "authn", "session", "ingress", "authz", "control-plane", "commitment"]
+MODULE_PREFIX = {"control-plane": "cp", "commitment": "cmt"}
 MODULE_BLURB = {
     "core": "Upper module: principals, tenancy, capabilities, applications, "
             "authorized parties, delivery channels and the XACML roles.",
@@ -40,6 +41,7 @@ MODULE_BLURB = {
              "layer: dimensions, grants, actions and admission decisions.",
     "control-plane": "Two-tier planes, the scope tree, and the chain from "
                      "subscriptions and offerings to declarations and mutations.",
+    "commitment": "Non-functional commitments on offerings — metric, target, window, measurement source, validation — and the windowed observations that evidence them. A sibling module; nothing imports it.",
 }
 
 
@@ -59,11 +61,11 @@ def local_name(iri: str) -> str:
 def curie(iri: str) -> str:
     mod = module_of(iri)
     if mod:
-        prefix = "cp" if mod == "control-plane" else mod
+        prefix = MODULE_PREFIX.get(mod, mod)
         return f"{prefix}:{local_name(iri)}"
     for ns, pfx in (
         (str(SKOS), "skos"), (str(RDFS), "rdfs"), (str(OWL), "owl"),
-        (str(DCTERMS), "dct"), ("http://www.w3.org/ns/prov#", "prov"),
+        (str(DCTERMS), "dct"), ("http://www.w3.org/ns/prov#", "prov"), ("http://www.w3.org/ns/sosa/", "sosa"), ("http://qudt.org/vocab/unit/", "unit"), ("http://qudt.org/schema/qudt/", "qudt"),
         ("http://www.w3.org/2001/XMLSchema#", "xsd"), (SH, "sh"),
     ):
         if iri.startswith(ns):
@@ -104,7 +106,7 @@ def collect_modules(g: Graph):
         mods.append({
             "name": name,
             "iri": iri,
-            "prefix": "cp" if name == "control-plane" else name,
+            "prefix": MODULE_PREFIX.get(name, name),
             "title": lit(g, s, DCTERMS.title) or name,
             "version": lit(g, s, OWL.versionInfo) or "",
             "description": lit(g, s, DCTERMS.description) or "",

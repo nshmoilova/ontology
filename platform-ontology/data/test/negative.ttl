@@ -9,6 +9,9 @@
 @prefix cp:      <https://w3id.org/examplebank/platform/control-plane#> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix ex:      <https://data.examplebank.com/platform/bad/> .
+@prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
 
 ex:bob a core:HumanPrincipal ;
     core:identifier "dir:bob.ray" .
@@ -523,4 +526,33 @@ ex:sod-approval-2 a cp:ChangeApproval ;
 ex:membership-self-approved a cp:TenantMembership ;
     cp:memberPrincipal ex:sod-human ;
     cp:hasApproval ex:sod-approval-2 .
+
+### 46. Commitment with no measurement source and no validation — aspirational (CommitmentShape)
+ex:commit-aspirational a cmt:Commitment ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:target 250 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:comparator cmt:at-most ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:hasCommitmentState cmt:state-committed .
+
+### 47. Observation measuring a different metric than its commitment (ObservationShape)
+ex:commit-db-availability-neg a cmt:Commitment ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-availability ;
+    cmt:target 99.9 ;
+    cmt:unit unit:PERCENT ;
+    cmt:comparator cmt:at-least ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:source-neg a cmt:MeasurementSource .
+ex:obs-wrong-metric a cmt:Observation ;
+    cmt:observationOf ex:commit-db-availability-neg ;
+    sosa:observedProperty cmt:metric-latency-p99 ;
+    sosa:hasSimpleResult 240 ;
+    cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;
+    cp:windowEnd "2026-08-31T23:59:59Z"^^xsd:dateTime .
 

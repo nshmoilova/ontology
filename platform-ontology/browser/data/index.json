@@ -1,23 +1,23 @@
 {
  "generated": true,
- "sourceDigest": "60f2a7cb524a",
+ "sourceDigest": "a5beaafac3c5",
  "stats": {
-  "modules": 6,
-  "classes": 73,
-  "objectProperties": 92,
-  "datatypeProperties": 34,
-  "shapes": 77,
-  "violations": 113,
+  "modules": 7,
+  "classes": 79,
+  "objectProperties": 99,
+  "datatypeProperties": 37,
+  "shapes": 79,
+  "violations": 128,
   "warnings": 7,
-  "vocabularies": 11,
-  "relationships": 53,
-  "decisions": 53,
+  "vocabularies": 14,
+  "relationships": 60,
+  "decisions": 54,
   "principles": 18,
-  "standards": 11,
+  "standards": 13,
   "provisionalPrinciples": 12,
   "explainers": 2,
-  "formalCQs": 8,
-  "backlogCQs": 97
+  "formalCQs": 9,
+  "backlogCQs": 101
  },
  "modules": [
   {
@@ -90,6 +90,19 @@
     "authz",
     "ingress",
     "session"
+   ]
+  },
+  {
+   "name": "commitment",
+   "iri": "https://w3id.org/examplebank/platform/commitment",
+   "prefix": "cmt",
+   "title": "Commitment Module",
+   "version": "0.1.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request.",
+   "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
+   "imports": [
+    "control-plane",
+    "core"
    ]
   }
  ],
@@ -6464,7 +6477,15 @@
     }
    ],
    "outgoing": [],
-   "incoming": [],
+   "incoming": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:commitsTo",
+     "to": "cp:CapabilityOffering",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
@@ -9133,6 +9154,919 @@
     "D05"
    ],
    "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+   "name": "Commitment",
+   "curie": "cmt:Commitment",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Commitment",
+   "definition": "A non-functional guarantee the platform makes for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism.",
+   "editorialNote": null,
+   "altLabels": [
+    "non-functional requirement",
+    "service-level objective"
+   ],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [
+    "cmt:Observation"
+   ],
+   "subClasses": [],
+   "shapes": [
+    "CommitmentShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:commitsTo",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#commitsTo",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:CapabilityOffering",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is made for exactly one capability offering."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment states exactly one unit (a QUDT unit IRI)."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:window",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#window",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:duration",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is judged over exactly one window."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:measuredBy",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#measuredBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "cmt:MeasurementSource",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#MeasurementSource",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Commitment has no measurement source \u2014 an unmeasured claim is aspirational, not a guarantee."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:validatedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#validatedBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:anyURI",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Commitment has no validation mechanism \u2014 a claim nothing checks is aspirational, not a guarantee."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:hasCommitmentState",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#hasCommitmentState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:CommitmentState",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#CommitmentState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is in exactly one lifecycle state."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:commitsTo",
+     "to": "cp:CapabilityOffering",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:measuredBy",
+     "to": "cmt:MeasurementSource",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:hasCommitmentState",
+     "to": "cmt:CommitmentState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [
+    {
+     "from": "cmt:Observation",
+     "property": "cmt:observationOf",
+     "to": "cmt:Commitment",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentState",
+   "name": "CommitmentState",
+   "curie": "cmt:CommitmentState",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Commitment state",
+   "definition": "Lifecycle state of a commitment: draft, committed, or withdrawn.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:hasCommitmentState",
+     "to": "cmt:CommitmentState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-committed",
+     "curie": "cmt:state-committed",
+     "label": "committed",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-draft",
+     "curie": "cmt:state-draft",
+     "label": "draft",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-withdrawn",
+     "curie": "cmt:state-withdrawn",
+     "label": "withdrawn",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    }
+   ],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+   "name": "Comparator",
+   "curie": "cmt:Comparator",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Comparator",
+   "definition": "How an observed value is judged against a target: at least, or at most.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#at-least",
+     "curie": "cmt:at-least",
+     "label": "at least",
+     "notation": ">=",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Comparator"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#at-most",
+     "curie": "cmt:at-most",
+     "label": "at most",
+     "notation": "<=",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Comparator"
+     ]
+    }
+   ],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#MeasurementSource",
+   "name": "MeasurementSource",
+   "curie": "cmt:MeasurementSource",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Measurement source",
+   "definition": "A system or feed from which a commitment's metric is observed. Instances may name the actual monitoring system; the term does not.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:measuredBy",
+     "to": "cmt:MeasurementSource",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#Metric",
+   "name": "Metric",
+   "curie": "cmt:Metric",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Metric",
+   "definition": "An observable property a commitment targets, drawn from the closed metric scheme.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [
+    "https://www.w3.org/TR/vocab-ssn/"
+   ],
+   "status": "draft",
+   "subClassOf": [
+    "sosa:ObservableProperty",
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Observation",
+     "property": "sosa:observedProperty",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-availability",
+     "curie": "cmt:metric-availability",
+     "label": "Availability",
+     "notation": "availability",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-latency-p99",
+     "curie": "cmt:metric-latency-p99",
+     "label": "Latency, 99th percentile",
+     "notation": "latency.p99",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-recovery-point",
+     "curie": "cmt:metric-recovery-point",
+     "label": "Recovery point objective",
+     "notation": "rpo",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-recovery-time",
+     "curie": "cmt:metric-recovery-time",
+     "label": "Recovery time objective",
+     "notation": "rto",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    }
+   ],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#Observation",
+   "name": "Observation",
+   "curie": "cmt:Observation",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Observation",
+   "definition": "A windowed aggregate measurement of a commitment's metric, ingested from telemetry. Never per-request: the graph holds evidence, not time series.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [
+    "https://www.w3.org/TR/vocab-ssn/"
+   ],
+   "status": "draft",
+   "subClassOf": [
+    "sosa:Observation"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "ObservationShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:observationOf",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#observationOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Commitment",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation evidences exactly one commitment."
+    },
+    {
+     "kind": "property",
+     "path": "sosa:observedProperty",
+     "pathIri": "http://www.w3.org/ns/sosa/observedProperty",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation observes exactly one metric."
+    },
+    {
+     "kind": "property",
+     "path": "sosa:hasSimpleResult",
+     "pathIri": "http://www.w3.org/ns/sosa/hasSimpleResult",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation carries exactly one result."
+    },
+    {
+     "kind": "property",
+     "path": "cp:windowStart",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#windowStart",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:dateTime",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation is a windowed aggregate \u2014 it has a window start."
+    },
+    {
+     "kind": "property",
+     "path": "cp:windowEnd",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#windowEnd",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:dateTime",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation is a windowed aggregate \u2014 it has a window end."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Observation measures a different metric than the commitment it evidences.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#observationOf> ?c ; <http://www.w3.org/ns/sosa/observedProperty> ?m .\n                ?c <https://w3id.org/examplebank/platform/commitment#metric> ?cm .\n                FILTER(?m != ?cm)\n            }"
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cmt:Observation",
+     "property": "cmt:observationOf",
+     "to": "cmt:Commitment",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:Observation",
+     "property": "sosa:observedProperty",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#target",
+   "name": "target",
+   "curie": "cmt:target",
+   "kind": "datatypeProperty",
+   "module": "commitment",
+   "label": "target",
+   "definition": "Target value of the commitment, in its unit.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#validatedBy",
+   "name": "validatedBy",
+   "curie": "cmt:validatedBy",
+   "kind": "datatypeProperty",
+   "module": "commitment",
+   "label": "validated by",
+   "definition": "Reference to the mechanism that validates observations against the target \u2014 a query in this repository, or an external check. At least one, or the commitment is aspirational.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#window",
+   "name": "window",
+   "curie": "cmt:window",
+   "kind": "datatypeProperty",
+   "module": "commitment",
+   "label": "window",
+   "definition": "Duration over which the target is judged, as an xsd:duration.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#commitsTo",
+   "name": "commitsTo",
+   "curie": "cmt:commitsTo",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "commits to",
+   "definition": "Capability offering a commitment is made for. The offering carries the scope; the commitment inherits it.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:commitsTo",
+     "to": "cp:CapabilityOffering",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#comparator",
+   "name": "comparator",
+   "curie": "cmt:comparator",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "comparator",
+   "definition": "Comparator judging observations against the target.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#hasCommitmentState",
+   "name": "hasCommitmentState",
+   "curie": "cmt:hasCommitmentState",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "has commitment state",
+   "definition": "Current lifecycle state of the commitment.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:hasCommitmentState",
+     "to": "cmt:CommitmentState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#measuredBy",
+   "name": "measuredBy",
+   "curie": "cmt:measuredBy",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "measured by",
+   "definition": "Measurement source the commitment's metric is observed from \u2014 at least one, or the commitment is aspirational.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:measuredBy",
+     "to": "cmt:MeasurementSource",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#metric",
+   "name": "metric",
+   "curie": "cmt:metric",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "metric",
+   "definition": "Metric a commitment targets \u2014 exactly one, from the closed scheme.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Commitment",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#observationOf",
+   "name": "observationOf",
+   "curie": "cmt:observationOf",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "observation of",
+   "definition": "Commitment an observation evidences.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Observation",
+     "property": "cmt:observationOf",
+     "to": "cmt:Commitment",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#unit",
+   "name": "unit",
+   "curie": "cmt:unit",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "unit",
+   "definition": "QUDT unit the target is expressed in.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [
+    "https://qudt.org/"
+   ],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
   }
  ],
  "vocabularies": [
@@ -9735,6 +10669,141 @@
      "rank": null,
      "types": [
       "cp:MembershipState"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentStateScheme",
+   "curie": "cmt:CommitmentStateScheme",
+   "title": "CommitmentStateScheme",
+   "note": null,
+   "module": "commitment",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-committed",
+     "curie": "cmt:state-committed",
+     "label": "committed",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-draft",
+     "curie": "cmt:state-draft",
+     "label": "draft",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#state-withdrawn",
+     "curie": "cmt:state-withdrawn",
+     "label": "withdrawn",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:CommitmentState"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#ComparatorScheme",
+   "curie": "cmt:ComparatorScheme",
+   "title": "ComparatorScheme",
+   "note": null,
+   "module": "commitment",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#at-least",
+     "curie": "cmt:at-least",
+     "label": "at least",
+     "notation": ">=",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Comparator"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#at-most",
+     "curie": "cmt:at-most",
+     "label": "at most",
+     "notation": "<=",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Comparator"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#MetricScheme",
+   "curie": "cmt:MetricScheme",
+   "title": "MetricScheme",
+   "note": null,
+   "module": "commitment",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-availability",
+     "curie": "cmt:metric-availability",
+     "label": "Availability",
+     "notation": "availability",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-latency-p99",
+     "curie": "cmt:metric-latency-p99",
+     "label": "Latency, 99th percentile",
+     "notation": "latency.p99",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-recovery-point",
+     "curie": "cmt:metric-recovery-point",
+     "label": "Recovery point objective",
+     "notation": "rpo",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-recovery-time",
+     "curie": "cmt:metric-recovery-time",
+     "label": "Recovery time objective",
+     "notation": "rto",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
      ]
     }
    ]
@@ -10543,6 +11612,244 @@
    "principles": [
     "P13"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentShape",
+   "name": "CommitmentShape",
+   "targetClass": "cmt:Commitment",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:commitsTo",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#commitsTo",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:CapabilityOffering",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is made for exactly one capability offering."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment states exactly one unit (a QUDT unit IRI)."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:window",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#window",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:duration",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is judged over exactly one window."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:measuredBy",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#measuredBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "cmt:MeasurementSource",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#MeasurementSource",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Commitment has no measurement source \u2014 an unmeasured claim is aspirational, not a guarantee."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:validatedBy",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#validatedBy",
+     "minCount": 1,
+     "maxCount": null,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:anyURI",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Commitment has no validation mechanism \u2014 a claim nothing checks is aspirational, not a guarantee."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:hasCommitmentState",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#hasCommitmentState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:CommitmentState",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#CommitmentState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A commitment is in exactly one lifecycle state."
+    }
+   ],
+   "violations": 9,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#ObservationShape",
+   "name": "ObservationShape",
+   "targetClass": "cmt:Observation",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Observation",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:observationOf",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#observationOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Commitment",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation evidences exactly one commitment."
+    },
+    {
+     "kind": "property",
+     "path": "sosa:observedProperty",
+     "pathIri": "http://www.w3.org/ns/sosa/observedProperty",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation observes exactly one metric."
+    },
+    {
+     "kind": "property",
+     "path": "sosa:hasSimpleResult",
+     "pathIri": "http://www.w3.org/ns/sosa/hasSimpleResult",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation carries exactly one result."
+    },
+    {
+     "kind": "property",
+     "path": "cp:windowStart",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#windowStart",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:dateTime",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation is a windowed aggregate \u2014 it has a window start."
+    },
+    {
+     "kind": "property",
+     "path": "cp:windowEnd",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#windowEnd",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:dateTime",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An observation is a windowed aggregate \u2014 it has a window end."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Observation measures a different metric than the commitment it evidences.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#observationOf> ?c ; <http://www.w3.org/ns/sosa/observedProperty> ?m .\n                ?c <https://w3id.org/examplebank/platform/commitment#metric> ?cm .\n                FILTER(?m != ?cm)\n            }"
+    }
+   ],
+   "violations": 6,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ApprovalNotSelfShape",
@@ -12373,6 +13680,55 @@
    "severity": "Violation"
   },
   {
+   "from": "cmt:Commitment",
+   "property": "cmt:commitsTo",
+   "to": "cp:CapabilityOffering",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Commitment",
+   "property": "cmt:comparator",
+   "to": "cmt:Comparator",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Commitment",
+   "property": "cmt:hasCommitmentState",
+   "to": "cmt:CommitmentState",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Commitment",
+   "property": "cmt:measuredBy",
+   "to": "cmt:MeasurementSource",
+   "cardinality": "1..*",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Commitment",
+   "property": "cmt:metric",
+   "to": "cmt:Metric",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Observation",
+   "property": "cmt:observationOf",
+   "to": "cmt:Commitment",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Observation",
+   "property": "sosa:observedProperty",
+   "to": "cmt:Metric",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
    "from": "core:Application",
    "property": "core:ownedBy",
    "to": "core:Tenant",
@@ -13851,6 +15207,45 @@
     "cp:hasApproval",
     "cp:memberPrincipal"
    ]
+  },
+  {
+   "id": "D58",
+   "title": "A sibling module for non-functional commitments",
+   "area": "Foundations",
+   "invariant": true,
+   "principles": [
+    "P9",
+    "P8",
+    "P18",
+    "P2",
+    "P7",
+    "P10"
+   ],
+   "reasoning": "Three candidates \u2014 published contracts, measured guarantees, non-functionals as scope \u2014 were evaluated and not promoted because the identity-and-access model has no non-functional vocabulary. The scoping decision they pointed at is taken: a sibling module, outside the identity set, that imports core and control-plane and that nothing imports. A commitment is governed intent attached to a capability offering (P18, P2): one metric from a closed scheme (P7), a target with QUDT unit and comparator over a window, at least one measurement source and at least one validation reference \u2014 'every guarantee is measured' becomes a shape, not a principle. Observations are SOSA observations, windowed aggregates only; time series stay in the observability platform. Vocabulary from specifications (P8): SOSA/SSN and QUDT. One question first (P9): CQ-9. Two invariants fire (P10). The word 'service' is kept out of the module name until the catalogue scoping decision says what a service is.",
+   "rejected": [
+    "Adding commitments to the control-plane module: different owners and change rates from governance declarations, and the identity modules should stay ignorant of resilience targets.",
+    "Making Commitment a subclass of DesiredStateDeclaration to inherit scope, approval rigor and supersession: attractive and probably right, but it forces every commitment through the declaration machinery before a single question has been asked of it \u2014 deferred to the backlog as the next decision.",
+    "Holding measurements in the graph: per-request volume with no question behind it; observations are windowed aggregates, as capability-use observations already are.",
+    "Building the service catalogue (contracts, versions) in the same step: no competency question asks for it yet (P9)."
+   ],
+   "terms": [
+    "Commitment",
+    "Observation",
+    "MeasurementSource",
+    "Metric",
+    "commitsTo",
+    "measuredBy",
+    "validatedBy"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:MeasurementSource",
+    "cmt:Metric",
+    "cmt:Observation",
+    "cmt:commitsTo",
+    "cmt:measuredBy",
+    "cmt:validatedBy"
+   ]
   }
  ],
  "principles": [
@@ -14752,6 +16147,12 @@
    ]
   },
   {
+   "url": "https://qudt.org/",
+   "terms": [
+    "cmt:unit"
+   ]
+  },
+  {
    "url": "https://www.rfc-editor.org/rfc/rfc6749",
    "terms": [
     "authn:OAuthClientRegistration",
@@ -14793,6 +16194,13 @@
     "core:PlatformEvent",
     "core:occurredAtTime",
     "core:performedBy"
+   ]
+  },
+  {
+   "url": "https://www.w3.org/TR/vocab-ssn/",
+   "terms": [
+    "cmt:Metric",
+    "cmt:Observation"
    ]
   }
  ],
@@ -14841,7 +16249,7 @@
    "candidate": "Capabilities are consumed through published contracts; consumers depend on contracts, not implementations; contracts are versioned and managed through a published change process",
    "verdict": "not promoted \u2014 out of scope for this ontology; revisit pending a scoping decision",
    "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them \u2014 none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 \u2014 offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
-   "todo": "Scoping decision pending: does contract versioning enter this ontology, or a separate service-catalogue ontology this one links to (recommended)? If it enters, the route is P9 \u2014 competency questions first (which contract version does this application depend on at this deployment scope; which consumers are affected by deprecating a contract version), then Contract and ContractVersion terms, then shapes."
+   "todo": "Scoping decision pending: does contract versioning enter this ontology, or a separate service-catalogue ontology this one links to (recommended)? If it enters, the route is P9 \u2014 competency questions first (which contract version does this application depend on at this deployment scope; which consumers are affected by deprecating a contract version), then Contract and ContractVersion terms, then shapes. Update 2026-09-02: the commitment module (D58) exists as a sibling; the catalogue stays unbuilt until a question asks for it, and 'service' stays out of module names until the catalogue decision says what a service is."
   },
   {
    "candidate": "Substitutability is designed in at the dependency seams that matter; for critical dependencies such as DNS, CDN and edge services the platform supports active substitution rather than only migration",
@@ -14859,13 +16267,13 @@
    "candidate": "Every guarantee is measured \u2014 any non-functional commitment has a measurable source and a validation mechanism; unmeasured claims are aspirational, not guarantees",
    "verdict": "not promoted \u2014 at method level it is P10 restated; at platform level its subject, non-functional commitments, is out of scope",
    "why": "At method level the candidate's closing sentence is P10's own: a constraint never seen to reject anything is a hope, not a control \u2014 and the validator's question gate (a formal question must return rows on the seed data) is the same idea applied to questions. At platform level no decision follows from it, because the model has no non-functional vocabulary: no availability, latency, recovery objective or service level anywhere, and no question asks for one (P9). Its test does bite on one in-scope family: the model records seven measurable sources and validates two. Assurance rank (a permit below the required level fires; CQ-1) and session count (the concurrent-session limit fires) are checked. Session and token expiry, validity windows on assertions, subscriptions and subject identifiers, grant distribution time, observation windows and assurance freshness decay (D28, 'flagged for revisiting') are recorded and never compared to any point in time. That is one coherent gap \u2014 every time bound is a source without a validator \u2014 and it is recorded as P15's known exception and consolidated in the backlog under Temporal validation, rather than promoted as a principle that would restate P10 and immediately own an exception larger than its enforced content.",
-   "todo": "Scoping decision pending: non-functional commitments belong in a sibling service-level ontology that imports core (capability, offering, scope), uses SOSA/SSN, QUDT and PROV, and holds commitments as governed intent with a measurement source and a validation query \u2014 where 'every guarantee is measured' becomes a shape. It enters only once a question is asked of a graph rather than a dashboard, e.g. which tenants are subscribed in a scope whose commitment is weaker than their contract requires."
+   "todo": "Scoping decision taken (D58): the sibling `commitment` module holds commitments as governed intent with a measurement source and a validation reference; 'every guarantee is measured' is its CommitmentShape. Remaining: whether commitments join the declaration machinery (scope, approval, supersession)."
   },
   {
    "candidate": "Non-functionals are scope, not overhead \u2014 a capability is not complete until it satisfies its associated non-functional requirements",
    "verdict": "not promoted \u2014 a delivery principle (a definition of done) in a model that governs neither delivery nor the non-functional requirements it presupposes",
    "why": "Not generative: no decision follows from it, and the model has no notion of a capability being complete or ready \u2014 subscriptions and memberships carry state schemes, capabilities and offerings carry none. Not testable in practice: 'do this capability's realizations satisfy its non-functionals?' has exactly one answerable instance and no vocabulary for any other. That instance is worth naming because it is the pattern the candidate wants: a capability declares its isolation model and a data plane under a cell-per-tenant capability may serve one tenant only (D08, delivered in D54) \u2014 a capability-level requirement enforced on its realizations. Extended to the sibling service-level ontology, the candidate is not a new principle but P18 applied \u2014 intent precedes state \u2014 with commitments as part of an offering's intent and an offering reaching an available state only when its commitments are validated; the strongest argument for that ontology sharing this principles layer rather than growing its own. The method-level echo is already stated in governance: a term reaches stable only with a question, a shape, both test corpora and steward sign-off, generated by P9 and P10. 'Overhead versus scope' cannot be a principle here because the fitness criteria require enforcement by an invariant, build check or review test in this repository, and a rule about how delivery teams define done is enforced in a delivery process, not a graph.",
-   "todo": "Points at the same scoping decision as 'Every guarantee is measured' \u2014 the sibling service-level ontology \u2014 rather than restating it. If that ontology is built, this candidate becomes its readiness gate: an offering may not reach an available state while any attached commitment lacks validation."
+   "todo": "Scoping decision taken (D58): the `commitment` module exists. This candidate becomes its readiness gate once offerings gain an available state \u2014 an offering may not reach it while any attached commitment lacks validation. Not yet modelled."
   },
   {
    "candidate": "P11 \u2014 Every kind of statement has exactly one home",
@@ -15434,6 +16842,16 @@
      "control-plane",
      "core"
     ]
+   },
+   {
+    "id": "CQ-9",
+    "question": "Which commitments does each offering carry \u2014 metric, target, source, validation \u2014 and what is the latest observation of each?",
+    "query": "cq9-commitments-and-evidence.rq",
+    "sparql": "# CQ-9 \u2014 Which commitments does each offering carry, with metric, target, source\n# and validation, and what is the latest observation of each? A committed\n# commitment with no source or no validation is a violation before this runs.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?offering ?commitment ?metric ?comparator ?target ?unit ?window ?source ?validation ?latestResult WHERE {\n  ?commitment a cmt:Commitment ;\n      cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:target ?target ; cmt:unit ?unit ;\n      cmt:comparator ?cmp ; cmt:window ?window ; cmt:measuredBy ?source ; cmt:validatedBy ?validation .\n  ?m skos:notation ?metric . ?cmp skos:notation ?comparator .\n  OPTIONAL {\n    ?obs cmt:observationOf ?commitment ; sosa:hasSimpleResult ?latestResult ; cp:windowEnd ?end .\n    FILTER NOT EXISTS { ?obs2 cmt:observationOf ?commitment ; cp:windowEnd ?end2 . FILTER(?end2 > ?end) }\n  }\n}\nORDER BY ?offering ?commitment",
+    "modules": [
+     "commitment",
+     "control-plane"
+    ]
    }
   ],
   "backlog": [
@@ -15920,6 +17338,26 @@
    {
     "section": "Temporal validation (recorded bounds with no validator)",
     "question": "Which permits relied on an elevation older than the policy's freshness requirement? (assurance decay \u2014 D28 deferred it; needs a per-policy freshness bound before it is answerable)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Which committed commitments have no observation inside their current window? (a promise nobody is watching \u2014 expected empty)",
+    "expectedEmpty": true
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Which observations fall outside their commitment's target, by comparator? (needs a comparator-aware query; the data is there)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Which tenants are subscribed in a scope whose offering carries a weaker commitment than the tenant's contract requires? (needs the contract side \u2014 see the published-contracts scoping decision)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Who is accountable for each commitment, and was its change approved? (commitments are declarations in all but class; whether they join the declaration machinery \u2014 scope, approval rigor, supersession \u2014 is the next decision)",
     "expectedEmpty": false
    }
   ]

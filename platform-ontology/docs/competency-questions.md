@@ -15,6 +15,7 @@ scope creep.
 | CQ-6 | Which workload principals exist, what are their SPIFFE identities, and which changes have they executed? | `cq6-workload-principals.rq` | core, control-plane |
 | CQ-7 | Does this subject's tenant have the right to enter this application through this platform-controlled endpoint and deployment scope? | `cq7-application-entry-rights.rq` | core, ingress, control-plane |
 | CQ-8 | Which tenants' data planes are reachable from a given desired-state declaration (blast radius)? | `cq8-blast-radius.rq` | control-plane, core |
+| CQ-9 | Which commitments does each offering carry — metric, target, source, validation — and what is the latest observation of each? | `cq9-commitments-and-evidence.rq` | commitment, control-plane |
 
 ## Backlog (draft, not yet modelled)
 
@@ -362,4 +363,23 @@ authorization*), subject-identifier mappings past their validity window
 - Which permits relied on an elevation older than the policy's freshness
   requirement? *(assurance decay — D28 deferred it; needs a per-policy
   freshness bound before it is answerable)*
+
+### Non-functional commitments (module `commitment`, scaffolded — D58)
+
+A sibling module, outside the identity set: commitments are governed intent
+attached to an offering; observations are windowed evidence. A commitment
+with no measurement source or no validation mechanism is a violation — the
+'every guarantee is measured' rule as a shape, not a principle.
+
+- Which committed commitments have no observation inside their current
+  window? *(a promise nobody is watching — expected empty)*
+- Which observations fall outside their commitment's target, by comparator?
+  *(needs a comparator-aware query; the data is there)*
+- Which tenants are subscribed in a scope whose offering carries a weaker
+  commitment than the tenant's contract requires? *(needs the contract
+  side — see the published-contracts scoping decision)*
+- Who is accountable for each commitment, and was its change approved?
+  *(commitments are declarations in all but class; whether they join the
+  declaration machinery — scope, approval rigor, supersession — is the next
+  decision)*
 

@@ -940,6 +940,36 @@
         "memberPrincipal",
         "hasApproval"
       ]
+    },
+    {
+      "id": "D58",
+      "title": "A sibling module for non-functional commitments",
+      "area": "Foundations",
+      "invariant": true,
+      "principles": [
+        "P9",
+        "P8",
+        "P18",
+        "P2",
+        "P7",
+        "P10"
+      ],
+      "reasoning": "Three candidates — published contracts, measured guarantees, non-functionals as scope — were evaluated and not promoted because the identity-and-access model has no non-functional vocabulary. The scoping decision they pointed at is taken: a sibling module, outside the identity set, that imports core and control-plane and that nothing imports. A commitment is governed intent attached to a capability offering (P18, P2): one metric from a closed scheme (P7), a target with QUDT unit and comparator over a window, at least one measurement source and at least one validation reference — 'every guarantee is measured' becomes a shape, not a principle. Observations are SOSA observations, windowed aggregates only; time series stay in the observability platform. Vocabulary from specifications (P8): SOSA/SSN and QUDT. One question first (P9): CQ-9. Two invariants fire (P10). The word 'service' is kept out of the module name until the catalogue scoping decision says what a service is.",
+      "rejected": [
+        "Adding commitments to the control-plane module: different owners and change rates from governance declarations, and the identity modules should stay ignorant of resilience targets.",
+        "Making Commitment a subclass of DesiredStateDeclaration to inherit scope, approval rigor and supersession: attractive and probably right, but it forces every commitment through the declaration machinery before a single question has been asked of it — deferred to the backlog as the next decision.",
+        "Holding measurements in the graph: per-request volume with no question behind it; observations are windowed aggregates, as capability-use observations already are.",
+        "Building the service catalogue (contracts, versions) in the same step: no competency question asks for it yet (P9)."
+      ],
+      "terms": [
+        "Commitment",
+        "Observation",
+        "MeasurementSource",
+        "Metric",
+        "commitsTo",
+        "measuredBy",
+        "validatedBy"
+      ]
     }
   ]
 }

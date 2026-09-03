@@ -1,0 +1,143 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix sosa:  <http://www.w3.org/ns/sosa/> .
+@prefix qudt:  <http://qudt.org/schema/qudt/> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix cp:    <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix cmt:   <https://w3id.org/examplebank/platform/commitment#> .
+
+<https://w3id.org/examplebank/platform/commitment>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
+    dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> , <https://www.w3.org/TR/vocab-ssn/> ;
+    dct:title "Commitment Module"@en ;
+    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request."@en ;
+    dct:created "2026-09-02"^^xsd:date .
+
+#################################################################
+# Classes
+#################################################################
+
+cmt:Commitment a owl:Class ;
+    skos:prefLabel "Commitment"@en ;
+    skos:altLabel "service-level objective"@en , "non-functional requirement"@en ;
+    skos:definition "A non-functional guarantee the platform makes for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism."@en ;
+    vs:term_status "draft" .
+
+cmt:Observation a owl:Class ;
+    rdfs:subClassOf sosa:Observation ;
+    dct:conformsTo <https://www.w3.org/TR/vocab-ssn/> ;
+    skos:prefLabel "Observation"@en ;
+    skos:definition "A windowed aggregate measurement of a commitment's metric, ingested from telemetry. Never per-request: the graph holds evidence, not time series."@en ;
+    vs:term_status "draft" .
+
+cmt:MeasurementSource a owl:Class ;
+    skos:prefLabel "Measurement source"@en ;
+    skos:definition "A system or feed from which a commitment's metric is observed. Instances may name the actual monitoring system; the term does not."@en ;
+    vs:term_status "draft" .
+
+cmt:Metric a owl:Class ;
+    rdfs:subClassOf sosa:ObservableProperty , skos:Concept ;
+    dct:conformsTo <https://www.w3.org/TR/vocab-ssn/> ;
+    skos:prefLabel "Metric"@en ;
+    skos:definition "An observable property a commitment targets, drawn from the closed metric scheme."@en ;
+    vs:term_status "draft" .
+
+cmt:Comparator a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Comparator"@en ;
+    skos:definition "How an observed value is judged against a target: at least, or at most."@en ;
+    vs:term_status "draft" .
+
+cmt:CommitmentState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Commitment state"@en ;
+    skos:definition "Lifecycle state of a commitment: draft, committed, or withdrawn."@en ;
+    vs:term_status "draft" .
+
+cmt:Commitment owl:disjointWith cmt:Observation .
+
+#################################################################
+# Object properties (no domain/range — typing is SHACL's job, P6)
+#################################################################
+
+cmt:commitsTo a owl:ObjectProperty ;
+    skos:prefLabel "commits to"@en ;
+    skos:definition "Capability offering a commitment is made for. The offering carries the scope; the commitment inherits it."@en ;
+    vs:term_status "draft" .
+
+cmt:metric a owl:ObjectProperty ;
+    skos:prefLabel "metric"@en ;
+    skos:definition "Metric a commitment targets — exactly one, from the closed scheme."@en ;
+    vs:term_status "draft" .
+
+cmt:unit a owl:ObjectProperty ;
+    dct:conformsTo <https://qudt.org/> ;
+    skos:prefLabel "unit"@en ;
+    skos:definition "QUDT unit the target is expressed in."@en ;
+    vs:term_status "draft" .
+
+cmt:comparator a owl:ObjectProperty ;
+    skos:prefLabel "comparator"@en ;
+    skos:definition "Comparator judging observations against the target."@en ;
+    vs:term_status "draft" .
+
+cmt:measuredBy a owl:ObjectProperty ;
+    skos:prefLabel "measured by"@en ;
+    skos:definition "Measurement source the commitment's metric is observed from — at least one, or the commitment is aspirational."@en ;
+    vs:term_status "draft" .
+
+cmt:hasCommitmentState a owl:ObjectProperty ;
+    skos:prefLabel "has commitment state"@en ;
+    skos:definition "Current lifecycle state of the commitment."@en ;
+    vs:term_status "draft" .
+
+cmt:observationOf a owl:ObjectProperty ;
+    skos:prefLabel "observation of"@en ;
+    skos:definition "Commitment an observation evidences."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+cmt:target a owl:DatatypeProperty ;
+    skos:prefLabel "target"@en ;
+    skos:definition "Target value of the commitment, in its unit."@en ;
+    vs:term_status "draft" .
+
+cmt:window a owl:DatatypeProperty ;
+    skos:prefLabel "window"@en ;
+    skos:definition "Duration over which the target is judged, as an xsd:duration."@en ;
+    vs:term_status "draft" .
+
+cmt:validatedBy a owl:DatatypeProperty ;
+    skos:prefLabel "validated by"@en ;
+    skos:definition "Reference to the mechanism that validates observations against the target — a query in this repository, or an external check. At least one, or the commitment is aspirational."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Closed schemes (P7)
+#################################################################
+
+cmt:MetricScheme a skos:ConceptScheme ; skos:prefLabel "Commitment metrics"@en ;
+    skos:definition "Closed scheme of metrics a commitment may target. Extend by decision, never by string."@en .
+cmt:metric-availability a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Availability"@en ; skos:notation "availability" .
+cmt:metric-latency-p99 a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Latency, 99th percentile"@en ; skos:notation "latency.p99" .
+cmt:metric-recovery-time a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery time objective"@en ; skos:notation "rto" .
+cmt:metric-recovery-point a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery point objective"@en ; skos:notation "rpo" .
+
+cmt:ComparatorScheme a skos:ConceptScheme ; skos:prefLabel "Comparators"@en .
+cmt:at-least a cmt:Comparator ; skos:inScheme cmt:ComparatorScheme ; skos:prefLabel "at least"@en ; skos:notation ">=" .
+cmt:at-most a cmt:Comparator ; skos:inScheme cmt:ComparatorScheme ; skos:prefLabel "at most"@en ; skos:notation "<=" .
+
+cmt:CommitmentStateScheme a skos:ConceptScheme ; skos:prefLabel "Commitment states"@en .
+cmt:state-draft a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "draft"@en .
+cmt:state-committed a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "committed"@en .
+cmt:state-withdrawn a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "withdrawn"@en .

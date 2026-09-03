@@ -22,6 +22,8 @@ ontology/          TBox modules (OWL 2 QL target), one file per domain
   ingress.ttl        gateways, listeners, routes (domain/path → tenant), upstreams
   authz.ttl          policies, attributes, entitlement grants, actions,
                      decisions incl. ingress admission (AuthZEN-aligned)
+  commitment.ttl     non-functional commitments on offerings and their windowed
+                     observations (sibling module; nothing imports it)
   control-plane.ttl  scope tree, declarations, subscriptions, offerings,
                      requirements, enablement, portals, mutations
 shapes/            SHACL shapes graphs, mirroring the module structure
@@ -44,7 +46,7 @@ and which alternatives were rejected. It is generated from the Turtle by
 `ci/build_index.py`, and CI fails if the committed index is stale — so the
 browser cannot drift from the ontology. See `browser/README.md`.
 
-Module import chain: `control-plane → authz → authn → core`, with
+Module import chain: `control-plane → authz → authn → core`, plus the sibling `commitment → control-plane, core`, with
 `session → authn` and `ingress → core`. Cross-domain joins live in `core`.
 
 ## Design decisions baked in

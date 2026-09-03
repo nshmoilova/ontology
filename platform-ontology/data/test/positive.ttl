@@ -7,6 +7,9 @@
 @prefix authz:   <https://w3id.org/examplebank/platform/authz#> .
 @prefix cp:      <https://w3id.org/examplebank/platform/control-plane#> .
 @prefix ex:      <https://data.examplebank.com/platform/> .
+@prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
 
 ### Principals
 ex:alice a core:HumanPrincipal ;
@@ -401,3 +404,27 @@ ex:mutation-8101 a cp:DataPlaneMutation ;
     cp:executedBy ex:db-controller-agent ;
     cp:mutatedDataPlane ex:t123-db-plane ;
     cp:realizesIntent ex:decl-8001 .
+
+### Commitment module — a measured guarantee on the managed-database offering
+ex:source-db-metrics a cmt:MeasurementSource ;
+    core:displayName "Database platform metrics feed" .
+
+ex:commit-db-availability a cmt:Commitment ;
+    core:displayName "Managed database availability, production" ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-availability ;
+    cmt:target 99.95 ;
+    cmt:unit unit:PERCENT ;
+    cmt:comparator cmt:at-least ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-db-metrics ;
+    cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+
+ex:obs-db-availability-2026-08 a cmt:Observation ;
+    cmt:observationOf ex:commit-db-availability ;
+    sosa:observedProperty cmt:metric-availability ;
+    sosa:hasSimpleResult 99.97 ;
+    cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;
+    cp:windowEnd "2026-08-31T23:59:59Z"^^xsd:dateTime .
+

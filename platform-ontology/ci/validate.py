@@ -125,6 +125,8 @@ def main() -> int:
             "must name the requesting principal",
             "approved by the principal that executed it",
             "approved by the principal it admits",
+            "unmeasured claim is aspirational",
+            "different metric than the commitment",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -144,6 +146,7 @@ def main() -> int:
         "cq6-workload-principals.rq",
         "cq7-application-entry-rights.rq",
         "cq8-blast-radius.rq",
+        "cq9-commitments-and-evidence.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

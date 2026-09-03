@@ -1,0 +1,54 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
+@prefix scm:  <https://w3id.org/examplebank/platform/shapes/commitment#> .
+
+# "Every guarantee is measured": a commitment without a measurement source or a
+# validation mechanism is aspirational, not a guarantee (D58).
+scm:CommitmentShape a sh:NodeShape ;
+    sh:targetClass cmt:Commitment ;
+    sh:property [ sh:path cmt:commitsTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cp:CapabilityOffering ; sh:severity sh:Violation ;
+        sh:message "A commitment is made for exactly one capability offering." ] ;
+    sh:property [ sh:path cmt:metric ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Metric ; sh:severity sh:Violation ;
+        sh:message "A commitment targets exactly one metric from the closed scheme." ] ;
+    sh:property [ sh:path cmt:target ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:severity sh:Violation ;
+        sh:message "A commitment has exactly one decimal target." ] ;
+    sh:property [ sh:path cmt:unit ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ; sh:severity sh:Violation ;
+        sh:message "A commitment states exactly one unit (a QUDT unit IRI)." ] ;
+    sh:property [ sh:path cmt:comparator ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Comparator ; sh:severity sh:Violation ;
+        sh:message "A commitment states exactly one comparator." ] ;
+    sh:property [ sh:path cmt:window ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:duration ; sh:severity sh:Violation ;
+        sh:message "A commitment is judged over exactly one window." ] ;
+    sh:property [ sh:path cmt:measuredBy ; sh:minCount 1 ; sh:class cmt:MeasurementSource ; sh:severity sh:Violation ;
+        sh:message "Commitment has no measurement source — an unmeasured claim is aspirational, not a guarantee." ] ;
+    sh:property [ sh:path cmt:validatedBy ; sh:minCount 1 ; sh:datatype xsd:anyURI ; sh:severity sh:Violation ;
+        sh:message "Commitment has no validation mechanism — a claim nothing checks is aspirational, not a guarantee." ] ;
+    sh:property [ sh:path cmt:hasCommitmentState ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:CommitmentState ; sh:severity sh:Violation ;
+        sh:message "A commitment is in exactly one lifecycle state." ] .
+
+scm:ObservationShape a sh:NodeShape ;
+    sh:targetClass cmt:Observation ;
+    sh:property [ sh:path cmt:observationOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Commitment ; sh:severity sh:Violation ;
+        sh:message "An observation evidences exactly one commitment." ] ;
+    sh:property [ sh:path sosa:observedProperty ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Metric ; sh:severity sh:Violation ;
+        sh:message "An observation observes exactly one metric." ] ;
+    sh:property [ sh:path sosa:hasSimpleResult ; sh:minCount 1 ; sh:maxCount 1 ; sh:severity sh:Violation ;
+        sh:message "An observation carries exactly one result." ] ;
+    sh:property [ sh:path cp:windowStart ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ; sh:severity sh:Violation ;
+        sh:message "An observation is a windowed aggregate — it has a window start." ] ;
+    sh:property [ sh:path cp:windowEnd ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ; sh:severity sh:Violation ;
+        sh:message "An observation is a windowed aggregate — it has a window end." ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Observation measures a different metric than the commitment it evidences." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/commitment#observationOf> ?c ; <http://www.w3.org/ns/sosa/observedProperty> ?m .
+                ?c <https://w3id.org/examplebank/platform/commitment#metric> ?cm .
+                FILTER(?m != ?cm)
+            }
+        """ ;
+    ] .

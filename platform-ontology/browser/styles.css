@@ -20,7 +20,7 @@
   --m-session: #7A4E8C;
   --m-ingress: #1F7A8C;
   --m-authz: #A85B2A;
-  --m-control-plane: #2E7D4F;
+  --m-control-plane: #2E7D4F; --m-commitment: #7B5EA7;
   --code-bg: #EDF1EF;
   --shadow: 0 1px 2px rgba(29,36,34,.06), 0 8px 24px rgba(29,36,34,.06);
   --shadow-lg: 0 4px 12px rgba(29,36,34,.10), 0 24px 48px rgba(29,36,34,.12);
@@ -33,7 +33,7 @@
     --accent: #63BFA8; --accent-ink: #7FD0BB; --accent-soft: #1E3B36;
     --violation: #E58A8D; --warning: #D9A93F;
     --m-core: #9AA8B2; --m-authn: #97A6EA; --m-session: #C79BDA;
-    --m-ingress: #6EC6D9; --m-authz: #E09A6B; --m-control-plane: #82CBA0;
+    --m-ingress: #6EC6D9; --m-authz: #E09A6B; --m-control-plane: #82CBA0; --m-commitment: #B9A3E3;
     --code-bg: #232B2E;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
     --shadow-lg: 0 4px 12px rgba(0,0,0,.4), 0 24px 48px rgba(0,0,0,.4);
@@ -46,7 +46,7 @@
   --accent: #63BFA8; --accent-ink: #7FD0BB; --accent-soft: #1E3B36;
   --violation: #E58A8D; --warning: #D9A93F;
   --m-core: #9AA8B2; --m-authn: #97A6EA; --m-session: #C79BDA;
-  --m-ingress: #6EC6D9; --m-authz: #E09A6B; --m-control-plane: #82CBA0;
+  --m-ingress: #6EC6D9; --m-authz: #E09A6B; --m-control-plane: #82CBA0; --m-commitment: #B9A3E3;
   --code-bg: #232B2E;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
   --shadow-lg: 0 4px 12px rgba(0,0,0,.4), 0 24px 48px rgba(0,0,0,.4);
@@ -222,6 +222,7 @@ h2.sec:first-of-type { margin-top: 1.6rem; }
 .tag.ingress { color: var(--m-ingress); border-color: color-mix(in srgb, var(--m-ingress) 45%, transparent); background: color-mix(in srgb, var(--m-ingress) 10%, transparent); }
 .tag.authz { color: var(--m-authz); border-color: color-mix(in srgb, var(--m-authz) 45%, transparent); background: color-mix(in srgb, var(--m-authz) 10%, transparent); }
 .tag.control-plane { color: var(--m-control-plane); border-color: color-mix(in srgb, var(--m-control-plane) 45%, transparent); background: color-mix(in srgb, var(--m-control-plane) 10%, transparent); }
+.tag.commitment { color: var(--m-commitment); border-color: color-mix(in srgb, var(--m-commitment) 45%, transparent); background: color-mix(in srgb, var(--m-commitment) 10%, transparent); }
 
 .pill {
   display: inline-block; font-size: .66rem; font-weight: 600; letter-spacing: .07em;
