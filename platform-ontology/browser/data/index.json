@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "eced761bf8cd",
+ "sourceDigest": "2a3ec83efbd3",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15,7 +15,7 @@
   "principles": 18,
   "standards": 11,
   "provisionalPrinciples": 12,
-  "explainers": 3,
+  "explainers": 2,
   "formalCQs": 8,
   "backlogCQs": 97
  },
@@ -15119,168 +15119,6 @@
     "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
    ],
    "stepCount": 9
-  },
-  {
-   "id": "token-binding",
-   "title": "How platform entitlements bind to the token",
-   "subtitle": "The token is evidence; the grant is authority",
-   "audience": "Identity, ingress and application engineers",
-   "summary": "Entitlements are deliberately not carried in the JWT. The token proves who is calling and in what context; the authority is a set of grants the control plane projects to ingress and can revoke without re-minting anything. This walkthrough covers what each claim resolves to, why the split exists, and where it is enforced.",
-   "steps": [
-    {
-     "heading": "The stance, and why it is not the obvious one",
-     "diagram": "token-binding.svg",
-     "body": "The tempting design is to mint entitlements into the token: it is self-contained, and ingress needs no lookup. The reason we do not is revocation. Claims freeze at issuance, so an entitlement in a token stays true until the token expires \u2014 and access-token lifetimes are exactly the window in which an offboarding or a compromise needs to take effect.\n\nSo the token carries evidence, and the grants \u2014 distributed from the control plane, timestamped, revocable \u2014 carry authority. This is also the continuous-access-evaluation posture that CAEP exists to serve, arrived at from the model's own logic rather than from the standard.",
-     "terms": [
-      "authz:EntitlementGrant",
-      "session:Token"
-     ],
-     "shapes": [],
-     "svg": "<svg viewBox=\"0 0 920 500\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\"\n     aria-label=\"Ingress assembles request context from three evidence sources \u2014 the request URL, the JWT, and the session cookie \u2014 then checks the resolved context against entitlement grants distributed from the control plane. The token carries no entitlements.\">\n  <defs>\n    <marker id=\"tbArr\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"currentColor\"/>\n    </marker>\n    <marker id=\"tbArrG\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n      <path d=\"M0,0 L10,5 L0,10 z\" fill=\"var(--accent)\"/>\n    </marker>\n  </defs>\n\n  <text x=\"150\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Three evidence sources</text>\n  <text x=\"470\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"currentColor\" opacity=\".75\" font-weight=\"600\">Resolved context</text>\n  <text x=\"782\" y=\"26\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--accent-ink)\" font-weight=\"600\">Authority</text>\n\n  <!-- 1. request URL -->\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"var(--m-ingress)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"42\" width=\"264\" height=\"86\" rx=\"9\" fill=\"none\" stroke=\"var(--m-ingress)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"64\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-ingress)\" font-weight=\"600\">1 \u00b7 request URL + landing point</text>\n  <text x=\"36\" y=\"84\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">domain / path \u2192 tenant</text>\n  <text x=\"36\" y=\"102\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">which ingress deployment</text>\n  <text x=\"36\" y=\"120\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">bound in ingress route config</text>\n\n  <!-- 2. JWT -->\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"var(--m-session)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"140\" width=\"264\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"162\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-session)\" font-weight=\"600\">2 \u00b7 JWT \u2014 identity + assurance</text>\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\">\n    <text x=\"36\" y=\"184\" opacity=\".8\">iss / aud / exp</text>\n    <text x=\"36\" y=\"204\" opacity=\".8\">sub</text>\n    <text x=\"36\" y=\"224\" opacity=\".8\">client_id</text>\n    <text x=\"36\" y=\"244\" opacity=\".8\">acr / amr / auth_time</text>\n    <text x=\"36\" y=\"268\" fill=\"var(--violation)\">scope / permissions</text>\n    <text x=\"36\" y=\"283\" font-size=\"9.5\" fill=\"var(--violation)\" opacity=\".85\">ignored at ingress \u2014 Level 3</text>\n  </g>\n\n  <!-- 3. cookie -->\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"var(--m-authn)\" opacity=\".10\"/>\n  <rect x=\"18\" y=\"304\" width=\"264\" height=\"66\" rx=\"9\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.5\"/>\n  <text x=\"36\" y=\"326\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12\" fill=\"var(--m-authn)\" font-weight=\"600\">3 \u00b7 handle + DPoP proof</text>\n  <text x=\"36\" y=\"346\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\".8\">cookie handle \u00b7 signed proof</text>\n  <text x=\"36\" y=\"362\" font-size=\"10\" fill=\"currentColor\" opacity=\".55\">handle identifies, key authenticates</text>\n\n  <!-- arrows to resolved -->\n  <g stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\" opacity=\".6\">\n    <line x1=\"286\" y1=\"76\" x2=\"352\" y2=\"76\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"104\" x2=\"352\" y2=\"128\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"204\" x2=\"352\" y2=\"182\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"224\" x2=\"352\" y2=\"234\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"244\" x2=\"352\" y2=\"286\" marker-end=\"url(#tbArr)\"/>\n    <line x1=\"286\" y1=\"337\" x2=\"352\" y2=\"337\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- resolved nodes -->\n  <g font-family=\"IBM Plex Mono, monospace\" font-size=\"11.5\">\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"60\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"81\" text-anchor=\"middle\" fill=\"var(--m-core)\">Tenant</text>\n\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-control-plane)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"112\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-control-plane)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"133\" text-anchor=\"middle\" fill=\"var(--m-control-plane)\">environment \u00b7 region</text>\n\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"164\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"185\" text-anchor=\"middle\" fill=\"var(--m-authn)\">SubjectIdentifier \u2192 Principal</text>\n\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-core)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"216\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-core)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"237\" text-anchor=\"middle\" fill=\"var(--m-core)\">OAuth registration (plumbing)</text>\n\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-authn)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"268\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-authn)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"289\" text-anchor=\"middle\" fill=\"var(--m-authn)\">JourneyExecution \u2192 AAL</text>\n\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"var(--m-session)\" opacity=\".13\"/>\n    <rect x=\"356\" y=\"320\" width=\"222\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"var(--m-session)\" stroke-width=\"1.3\"/>\n    <text x=\"467\" y=\"341\" text-anchor=\"middle\" fill=\"var(--m-session)\">Session</text>\n  </g>\n\n  <!-- grants -->\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"var(--accent)\" opacity=\".09\"/>\n  <rect x=\"622\" y=\"96\" width=\"282\" height=\"128\" rx=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.6\"/>\n  <text x=\"763\" y=\"122\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" fill=\"var(--accent-ink)\" font-weight=\"600\">EntitlementGrant</text>\n  <text x=\"763\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"currentColor\" opacity=\".75\">never in the token, never in the URL</text>\n  <text x=\"763\" y=\"166\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">grantedTo \u00b7 onDimension \u00b7 entitlementValue</text>\n  <text x=\"763\" y=\"184\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".68\">derivedFrom \u00b7 distributedAt</text>\n  <text x=\"763\" y=\"208\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"var(--accent-ink)\">revocable without re-minting anything</text>\n\n  <g stroke=\"var(--accent)\" stroke-width=\"1.5\" fill=\"none\">\n    <line x1=\"582\" y1=\"160\" x2=\"618\" y2=\"160\" marker-end=\"url(#tbArrG)\"/>\n  </g>\n  <text x=\"600\" y=\"152\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--accent-ink)\">checked</text>\n\n  <!-- decision -->\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"var(--m-authz)\" opacity=\".12\"/>\n  <rect x=\"622\" y=\"252\" width=\"282\" height=\"56\" rx=\"8\" fill=\"none\" stroke=\"var(--m-authz)\" stroke-width=\"1.4\"/>\n  <text x=\"763\" y=\"275\" text-anchor=\"middle\" font-family=\"IBM Plex Mono, monospace\" font-size=\"12.5\" fill=\"var(--m-authz)\" font-weight=\"600\">IngressAdmissionDecision</text>\n  <text x=\"763\" y=\"294\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"currentColor\" opacity=\".7\">subject \u00b7 action \u00b7 target \u00b7 viaChannel</text>\n  <g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" opacity=\".7\">\n    <line x1=\"763\" y1=\"228\" x2=\"763\" y2=\"248\" marker-end=\"url(#tbArr)\"/>\n  </g>\n\n  <!-- footer note -->\n  <rect x=\"18\" y=\"392\" width=\"886\" height=\"92\" rx=\"9\" fill=\"var(--panel-2)\" stroke=\"var(--rule)\" stroke-width=\"1.2\"/>\n  <text x=\"42\" y=\"417\" font-size=\"12.5\" font-weight=\"600\" fill=\"currentColor\">Where each binding stands</text>\n  <g font-size=\"11.5\" fill=\"currentColor\" opacity=\".82\">\n    <text x=\"42\" y=\"441\">domain / path \u2192 Tenant \u2014 a route binding, governed by an approved declaration; one address resolves to one tenant.</text>\n    <text x=\"42\" y=\"465\">handle \u2192 Session \u2014 sender-constrained per DPoP: the session and every token it issues bind to one proof-of-possession key.</text>\n  </g>\n</svg>"
-    },
-    {
-     "heading": "Three evidence sources, not one",
-     "body": "It is tempting to say \"ingress reads the token\", but the token is only one of three inputs, and it is not even the one that establishes tenancy.\n\nTenant comes from the request URL: domain and path are bound to a tenant in ingress configuration, and ingress resolves tenancy from that binding rather than from any claim. Where the request landed carries environment and region. The session cookie carries an opaque handle that maps to a session \u2014 there is no session identifier in the token. What the token itself contributes is identity, the presenting registration, and assurance.\n\nThis matters for the discussion because it changes what an attacker has to forge, and who owns the control. A claim is attacked by compromising the issuer; tenancy is attacked by changing an ingress route binding. Both are legitimate designs \u2014 but they are different blast radii, different change processes, and different approvers.",
-     "table": {
-      "columns": [
-       "Evidence",
-       "Source",
-       "Resolves to"
-      ],
-      "rows": [
-       [
-        "domain / path",
-        "Ingress route binding \u2014 a governed declaration",
-        "core:Tenant \u2014 tenant.access, platform.access"
-       ],
-       [
-        "landing point",
-        "Which ingress deployment",
-        "environment.access, region.access"
-       ],
-       [
-        "session handle + DPoP proof",
-        "Cookie, plus a per-request signed proof",
-        "session:Session \u2014 sender-constrained, per user per device"
-       ],
-       [
-        "sub",
-        "JWT claim",
-        "authn:SubjectIdentifier \u2192 core:Principal"
-       ],
-       [
-        "client_id",
-        "JWT claim",
-        "The session manager's OAuth registration \u2014 protocol identifier only"
-       ],
-       [
-        "device class",
-        "The session, set by the session manager",
-        "core:DeliveryChannel \u2014 channel.access"
-       ],
-       [
-        "acr, amr, auth_time",
-        "JWT claim",
-        "authn:AuthenticationJourneyExecution \u2192 AAL"
-       ],
-       [
-        "iss, aud, exp, nbf",
-        "JWT claim",
-        "Preconditions \u2014 valid, in window, addressed here"
-       ],
-       [
-        "scope, permissions",
-        "JWT claim",
-        "\u2014 deliberately ignored: Level 3 \u2014"
-       ]
-      ]
-     },
-     "terms": [
-      "authn:SubjectIdentifier",
-      "session:Session",
-      "authn:AuthenticationJourneyExecution",
-      "core:Tenant"
-     ],
-     "shapes": []
-    },
-    {
-     "heading": "Channel comes from the device, not the token",
-     "body": "Channel is not self-evident from the connection \u2014 \"mobile\" is a fact about the client, not about TCP. It is also not in the token: the OAuth client_id identifies the session manager's registration at the global IdP, one per audience, and carries no channel information.\n\nThe actual source is the device. The platform issues one session per user per device, and the session manager knows whether it authenticated a browser or a mobile app, so the session's device class establishes the channel. That makes channel a property of the session rather than evidence a caller presents \u2014 which is the strongest possible position, since the caller cannot assert it at all.\n\nIt also explains a shape in the vocabulary: api and agent are channels with no device class, because there is no interactive client to classify. Whatever sender-constrains those callers, it is not a device.",
-     "terms": [
-      "session:Device",
-      "session:DeviceClass",
-      "session:onDevice",
-      "cp:ConcurrentSessionPolicy"
-     ],
-     "shapes": [
-      "OneSessionPerDeviceShape",
-      "ConcurrentSessionLimitShape"
-     ]
-    },
-    {
-     "heading": "Sender constraining: the handle stops being a bearer token",
-     "body": "The session cookie used to be the weakest link in the chain \u2014 a bearer artifact that anyone holding it could replay. Under DPoP (RFC 9449) the presenter holds a key pair and signs a proof per request, and the session carries a confirmation binding to that key's thumbprint.\n\nThat splits two things the cookie previously conflated: the handle now identifies the session, and the key authenticates the presenter. A stolen handle grants nothing on its own.\n\nThe invariant worth dwelling on is the third one \u2014 constraint laundering. It is entirely possible to sender-constrain a session correctly and then hand out access tokens that are unbound, at which point the protection is decorative. The model forbids a constrained session from issuing a token bound to a different key, or to none.",
-     "terms": [
-      "authn:ProofOfPossessionKey",
-      "authn:confirmedByKey",
-      "authn:keyThumbprint",
-      "session:SessionHandle",
-      "session:resolvesToSession"
-     ],
-     "shapes": [
-      "SenderConstrainedSessionShape",
-      "TokenInheritsConfirmationShape",
-      "KeyConfusionShape",
-      "SessionHandleShape"
-     ]
-    },
-    {
-     "heading": "What the audience does, and what client_id does not",
-     "body": "The audience is the resource expected to accept the token \u2014 a transaction service, a capability endpoint. A token presented to a resource it was not minted for is rejected, which is what makes aud a real control.\n\nThe token's client_id is a different kind of thing: it identifies the session manager's OAuth registration at the global IdP, and since the platform maintains one registration per audience, it is derivable from aud. It carries no tenancy, no channel and no front-end identity, so the model treats it as protocol plumbing and does not represent it \u2014 the same call the model already makes for JOSE header fields.\n\nThis is worth stating plainly in the room, because the instinct to read platform meaning into the OAuth client identifier is strong, and acting on it would put tenancy or channel decisions on a value that cannot carry them.",
-     "terms": [
-      "session:tokenAudience",
-      "core:Tenant"
-     ],
-     "shapes": []
-    },
-    {
-     "heading": "Where the grants come from",
-     "body": "A grant is never hand-authored. It is the materialized projection of upstream governance \u2014 a subscription, a registration, an enablement \u2014 carrying a mandatory derivation link and a distribution timestamp.\n\nThe derivation link is what makes \"why does this tenant have this?\" answerable, and the timestamp is what makes staleness measurable: if ingress is enforcing configuration distributed three days ago, that is visible rather than assumed.",
-     "terms": [
-      "authz:derivedFrom",
-      "authz:distributedAt",
-      "authz:grantedTo",
-      "authz:onDimension"
-     ],
-     "shapes": [
-      "EntitlementGrantShape"
-     ]
-    },
-    {
-     "heading": "What the decision records",
-     "body": "An admission decision is a complete evaluation tuple \u2014 subject, action, target, outcome \u2014 plus the channel it arrived on and the grants it actually evaluated. That last part is what turns an audit question into a query: not just what was decided, but on what authority.",
-     "terms": [
-      "authz:IngressAdmissionDecision",
-      "authz:evaluatedGrant",
-      "authz:viaChannel",
-      "authz:evaluatedAction"
-     ],
-     "shapes": [
-      "IngressAdmissionDecisionShape"
-     ]
-    }
-   ],
-   "openQuestions": [
-    "Pairwise subject identifiers are scoped per OAuth client. With one platform registration per audience, pairwise scoping would be per-audience rather than per-application \u2014 is that the intent, and does the model need to represent it at all?",
-    "Route bindings are now governed declarations, which closes the approver gap \u2014 but only for the tenant binding. The rest of ingress configuration (listeners, TLS termination, upstream targets) is still distributed out of band. Where should that line sit: is tenant binding uniquely sensitive, or is all ingress config desired state?",
-    "Sessions are now sender-constrained per DPoP, so a stolen handle alone is useless. What remains open is key lifecycle: rotation, and what should happen to a session whose confirmation key is revoked \u2014 the same shape as the credential-revocation gap, and probably the same answer.",
-    "DPoP applies cleanly to web and mobile, where the presenter can hold a key. What sender-constrains an API or agent consumer \u2014 mutual TLS certificate binding (RFC 8705) instead, and does the model need to distinguish which mechanism constrains a given session, or is the confirmation key enough?",
-    "How stale may a distributed grant be before ingress should fail closed rather than enforce it? The model records distributedAt but sets no threshold, and the answer is probably different per dimension \u2014 a revoked tenant is not a stale region.",
-    "Should the platform constrain which audiences a registration may request at token-mint time? Today the IdP decides that from its own configuration, outside our governance, which means it can mint an audience for a resource the tenant's entitlements cannot reach.",
-    "Do we need entitlement evaluation results in the token as a cache \u2014 a short-lived assertion of the Level-1 outcome \u2014 and if so, does that reintroduce the freeze problem we designed around?",
-    "Token lineage is unmodelled: when a refresh token is revoked, we cannot currently enumerate the access tokens descended from it. Is that a gap worth closing before the first production tenant?"
-   ],
-   "stepCount": 7
   },
   {
    "id": "principles",
