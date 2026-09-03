@@ -483,7 +483,7 @@
               [
                 "P4 The token is evidence; the grant is authority",
                 "A token is proof, not permission. It says who the caller is, how strongly they authenticated and which audience it is for — and nothing about what they are allowed to do. Permission is a grant the control plane projects to ingress, checked on every request and revocable at any moment without touching the token.",
-                "The token says sub, AAL2, audience. The grant says entitled to tenant T in prod. Revoke the grant and nothing needs re-minting.",
+                "Alice's token carries her subject identifier, the fact that she authenticated at AAL2, and the audience it was issued for. Whether she may enter digital-bank in production for tenant T123 is not in the token at all: it is an entitlement grant the control plane projected to ingress from her tenant membership. End that membership and the grant is withdrawn — her next request is denied while the token is still valid and untouched.",
                 "Claims freeze at issuance; entitlements must not."
               ],
               [
