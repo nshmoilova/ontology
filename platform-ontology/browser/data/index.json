@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "2d836a8b65b0",
+ "sourceDigest": "f28db476d73c",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16623,7 +16623,7 @@
       "rows": [
        [
         "Generative",
-        "What has this already decided? One thing is a decision, not a principle."
+        "Has it already produced more than one decision or invariant? A rule applied once is a decision; a principle keeps producing them."
        ],
        [
         "Testable",
