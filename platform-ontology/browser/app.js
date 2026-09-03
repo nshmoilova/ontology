@@ -762,7 +762,7 @@
         <h2 class="sec">Backlog · ${esc(s)}</h2>
         <div class="card"><ul style="margin:0;padding-left:1.1rem">
           ${backlog.filter((b) => b.section === s).map((b) =>
-            `<li style="margin-bottom:.4rem">${esc(b.question)}</li>`).join("")}
+            `<li style="margin-bottom:.4rem">${esc(b.question)} ${(b.realizedBy || []).map((x) => `<a class="pill prin" href="#/shapes?q=${encodeURIComponent(x)}" title="Realised: the shape exists and a negative instance fires it in CI">realised · ${esc(x)}</a>`).join(" ")}</li>`).join("")}
         </ul></div>`).join("")}`;
   }
 

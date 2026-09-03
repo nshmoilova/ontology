@@ -1,4 +1,4 @@
-# Competency Questions — v0.1.0
+# Competency Questions
 
 Each question is an acceptance test: it exists as a SPARQL query in
 `queries/competency/` and is executed by CI against seed data. Add new
@@ -19,11 +19,15 @@ scope creep.
 | CQ-10 | Which tenants hold region-access grants for exactly one region, and in which other regions are their capabilities offered — who is refused, not served out of jurisdiction, during failover? | `cq10-region-bound-tenants.rq` | authz, control-plane |
 | CQ-11 | Which capabilities are offered in exactly one region, so no failover target exists? | `cq11-single-region-offerings.rq` | control-plane |
 
-## Backlog (draft, not yet modelled)
+## Backlog and realised invariants
 
-- Which resources are reachable through a route whose listener does not terminate TLS before the enforcement point?
+A bullet ending in `[realised: ShapeName]` is answered by its absence of
+violations: the shape exists and a negative instance fires it in CI (P10);
+the build fails on a name that does not exist (P15). Unmarked bullets are
+open.
+
+- Which application boundaries are reachable through a route whose listener does not terminate TLS before the enforcement point? [realised: PlaintextListenerWarningShape]
 - Which policies grant access based on attribute assertions that have expired?
-- Which administrative scopes allow a workload principal to mutate the policy that governs its own access (self-authorization loop)?
 - Which sessions outlived the revocation of the credential that established them?
 
 ### Platform vs. application authorization (layered-ingress design)
@@ -47,12 +51,12 @@ invariants and must return zero rows.
   is its authoritative source, and when was that configuration last distributed
   to the enforcement point?
 - Which entitlements evaluated at ingress are not drawn from the platform-owned
-  entitlement vocabulary? *(invariant — expected empty)*
+  entitlement vocabulary? *(invariant — expected empty)* [realised: EntitlementGrantShape]
 - Which policy decisions evaluate actions outside the platform-owned action
   vocabulary? *(invariant — expected empty; the Level-3 boundary enforced at
-  the decision layer)*
-- Which ingress decisions concern capabilities inside an application boundary
-  rather than admission across it? *(invariant — expected empty)*
+  the decision layer)* [realised: ActionVocabularyShape]
+- Which ingress decisions concern operations inside an application boundary
+  rather than admission across it? *(invariant — expected empty)* [realised: ActionVocabularyShape]
 
 ### Management vs. capability control planes
 
@@ -72,14 +76,14 @@ Descriptive:
 Invariants *(each expected empty)*:
 
 - Which data-plane mutations were executed by a principal that is not the
-  acting identity of that data plane's designated writer? *(sole-writer)*
+  acting identity of that data plane's designated writer? *(sole-writer)* [realised: SoleWriterShape]
 - Which data-plane mutations realize no governed desired-state declaration?
-  *(orphan write)*
+  *(orphan write)* [realised: DataPlaneMutationShape]
 - Which data planes does the management control plane actuate directly?
-  *(tier skipping)*
+  *(tier skipping)* [realised: ManagementPlaneNoActuationShape]
 - Which capability control planes administer a scope containing the
   desired-state declarations that govern their own data planes?
-  *(self-governance loop)*
+  *(self-governance loop)* [realised: SelfGovernanceLoopShape]
 
 ### Which decision point decided
 
@@ -88,15 +92,15 @@ belong in this graph, and every decision must name the point that made it.
 
 - Which policy decision point rendered each decision, and over what period?
 - Which decisions record no deciding policy decision point?
-  *(expected empty — an unattributable decision)*
+  *(expected empty — an unattributable decision)* [realised: PolicyDecisionShape]
 - Which decision points have rendered admission decisions, and are any of
   them not the platform PDP? *(the check that would catch an application
   decision misfiled as a platform one)*
 
 ### Reachability (flagship)
 
-- For a given token — or principal-session pair — which resources are
-  reachable, and through which chain of grants, enablements, subscriptions,
+- For a given token — or principal-session pair — which application
+  boundaries are reachable, and through which chain of grants, enablements, subscriptions,
   offerings, token audience, and effective assurance level? The explanation
   form (return the chain, not just the set) is the access-review deliverable.
 
@@ -106,11 +110,11 @@ Declarations carry a mandatory scope from a single-parent scope tree;
 approval rigor and locality derive from it.
 
 - Which data-plane mutations realize declarations whose scope does not
-  contain the mutated data plane? *(locality — expected empty)*
+  contain the mutated data plane? *(locality — expected empty)* [realised: ScopeLocalityShape]
 - Which declarations in scopes requiring human approval lack one?
-  *(expected empty)*
+  *(expected empty)* [realised: ScopeRigorShape]
 - Which scopes carry no approval-rigor setting on any ancestor?
-- Which mutations realize superseded declarations? *(warning-level)*
+- Which mutations realize superseded declarations? *(warning-level)* [realised: SupersededRealizationShape]
 - Which declarations' scopes contradict their data planes' environment or
   region facets?
 
@@ -124,9 +128,9 @@ token resolves to with the tenant a route resolves to.
   and who approved it?
 - Which admission decisions were made for a principal that is not an active
   member of the tenant whose grants were evaluated? *(expected empty — the
-  check that connects principal to tenant)*
+  check that connects principal to tenant)* [realised: AdmissionRequiresMembershipShape]
 - Which memberships are active without a human approval behind them?
-  *(expected empty)*
+  *(expected empty)* [realised: MembershipApprovalShape]
 - Which principals hold active memberships in more than one tenant?
   *(the consultant and dual-capacity cases — descriptive, not a violation)*
 - Which memberships remain active for principals whose credentials have all
@@ -140,13 +144,13 @@ computed by intersection. Bundles expand at subscription time.
 - Which subscriptions does each tenant hold, in which lifecycle state, and
   who approved each activation?
 - Which active subscriptions lack an active subscription for a hard
-  dependency of their capability? *(closure — expected empty)*
+  dependency of their capability? *(closure — expected empty)* [realised: SubscriptionClosureShape]
 - Which capabilities participate in a circular dependency?
-  *(acyclicity — expected empty)*
+  *(acyclicity — expected empty)* [realised: AcyclicDependencyShape]
 - Which provisioning declarations lack a justifying subscription?
-  *(expected empty; teardown declarations reference the terminated one)*
+  *(expected empty; teardown declarations reference the terminated one)* [realised: ProvisioningJustificationShape]
 - Which active subscriptions were never activated with human approval?
-  *(expected empty)*
+  *(expected empty)* [realised: SubscriptionActivationApprovalShape]
 
 ### Capability offerings (no cross-scope parity)
 
@@ -155,11 +159,11 @@ Offerings are governed intent: a capability is offered per scope.
 - In which scopes is each capability offered, and which tenants can
   therefore reach it there?
 - Which offerings sit in scopes where a hard dependency lacks a covering
-  offering? *(supply closure — expected empty)*
+  offering? *(supply closure — expected empty)* [realised: OfferingSupplyClosureShape]
 - Which offerings have no deployed data plane in a covered scope?
   *(launch tracking — warning-level)*
 - Which data planes realize a capability in a scope no offering covers?
-  *(expected empty)*
+  *(expected empty)* [realised: DataPlaneOfferedShape]
 
 ### Applications, requirements, and portals
 
@@ -174,9 +178,9 @@ capability requirements are observed, then human-confirmed.
   window? *(drift down)*
 - Which enabled applications' confirmed requirements exceed their owner's
   active subscriptions or the offerings covering the enablement scope?
-  *(enablement gate — expected empty)*
+  *(enablement gate — expected empty)* [realised: EnablementGateShape, EnablementOfferingCoverageShape]
 - Which portals of the same tenant on different channels have diverging
-  application sets? *(stewardship review)*
+  application sets? *(stewardship review)* [realised: PortalShape]
 
 ### Ingress token contract and channels
 
@@ -190,9 +194,10 @@ plane. Channels: web, mobile, api, agent.
 - Which pairwise subject identifiers exist, and per which OAuth audience are
   they scoped? *(pairwise scoping is not yet modelled — named gap)*
 - Which entitlement grants lack a derivation link to their governing source?
-  *(hand-authored grants — expected empty)*
-- Which registrations may be minted which token audiences, and from which
-  governance source is each minting rule derived?
+  *(hand-authored grants — expected empty)* [realised: EntitlementGrantShape]
+- From which governance source is each registration's audience derived?
+  *(a registration serves exactly one audience — OAuthClientRegistrationShape;
+  the derivation itself has no term)*
 - Which tenant onboarding record does each platform- or tenant-dimension
   grant derive from? *(tenant onboarding not yet modelled — named gap)*
 - Which tokens carry an audience outside their principal's reachable set at
@@ -201,27 +206,27 @@ plane. Channels: web, mobile, api, agent.
   governed declaration established that binding?
 - Which domain and path combinations bind to more than one tenant?
   *(collision — expected empty; two tenants on one address is a
-  tenant-resolution breach)*
+  tenant-resolution breach)* [realised: RouteBindingCollisionShape]
 - Which tenant-bound routes have no approved route-binding declaration
-  behind them? *(ungoverned binding — expected empty)*
+  behind them? *(ungoverned binding — expected empty)* [realised: GovernedRouteBindingShape]
 - Which route bindings changed without a human approval in a scope that
-  requires one? *(inherited from the declaration machinery)*
+  requires one? *(inherited from the declaration machinery)* [realised: ScopeRigorShape]
 - Which routes serve an application their bound tenant does not own?
-  *(cross-tenant endpoint — expected empty)*
+  *(cross-tenant endpoint — expected empty)* [realised: RouteApplicationOwnershipShape]
 - Which routes serve an application at a scope outside that application's
   enablement scope? *(endpoint reachable where the application is not
-  enabled — expected empty)*
+  enabled — expected empty)* [realised: RouteEnablementScopeShape]
 - For each session, which handle resolves to it, and to which
   proof-of-possession key is the session sender-constrained?
 - Which sessions are not sender-constrained — bound to no confirmation key,
-  and therefore replayable from a stolen handle alone? *(expected empty)*
+  and therefore replayable from a stolen handle alone? *(expected empty)* [realised: SenderConstrainedSessionShape]
 - Which tokens issued within a sender-constrained session are bound to a
   different key than the session, or to no key at all? *(constraint
-  laundering — expected empty)*
+  laundering — expected empty)* [realised: TokenInheritsConfirmationShape]
 - Which confirmation keys are shared across sessions belonging to different
-  principals? *(key confusion — expected empty)*
+  principals? *(key confusion — expected empty)* [realised: KeyConfusionShape]
 - Which handles resolve to more than one session? *(session fixation —
-  expected empty)*
+  expected empty)* [realised: SessionHandleShape]
 - Which sessions outlived the rotation or revocation of their confirmation
   key? *(needs the key lifecycle work; sibling of the credential-revocation
   question)*
@@ -230,12 +235,12 @@ plane. Channels: web, mobile, api, agent.
 
 External systems name principals with issuer-scoped subjects; the mapping
 "at issuer Y, subject X denotes principal P" is a first-class naming fact,
-possibly pairwise per authorized party.
+possibly pairwise per audience (D47).
 
 - Which subject identifiers denote each principal, at which issuers, in
-  which formats, and scoped to which authorized parties?
-- Which (issuer, subject value, party scope) combinations identify more
-  than one principal? *(collision — expected empty)*
+  which formats, and — where pairwise — for which audience?
+- Which (issuer, subject value, format) combinations identify more
+  than one principal? *(collision — expected empty)* [realised: SubjectIdentifierCollisionShape]
 - Which principals authenticate through issuers where they hold no
   registered subject identifier?
 - Which subject-identifier mappings are past their validity window yet
@@ -272,21 +277,21 @@ limits are configured per device class.
 - Which devices does each principal hold active sessions on, identified how,
   of which device class, and since when?
 - Which principals hold more than one active session on the same device?
-  *(expected empty — one session per user per device)*
+  *(expected empty — one session per user per device)* [realised: OneSessionPerDeviceShape]
 - Which principals exceed the configured concurrent-session limit for a
-  device class? *(expected empty)*
+  device class? *(expected empty)* [realised: ConcurrentSessionLimitShape]
 - Which tenants have no concurrent-session policy configured for a device
   class their principals actually use? *(unbounded concurrency by omission)*
 - Should concurrent-session policy be governed desired state, as route
-  bindings now are, rather than plain configuration? *(open — it is a
-  security control with no approver today)*
+  bindings now are, rather than plain configuration? *(open — cp:ConcurrentSessionPolicy lives in control-plane but is not
+  a declaration; a security control with no approver today)*
 - Which sessions have no device at all, and is that legitimate for the
   api and agent channels? *(non-interactive sessions have no device)*
 - Which journey definition established each session's channel, and does the
-  session's device class agree with it? *(disagreement — expected empty)*
+  session's device class agree with it? *(disagreement — expected empty)* [realised: ChannelDeviceAgreementShape]
 - Which journey executions follow no governed definition? *(expected empty —
   an ungoverned authentication path, and a session whose channel cannot be
-  established)*
+  established)* [realised: JourneyExecutionShape]
 
 ### Authentication journeys
 
@@ -300,11 +305,9 @@ execution's.
   definitions? *(expected empty — needs step-level definition modelling)*
 - Which journey definitions serve channels whose governing policies require
   an AAL above what the definition achieves?
-- Which Permit decisions relied on an elevation older than the policy's
-  freshness requirement?
 - Which journey definitions changed without a governed journey-definition
-  declaration behind them? *(expected empty once definition-change events
-  are observable)*
+  declaration behind them? *(the JourneyDefinitionChange declaration exists — D37; no shape or
+  seed instance yet)*
 
 ### Agent channel (terms deliberately deferred)
 
@@ -358,7 +361,8 @@ authorization*), subject-identifier mappings past their validity window
 (*Subject identifiers*), sessions outliving a rotated confirmation key
 (*Ingress token contract*), grants outliving their governing fact
 (*Privilege drift*), and the grant-staleness threshold (open, in the
-'What is evaluated where' explainer). The two below were missing.
+'What is evaluated where' explainer). The first below was missing; the second moves here from Authentication
+journeys, its home under P15's exception.
 
 - Which sessions or tokens are in an active state past their expiry?
   *(expected empty — presence of an expiry is enforced, its passing is not)*

@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "6ed457f99e5a",
+ "sourceDigest": "8824dae55960",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -14,10 +14,11 @@
   "decisions": 54,
   "principles": 18,
   "standards": 13,
+  "realisedBacklog": 37,
   "provisionalPrinciples": 12,
   "explainers": 2,
   "formalCQs": 11,
-  "backlogCQs": 122
+  "backlogCQs": 120
  },
  "modules": [
   {
@@ -16876,613 +16877,798 @@
   "backlog": [
    {
     "section": "General",
-    "question": "Which resources are reachable through a route whose listener does not terminate TLS before the enforcement point?",
-    "expectedEmpty": false
+    "question": "Which application boundaries are reachable through a route whose listener does not terminate TLS before the enforcement point?",
+    "expectedEmpty": false,
+    "realizedBy": [
+     "PlaintextListenerWarningShape"
+    ]
    },
    {
     "section": "General",
     "question": "Which policies grant access based on attribute assertions that have expired?",
-    "expectedEmpty": false
-   },
-   {
-    "section": "General",
-    "question": "Which administrative scopes allow a workload principal to mutate the policy that governs its own access (self-authorization loop)?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "General",
     "question": "Which sessions outlived the revocation of the credential that established them?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "Which platform entitlements does each principal hold, and which access dimension (platform, tenant, environment, region, channel) does each entitlement govern?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "Which applications does each tenant own, which of them are enabled and in which scopes, and which principals can therefore reach each application boundary through ingress?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "For each admission decision at ingress, which subject, target, and action were evaluated, and what was the outcome? (originally phrased \"capability\"; reworded \u2014 that word now names platform offerings)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "For each entitlement enforced at ingress, which control-plane configuration is its authoritative source, and when was that configuration last distributed to the enforcement point?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "Which entitlements evaluated at ingress are not drawn from the platform-owned entitlement vocabulary? (invariant \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "EntitlementGrantShape"
+    ]
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
     "question": "Which policy decisions evaluate actions outside the platform-owned action vocabulary? (invariant \u2014 expected empty; the Level-3 boundary enforced at the decision layer)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ActionVocabularyShape"
+    ]
    },
    {
     "section": "Platform vs. application authorization (layered-ingress design)",
-    "question": "Which ingress decisions concern capabilities inside an application boundary rather than admission across it? (invariant \u2014 expected empty)",
-    "expectedEmpty": true
+    "question": "Which ingress decisions concern operations inside an application boundary rather than admission across it? (invariant \u2014 expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ActionVocabularyShape"
+    ]
    },
    {
     "section": "Management vs. capability control planes",
     "question": "Which capability does each capability control plane govern, which data planes does it actuate, and which tenants does each data plane serve?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Management vs. capability control planes",
     "question": "For each data-plane mutation, which principal executed it and which desired-state declaration does it realize?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Management vs. capability control planes",
     "question": "Which data-plane mutations were executed by a principal that is not the acting identity of that data plane's designated writer? (sole-writer)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "SoleWriterShape"
+    ]
    },
    {
     "section": "Management vs. capability control planes",
     "question": "Which data-plane mutations realize no governed desired-state declaration? (orphan write)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "DataPlaneMutationShape"
+    ]
    },
    {
     "section": "Management vs. capability control planes",
     "question": "Which data planes does the management control plane actuate directly? (tier skipping)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "ManagementPlaneNoActuationShape"
+    ]
    },
    {
     "section": "Management vs. capability control planes",
     "question": "Which capability control planes administer a scope containing the desired-state declarations that govern their own data planes? (self-governance loop)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "SelfGovernanceLoopShape"
+    ]
    },
    {
     "section": "Which decision point decided",
     "question": "Which policy decision point rendered each decision, and over what period?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Which decision point decided",
     "question": "Which decisions record no deciding policy decision point? (expected empty \u2014 an unattributable decision)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "PolicyDecisionShape"
+    ]
    },
    {
     "section": "Which decision point decided",
     "question": "Which decision points have rendered admission decisions, and are any of them not the platform PDP? (the check that would catch an application decision misfiled as a platform one)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Reachability (flagship)",
-    "question": "For a given token \u2014 or principal-session pair \u2014 which resources are reachable, and through which chain of grants, enablements, subscriptions, offerings, token audience, and effective assurance level? The explanation form (return the chain, not just the set) is the access-review deliverable.",
-    "expectedEmpty": false
+    "question": "For a given token \u2014 or principal-session pair \u2014 which application boundaries are reachable, and through which chain of grants, enablements, subscriptions, offerings, token audience, and effective assurance level? The explanation form (return the chain, not just the set) is the access-review deliverable.",
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Scoped governance (one logical management plane)",
     "question": "Which data-plane mutations realize declarations whose scope does not contain the mutated data plane? (locality \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ScopeLocalityShape"
+    ]
    },
    {
     "section": "Scoped governance (one logical management plane)",
     "question": "Which declarations in scopes requiring human approval lack one? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ScopeRigorShape"
+    ]
    },
    {
     "section": "Scoped governance (one logical management plane)",
     "question": "Which scopes carry no approval-rigor setting on any ancestor?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Scoped governance (one logical management plane)",
     "question": "Which mutations realize superseded declarations? (warning-level)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "SupersededRealizationShape"
+    ]
    },
    {
     "section": "Scoped governance (one logical management plane)",
     "question": "Which declarations' scopes contradict their data planes' environment or region facets?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Tenant membership (which principals may act for a tenant)",
     "question": "Which principals may act for each tenant, in what capacity, since when, and who approved it?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Tenant membership (which principals may act for a tenant)",
     "question": "Which admission decisions were made for a principal that is not an active member of the tenant whose grants were evaluated? (expected empty \u2014 the check that connects principal to tenant)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "AdmissionRequiresMembershipShape"
+    ]
    },
    {
     "section": "Tenant membership (which principals may act for a tenant)",
     "question": "Which memberships are active without a human approval behind them? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "MembershipApprovalShape"
+    ]
    },
    {
     "section": "Tenant membership (which principals may act for a tenant)",
     "question": "Which principals hold active memberships in more than one tenant? (the consultant and dual-capacity cases \u2014 descriptive, not a violation)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Tenant membership (which principals may act for a tenant)",
     "question": "Which memberships remain active for principals whose credentials have all been revoked? (needs the credential lifecycle work)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subscriptions, bundles, and dependencies",
     "question": "Which subscriptions does each tenant hold, in which lifecycle state, and who approved each activation?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subscriptions, bundles, and dependencies",
     "question": "Which active subscriptions lack an active subscription for a hard dependency of their capability? (closure \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "SubscriptionClosureShape"
+    ]
    },
    {
     "section": "Subscriptions, bundles, and dependencies",
     "question": "Which capabilities participate in a circular dependency? (acyclicity \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "AcyclicDependencyShape"
+    ]
    },
    {
     "section": "Subscriptions, bundles, and dependencies",
     "question": "Which provisioning declarations lack a justifying subscription? (expected empty; teardown declarations reference the terminated one)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ProvisioningJustificationShape"
+    ]
    },
    {
     "section": "Subscriptions, bundles, and dependencies",
     "question": "Which active subscriptions were never activated with human approval? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "SubscriptionActivationApprovalShape"
+    ]
    },
    {
     "section": "Capability offerings (no cross-scope parity)",
     "question": "In which scopes is each capability offered, and which tenants can therefore reach it there?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Capability offerings (no cross-scope parity)",
     "question": "Which offerings sit in scopes where a hard dependency lacks a covering offering? (supply closure \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "OfferingSupplyClosureShape"
+    ]
    },
    {
     "section": "Capability offerings (no cross-scope parity)",
     "question": "Which offerings have no deployed data plane in a covered scope? (launch tracking \u2014 warning-level)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Capability offerings (no cross-scope parity)",
     "question": "Which data planes realize a capability in a scope no offering covers? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "DataPlaneOfferedShape"
+    ]
    },
    {
     "section": "Applications, requirements, and portals",
     "question": "Which capabilities has each application been observed using, per window, and which of those requirements are confirmed?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Applications, requirements, and portals",
     "question": "Which applications used capabilities outside their confirmed requirements? (drift up)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Applications, requirements, and portals",
     "question": "Which confirmed requirements show no observed usage within the review window? (drift down)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Applications, requirements, and portals",
     "question": "Which enabled applications' confirmed requirements exceed their owner's active subscriptions or the offerings covering the enablement scope? (enablement gate \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "EnablementGateShape",
+     "EnablementOfferingCoverageShape"
+    ]
    },
    {
     "section": "Applications, requirements, and portals",
     "question": "Which portals of the same tenant on different channels have diverging application sets? (stewardship review)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "PortalShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "For each admission decision, which token claims supplied the evidence for each evaluated dimension?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "For each admission decision, which session and device class supplied the channel evidence?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which pairwise subject identifiers exist, and per which OAuth audience are they scoped? (pairwise scoping is not yet modelled \u2014 named gap)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which entitlement grants lack a derivation link to their governing source? (hand-authored grants \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "EntitlementGrantShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
-    "question": "Which registrations may be minted which token audiences, and from which governance source is each minting rule derived?",
-    "expectedEmpty": false
+    "question": "From which governance source is each registration's audience derived? (a registration serves exactly one audience \u2014 OAuthClientRegistrationShape; the derivation itself has no term)",
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which tenant onboarding record does each platform- or tenant-dimension grant derive from? (tenant onboarding not yet modelled \u2014 named gap)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which tokens carry an audience outside their principal's reachable set at issuance time? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which domain and path binds to which tenant, on which route, and which governed declaration established that binding?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which domain and path combinations bind to more than one tenant? (collision \u2014 expected empty; two tenants on one address is a tenant-resolution breach)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "RouteBindingCollisionShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which tenant-bound routes have no approved route-binding declaration behind them? (ungoverned binding \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "GovernedRouteBindingShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which route bindings changed without a human approval in a scope that requires one? (inherited from the declaration machinery)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": [
+     "ScopeRigorShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which routes serve an application their bound tenant does not own? (cross-tenant endpoint \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "RouteApplicationOwnershipShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which routes serve an application at a scope outside that application's enablement scope? (endpoint reachable where the application is not enabled \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "RouteEnablementScopeShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "For each session, which handle resolves to it, and to which proof-of-possession key is the session sender-constrained?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which sessions are not sender-constrained \u2014 bound to no confirmation key, and therefore replayable from a stolen handle alone? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "SenderConstrainedSessionShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which tokens issued within a sender-constrained session are bound to a different key than the session, or to no key at all? (constraint laundering \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "TokenInheritsConfirmationShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which confirmation keys are shared across sessions belonging to different principals? (key confusion \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "KeyConfusionShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which handles resolve to more than one session? (session fixation \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "SessionHandleShape"
+    ]
    },
    {
     "section": "Ingress token contract and channels",
     "question": "Which sessions outlived the rotation or revocation of their confirmation key? (needs the key lifecycle work; sibling of the credential-revocation question)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
-    "question": "Which subject identifiers denote each principal, at which issuers, in which formats, and scoped to which authorized parties?",
-    "expectedEmpty": false
+    "question": "Which subject identifiers denote each principal, at which issuers, in which formats, and \u2014 where pairwise \u2014 for which audience?",
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
-    "question": "Which (issuer, subject value, party scope) combinations identify more than one principal? (collision \u2014 expected empty)",
-    "expectedEmpty": true
+    "question": "Which (issuer, subject value, format) combinations identify more than one principal? (collision \u2014 expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "SubjectIdentifierCollisionShape"
+    ]
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which principals authenticate through issuers where they hold no registered subject identifier?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which subject-identifier mappings are past their validity window yet still resolve? (issuer subject recycling \u2014 the classic CAEP hazard)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which tokens or security events reference subjects with no mapped principal? (needs token subject links and in-graph CAEP events)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Subject identifiers (RFC 9493 / OIDC sub)",
     "question": "Which principals' subject identifiers are bound to a given issuer, and what would re-issuance under another issuer require? (an identifier is scoped to exactly one issuer, so substituting the identity provider is a migration with re-issuance, never an active substitution)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "The two clients",
     "question": "Which OAuth client registrations exist, at which issuer, for which audience, and what is each one's client_id?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "The two clients",
     "question": "Which principals act for which business clients, and since when?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "The two clients",
     "question": "Which sessions carry a business-client identity, and which carry an internal staff or workload identity?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "The two clients",
     "question": "Which business clients have no principal able to act for them? (a relationship nobody can exercise \u2014 stewardship review)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "The two clients",
     "question": "Is a business client ever also a tenant, and if so does membership or the client relationship govern admission? (open \u2014 the two are modelled separately until the answer is settled)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which devices does each principal hold active sessions on, identified how, of which device class, and since when?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which principals hold more than one active session on the same device? (expected empty \u2014 one session per user per device)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "OneSessionPerDeviceShape"
+    ]
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which principals exceed the configured concurrent-session limit for a device class? (expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ConcurrentSessionLimitShape"
+    ]
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which tenants have no concurrent-session policy configured for a device class their principals actually use? (unbounded concurrency by omission)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Devices and session concurrency",
-    "question": "Should concurrent-session policy be governed desired state, as route bindings now are, rather than plain configuration? (open \u2014 it is a security control with no approver today)",
-    "expectedEmpty": false
+    "question": "Should concurrent-session policy be governed desired state, as route bindings now are, rather than plain configuration? (open \u2014 cp:ConcurrentSessionPolicy lives in control-plane but is not a declaration; a security control with no approver today)",
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which sessions have no device at all, and is that legitimate for the api and agent channels? (non-interactive sessions have no device)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which journey definition established each session's channel, and does the session's device class agree with it? (disagreement \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ChannelDeviceAgreementShape"
+    ]
    },
    {
     "section": "Devices and session concurrency",
     "question": "Which journey executions follow no governed definition? (expected empty \u2014 an ungoverned authentication path, and a session whose channel cannot be established)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": [
+     "JourneyExecutionShape"
+    ]
    },
    {
     "section": "Authentication journeys",
     "question": "Which journey definitions serve which channels, and what assurance does each achieve?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Authentication journeys",
     "question": "Which sessions were established by executions that deviate from their definitions? (expected empty \u2014 needs step-level definition modelling)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": []
    },
    {
     "section": "Authentication journeys",
     "question": "Which journey definitions serve channels whose governing policies require an AAL above what the definition achieves?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Authentication journeys",
-    "question": "Which Permit decisions relied on an elevation older than the policy's freshness requirement?",
-    "expectedEmpty": false
-   },
-   {
-    "section": "Authentication journeys",
-    "question": "Which journey definitions changed without a governed journey-definition declaration behind them? (expected empty once definition-change events are observable)",
-    "expectedEmpty": true
+    "question": "Which journey definitions changed without a governed journey-definition declaration behind them? (the JourneyDefinitionChange declaration exists \u2014 D37; no shape or seed instance yet)",
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Agent channel (terms deliberately deferred)",
     "question": "For each request admitted on the agent channel, which principal's authority was it exercising, and under what delegation?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Agent channel (terms deliberately deferred)",
     "question": "Which agent-channel grants permit autonomous action versus delegated-only action?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Trust zones (terms deliberately deferred)",
     "question": "Which routes cross a trust-zone boundary, and which policy enforcement point mediates each crossing?",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Trust zones (terms deliberately deferred)",
     "question": "Which restricted-zone data planes are reachable from an internet-facing route? (blast radius across zones \u2014 an extension of CQ-8)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Privilege drift (least privilege as reconciliation)",
     "question": "Which entitlement grants, tenant memberships or subscriptions show no observed use across a given window? (standing privilege \u2014 descriptive, routed to stewardship)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Privilege drift (least privilege as reconciliation)",
     "question": "Which confirmed capability requirements have no capability-use observation in the window, and which observed uses have no confirmed requirement? (requirement drift in both directions \u2014 D18)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Privilege drift (least privilege as reconciliation)",
     "question": "Which grants outlived the governance fact they derive from \u2014 a terminated subscription, an inactive membership, a superseded enablement? (expected empty \u2014 P18's contingency clause)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": []
    },
    {
     "section": "Temporal validation (recorded bounds with no validator)",
     "question": "Which sessions or tokens are in an active state past their expiry? (expected empty \u2014 presence of an expiry is enforced, its passing is not)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": []
    },
    {
     "section": "Temporal validation (recorded bounds with no validator)",
     "question": "Which permits relied on an elevation older than the policy's freshness requirement? (assurance decay \u2014 D28 deferred it; needs a per-policy freshness bound before it is answerable)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
     "question": "Which committed commitments have no observation inside their current window? (a promise nobody is watching \u2014 expected empty)",
-    "expectedEmpty": true
+    "expectedEmpty": true,
+    "realizedBy": []
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
     "question": "Which observations fall outside their commitment's target, by comparator? (needs a comparator-aware query; the data is there)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
     "question": "Which tenants are subscribed in a scope whose offering carries a weaker commitment than the tenant's contract requires? (needs the contract side \u2014 see the published-contracts scoping decision)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
     "question": "Who is accountable for each commitment, and was its change approved? (commitments are declarations in all but class; whether they join the declaration machinery \u2014 scope, approval rigor, supersession \u2014 is the next decision)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "Will users lose requests when failure occurs? \u2192 which offerings carry a commitment on request loss during failover? (sibling; new metric by decision \u2014 successful-request ratio during failover. On control-plane failure ingress refuses by design, P15: refused, not dropped)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "Can recovery happen automatically without human intervention? \u2192 which data-plane mutations were executed by a workload under a standing, approved declaration, and which needed a fresh approval? (now \u2014 recovery is actuation, not a grant of authority; P3 requires the declaration's approval, not one per event)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "How long will users be impacted if an entire region fails? \u2192 which offerings carry a recovery-time commitment per region (sibling); which capabilities are offered in only one region (now \u2014 CQ-11)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "How quickly can we switch providers when a vendor fails? (invalid here \u2014 no vendor concept, P8; the only in-scope seam is the identity provider, see Subject identifiers)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "How fast can we recover and how much data could we lose? \u2192 which offerings carry recovery-time and recovery-point commitments per scope (sibling; both metrics exist)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Availability",
     "question": "Can we deploy and evolve the platform without disrupting users? \u2192 which declarations took effect in production scopes, under whose approval, and which were followed by a commitment breach in the next window? (sibling + control-plane \u2014 the first cross-module question; needs the breach query and a change-failure metric)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "Can we survive losing a region? \u2192 single-region capabilities (now \u2014 CQ-11); hard dependencies offered in fewer regions than their dependents (now; partly enforced by OfferingSupplyClosureShape); recovery-time commitments per region (sibling)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "Are we truly running across regions or keeping standby infrastructure? \u2192 data planes per region, in what operational role? (terms \u2014 data planes have no operational state; one closed scheme, P7)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "How much state or data is at risk if a region fails right now? \u2192 which tenants' data planes exist in a single region (now); recovery-point commitments per region (sibling)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "Can we safely take a region out of service for maintenance? \u2192 which tenants and applications would lose their only data plane or route if the region's scope were drained, under which declaration and approval? (now \u2014 CQ-8 by region facet; draining as a state needs the same term as above)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "After losing a region, how quickly do we regain operational safety margin? \u2192 commitment on time to restore redundancy (sibling; new metric by decision. Capacity headroom itself is not a graph fact)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "Will regulated traffic remain compliant during failover? \u2192 which tenants hold region-access grants for one region only, so failover elsewhere refuses them rather than serving them out of jurisdiction? (now \u2014 CQ-10)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Multi-region resiliency",
     "question": "Can the platform still be managed when a region is lost? \u2192 which data planes become unmanageable if a control plane is lost (now \u2014 sole-writer edges); where does each control plane run (terms \u2014 control planes are logical, D01/D02, with no placement; same decision as operational role). Behaviour during the loss is implied: intent persists so state persists (P18); management stalls, serving continues, declarations queue.",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress and traffic management",
     "question": "Can we safely roll out changes using canaries, blue-green and weighted routing? \u2192 which routes forward to more than one upstream, with what split, changed under which declaration and approval; which tenants sit behind a canary now? (terms \u2014 a weighted forwarding edge and a traffic-split change as a declaration subclass; governance then comes free via D43. \"Who is behind it\" is answerable now. Rollback-on-failure is the change-failure commitment, sibling)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Ingress and traffic management",
     "question": "What happens when demand exceeds capacity? \u2192 which tenants share a data plane (now \u2014 the noisy-neighbour blast radius via the isolation model); throughput commitments per offering (sibling; new metric); is there any path under load where a request reaches an application without admission (P12/P15 asserted \u2014 the model states no bypass and cannot observe it). Capacity is not a graph fact. Load-shedding order would need a priority term that only this question asks for \u2014 deferred.",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "How much delay does the platform itself add to every request? \u2192 which request-path offerings carry a latency commitment at which percentile (sibling, after the request-path-as-offerings decision); which checks sit on the path for a given route (now)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "How much latency should consumers reserve for the platform? \u2192 the same commitment read from the consumer's side: the target is the budget (sibling \u2014 the one contract-shaped question that needs no catalogue)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "How long does a user take to sign in? \u2192 per journey definition and channel, execution duration from first to last event (now \u2014 executions and events are in-graph under P17, with timestamps); a duration commitment (sibling)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "How long does additional authentication take when required? \u2192 the same over elevation executions (now \u2014 D28); and which permits required an elevation at all (now)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "How quickly can the platform decide whether a request is allowed? \u2192 decision-latency commitment on the decision point (sibling only \u2014 requests are not reified, D31, so duration is not derivable; the design answer is structural: authority is projected to ingress, P4)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    },
    {
     "section": "Performance",
     "question": "What is the 99th-percentile latency now? / Is the platform up right now? (invalid \u2014 dashboard questions)",
-    "expectedEmpty": false
+    "expectedEmpty": false,
+    "realizedBy": []
    }
   ]
  }

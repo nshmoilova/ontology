@@ -533,7 +533,11 @@ def load_competency_questions():
         b["expectedEmpty"] = "expected empty" in q.lower()
         # strip markdown emphasis, keeping the parenthetical note readable
         q = re.sub(r"\*+([^*]+)\*+", r"\1", q)
-        b["question"] = re.sub(r"`([^`]+)`", r"\1", q)
+        mk = re.search(r"\s*\[realised: ([^\]]+)\]", q)
+        b["realizedBy"] = [s.strip() for s in mk.group(1).split(",")] if mk else []
+        if mk:
+            q = q[:mk.start()] + q[mk.end():]
+        b["question"] = re.sub(r"`([^`]+)`", r"\1", q).strip()
     return formal, backlog
 
 
@@ -601,6 +605,13 @@ def main() -> int:
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
     formal, backlog = load_competency_questions()
+    shape_names = {s["name"] for s in shapes}
+    for bq in backlog:
+        for s in bq["realizedBy"]:
+            if s not in shape_names:
+                problem(f"backlog question marked realised by unknown shape {s}: {bq['question'][:60]}")
+    print(f"  {sum(1 for bq in backlog if bq['realizedBy'])} backlog questions realised by invariants, "
+          f"{sum(1 for bq in backlog if not bq['realizedBy'])} open")
 
     term_list = sorted(
         terms.values(),
@@ -628,6 +639,7 @@ def main() -> int:
             "decisions": len(decisions),
             "principles": len(principles),
             "standards": len(standards),
+            "realisedBacklog": sum(1 for bq in backlog if bq["realizedBy"]),
             "provisionalPrinciples": sum(1 for p in principles if p.get("status") == "provisional"),
             "explainers": len(explainers),
             "formalCQs": len(formal),
