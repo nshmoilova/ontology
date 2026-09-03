@@ -518,9 +518,9 @@
               ],
               [
                 "P18 Intent precedes state",
-                "Every provisioned, enabled, granted or admitted state follows from a governance intent, stays within its scope, and ends when the intent ends.",
-                "Provisioning without a justifying subscription is a violation — commercial intent precedes technical intent.",
-                "It is the nearest enforceable thing to least privilege: not 'least', but 'never without reason, never beyond it, never after it'."
+                "Nothing exists without a reason upstream. It goes no further than the reason, and ends when the reason ends.",
+                "A tenant subscribes to a capability. The platform provisions it for that tenant, only where the subscription covers, and tears it down when the subscription ends.",
+                "Every access has a reason, stays inside it, and does not outlive it. That rules out standing access nobody can justify."
               ],
               [
                 "P19 No one approves their own act",
