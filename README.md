@@ -6,10 +6,8 @@ sessions, ingress, ABAC-first authorization (entitlements, actions,
 admission), and a two-tier control plane (management vs. capability,
 subscriptions, offerings, applications, portals)**.
 
-Module versions: `core 0.2.0 · authn 0.2.0 · session 0.2.0 · authz 0.2.0 ·
-ingress 0.1.0 · control-plane 0.3.0`. All terms are `vs:term_status "draft"`.
-The design rationale lives in the Ontology Decision Register (shared
-artifact); questions come before terms — see `docs/competency-questions.md`.
+Module versions are recorded in each module's `owl:versionInfo` and shown in the ontology browser. All terms are `vs:term_status "draft"`.
+The design rationale lives in `docs/decisions.json` and is shown on every term page of the browser.md`.
 
 ## Layout
 

@@ -428,7 +428,7 @@ def load_principles(terms, shapes, decisions):
         bad = [x for x in d.get("principles", []) if x not in known_p]
         if bad:
             problem(f"{d['id']} applies unknown principles: {', '.join(bad)}")
-    # scope, exceptions, motivation, collisions (grilling round, 2026-09-02)
+    # scope, exceptions, motivation, collisions
     SCOPES = {"contract", "ci", "runtime-asserted", "review-time"}
     headings = set(re.findall(r"^### (.+?)(?: \(.*)?$", (ROOT / "docs" / "competency-questions.md").read_text(), re.M))
     motivated = {}
