@@ -621,7 +621,7 @@
         },
         {
           "heading": "What comes next",
-          "body": "In order: the platform's own request path — ingress, decision point, session manager — as offerings, so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
+          "body": "In order: offerings for the platform's own request-path capabilities — ingress, decision point, session manager — so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
             "P9"
           ]
@@ -629,7 +629,7 @@
       ],
       "openQuestions": [
         "Which metrics enter the closed scheme next? The platform questions asked for three: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added by a decision, never as a free string (P7).",
-        "When do the platform's own request-path components become offerings? Until ingress, the decision point and the session manager are offerings, no availability or latency commitment can be made for them, and the performance questions stay unanswerable."
+        "Which platform capabilities need an offering? Ingress, the decision point and the session manager are platform capabilities, but a commitment attaches to an offering — the declaration that a capability is offered in a scope. Until each has an offering per scope, governed by its capability control plane, no availability or latency commitment can be made for it, and the performance questions stay unanswerable."
       ]
     }
   ]
