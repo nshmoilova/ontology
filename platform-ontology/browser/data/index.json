@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "b0116be68c59",
+ "sourceDigest": "a1bea30b97e5",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16769,7 +16769,7 @@
    "steps": [
     {
      "heading": "What a commitment is",
-     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering and inherits its scope. Example: the payments capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
+     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering and inherits its scope. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
      "table": {
       "columns": [
        "Part",
@@ -16778,7 +16778,7 @@
       "rows": [
        [
         "Offering",
-        "payments capability, production"
+        "notifications capability, production"
        ],
        [
         "Metric \u00b7 comparator \u00b7 target",
@@ -16814,7 +16814,7 @@
     },
     {
      "heading": "Measured, or rejected",
-     "body": "A commitment with no measurement source or no validation reference is a violation at ingestion. A latency promise for the payments capability with no feed behind it is refused before anyone can cite it. Evidence is an observation: one windowed aggregate per metric per commitment \u2014 August, 99.97 percent \u2014 never a per-request measurement. An observation of the wrong metric is a violation too.",
+     "body": "A commitment with no measurement source or no validation reference is a violation at ingestion. A latency promise for the notifications capability with no feed behind it is refused before anyone can cite it. Evidence is an observation: one windowed aggregate per metric per commitment \u2014 August, 99.97 percent \u2014 never a per-request measurement. An observation of the wrong metric is a violation too.",
      "terms": [
       "cmt:Observation",
       "cmt:MeasurementSource"
