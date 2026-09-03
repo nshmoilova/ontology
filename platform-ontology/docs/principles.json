@@ -691,7 +691,7 @@
     {
       "candidate": "Deny by default",
       "verdict": "not declared",
-      "why": "The grant model implies allow-by-entitlement, and the Microsoft comparison surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group. Distinct from P15 (fail closed): P15 is the absence-of-decision rule — evidence missing or outcome indeterminate — not the absence-of-grant rule. Whether the absence of any grant is itself a deny remains this open question."
+      "why": "The grant model implies allow-by-entitlement, and a comparison with a major identity vendor's model surfaced the contrast, but it has never been decided. Recording it as a principle would be inventing one. Left as a question for the architecture group. Distinct from P15 (fail closed): P15 is the absence-of-decision rule — evidence missing or outcome indeterminate — not the absence-of-grant rule. Whether the absence of any grant is itself a deny remains this open question."
     },
     {
       "candidate": "Controls are enforced by platform, not delegated to applications",

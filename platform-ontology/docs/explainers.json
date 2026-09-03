@@ -1,5 +1,5 @@
 {
-  "$comment": "Guided walkthroughs rendered by the ontology browser. Each step may carry prose, a diagram (by filename in docs/diagrams/), terms to surface live, shapes whose constraint messages are quoted verbatim, and a table. `openQuestions` seeds working-session discussion. Authored content — the terms and shapes referenced are resolved at build time and warned about if they do not exist.",
+  "$comment": "Guided walkthroughs rendered by the ontology browser. Each step may carry prose, a diagram (by filename in docs/diagrams/), terms to surface live, shapes whose constraint messages are quoted verbatim, and a table. `openQuestions` lists what remains undecided. Authored content — the terms and shapes referenced are resolved at build time and warned about if they do not exist.",
   "explainers": [
     {
       "id": "evaluation-layers",
@@ -467,7 +467,7 @@
         },
         {
           "heading": "Reading a principle card",
-          "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things added when the layer was grilled: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice."
+          "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things beyond the statement: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice."
         }
       ],
       "openQuestions": [

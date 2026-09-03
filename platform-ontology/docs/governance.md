@@ -94,7 +94,7 @@ the file, not a repository setting, carries the rule.
 
 State a principle in this file and reference it everywhere else. A principle
 restated in a definition, a README and an explainer is three versions waiting
-to disagree — which is the observation that created this layer.
+to disagree.
 
 ## Change control
 - All changes via PR; CI (`ci/validate.py`) is a required check.
