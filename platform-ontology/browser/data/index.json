@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "e3b80781ece7",
+ "sourceDigest": "5e8593a7a0ba",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16765,11 +16765,11 @@
    "title": "Promises the platform can prove",
    "subtitle": "How non-functional commitments work, and how the commitment module answers the availability, resiliency and performance questions",
    "audience": "Platform owners, architects and reviewers who need to know what has been promised, where, and whether anyone is measuring it.",
-   "summary": "A non-functional requirement becomes a commitment: a promise the platform makes for a capability offering, with one metric, a target, a window, a measurement source and a validation mechanism. The module holds the promise and the evidence that it is measured \u2014 never the measurements themselves. A promise nobody measures is rejected, not recorded.",
+   "summary": "A non-functional requirement becomes a commitment: a promise the platform makes for a capability it offers, with one metric, a target, a window, a measurement source and a validation mechanism. The module holds the promise and the evidence that it is measured \u2014 never the measurements themselves. A promise nobody measures is rejected, not recorded.",
    "steps": [
     {
      "heading": "What a commitment is",
-     "body": "A commitment is attached to a capability offering, which already carries the scope \u2014 environment and region \u2014 so the promise inherits where it applies. It states one metric from a closed scheme, a target with a unit and a comparator, the window over which the target is judged, at least one measurement source, at least one validation reference, and a lifecycle state: draft, committed or withdrawn. Example: the managed-database offering in production US commits to availability of at least 99.95 percent over any 30-day window, measured by the database metrics feed and validated by CQ-9.",
+     "body": "The platform manages capabilities, not the systems that realise them, so a commitment is attached to a capability offering, which already carries the scope \u2014 environment and region \u2014 so the promise inherits where it applies. It states one metric from a closed scheme, a target with a unit and a comparator, the window over which the target is judged, at least one measurement source, at least one validation reference, and a lifecycle state: draft, committed or withdrawn. Example: the managed-database capability, offered in production US, commits to availability of at least 99.95 percent over any 30-day window, measured by the database metrics feed and validated by CQ-9.",
      "table": {
       "columns": [
        "Part",
@@ -16778,7 +16778,7 @@
       "rows": [
        [
         "Offering",
-        "Managed database, production, US"
+        "The managed-database capability, offered in production US"
        ],
        [
         "Metric",
@@ -16832,7 +16832,7 @@
     },
     {
      "heading": "What an observation is, and what it is not",
-     "body": "An observation is a windowed aggregate of one metric for one commitment: a result, a window start and end. August's availability for the managed database was 99.97 percent \u2014 one node. It is never a per-request measurement: time series belong to the observability platform, and the graph holds only the evidence needed to judge a commitment. An observation of the wrong metric \u2014 a latency figure filed against the availability promise \u2014 is a violation.",
+     "body": "An observation is a windowed aggregate of one metric for one commitment: a result, a window start and end. August's availability for the managed-database capability was 99.97 percent \u2014 one node. It is never a per-request measurement: time series belong to the observability platform, and the graph holds only the evidence needed to judge a commitment. An observation of the wrong metric \u2014 a latency figure filed against the availability promise \u2014 is a violation.",
      "table": {
       "columns": [
        "Question",
