@@ -331,6 +331,7 @@ def load_decisions(terms):
         return []
     data = json.loads(path.read_text())
     decisions = data.get("decisions", [])
+    decisions.sort(key=lambda d: int(d["id"][1:]))            # ascending id order everywhere
     by_name = defaultdict(list)
     for t in terms.values():
         by_name[t["name"]].append(t)
@@ -601,6 +602,12 @@ def main() -> int:
     decisions = load_decisions(terms)
     global g_shared
     g_shared = g
+    dnum = lambda i: int(i[1:]) if re.fullmatch(r"D\d+", i) else 10**6
+    for tm in terms.values():
+        tm["decisions"] = sorted(set(tm.get("decisions", [])), key=dnum)
+    for sh in shapes:
+        if sh.get("decisions"):
+            sh["decisions"] = sorted(set(sh["decisions"]), key=dnum)
     standards = check_standards(terms, decisions)
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
