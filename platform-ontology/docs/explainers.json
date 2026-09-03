@@ -528,6 +528,39 @@
           ]
         },
         {
+          "heading": "Why this belongs in the ontology",
+          "body": "A promise in a document can be read. A promise in the graph can be joined, checked and cited. Four things a document or a dashboard cannot do:",
+          "table": {
+            "columns": [
+              "Because",
+              "Which means"
+            ],
+            "rows": [
+              [
+                "A promise is a governed fact",
+                "It attaches to an offering and inherits scope; once commitments are declarations it gains an approver and supersession — the same machinery as every other platform intent, not a parallel one (P18)"
+              ],
+              [
+                "Questions are joins",
+                "'Which tenants are subscribed in a scope whose offering carries no availability promise' crosses subscriptions, offerings and commitments; only a graph answers it, and CI proves it returns rows"
+              ],
+              [
+                "A promise can be refused",
+                "A spreadsheet accepts any row; the shape rejects a commitment with no measurement source or validation, so an aspiration never gets cited as a guarantee (P15)"
+              ],
+              [
+                "It is one home, addressable",
+                "Stated once with a stable identifier, referenced by questions, explainers and agents alike — an agent checking a proposal can cite the promise, not paraphrase it (P8, P17)"
+              ]
+            ]
+          },
+          "principles": [
+            "P18",
+            "P15",
+            "P17"
+          ]
+        },
+        {
           "heading": "Measured, or rejected",
           "body": "A commitment with no measurement source or no validation reference is a violation at ingestion. A latency promise for the notifications capability with no feed behind it is refused before anyone can cite it. Evidence is an observation: one windowed aggregate per metric per commitment — August, 99.97 percent — never a per-request measurement. An observation of the wrong metric is a violation too.",
           "terms": [
