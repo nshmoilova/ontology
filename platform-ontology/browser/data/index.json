@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "2d3deba988e0",
+ "sourceDigest": "2375d3624d93",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15377,9 +15377,9 @@
        ],
        [
         "P15 Trust boundaries fail closed",
-        "When a decision cannot be made, the request is denied; missing evidence is a violation, not a warning.",
-        "An attribute with no authoritative issuer cannot be used; the build itself fails on a dangling reference.",
-        "Silent degradation is how assurance is lost without anyone deciding to lose it."
+        "If the platform cannot tell whether a request should be allowed, it says no. Missing or out-of-date information never quietly turns into a yes.",
+        "A request arrives and something needed to check it is missing, stale, or the check itself cannot complete. The request is refused and the gap is reported, rather than let through on the assumption it was probably fine.",
+        "Security is rarely lost by decision. It is lost when something breaks and traffic keeps flowing. Failing closed turns a broken control into a visible outage instead of a silent hole."
        ],
        [
         "P16 Isolation boundaries are explicit and enforced",
