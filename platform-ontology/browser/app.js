@@ -502,6 +502,14 @@
       </div>`;
   }
 
+  function firstCell(cell) {
+    const m = /^(P\d+)\b\s*(.*)$/s.exec(cell || "");
+    if (m && prinById.has(m[1])) {
+      return `<a class="pill prin" href="#/principles#${esc(m[1])}" title="${esc(prinById.get(m[1]).title)}">${esc(m[1])}</a> <b>${esc(m[2])}</b>`;
+    }
+    return `<code>${esc(cell)}</code>`;
+  }
+
   function viewExplainer(id) {
     const e = DB.explainers.find((x) => x.id === id);
     if (!e) return `<div class="card err"><b>Unknown explainer</b> <code>${esc(id)}</code>.
@@ -516,7 +524,7 @@
           ${st.table ? `<div class="tablewrap" style="margin-top:.9rem"><table class="data">
             <tr>${st.table.columns.map((c) => `<th>${esc(c)}</th>`).join("")}</tr>
             ${st.table.rows.map((r) => `<tr>${r.map((cell, ci) =>
-              `<td>${ci === 0 ? `<code>${esc(cell)}</code>` : esc(cell)}</td>`).join("")}</tr>`).join("")}
+              `<td>${ci === 0 ? firstCell(cell) : esc(cell)}</td>`).join("")}</tr>`).join("")}
           </table></div>` : ""}
           ${(st.principles || []).length ? `<div class="steprefs">
             <div class="reflabel">Principles</div>
