@@ -790,7 +790,7 @@
     main.innerHTML = html;
     const target = anchor ? document.getElementById(decodeURIComponent(anchor)) : null;
     if (target) {
-      target.scrollIntoView({ block: "start" });
+      target.scrollIntoView({ block: "start", behavior: "instant" });   // a card link jumps; it does not animate across the page
       target.classList.add("anchored");
       setTimeout(() => target.classList.remove("anchored"), 2500);
     } else {
