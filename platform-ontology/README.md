@@ -80,7 +80,6 @@ vocabulary closure, portal coherence, …); all competency queries execute.
 
 ## TODO
 
-- Replace `w3id.org/examplebank` with the firm's registered base IRI.
 - Add a ROBOT OWL 2 QL profile check and reasoner coherence gate to CI.
 - Wire WIDOCO doc generation; publish per-module HTML docs.
 - Close the remaining standards gaps (credential lifecycle + state-change
