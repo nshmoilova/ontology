@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "ce91cc5293ca",
+ "sourceDigest": "ece4dc029f33",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16982,7 +16982,8 @@
     }
    ],
    "openQuestions": [
-    "Which metrics join the closed scheme next: successful-request ratio during failover, change-failure rate, time to restore redundancy \u2014 each a decision, not a string (P7)."
+    "Which metrics enter the closed scheme next? The platform questions asked for three: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added by a decision, never as a free string (P7).",
+    "When do the platform's own request-path components become offerings? Until ingress, the decision point and the session manager are offerings, no availability or latency commitment can be made for them, and the performance questions stay unanswerable."
    ],
    "stepCount": 5
   }
