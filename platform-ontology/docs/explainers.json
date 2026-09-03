@@ -404,6 +404,236 @@
         "Do we need entitlement evaluation results in the token as a cache — a short-lived assertion of the Level-1 outcome — and if so, does that reintroduce the freeze problem we designed around?",
         "Token lineage is unmodelled: when a refresh token is revoked, we cannot currently enumerate the access tokens descended from it. Is that a gap worth closing before the first production tenant?"
       ]
+    },
+    {
+      "id": "principles",
+      "title": "The principles, briefly",
+      "subtitle": "What a principle is, how one is derived, and what each of the eighteen means",
+      "audience": "Anyone reading or proposing a change to the ontology — architects, reviewers, and agents checking a proposal against the rules.",
+      "summary": "A decision picks among alternatives once. A principle constrains every future pick. This ontology keeps eighteen, each stated once, each with a test a proposal is checked against, and each tied to the invariants that enforce it. Nothing becomes a principle by being asserted: a candidate is evaluated against four fitness criteria, and most candidates end up recorded as decisions, out of scope, or not yet decided.",
+      "steps": [
+        {
+          "heading": "What a principle is",
+          "body": "Three kinds of statement live in this repository and they are kept apart. A definition says what a term denotes. A decision records one choice among alternatives at one point in time, with what was rejected and why. A principle is a rule the ontology obeys: it constrains every future decision, it can be phrased as a test, and something enforces it. The layer exists because one rule, 'the token is evidence, the grant is authority', had been restated in five places and was drifting into five versions. Now each rule is stated once, in principles.json, and referenced everywhere else.",
+          "principles": [
+            "P4"
+          ]
+        },
+        {
+          "heading": "How a principle is derived",
+          "body": "A candidate sentence is evaluated, never simply added. It passes only if it meets all four criteria: generative — it has already produced more than one decision or invariant; testable — it can be asked as a question of a new proposal; a commitment, not a choice — it constrains all future selections rather than making one; enforced or enforceable — an invariant, build check or CI gate realises it. Candidates that fail are recorded with the reason so the evaluation is not repeated: fourteen so far, kept as decisions, out of scope, or open. A promoted principle carries its scope (contract, CI, runtime-asserted, review-time), any open exception with an owner and a backlog address, and a status: provisional until some decision is made because of it, confirmed after. Evaluating a candidate has repeatedly found gaps — an undelivered invariant, an optional actor on a decision, a self-approved membership in the seed data — which is the strongest evidence a rule is real.",
+          "table": {
+            "columns": [
+              "Criterion",
+              "The question asked"
+            ],
+            "rows": [
+              [
+                "Generative",
+                "What has this already decided? One thing is a decision, not a principle."
+              ],
+              [
+                "Testable",
+                "What question does a reviewer ask a proposal? If none, it is a slogan."
+              ],
+              [
+                "Commitment",
+                "Does it constrain every future choice, or make one?"
+              ],
+              [
+                "Enforced",
+                "Which shape, gate or check rejects a violation? If none, can one be written?"
+              ]
+            ]
+          },
+          "principles": [
+            "P9",
+            "P10"
+          ]
+        },
+        {
+          "heading": "Platform principles — what the platform obeys",
+          "body": "These constrain the platform's behaviour and are enforced by SHACL shapes over platform data. Where the runtime half cannot be seen in the graph, the principle says so and claims only the contract half.",
+          "table": {
+            "columns": [
+              "Principle",
+              "In short",
+              "Example from the model",
+              "Why it matters"
+            ],
+            "rows": [
+              [
+                "P1 The boundary, not the resource",
+                "Platform authorization decides entry to an application and deployment boundary; what happens inside is the application's.",
+                "Ingress asks 'may this tenant's subject enter digital-bank at this endpoint in prod-US', never 'may they view account 42'.",
+                "Keeps the platform ignorant of application internals, so an application can be replaced by an opaque identifier and every platform check still works."
+              ],
+              [
+                "P2 Governance defines; enforcement actuates",
+                "Whatever defines desired state never enforces it, and whatever enforces never defines.",
+                "The control plane declares that a route binds tenant T; ingress enforces it and cannot change it.",
+                "A component that both decides and enforces its own configuration is the loop an auditor looks for first."
+              ],
+              [
+                "P3 Agents execute; humans authorize",
+                "Automation may act, but a human is accountable for every grant of authority. Revocation is exempt.",
+                "A payments agent executes a policy change; alice's approval is attached. Taking access away needs no approval.",
+                "Automation scales action; accountability must not scale away with it."
+              ],
+              [
+                "P4 The token is evidence; the grant is authority",
+                "A token proves who is calling and how strongly; it never carries what they may do.",
+                "The token says sub, AAL2, audience. The grant says entitled to tenant T in prod. Revoke the grant and nothing needs re-minting.",
+                "Claims freeze at issuance; entitlements must not."
+              ],
+              [
+                "P12 One path, no bypass",
+                "Every governed target is reached through exactly one governed path; anything arriving outside it is a violation.",
+                "A grant with no derivation is forbidden; a mutation with no declaration is an orphan write; every route has exactly one enforcement point.",
+                "Alternate paths are where controls are quietly bypassed."
+              ],
+              [
+                "P13 Decisions are policy-based and externalized",
+                "Every decision evaluates a named policy at a named decision point; the enforcement point is a different component.",
+                "A decision names its policy, its action, its outcome and its PDP; a node may not be both PDP and PEP.",
+                "Decisions embedded in code cannot be audited, changed or reasoned about."
+              ],
+              [
+                "P15 Trust boundaries fail closed",
+                "When a decision cannot be made, the request is denied; missing evidence is a violation, not a warning.",
+                "An attribute with no authoritative issuer cannot be used; the build itself fails on a dangling reference.",
+                "Silent degradation is how assurance is lost without anyone deciding to lose it."
+              ],
+              [
+                "P16 Isolation boundaries are explicit and enforced",
+                "Every isolation boundary is stated and every crossing rejected; a declaration's reach is bounded by scope.",
+                "A route serving another tenant's application is a cross-tenant endpoint; a cell-per-tenant data plane serving two tenants is a violation.",
+                "Blast radius is a design property only if the model can compute it (CQ-8)."
+              ],
+              [
+                "P17 Every action is traceable",
+                "Every request and security-relevant change leaves evidence tracing to the responsible principal — who acted and who authorized.",
+                "A policy change names its executor and its human approver; a decision names its requesting principal; a record whose actor is optional is not evidence.",
+                "'Who did this, and who let them' must be answerable after the fact, hop by hop."
+              ],
+              [
+                "P18 Intent precedes state",
+                "Every provisioned, enabled, granted or admitted state follows from a governance intent, stays within its scope, and ends when the intent ends.",
+                "Provisioning without a justifying subscription is a violation — commercial intent precedes technical intent.",
+                "It is the nearest enforceable thing to least privilege: not 'least', but 'never without reason, never beyond it, never after it'."
+              ],
+              [
+                "P19 No one approves their own act",
+                "The executor of a change is never its approver; the principal an admission grants access to never approves it.",
+                "alice may not approve her own tenant membership; an agent's change is approved by someone other than the agent.",
+                "Separation of duties is the control auditors test first, and it was one shape away from enforced."
+              ]
+            ]
+          },
+          "principles": [
+            "P1",
+            "P2",
+            "P3",
+            "P4",
+            "P12",
+            "P13",
+            "P15",
+            "P16",
+            "P17",
+            "P18",
+            "P19"
+          ]
+        },
+        {
+          "heading": "Modelling principles — the form of the ontology",
+          "body": "These constrain how the model is built and are enforced by OWL axioms and build checks over the ontology itself.",
+          "table": {
+            "columns": [
+              "Principle",
+              "In short",
+              "Example from the model",
+              "Why it matters"
+            ],
+            "rows": [
+              [
+                "P5 An identifier resolves to an entity; it does not substitute for one",
+                "A name in a namespace points at a thing; it is never used in place of the thing.",
+                "A domain resolves to a tenant through a governed route binding; the domain is not the tenant. A client_id identifies a registration, nothing more.",
+                "Substituting identifiers for entities is how tenancy, sessions and callers get confused with their labels."
+              ],
+              [
+                "P6 OWL for semantics, SHACL for contracts",
+                "OWL says what a term means; SHACL says what data is admitted. No domain or range on shared properties.",
+                "OWL says a session is bound to a principal; SHACL says every session must have exactly one expiry.",
+                "Meaning and admission rules change at different speeds and answer to different reviewers."
+              ],
+              [
+                "P7 Vocabularies are closed schemes of individuals",
+                "A fixed set of values is a SKOS scheme, and membership in it is machine-checked.",
+                "Decision outcomes are exactly Permit, Deny, Indeterminate, NotApplicable; a fifth is a violation.",
+                "Open string vocabularies drift; closed schemes make 'deliberately small and stable' checkable."
+              ],
+              [
+                "P8 Specifications first, never products",
+                "Align to open specifications, then recorded platform decisions, then custom terms; name no products; record every departure.",
+                "RFC 9493 subject identifiers and DPoP are named and declared on their terms; an IdP vendor is not. Keeping the session id out of the token is a recorded deviation (D56).",
+                "A vocabulary that encodes today's implementation ages badly."
+              ],
+              [
+                "P14 Principals are modelled uniformly",
+                "Humans, services and agents share one identity and authorization model; they differ by attributes and permitted flows.",
+                "Human and workload are disjoint subclasses of one Principal class; every binding types to the common class; only flows differ, such as approval requiring a human.",
+                "Parallel mechanisms per kind of caller are where one kind escapes the controls."
+              ]
+            ]
+          },
+          "principles": [
+            "P5",
+            "P6",
+            "P7",
+            "P8",
+            "P14"
+          ]
+        },
+        {
+          "heading": "Method principles — how the layer is worked",
+          "body": "These constrain how the ontology itself is developed and are enforced by CI gates and review-time tests.",
+          "table": {
+            "columns": [
+              "Principle",
+              "In short",
+              "Example from the model",
+              "Why it matters"
+            ],
+            "rows": [
+              [
+                "P9 Questions before terms",
+                "A term exists to answer a competency question; add the question first.",
+                "CQ-8, 'which tenants' data planes are reachable from a declaration', existed before its query; zone is not modelled because no question yet needs it.",
+                "Scope creep in a vocabulary is permanent; a question is the cheapest gate."
+              ],
+              [
+                "P10 An invariant that cannot demonstrably fire does not count",
+                "Every violation-level constraint has a broken instance in the negative corpus, and CI asserts that it fires.",
+                "Fifty-two invariants fire on every build; one that stops firing fails the build.",
+                "A constraint that has never rejected anything is a hope, not a control."
+              ]
+            ]
+          },
+          "principles": [
+            "P9",
+            "P10"
+          ]
+        },
+        {
+          "heading": "Reading a principle card",
+          "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things added when the layer was grilled: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice."
+        }
+      ],
+      "openQuestions": [
+        "Deny by default: whether the absence of any grant is itself a deny remains undecided. P15 settles the absence-of-decision case and P18 the justification case; this is the one left.",
+        "Twelve principles are provisional: they were promoted on decisions made before they were stated. Each is confirmed by the first decision made because of it."
+      ]
     }
   ]
 }
