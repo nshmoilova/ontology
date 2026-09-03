@@ -18,6 +18,7 @@
   <rect x="60" y="80" width="780" height="150" rx="10" fill="var(--m-ingress)" opacity=".08"/>
   <rect x="60" y="80" width="780" height="150" rx="10" fill="none" stroke="var(--m-ingress)" stroke-width="1.6"/>
   <text x="82" y="106" font-family="IBM Plex Mono, monospace" font-size="13.5" fill="var(--m-ingress)" font-weight="600">1 · Platform ingress — the enforcement point</text>
+  <text x="48" y="106" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--m-ingress)" opacity=".78">static</text>
   <text x="82" y="125" font-size="11.5" fill="currentColor" opacity=".72" font-style="italic">Resolves. Does not decide.</text>
   <g font-size="11.5" fill="currentColor" opacity=".85">
     <text x="96" y="149">route domain + path</text><text x="290" y="149" opacity=".55">→</text><text x="316" y="149">tenant, application, endpoint</text>
@@ -32,6 +33,7 @@
   <rect x="60" y="262" width="780" height="176" rx="10" fill="var(--m-authz)" opacity=".09"/>
   <rect x="60" y="262" width="780" height="176" rx="10" fill="none" stroke="var(--m-authz)" stroke-width="1.6"/>
   <text x="82" y="288" font-family="IBM Plex Mono, monospace" font-size="13.5" fill="var(--m-authz)" font-weight="600">2 · Platform PDP — the decision point</text>
+  <text x="48" y="288" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--m-authz)" opacity=".78">static + dynamic</text>
   <text x="82" y="307" font-size="11.5" fill="currentColor" opacity=".72" font-style="italic">May this request cross into the application boundary?</text>
   <g font-size="11.5" fill="currentColor" opacity=".85">
     <text x="96" y="331">Is the principal an active member of the resolved tenant?</text>
