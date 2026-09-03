@@ -478,13 +478,13 @@
     {
       "id": "commitments",
       "title": "Promises the platform can prove",
-      "subtitle": "How non-functional commitments work, and how the commitment module answers the availability, resiliency and performance questions",
+      "subtitle": "How commitments work, and how the commitment module answers the availability, resiliency and performance questions",
       "audience": "Platform owners, architects and reviewers who need to know what has been promised, where, and whether anyone is measuring it.",
-      "summary": "A non-functional requirement becomes a commitment: a promise the platform makes for a capability it offers, with one metric, a target, a window, a measurement source and a validation mechanism. The module holds the promise and the evidence that it is measured — never the measurements themselves. A promise nobody measures is rejected, not recorded.",
+      "summary": "A non-functional requirement becomes a commitment: a promise the platform makes for a capability it offers, with one metric, a target, a window, a measurement source and a validation mechanism. The module holds the promise and the proof that it is measured — never the measurements. A promise nobody measures is rejected, not recorded.",
       "steps": [
         {
           "heading": "What a commitment is",
-          "body": "The platform manages capabilities, not the systems that realise them, so a commitment is attached to a capability offering, which already carries the scope — environment and region — so the promise inherits where it applies. It states one metric from a closed scheme, a target with a unit and a comparator, the window over which the target is judged, at least one measurement source, at least one validation reference, and a lifecycle state: draft, committed or withdrawn. Example: the managed-database capability, offered in production US, commits to availability of at least 99.95 percent over any 30-day window, measured by the database metrics feed and validated by CQ-9.",
+          "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering and inherits its scope. Example: the payments capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
           "table": {
             "columns": [
               "Part",
@@ -493,15 +493,11 @@
             "rows": [
               [
                 "Offering",
-                "The managed-database capability, offered in production US"
+                "payments capability, production"
               ],
               [
-                "Metric",
-                "availability (from the closed scheme)"
-              ],
-              [
-                "Target · unit · comparator",
-                "99.95 · percent · at least"
+                "Metric · comparator · target",
+                "availability · at least · 99.95 %"
               ],
               [
                 "Window",
@@ -509,7 +505,7 @@
               ],
               [
                 "Measured by",
-                "the database platform metrics feed"
+                "platform metrics feed"
               ],
               [
                 "Validated by",
@@ -525,20 +521,22 @@
             "cmt:Commitment",
             "cmt:commitsTo",
             "cmt:metric",
-            "cmt:measuredBy",
-            "cmt:validatedBy",
             "cp:CapabilityOffering"
           ],
           "principles": [
-            "P18",
-            "P2"
+            "P18"
           ]
         },
         {
           "heading": "Measured, or rejected",
-          "body": "The sentence 'every guarantee is measured' was evaluated as a principle and not promoted: it is P10 restated, and non-functionals were out of scope. Here it is a shape. A commitment with no measurement source, or no validation reference, is a violation at ingestion — an aspiration, not a guarantee, and the graph does not record aspirations as promises. Example: a latency promise of 250 milliseconds at the 99th percentile with no metrics feed behind it is rejected before anyone can cite it.",
+          "body": "A commitment with no measurement source or no validation reference is a violation at ingestion. A latency promise for the payments capability with no feed behind it is refused before anyone can cite it. Evidence is an observation: one windowed aggregate per metric per commitment — August, 99.97 percent — never a per-request measurement. An observation of the wrong metric is a violation too.",
+          "terms": [
+            "cmt:Observation",
+            "cmt:MeasurementSource"
+          ],
           "shapes": [
-            "CommitmentShape"
+            "CommitmentShape",
+            "ObservationShape"
           ],
           "principles": [
             "P15",
@@ -546,78 +544,34 @@
           ]
         },
         {
-          "heading": "What an observation is, and what it is not",
-          "body": "An observation is a windowed aggregate of one metric for one commitment: a result, a window start and end. August's availability for the managed-database capability was 99.97 percent — one node. It is never a per-request measurement: time series belong to the observability platform, and the graph holds only the evidence needed to judge a commitment. An observation of the wrong metric — a latency figure filed against the availability promise — is a violation.",
+          "heading": "How it answers the platform questions",
+          "body": "The module answers what was promised, where, and with what evidence. The identity and control-plane modules answer who is affected and where things exist. Neither answers whether anything is up right now — that is a dashboard.",
           "table": {
             "columns": [
               "Question",
-              "How the module answers it"
-            ],
-            "rows": [
-              [
-                "What did we promise?",
-                "The commitment: metric, target, window, per offering and scope"
-              ],
-              [
-                "Is anyone measuring it?",
-                "The measurement source and validation reference — mandatory"
-              ],
-              [
-                "Is it being met?",
-                "The latest observation against the target, by comparator (CQ-9 today; the breach query next)"
-              ],
-              [
-                "Is it up right now?",
-                "Not here — a dashboard question"
-              ]
-            ]
-          },
-          "terms": [
-            "cmt:Observation",
-            "cmt:observationOf",
-            "cmt:MeasurementSource"
-          ],
-          "shapes": [
-            "ObservationShape"
-          ],
-          "principles": [
-            "P8"
-          ]
-        },
-        {
-          "heading": "How it answers the platform questions",
-          "body": "The four platform questions — availability, resiliency, routing and speed — split into questions of the graph and questions of a dashboard. The module takes the first kind: what was promised, where, and with what evidence. The rows below show which commitment answers each, and what the identity and control-plane modules add.",
-          "table": {
-            "columns": [
-              "Platform question",
-              "What the commitment module answers",
-              "What the rest of the model adds"
+              "Commitment module",
+              "Rest of the model"
             ],
             "rows": [
               [
                 "Can users depend on the platform being up?",
-                "Which offerings carry a committed availability promise per scope — and which carry none",
-                "Which tenants and applications are affected if an offering is unavailable in a scope (subscriptions, enablement, routes)"
+                "Which offerings carry a committed availability promise per scope, and which none",
+                "Which tenants and applications are affected if an offering is unavailable in a scope"
               ],
               [
-                "How fast can we recover, and how much data could we lose?",
+                "How fast can we recover, how much data could we lose?",
                 "Recovery-time and recovery-point commitments per offering and region",
-                "Which capabilities are offered in only one region, so no failover target exists (CQ-11)"
+                "Which capabilities are offered in only one region — no failover target (CQ-11)"
               ],
               [
                 "Will regulated traffic stay compliant during failover?",
-                "Nothing — this one is entirely the identity model's",
-                "Tenants holding a region grant for one region only are refused during failover, never served out of jurisdiction (CQ-10, P15)"
+                "—",
+                "Tenants with a region grant for one region only are refused during failover, never served out of jurisdiction (CQ-10)"
               ],
               [
                 "How much latency should consumers reserve for the platform?",
-                "A latency commitment at a percentile on the platform's own offerings — the target is the budget a consumer plans against",
-                "The request-path components exist but are not yet offerings; that is the next modelling step"
-              ],
-              [
-                "Can we evolve the platform without disrupting users?",
-                "A change-failure commitment, once its metric is in the scheme",
-                "Which declarations took effect in production, under whose approval, and which were followed by a breach in the next window — the first cross-module question"
+                "A latency commitment at a percentile on the platform's own offerings — the target is the budget",
+                "The request path is not yet modelled as offerings; that is the next step"
               ]
             ]
           },
@@ -627,8 +581,8 @@
           ]
         },
         {
-          "heading": "What stays out, and what comes next",
-          "body": "Out, by decision: raw measurements, capacity headroom, and vendors. In the backlog, in order: the platform's own request path — ingress, decision point, session manager — as offerings so they can carry commitments; whether commitments join the declaration machinery, giving each promise a scope, an approver and supersession; a comparator-aware breach query; and the service catalogue, which waits for a question. Adding a commitment today takes five steps, in docs/commitment-module.md.",
+          "heading": "What comes next",
+          "body": "In order: the platform's own request path — ingress, decision point, session manager — as offerings, so they can carry commitments; whether commitments are declarations, giving each promise an accountable approver; a breach query by comparator. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
             "P9",
             "P3"
@@ -636,8 +590,8 @@
         }
       ],
       "openQuestions": [
-        "Are commitments declarations? If yes they gain scope, approval rigor and supersession for free, and every promise has an accountable approver (P3, P17). D58 deferred it until a question needed it; the availability and change questions now do.",
-        "Which metrics join the closed scheme next: successful-request ratio during failover, change-failure rate, time to restore redundancy. Each is a decision, not a string (P7)."
+        "Are commitments declarations? If yes they gain scope, approval rigor and supersession, and every promise has an approver (P3, P17).",
+        "Which metrics join the closed scheme next: successful-request ratio during failover, change-failure rate, time to restore redundancy — each a decision, not a string (P7)."
       ]
     }
   ]
