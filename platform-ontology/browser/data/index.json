@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "88c3253ae1f8",
+ "sourceDigest": "2d836a8b65b0",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16354,7 +16354,7 @@
  "explainers": [
   {
    "id": "evaluation-layers",
-   "title": "What is evaluated where",
+   "title": "Request path boundaries",
    "subtitle": "Platform entitlements at ingress, application authorization inside the boundary",
    "audience": "Platform and application security architects",
    "summary": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. This walkthrough covers where that line sits, what sits on each side, and how the model stops the line from moving quietly.",

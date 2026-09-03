@@ -361,7 +361,7 @@ authorization*), subject-identifier mappings past their validity window
 (*Subject identifiers*), sessions outliving a rotated confirmation key
 (*Ingress token contract*), grants outliving their governing fact
 (*Privilege drift*), and the grant-staleness threshold (open, in the
-'What is evaluated where' explainer). The first below was missing; the second moves here from Authentication
+'Request path boundaries' explainer). The first below was missing; the second moves here from Authentication
 journeys, its home under P15's exception.
 
 - Which sessions or tokens are in an active state past their expiry?
