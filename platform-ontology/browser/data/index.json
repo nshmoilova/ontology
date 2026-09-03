@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "f28db476d73c",
+ "sourceDigest": "cc794cf003d8",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16627,7 +16627,7 @@
        ],
        [
         "Testable",
-        "What question does a reviewer ask a proposal? If none, it is a slogan."
+        "Can it be turned into a question a reviewer asks of every new proposal, with a yes or no answer? If it cannot, it is a slogan."
        ],
        [
         "Commitment",
