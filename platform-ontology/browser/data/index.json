@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "e188717e4f60",
+ "sourceDigest": "eced761bf8cd",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15284,7 +15284,7 @@
   },
   {
    "id": "principles",
-   "title": "The principles, briefly",
+   "title": "Principles at a glance",
    "subtitle": "What a principle is, how one is derived, and what each of the eighteen means",
    "audience": "Anyone reading or proposing a change to the ontology \u2014 architects, reviewers, and agents checking a proposal against the rules.",
    "summary": "A decision picks among alternatives once. A principle constrains every future pick. This ontology keeps eighteen, each stated once, each with a test a proposal is checked against, and each tied to the invariants that enforce it. Nothing becomes a principle by being asserted: a candidate is evaluated against four fitness criteria, and most candidates end up recorded as decisions, out of scope, or not yet decided.",
