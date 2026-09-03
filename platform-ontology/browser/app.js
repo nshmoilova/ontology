@@ -320,6 +320,8 @@
           ${d.invariant ? '<span class="pill inv">invariant</span>' : ""}
           <span class="pill draft">${esc(d.area)}</span>
           ${(d.principles || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">applies ${esc(x)}</a>`).join("")}
+          ${(d.motivatedBy || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">motivated by ${esc(x)}</a>`).join("")}
+          ${d.resolves ? `<a class="pill draft" href="#/principles#${esc(d.resolves.yielded)}">resolves ${esc(d.resolves.between.join(" vs "))} → ${esc(d.resolves.yielded)}</a>` : ""}
         </div>
         <p>${esc(d.reasoning)}</p>
         ${(d.rejected || []).length ? `<div class="rej">
@@ -634,6 +636,8 @@
             <span class="wtitle">${esc(d.title)}</span>
             ${d.invariant ? '<span class="pill inv">invariant</span>' : ""}
             ${(d.principles || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">applies ${esc(x)}</a>`).join("")}
+          ${(d.motivatedBy || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">motivated by ${esc(x)}</a>`).join("")}
+          ${d.resolves ? `<a class="pill draft" href="#/principles#${esc(d.resolves.yielded)}">resolves ${esc(d.resolves.between.join(" vs "))} → ${esc(d.resolves.yielded)}</a>` : ""}
           </div>
           <p>${esc(d.reasoning)}</p>
           ${(d.rejected || []).length ? `<div class="rej">
@@ -654,15 +658,18 @@
   }
 
   function viewPrinciples() {
-    const levels = [["platform", "Platform principles — what the platform obeys"],
-                    ["modelling", "Modelling principles — how the ontology is built"],
-                    ["method", "Method principles — how the work is done"]];
+    const levels = [["platform", "Platform principles — constrain the platform's behaviour; enforced by shapes over platform data"],
+      ["modelling", "Modelling principles — constrain the form of the ontology; enforced by OWL axioms and build checks"],
+      ["method", "Method principles — constrain how the layer is worked; enforced by CI gates and review-time tests"]];
     const card = (p) => `
       <div class="why principle" id="${esc(p.id)}">
         <div class="whyhead">
           <span class="did">${esc(p.id)}</span>
           <span class="wtitle">${esc(p.title)}</span>
           ${p.formerly ? `<span class="pill draft">formerly ${esc(p.formerly)}</span>` : ""}
+          ${p.status === "provisional" ? `<span class="pill draft" title="No decision has yet been made because of this principle">provisional</span>` : `<span class="pill prin" title="Motivated ${esc((p.motivatedBy || []).join(", "))}">confirmed</span>`}
+          ${(p.scope || []).map((x) => `<span class="pill" title="scope">${esc(x)}</span>`).join("")}
+          ${p.weaklyHeld ? `<span class="pill draft">weakly held</span>` : ""}
         </div>
         <p><b>${esc(p.statement)}</b></p>
         <div class="rej"><div class="rejlabel">The test to apply</div>
@@ -679,6 +686,8 @@
             `<a href="#/decisions?q=${esc(d)}"><code>${esc(d)}</code></a>`).join("")}</div></div>` : ""}
         ${(p.termCuries || []).length ? `<div class="rej"><div class="rejlabel">Terms</div>
           <div class="chips" style="margin-top:.35rem">${p.termCuries.map((c) => link(c)).join("")}</div></div>` : ""}
+        ${(p.exceptions || []).length ? `<div class="rej"><div class="rejlabel">Open exceptions</div>
+          ${p.exceptions.map((x) => `<p style="margin:.3rem 0 0;font-size:.85rem"><b>${esc(x.clause)}</b> — ${esc(x.gap)} <span class="pill draft">${esc(x.owner)}</span> <a class="pill" href="#/questions">${esc(x.backlog)}</a> <span class="pill">since ${esc(x.since)}</span></p>`).join("")}</div>` : ""}
         ${p.fitness ? `<div class="rej"><div class="rejlabel">Fitness</div>
           <p style="margin:.3rem 0 0;font-size:.82rem;color:var(--ink-3)">${esc(p.fitness)}</p></div>` : ""}
       </div>`;

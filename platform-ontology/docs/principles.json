@@ -1,5 +1,5 @@
 {
-  "$comment": "The architectural principles the ontology obeys — each stated exactly once. A principle is not a decision: a decision picks among alternatives at one point; a principle constrains every future pick. Decisions record which principles they apply; shapes record which they enforce; the browser joins them. Add a principle only if it passes the fitness criteria below, and record candidates that failed so the evaluation is not repeated.",
+  "$comment": "The architectural principles the ontology obeys — each stated exactly once. A principle is not a decision: a decision picks among alternatives at one point; a principle constrains every future pick. Decisions record which principles they apply; shapes record which they enforce; the browser joins them. Add a principle only if it passes the fitness criteria below, and record candidates that failed so the evaluation is not repeated. Fields: scope (contract | ci | runtime-asserted | review-time — a principle whose scope is only runtime-asserted or review-time fails criterion four at promotion); exceptions (clause, gap, backlog section, owner role, since); status is computed by the build — confirmed if a decision names the principle in motivatedBy, else provisional. Retired ids: P11 (demoted 2026-09-02).",
   "fitnessCriteria": {
     "generative": "It has produced more than one decision or invariant. A rule applied once is a decision.",
     "testable": "It can be phrased as a question a new proposal is checked against, with a yes or no answer.",
@@ -33,6 +33,9 @@
         "EntitlementDimension",
         "IngressAdmissionDecision",
         "servesApplication"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -67,6 +70,9 @@
         "CapabilityOffering",
         "actuates",
         "derivedFrom"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -99,6 +105,10 @@
         "hasApproval",
         "changeTicket",
         "requiresHumanApproval"
+      ],
+      "scope": [
+        "contract",
+        "review-time"
       ]
     },
     {
@@ -127,6 +137,9 @@
         "ProofOfPossessionKey",
         "OAuthClientRegistration",
         "tokenAudience"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -156,6 +169,9 @@
         "OAuthClientRegistration",
         "Device",
         "identifier"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -165,7 +181,7 @@
       "formerly": "D38",
       "statement": "OWL defines meaning and licenses inference; SHACL is the data contract. rdfs:domain and rdfs:range are kept off shared properties, because under OWL semantics a domain axiom does not reject bad data — it infers a wrong type. Typing and cardinality live in shapes, where a breach is a report. sh:Violation rejects at ingestion; sh:Warning admits but routes to stewardship.",
       "test": "Should a breach of this be rejected, or inferred around? If rejected, it is a shape, not an axiom.",
-      "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import.",
+      "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import. CI gate: no property in any module declares rdfs:domain or rdfs:range — typing is SHACL's job; the build fails if one appears.",
       "fitness": "generative (every shape) · testable · enforced structurally — no shared property carries a domain or range",
       "enforcedBy": [],
       "appliedIn": [
@@ -178,6 +194,9 @@
         "targetsResource",
         "governedBy",
         "enforcedBy"
+      ],
+      "scope": [
+        "ci"
       ]
     },
     {
@@ -212,6 +231,9 @@
         "SubscriptionState",
         "MembershipState",
         "SubjectIdentifierFormat"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -242,6 +264,10 @@
         "UpstreamService",
         "TLSConfiguration",
         "changeTicket"
+      ],
+      "scope": [
+        "ci",
+        "review-time"
       ]
     },
     {
@@ -257,7 +283,10 @@
         "D25",
         "D48"
       ],
-      "terms": []
+      "terms": [],
+      "scope": [
+        "review-time"
+      ]
     },
     {
       "id": "P10",
@@ -274,19 +303,10 @@
         "D35",
         "D48"
       ],
-      "terms": []
-    },
-    {
-      "id": "P11",
-      "title": "Every kind of statement has exactly one home",
-      "level": "method",
-      "statement": "A definition denotes; rationale lives in decisions; enforcement in the shape's message; principles here; open questions in the competency backlog; examples in skos:example; history in the module description. Anything stated in two places drifts into two versions — and this layer exists because 'the token is evidence' had been restated in five.",
-      "test": "Where is the one home for this statement? Put it there, and reference it everywhere else.",
-      "consequences": "Definitions were cut to their denotation; the browser renders each home beside the others so duplication is visible; this file is the home for principles.",
-      "fitness": "generative (the definition-style pass, this layer) · testable · build-checked for references",
-      "enforcedBy": [],
-      "appliedIn": [],
-      "terms": []
+      "terms": [],
+      "scope": [
+        "ci"
+      ]
     },
     {
       "id": "P12",
@@ -319,6 +339,10 @@
         "RouteBindingChange",
         "servesApplication",
         "derivedFrom"
+      ],
+      "scope": [
+        "contract",
+        "runtime-asserted"
       ]
     },
     {
@@ -349,12 +373,16 @@
         "PolicyDecision",
         "decidedBy",
         "enforcedBy"
+      ],
+      "scope": [
+        "contract",
+        "runtime-asserted"
       ]
     },
     {
       "id": "P14",
       "title": "Principals are modelled uniformly",
-      "level": "platform",
+      "level": "modelling",
       "statement": "Humans, services and agents share one identity and authorization model. They differ by attributes and by permitted flows, never by separate mechanisms.",
       "test": "Does this proposal add a class, property or shape that exists for one kind of principal only? Then is it a subtype, an attribute, or a permitted flow on the common model — or a second mechanism? Only the last is rejected.",
       "consequences": "One Principal class with disjoint human and workload subclasses; every binding in authentication, sessions, membership and decisions types to the common class, so a mechanism that excluded a kind would need a new class to exist at all. Identifiers are naming facts under one property whatever their format — directory identifier or SPIFFE ID; credentials span passwords, FIDO2 registrations, client certificates and workload SVIDs; identity providers span the enterprise directory and the workload issuer. Kind-specific behaviour lives only in flows: approvals require a human principal (P3), a capability control plane's acting identity is a workload, devices exist only on interactive channels. Scope: agents are workloads until delegation enters the model — the agent-channel terms are deferred and 'under what delegation was this authority exercised' is a backlog question; machine-to-machine sessions are out of scope, so workload flows are modelled thinly beyond the acting-identity pattern.",
@@ -394,6 +422,9 @@
         "Credential",
         "IdentityProvider",
         "AuthenticationMethod"
+      ],
+      "scope": [
+        "contract"
       ]
     },
     {
@@ -425,6 +456,20 @@
         "distributedAt",
         "Session",
         "PolicyEnforcementPoint"
+      ],
+      "scope": [
+        "contract",
+        "ci",
+        "runtime-asserted"
+      ],
+      "exceptions": [
+        {
+          "clause": "Loss of an input never silently lowers assurance",
+          "gap": "Every time bound the model records — grant distribution time, session and token expiry, validity windows, observation windows, elevation time — is a source with no validator; only assurance rank and session count are checked.",
+          "backlog": "Temporal validation",
+          "owner": "session steward",
+          "since": "2026-09-02"
+        }
       ]
     },
     {
@@ -474,6 +519,10 @@
         "isolationModel",
         "servesTenant",
         "DataPlane"
+      ],
+      "scope": [
+        "contract",
+        "runtime-asserted"
       ]
     },
     {
@@ -520,6 +569,19 @@
         "derivedFrom",
         "AuthenticationJourneyExecution",
         "comprisesEvent"
+      ],
+      "scope": [
+        "contract",
+        "runtime-asserted"
+      ],
+      "exceptions": [
+        {
+          "clause": "Every security-relevant state change leaves evidence",
+          "gap": "Sessions, credentials, memberships and subscriptions have state schemes but no state-transition events; revocation, expiry and suspension leave no record in the graph.",
+          "backlog": "Subject identifiers",
+          "owner": "control-plane steward",
+          "since": "2026-09-02"
+        }
       ]
     },
     {
@@ -560,6 +622,37 @@
         "EntitlementGrant",
         "derivedFrom",
         "CapabilityOffering",
+        "TenantMembership"
+      ],
+      "scope": [
+        "contract"
+      ]
+    },
+    {
+      "id": "P19",
+      "title": "No one approves their own act",
+      "level": "platform",
+      "scope": [
+        "contract"
+      ],
+      "statement": "The principal that executes a change is never the principal that approves it, and the principal an admission grants access to is never the principal that approves the admission. Two different humans satisfy it; the rule is about identity, not kind. Revocation is outside it, as P3 exempts revocation from approval. Who operates a workload is out of scope until the model records that relation.",
+      "test": "Who executed this, who approved it, and whose access does it grant? If any two answers name the same principal, reject.",
+      "consequences": "A policy change approved by its executor is a violation; a tenant membership approved by the principal it admits is a violation. No break-glass path: the model records governance facts, and a same-person approval that must be tolerated operationally is a recorded deviation, not a warning that lets it through (P15). Subscription activations approved by a principal acting for the subscribing tenant are not yet covered — that needs 'acting for' resolved through membership and is a second shape with its own edge cases.",
+      "fitness": "generative on promotion (D57) · testable · enforced on the data contract",
+      "enforcedBy": [
+        "ApprovalNotSelfShape",
+        "MembershipNotSelfApprovedShape"
+      ],
+      "appliedIn": [
+        "D57"
+      ],
+      "terms": [
+        "approvedBy",
+        "executedBy",
+        "hasApproval",
+        "memberPrincipal",
+        "ChangeApproval",
+        "PolicyChangeEvent",
         "TenantMembership"
       ]
     }
@@ -634,6 +727,11 @@
       "verdict": "not promoted — a delivery principle (a definition of done) in a model that governs neither delivery nor the non-functional requirements it presupposes",
       "why": "Not generative: no decision follows from it, and the model has no notion of a capability being complete or ready — subscriptions and memberships carry state schemes, capabilities and offerings carry none. Not testable in practice: 'do this capability's realizations satisfy its non-functionals?' has exactly one answerable instance and no vocabulary for any other. That instance is worth naming because it is the pattern the candidate wants: a capability declares its isolation model and a data plane under a cell-per-tenant capability may serve one tenant only (D08, delivered in D54) — a capability-level requirement enforced on its realizations. Extended to the sibling service-level ontology, the candidate is not a new principle but P18 applied — intent precedes state — with commitments as part of an offering's intent and an offering reaching an available state only when its commitments are validated; the strongest argument for that ontology sharing this principles layer rather than growing its own. The method-level echo is already stated in governance: a term reaches stable only with a question, a shape, both test corpora and steward sign-off, generated by P9 and P10. 'Overhead versus scope' cannot be a principle here because the fitness criteria require enforcement by an invariant, build check or review test in this repository, and a rule about how delivery teams define done is enforced in a delivery process, not a graph.",
       "todo": "Points at the same scoping decision as 'Every guarantee is measured' — the sibling service-level ontology — rather than restating it. If that ontology is built, this candidate becomes its readiness gate: an offering may not reach an available state while any attached commitment lacks validation."
+    },
+    {
+      "candidate": "P11 — Every kind of statement has exactly one home",
+      "verdict": "demoted — a stated convention with no decision applying it",
+      "why": "Held as P11 from the layer's creation, it never generated a decision (appliedIn stayed empty) and had no enforcement; by the layer's own criteria it is a convention, not a principle. Its rule is unchanged and lives where it always did — the governance document's table of homes — and the fitness criteria still apply it at promotion time. The id is retired and never reused."
     }
   ]
 }

@@ -53,10 +53,44 @@ A candidate is promoted only if it passes all four fitness criteria:
 | A commitment, not a choice | It constrains all future selections rather than making one. |
 | Enforced or enforceable | An invariant, build check or CI gate realises it, or it is a stated review-time test. |
 
+**Levels** are defined by what a principle constrains, and the enforcement
+mechanism follows: *platform* principles constrain the platform's behaviour
+and are enforced by shapes over platform data; *modelling* principles
+constrain the form of the ontology and are enforced by OWL axioms and build
+checks; *method* principles constrain how this layer is worked and are
+enforced by CI gates and review-time tests.
+
+**Scope** records how a principle actually holds: `contract` (shapes),
+`ci` (a build or validation gate), `runtime-asserted` (the runtime half is
+claimed, not observable in the graph), `review-time` (a stated test only).
+A principle whose scope is only runtime-asserted or review-time fails
+criterion four and is not promoted; the build reports one that already
+holds that way as weakly held.
+
+**Status** is computed: a principle is *confirmed* once a decision records
+it in `motivatedBy` — made because of the principle, not merely consistent
+with it — and *provisional* until then. Archaeology (attributing earlier
+decisions) is legitimate evidence for promotion; a forward decision is what
+confirms.
+
+**Exceptions** are structured: clause, gap, the backlog section that holds
+the work, an owner role, and the date opened. The build fails on a pointer
+to a section that does not exist. An exception is not a waiver; it is a
+debt with an address.
+
+**Collisions** between principles are not ordered in advance. A decision
+that resolves one records `resolves: {between, yielded}` and cites both;
+the recorded resolutions are the precedence that actually holds.
+
 Candidates that fail are recorded under `evaluatedNotPrinciples` with the
-reason, so the evaluation is not repeated. Decisions promoted to principles
-keep their retired ids (D38, D39, D40, D42 → P6, P7, P3, P8); ids are never
-reused.
+reason, so the evaluation is not repeated; a demoted principle joins the
+same list. Decisions promoted to principles keep their retired ids
+(D38, D39, D40, D42 → P6, P7, P3, P8); ids are never reused (P11 retired).
+
+Changes to `docs/principles.json` require review by the platform security
+architecture group, as the authz and control-plane modules do: a principle
+changes every future decision. `.github/CODEOWNERS` requests that review;
+the file, not a repository setting, carries the rule.
 
 State a principle in this file and reference it everywhere else. A principle
 restated in a definition, a README and an explainer is three versions waiting

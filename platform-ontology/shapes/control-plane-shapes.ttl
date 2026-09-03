@@ -582,3 +582,34 @@ scp:IsolationModelShape a sh:NodeShape ;
         """ ;
     ] .
 
+# P19 — no one approves their own act.
+scp:ApprovalNotSelfShape a sh:NodeShape ;
+    sh:targetClass cp:PolicyChangeEvent ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Policy change approved by the principal that executed it — no one approves their own act." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#executedBy> ?p ;
+                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+            }
+        """ ;
+    ] .
+
+scp:MembershipNotSelfApprovedShape a sh:NodeShape ;
+    sh:targetClass cp:TenantMembership ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Tenant membership approved by the principal it admits — no one approves their own access." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+            }
+        """ ;
+    ] .
+

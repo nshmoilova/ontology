@@ -1,19 +1,20 @@
 {
  "generated": true,
- "sourceDigest": "4538ca0b6de5",
+ "sourceDigest": "900e908b3b37",
  "stats": {
   "modules": 6,
   "classes": 73,
   "objectProperties": 92,
   "datatypeProperties": 34,
-  "shapes": 75,
-  "violations": 111,
+  "shapes": 77,
+  "violations": 113,
   "warnings": 7,
   "vocabularies": 11,
   "relationships": 53,
-  "decisions": 52,
+  "decisions": 53,
   "principles": 18,
   "standards": 11,
+  "provisionalPrinciples": 12,
   "explainers": 2,
   "formalCQs": 8,
   "backlogCQs": 97
@@ -6600,7 +6601,8 @@
     "D12"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P19"
    ]
   },
   {
@@ -7124,7 +7126,8 @@
    "subClasses": [],
    "shapes": [
     "PolicyChangeEventShape",
-    "HumanAuthorizationShape"
+    "HumanAuthorizationShape",
+    "ApprovalNotSelfShape"
    ],
    "constraints": [
     {
@@ -7177,6 +7180,12 @@
      "severity": "Violation",
      "message": "Policy change lacks approval by a human principal \u2014 agents execute, humans authorize.",
      "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS {\n                    $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                    ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                    ?p a <https://w3id.org/examplebank/platform/core#HumanPrincipal> .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Policy change approved by the principal that executed it \u2014 no one approves their own act.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#executedBy> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
     }
    ],
    "outgoing": [
@@ -7195,7 +7204,8 @@
     "D55"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P19"
    ]
   },
   {
@@ -7545,7 +7555,8 @@
    "shapes": [
     "TenantMembershipShape",
     "MembershipApprovalShape",
-    "DuplicateMembershipShape"
+    "DuplicateMembershipShape",
+    "MembershipNotSelfApprovedShape"
    ],
    "constraints": [
     {
@@ -7604,6 +7615,12 @@
      "severity": "Violation",
      "message": "Principal holds more than one active membership in the same tenant \u2014 which membership authorises a request would be ambiguous.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                      <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                ?other <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                       <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                FILTER (?other != $this)\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Tenant membership approved by the principal it admits \u2014 no one approves their own access.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
     }
    ],
    "outgoing": [
@@ -7636,7 +7653,8 @@
     "D45"
    ],
    "principles": [
-    "P18"
+    "P18",
+    "P19"
    ]
   },
   {
@@ -8057,10 +8075,13 @@
     }
    ],
    "vocabulary": [],
-   "decisions": [],
+   "decisions": [
+    "D57"
+   ],
    "principles": [
     "P3",
-    "P17"
+    "P17",
+    "P19"
    ]
   },
   {
@@ -8339,10 +8360,12 @@
    "vocabulary": [],
    "decisions": [
     "D07",
-    "D55"
+    "D55",
+    "D57"
    ],
    "principles": [
-    "P17"
+    "P17",
+    "P19"
    ]
   },
   {
@@ -8460,10 +8483,12 @@
    "vocabulary": [],
    "decisions": [
     "D05",
-    "D12"
+    "D12",
+    "D57"
    ],
    "principles": [
-    "P3"
+    "P3",
+    "P19"
    ]
   },
   {
@@ -8631,9 +8656,12 @@
    ],
    "vocabulary": [],
    "decisions": [
-    "D45"
+    "D45",
+    "D57"
    ],
-   "principles": []
+   "principles": [
+    "P19"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#mutatedDataPlane",
@@ -10517,6 +10545,26 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ApprovalNotSelfShape",
+   "name": "ApprovalNotSelfShape",
+   "targetClass": "cp:PolicyChangeEvent",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#PolicyChangeEvent",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Policy change approved by the principal that executed it \u2014 no one approves their own act.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#executedBy> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P19"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#CapabilityControlPlaneShape",
    "name": "CapabilityControlPlaneShape",
    "targetClass": "cp:CapabilityControlPlane",
@@ -10890,6 +10938,26 @@
    "principles": [
     "P3",
     "P14"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#MembershipNotSelfApprovedShape",
+   "name": "MembershipNotSelfApprovedShape",
+   "targetClass": "cp:TenantMembership",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#TenantMembership",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Tenant membership approved by the principal it admits \u2014 no one approves their own access.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P19"
    ]
   },
   {
@@ -13630,6 +13698,9 @@
     "P13",
     "P10"
    ],
+   "motivatedBy": [
+    "P13"
+   ],
    "termCuries": [
     "core:PolicyDecisionPoint",
     "core:PolicyEnforcementPoint"
@@ -13647,6 +13718,9 @@
    ],
    "terms": [],
    "principles": [
+    "P15"
+   ],
+   "motivatedBy": [
     "P15"
    ],
    "termCuries": []
@@ -13672,6 +13746,9 @@
     "P16",
     "P10",
     "P15"
+   ],
+   "motivatedBy": [
+    "P16"
    ],
    "termCuries": [
     "cp:DataPlane",
@@ -13701,6 +13778,9 @@
     "P17",
     "P10",
     "P15"
+   ],
+   "motivatedBy": [
+    "P17"
    ],
    "termCuries": [
     "authz:PolicyDecision",
@@ -13732,9 +13812,44 @@
     "P8",
     "P4"
    ],
+   "motivatedBy": [
+    "P8"
+   ],
    "termCuries": [
     "session:IDToken",
     "session:Session"
+   ]
+  },
+  {
+   "id": "D57",
+   "title": "Separation of duties on approvals",
+   "area": "Audit round",
+   "invariant": true,
+   "motivatedBy": [
+    "P19"
+   ],
+   "principles": [
+    "P19",
+    "P3",
+    "P10"
+   ],
+   "reasoning": "P3 required a human approval on every grant of authority and P17 required the executor to be named, yet nothing forbade the two being the same principal: a human could execute a policy change and approve it, or approve their own admission to a tenant. Grilling the principles layer surfaced the absence as the most auditor-visible gap one shape away from enforceable. Two SPARQL constraints close it \u2014 approver differs from executor on change events, approver differs from the admitted principal on memberships \u2014 with negative instances so both fire. No break-glass marker: a tolerated same-person approval is a recorded deviation under P8's rule, not a warning.",
+   "rejected": [
+    "A warning routed to stewardship instead of a violation: P15 \u2014 a warning that lets the request through is the wrong default for a control auditors test first.",
+    "Covering subscription activations in the same change: the approver must be shown to act for the subscribing tenant, which resolves through membership and deserves its own shape and edge cases.",
+    "A single generic shape over every node with an approval: the executor and subject properties differ per class, and a generic pattern would silently match nothing where the property is absent."
+   ],
+   "terms": [
+    "approvedBy",
+    "executedBy",
+    "memberPrincipal",
+    "hasApproval"
+   ],
+   "termCuries": [
+    "cp:approvedBy",
+    "cp:executedBy",
+    "cp:hasApproval",
+    "cp:memberPrincipal"
    ]
   }
  ],
@@ -13766,13 +13881,18 @@
     "IngressAdmissionDecision",
     "servesApplication"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authz:Action",
     "authz:EntitlementDimension",
     "authz:IngressAdmissionDecision",
     "core:Application",
     "ingress:servesApplication"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P2",
@@ -13807,6 +13927,9 @@
     "actuates",
     "derivedFrom"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authz:EntitlementGrant",
     "authz:derivedFrom",
@@ -13816,7 +13939,9 @@
     "cp:ManagementControlPlane",
     "cp:RouteBindingChange",
     "cp:actuates"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P3",
@@ -13849,6 +13974,10 @@
     "changeTicket",
     "requiresHumanApproval"
    ],
+   "scope": [
+    "contract",
+    "review-time"
+   ],
    "termCuries": [
     "cp:ChangeApproval",
     "cp:PolicyChangeEvent",
@@ -13857,7 +13986,9 @@
     "cp:changeTicket",
     "cp:hasApproval",
     "cp:requiresHumanApproval"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P4",
@@ -13886,6 +14017,9 @@
     "OAuthClientRegistration",
     "tokenAudience"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authn:OAuthClientRegistration",
     "authn:ProofOfPossessionKey",
@@ -13893,7 +14027,9 @@
     "session:AccessToken",
     "session:Token",
     "session:tokenAudience"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P5",
@@ -13923,6 +14059,9 @@
     "Device",
     "identifier"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authn:OAuthClientRegistration",
     "authn:SubjectIdentifier",
@@ -13930,7 +14069,9 @@
     "ingress:boundToTenant",
     "session:Device",
     "session:SessionHandle"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P6",
@@ -13939,7 +14080,7 @@
    "formerly": "D38",
    "statement": "OWL defines meaning and licenses inference; SHACL is the data contract. rdfs:domain and rdfs:range are kept off shared properties, because under OWL semantics a domain axiom does not reject bad data \u2014 it infers a wrong type. Typing and cardinality live in shapes, where a breach is a report. sh:Violation rejects at ingestion; sh:Warning admits but routes to stewardship.",
    "test": "Should a breach of this be rejected, or inferred around? If rejected, it is a shape, not an axiom.",
-   "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import.",
+   "consequences": "Every typed relationship in the model is stated in a shape, which is why the relationship graph is derived from SHACL rather than OWL. Cross-module typing needs no cross-module import. CI gate: no property in any module declares rdfs:domain or rdfs:range \u2014 typing is SHACL's job; the build fails if one appears.",
    "fitness": "generative (every shape) \u00b7 testable \u00b7 enforced structurally \u2014 no shared property carries a domain or range",
    "enforcedBy": [],
    "appliedIn": [
@@ -13953,12 +14094,17 @@
     "governedBy",
     "enforcedBy"
    ],
+   "scope": [
+    "ci"
+   ],
    "termCuries": [
     "core:enforcedBy",
     "core:governedBy",
     "core:performedBy",
     "core:targetsResource"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P7",
@@ -13993,6 +14139,9 @@
     "MembershipState",
     "SubjectIdentifierFormat"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authn:AssuranceLevel",
     "authn:AuthenticationMethod",
@@ -14006,7 +14155,9 @@
     "cp:SubscriptionState",
     "session:DeviceClass",
     "session:SessionState"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P8",
@@ -14037,6 +14188,10 @@
     "TLSConfiguration",
     "changeTicket"
    ],
+   "scope": [
+    "ci",
+    "review-time"
+   ],
    "termCuries": [
     "cp:changeTicket",
     "ingress:Gateway",
@@ -14044,7 +14199,11 @@
     "ingress:Route",
     "ingress:TLSConfiguration",
     "ingress:UpstreamService"
-   ]
+   ],
+   "motivatedBy": [
+    "D56"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P9",
@@ -14060,7 +14219,13 @@
     "D48"
    ],
    "terms": [],
-   "termCuries": []
+   "scope": [
+    "review-time"
+   ],
+   "termCuries": [],
+   "weaklyHeld": true,
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P10",
@@ -14078,20 +14243,12 @@
     "D48"
    ],
    "terms": [],
-   "termCuries": []
-  },
-  {
-   "id": "P11",
-   "title": "Every kind of statement has exactly one home",
-   "level": "method",
-   "statement": "A definition denotes; rationale lives in decisions; enforcement in the shape's message; principles here; open questions in the competency backlog; examples in skos:example; history in the module description. Anything stated in two places drifts into two versions \u2014 and this layer exists because 'the token is evidence' had been restated in five.",
-   "test": "Where is the one home for this statement? Put it there, and reference it everywhere else.",
-   "consequences": "Definitions were cut to their denotation; the browser renders each home beside the others so duplication is visible; this file is the home for principles.",
-   "fitness": "generative (the definition-style pass, this layer) \u00b7 testable \u00b7 build-checked for references",
-   "enforcedBy": [],
-   "appliedIn": [],
-   "terms": [],
-   "termCuries": []
+   "scope": [
+    "ci"
+   ],
+   "termCuries": [],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P12",
@@ -14125,6 +14282,10 @@
     "servesApplication",
     "derivedFrom"
    ],
+   "scope": [
+    "contract",
+    "runtime-asserted"
+   ],
    "termCuries": [
     "authz:EntitlementGrant",
     "authz:derivedFrom",
@@ -14134,7 +14295,9 @@
     "ingress:Route",
     "ingress:UpstreamService",
     "ingress:servesApplication"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P13",
@@ -14165,6 +14328,10 @@
     "decidedBy",
     "enforcedBy"
    ],
+   "scope": [
+    "contract",
+    "runtime-asserted"
+   ],
    "termCuries": [
     "authz:Policy",
     "authz:PolicyDecision",
@@ -14173,12 +14340,16 @@
     "core:PolicyDecisionPoint",
     "core:PolicyEnforcementPoint",
     "core:enforcedBy"
-   ]
+   ],
+   "motivatedBy": [
+    "D52"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P14",
    "title": "Principals are modelled uniformly",
-   "level": "platform",
+   "level": "modelling",
    "statement": "Humans, services and agents share one identity and authorization model. They differ by attributes and by permitted flows, never by separate mechanisms.",
    "test": "Does this proposal add a class, property or shape that exists for one kind of principal only? Then is it a subtype, an attribute, or a permitted flow on the common model \u2014 or a second mechanism? Only the last is rejected.",
    "consequences": "One Principal class with disjoint human and workload subclasses; every binding in authentication, sessions, membership and decisions types to the common class, so a mechanism that excluded a kind would need a new class to exist at all. Identifiers are naming facts under one property whatever their format \u2014 directory identifier or SPIFFE ID; credentials span passwords, FIDO2 registrations, client certificates and workload SVIDs; identity providers span the enterprise directory and the workload issuer. Kind-specific behaviour lives only in flows: approvals require a human principal (P3), a capability control plane's acting identity is a workload, devices exist only on interactive channels. Scope: agents are workloads until delegation enters the model \u2014 the agent-channel terms are deferred and 'under what delegation was this authority exercised' is a backlog question; machine-to-machine sessions are out of scope, so workload flows are modelled thinly beyond the acting-identity pattern.",
@@ -14219,6 +14390,9 @@
     "IdentityProvider",
     "AuthenticationMethod"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authn:AuthenticationMethod",
     "authn:Credential",
@@ -14229,7 +14403,9 @@
     "core:WorkloadPrincipal",
     "core:hasActingIdentity",
     "core:identifier"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
   },
   {
    "id": "P15",
@@ -14261,6 +14437,20 @@
     "Session",
     "PolicyEnforcementPoint"
    ],
+   "scope": [
+    "contract",
+    "ci",
+    "runtime-asserted"
+   ],
+   "exceptions": [
+    {
+     "clause": "Loss of an input never silently lowers assurance",
+     "gap": "Every time bound the model records \u2014 grant distribution time, session and token expiry, validity windows, observation windows, elevation time \u2014 is a source with no validator; only assurance rank and session count are checked.",
+     "backlog": "Temporal validation",
+     "owner": "session steward",
+     "since": "2026-09-02"
+    }
+   ],
    "termCuries": [
     "authz:AttributeAssertion",
     "authz:DecisionOutcome",
@@ -14269,7 +14459,11 @@
     "authz:distributedAt",
     "core:PolicyEnforcementPoint",
     "session:Session"
-   ]
+   ],
+   "motivatedBy": [
+    "D53"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P16",
@@ -14319,6 +14513,10 @@
     "servesTenant",
     "DataPlane"
    ],
+   "scope": [
+    "contract",
+    "runtime-asserted"
+   ],
    "termCuries": [
     "core:Tenant",
     "cp:AdministrativeScope",
@@ -14330,7 +14528,11 @@
     "cp:scopeIncludes",
     "cp:servesTenant",
     "cp:subScopeOf"
-   ]
+   ],
+   "motivatedBy": [
+    "D54"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P17",
@@ -14377,6 +14579,19 @@
     "AuthenticationJourneyExecution",
     "comprisesEvent"
    ],
+   "scope": [
+    "contract",
+    "runtime-asserted"
+   ],
+   "exceptions": [
+    {
+     "clause": "Every security-relevant state change leaves evidence",
+     "gap": "Sessions, credentials, memberships and subscriptions have state schemes but no state-transition events; revocation, expiry and suspension leave no record in the graph.",
+     "backlog": "Subject identifiers",
+     "owner": "control-plane steward",
+     "since": "2026-09-02"
+    }
+   ],
    "termCuries": [
     "authn:AuthenticationJourneyExecution",
     "authn:comprisesEvent",
@@ -14388,7 +14603,11 @@
     "core:performedBy",
     "cp:approvedBy",
     "cp:executedBy"
-   ]
+   ],
+   "motivatedBy": [
+    "D55"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P18",
@@ -14430,6 +14649,9 @@
     "CapabilityOffering",
     "TenantMembership"
    ],
+   "scope": [
+    "contract"
+   ],
    "termCuries": [
     "authz:EntitlementGrant",
     "authz:derivedFrom",
@@ -14441,7 +14663,50 @@
     "cp:dependsOn",
     "cp:justifiedBy",
     "cp:requiredCapability"
-   ]
+   ],
+   "motivatedBy": [],
+   "status": "provisional"
+  },
+  {
+   "id": "P19",
+   "title": "No one approves their own act",
+   "level": "platform",
+   "scope": [
+    "contract"
+   ],
+   "statement": "The principal that executes a change is never the principal that approves it, and the principal an admission grants access to is never the principal that approves the admission. Two different humans satisfy it; the rule is about identity, not kind. Revocation is outside it, as P3 exempts revocation from approval. Who operates a workload is out of scope until the model records that relation.",
+   "test": "Who executed this, who approved it, and whose access does it grant? If any two answers name the same principal, reject.",
+   "consequences": "A policy change approved by its executor is a violation; a tenant membership approved by the principal it admits is a violation. No break-glass path: the model records governance facts, and a same-person approval that must be tolerated operationally is a recorded deviation, not a warning that lets it through (P15). Subscription activations approved by a principal acting for the subscribing tenant are not yet covered \u2014 that needs 'acting for' resolved through membership and is a second shape with its own edge cases.",
+   "fitness": "generative on promotion (D57) \u00b7 testable \u00b7 enforced on the data contract",
+   "enforcedBy": [
+    "ApprovalNotSelfShape",
+    "MembershipNotSelfApprovedShape"
+   ],
+   "appliedIn": [
+    "D57"
+   ],
+   "terms": [
+    "approvedBy",
+    "executedBy",
+    "hasApproval",
+    "memberPrincipal",
+    "ChangeApproval",
+    "PolicyChangeEvent",
+    "TenantMembership"
+   ],
+   "termCuries": [
+    "cp:ChangeApproval",
+    "cp:PolicyChangeEvent",
+    "cp:TenantMembership",
+    "cp:approvedBy",
+    "cp:executedBy",
+    "cp:hasApproval",
+    "cp:memberPrincipal"
+   ],
+   "motivatedBy": [
+    "D57"
+   ],
+   "status": "confirmed"
   }
  ],
  "standards": [
@@ -14601,6 +14866,11 @@
    "verdict": "not promoted \u2014 a delivery principle (a definition of done) in a model that governs neither delivery nor the non-functional requirements it presupposes",
    "why": "Not generative: no decision follows from it, and the model has no notion of a capability being complete or ready \u2014 subscriptions and memberships carry state schemes, capabilities and offerings carry none. Not testable in practice: 'do this capability's realizations satisfy its non-functionals?' has exactly one answerable instance and no vocabulary for any other. That instance is worth naming because it is the pattern the candidate wants: a capability declares its isolation model and a data plane under a cell-per-tenant capability may serve one tenant only (D08, delivered in D54) \u2014 a capability-level requirement enforced on its realizations. Extended to the sibling service-level ontology, the candidate is not a new principle but P18 applied \u2014 intent precedes state \u2014 with commitments as part of an offering's intent and an offering reaching an available state only when its commitments are validated; the strongest argument for that ontology sharing this principles layer rather than growing its own. The method-level echo is already stated in governance: a term reaches stable only with a question, a shape, both test corpora and steward sign-off, generated by P9 and P10. 'Overhead versus scope' cannot be a principle here because the fitness criteria require enforcement by an invariant, build check or review test in this repository, and a rule about how delivery teams define done is enforced in a delivery process, not a graph.",
    "todo": "Points at the same scoping decision as 'Every guarantee is measured' \u2014 the sibling service-level ontology \u2014 rather than restating it. If that ontology is built, this candidate becomes its readiness gate: an offering may not reach an available state while any attached commitment lacks validation."
+  },
+  {
+   "candidate": "P11 \u2014 Every kind of statement has exactly one home",
+   "verdict": "demoted \u2014 a stated convention with no decision applying it",
+   "why": "Held as P11 from the layer's creation, it never generated a decision (appliedIn stayed empty) and had no enforcement; by the layer's own criteria it is a convention, not a principle. Its rule is unchanged and lives where it always did \u2014 the governance document's table of homes \u2014 and the fitness criteria still apply it at promotion time. The id is retired and never reused."
   }
  ],
  "explainers": [

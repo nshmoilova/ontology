@@ -377,6 +377,9 @@ def check_standards(terms, decisions):
     return [{"url": u, "terms": sorted(v)} for u, v in sorted(standards.items())]
 
 
+g_shared = None
+
+
 def load_principles(terms, shapes, decisions):
     """The principles layer: stated once, joined to the terms they cover, the
     shapes that enforce them and the decisions that apply them."""
@@ -422,6 +425,39 @@ def load_principles(terms, shapes, decisions):
         bad = [x for x in d.get("principles", []) if x not in known_p]
         if bad:
             problem(f"{d['id']} applies unknown principles: {', '.join(bad)}")
+    # scope, exceptions, motivation, collisions (grilling round, 2026-09-02)
+    SCOPES = {"contract", "ci", "runtime-asserted", "review-time"}
+    headings = set(re.findall(r"^### (.+?)(?: \(.*)?$", (ROOT / "docs" / "competency-questions.md").read_text(), re.M))
+    motivated = {}
+    for d in decisions:
+        for x in d.get("motivatedBy", []):
+            if x not in known_p:
+                problem(f"{d['id']} is motivated by unknown principle {x}")
+            motivated.setdefault(x, []).append(d["id"])
+        r = d.get("resolves")
+        if r is not None:
+            ok = isinstance(r.get("between"), list) and len(r["between"]) == 2 and all(x in known_p for x in r["between"]) and r.get("yielded") in r["between"]
+            if not ok:
+                problem(f"{d['id']} records a collision resolution that is not two known principles plus which yielded")
+    for pr in principles:
+        sc = pr.get("scope")
+        if not isinstance(sc, list) or not sc or not set(sc) <= SCOPES:
+            problem(f"{pr['id']} has no valid scope (subset of {sorted(SCOPES)})")
+        elif set(sc) <= {"runtime-asserted", "review-time"}:
+            pr["weaklyHeld"] = True
+            print(f"  note: {pr['id']} is held only by {', '.join(sc)} — fails criterion four for a new promotion")
+        for ex in pr.get("exceptions", []):
+            if not all(ex.get(k) for k in ("clause", "gap", "backlog", "owner", "since")):
+                problem(f"{pr['id']} has an exception missing clause/gap/backlog/owner/since")
+            elif ex["backlog"] not in headings:
+                problem(f"{pr['id']} exception points at backlog section '{ex['backlog']}', which does not exist")
+        pr["motivatedBy"] = motivated.get(pr["id"], [])
+        pr["status"] = "confirmed" if pr["motivatedBy"] else "provisional"
+    if dr_gate := [str(s) for s in set(g_shared.subjects(RDFS.domain, None)) | set(g_shared.subjects(RDFS.range, None))]:
+        problem(f"P6: properties declare rdfs:domain/range — typing belongs in SHACL: {', '.join(sorted(dr_gate)[:5])}")
+    print(f"  {sum(1 for p in principles if p['status']=='confirmed')} principles confirmed, "
+          f"{sum(1 for p in principles if p['status']=='provisional')} provisional, "
+          f"{sum(len(p.get('exceptions', [])) for p in principles)} open exception(s)")
     return principles, data.get("evaluatedNotPrinciples", [])
 
 
@@ -557,6 +593,8 @@ def main() -> int:
     shapes = collect_shapes(gs, terms)
     edges = build_relationships(shapes, terms)
     decisions = load_decisions(terms)
+    global g_shared
+    g_shared = g
     standards = check_standards(terms, decisions)
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
@@ -588,6 +626,7 @@ def main() -> int:
             "decisions": len(decisions),
             "principles": len(principles),
             "standards": len(standards),
+            "provisionalPrinciples": sum(1 for p in principles if p.get("status") == "provisional"),
             "explainers": len(explainers),
             "formalCQs": len(formal),
             "backlogCQs": len(backlog),

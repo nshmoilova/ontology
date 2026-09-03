@@ -297,7 +297,7 @@ ex:membership-alice-t123 a cp:TenantMembership ;
     cp:hasApproval ex:approval-mem-1 .
 
 ex:approval-mem-1 a cp:ChangeApproval ;
-    cp:approvedBy ex:alice ;
+    cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-01-30T09:00:00Z"^^xsd:dateTime .
 
 ### Subscription and offering

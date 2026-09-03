@@ -123,6 +123,8 @@ def main() -> int:
             "more than one tenant under a cell-per-tenant",
             "must name the principal that executed it",
             "must name the requesting principal",
+            "approved by the principal that executed it",
+            "approved by the principal it admits",
         ]
         for frag in expected_fragments:
             if frag in text:

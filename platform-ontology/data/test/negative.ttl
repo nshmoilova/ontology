@@ -503,3 +503,24 @@ ex:decision-no-subject a authz:PolicyDecision ;
     core:targetsResource ex:transaction-service ;
     authz:decidedBy ex:platform-pdp ;
     authz:decisionOutcome authz:outcome-permit .
+
+### 44. Policy change executed and approved by the same human (ApprovalNotSelfShape)
+ex:sod-human a core:HumanPrincipal ;
+    core:displayName "Same-hand approver" .
+ex:sod-approval-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:sod-human ;
+    cp:approvedAtTime "2026-09-01T09:00:00Z"^^xsd:dateTime .
+ex:change-self-approved a cp:PolicyChangeEvent ;
+    core:occurredAtTime "2026-09-01T09:05:00Z"^^xsd:dateTime ;
+    cp:changedPolicy ex:policy-x ;
+    cp:executedBy ex:sod-human ;
+    cp:hasApproval ex:sod-approval-1 .
+
+### 45. Tenant membership approved by the principal it admits (MembershipNotSelfApprovedShape)
+ex:sod-approval-2 a cp:ChangeApproval ;
+    cp:approvedBy ex:sod-human ;
+    cp:approvedAtTime "2026-09-01T09:10:00Z"^^xsd:dateTime .
+ex:membership-self-approved a cp:TenantMembership ;
+    cp:memberPrincipal ex:sod-human ;
+    cp:hasApproval ex:sod-approval-2 .
+

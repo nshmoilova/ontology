@@ -1,5 +1,5 @@
 {
-  "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies. D38, D39, D40 and D42 were promoted to principles P6, P7, P3 and P8 in docs/principles.json — a decision picks once, a principle constrains every pick — so their ids are retired rather than reused. A decision's `principles` lists the principles it applies.",
+  "$comment": "Design decisions behind the ontology. The single source of truth for the 'why' shown in the ontology browser and the Decision Register. `terms` lists the local names of classes and properties each decision explains; the browser joins them to the TTL. Add a decision here before adding the terms it justifies. D38, D39, D40 and D42 were promoted to principles P6, P7, P3 and P8 in docs/principles.json — a decision picks once, a principle constrains every pick — so their ids are retired rather than reused. A decision's `principles` lists the principles it applies. Fields: motivatedBy — principles a decision was made because of (distinct from principles, which it applies); resolves — {between:[P,P], yielded:P} when a decision settles a collision between two principles.",
   "decisions": [
     {
       "id": "D51",
@@ -814,6 +814,9 @@
       "principles": [
         "P13",
         "P10"
+      ],
+      "motivatedBy": [
+        "P13"
       ]
     },
     {
@@ -828,6 +831,9 @@
       ],
       "terms": [],
       "principles": [
+        "P15"
+      ],
+      "motivatedBy": [
         "P15"
       ]
     },
@@ -852,6 +858,9 @@
         "P16",
         "P10",
         "P15"
+      ],
+      "motivatedBy": [
+        "P16"
       ]
     },
     {
@@ -874,6 +883,9 @@
         "P17",
         "P10",
         "P15"
+      ],
+      "motivatedBy": [
+        "P17"
       ]
     },
     {
@@ -898,6 +910,35 @@
       "principles": [
         "P8",
         "P4"
+      ],
+      "motivatedBy": [
+        "P8"
+      ]
+    },
+    {
+      "id": "D57",
+      "title": "Separation of duties on approvals",
+      "area": "Audit round",
+      "invariant": true,
+      "motivatedBy": [
+        "P19"
+      ],
+      "principles": [
+        "P19",
+        "P3",
+        "P10"
+      ],
+      "reasoning": "P3 required a human approval on every grant of authority and P17 required the executor to be named, yet nothing forbade the two being the same principal: a human could execute a policy change and approve it, or approve their own admission to a tenant. Grilling the principles layer surfaced the absence as the most auditor-visible gap one shape away from enforceable. Two SPARQL constraints close it — approver differs from executor on change events, approver differs from the admitted principal on memberships — with negative instances so both fire. No break-glass marker: a tolerated same-person approval is a recorded deviation under P8's rule, not a warning.",
+      "rejected": [
+        "A warning routed to stewardship instead of a violation: P15 — a warning that lets the request through is the wrong default for a control auditors test first.",
+        "Covering subscription activations in the same change: the approver must be shown to act for the subscribing tenant, which resolves through membership and deserves its own shape and edge cases.",
+        "A single generic shape over every node with an approval: the executor and subject properties differ per class, and a generic pattern would silently match nothing where the property is absent."
+      ],
+      "terms": [
+        "approvedBy",
+        "executedBy",
+        "memberPrincipal",
+        "hasApproval"
       ]
     }
   ]
