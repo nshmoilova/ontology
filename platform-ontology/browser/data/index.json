@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "0afba3216867",
+ "sourceDigest": "512dffd75db1",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -18,7 +18,7 @@
   "provisionalPrinciples": 10,
   "explainers": 3,
   "formalCQs": 11,
-  "backlogCQs": 120
+  "backlogCQs": 124
  },
  "modules": [
   {
@@ -16534,6 +16534,12 @@
    "candidate": "Dependency is unidirectional: applications depend on the platform, never the reverse",
    "verdict": "not promoted \u2014 a consequence of P1, now stated on it; the two untyped edges that could have broken it are closed (D60)",
    "why": "Not generative on its own: everything it would claim is attributed to P1 (applications opaque to the platform, D17, D31), P18 (enablement follows from offerings, D19) and D14 (hard dependencies are capability to capability). Its residue \u2014 the platform is complete with zero applications \u2014 is P1's test read from the architecture side: could every application be replaced by an opaque identifier? Evaluating it found the rule enforced by nothing: the hard-dependency edge and the requirement edge were untyped, so a capability could have depended on an application without any shape firing. D60 types both; P1's consequences now state the direction and its corollary for commitments \u2014 a platform availability commitment is never an aggregate of application health."
+  },
+  {
+   "candidate": "Data does not cross a jurisdiction without a recorded basis \u2014 every tenant's data has a home jurisdiction; storing, replicating, failing over, processing or admitting access to it from another jurisdiction is a crossing that exists only under a recorded transfer basis, enforced where the platform provisions and where it admits",
+   "verdict": "not yet promotable \u2014 terms first (P9); the boundary is real and the enforcement points exist, but jurisdiction, residency and transfer basis are not terms",
+   "why": "Fits the model's shape: jurisdiction is a boundary in P16's sense, distinct from region (several regions in one jurisdiction; one region under several), and both enforcement points already exist \u2014 admission fails closed with region resolved from the ingress deployment (D24, P15), and where a tenant's data may sit is governed through offerings per scope and data planes serving named tenants (D16, D08). Access counts as a crossing, which is why admission is where it bites. Not generative or enforceable today: no jurisdiction scheme, no region-to-jurisdiction mapping, no residency requirement on the tenant, no transfer-basis scheme, and no question yet. Residency is a boundary, not a non-functional commitment, so it belongs in the control-plane and authorization modules, not in the commitment module.",
+   "todo": "Sequence: (1) the four questions are in the backlog under 'Jurisdiction and data residency'; (2) terms \u2014 a closed jurisdiction scheme with region\u2192jurisdiction mapping, a residency requirement on the tenant as a declaration, a closed transfer-basis scheme; (3) shapes with negative instances \u2014 data plane outside home jurisdiction without a basis; failover target across a jurisdiction; admission from another jurisdiction without a basis; (4) re-evaluate once two decisions have been made because of it. Pays P16's region debt on the way."
   }
  ],
  "explainers": [
@@ -17929,6 +17935,30 @@
    {
     "section": "Temporal validation (recorded bounds with no validator)",
     "question": "Which permits relied on an elevation older than the policy's freshness requirement? (assurance decay \u2014 D28 deferred it; needs a per-policy freshness bound before it is answerable)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Jurisdiction and data residency (terms deliberately deferred)",
+    "question": "Which tenants' data planes sit outside the tenant's home jurisdiction with no recorded transfer basis? (expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": []
+   },
+   {
+    "section": "Jurisdiction and data residency (terms deliberately deferred)",
+    "question": "Which failover targets would move a tenant's data across a jurisdiction? (the jurisdiction-aware form of CQ-10)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Jurisdiction and data residency (terms deliberately deferred)",
+    "question": "Which admissions reached a tenant's data from a jurisdiction other than its home, and under what basis? (access is a crossing)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Jurisdiction and data residency (terms deliberately deferred)",
+    "question": "Where is the platform's own evidence about a tenant's principals stored \u2014 authentication events, decisions, subject identifiers, observations? (the graph's contents are personal data too)",
     "expectedEmpty": false,
     "realizedBy": []
    },

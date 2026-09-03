@@ -370,6 +370,29 @@ journeys, its home under P15's exception.
   requirement? *(assurance decay — D28 deferred it; needs a per-policy
   freshness bound before it is answerable)*
 
+### Jurisdiction and data residency (terms deliberately deferred)
+
+Region is where infrastructure sits; jurisdiction is whose law applies, and
+the two do not coincide. Region is a facet the model states and does not
+enforce (P16's recorded debt); jurisdiction is the reason to pay it. The
+candidate principle — data does not cross a jurisdiction without a recorded
+basis — is logged as terms-first. These questions are the trigger.
+
+- Which tenants' data planes sit outside the tenant's home jurisdiction with
+  no recorded transfer basis? *(expected empty)*
+- Which failover targets would move a tenant's data across a jurisdiction?
+  *(the jurisdiction-aware form of CQ-10)*
+- Which admissions reached a tenant's data from a jurisdiction other than
+  its home, and under what basis? *(access is a crossing)*
+- Where is the platform's own evidence about a tenant's principals stored —
+  authentication events, decisions, subject identifiers, observations? *(the
+  graph's contents are personal data too)*
+
+When the terms enter: a closed jurisdiction scheme with a region→jurisdiction
+mapping; a residency requirement on the tenant as a declaration (approver,
+supersession); a closed transfer-basis scheme. Residency is a boundary, not a
+commitment: control-plane and authz, not the commitment module.
+
 ### Non-functional commitments (module `commitment`, scaffolded — D58)
 
 A sibling module, outside the identity set: commitments are governed intent
@@ -497,4 +520,3 @@ draining) for data planes and control planes alike.
   answer is structural: authority is projected to ingress, P4)*
 - What is the 99th-percentile latency now? / Is the platform up right now?
   *(invalid — dashboard questions)*
-
