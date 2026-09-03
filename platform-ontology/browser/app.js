@@ -633,15 +633,13 @@
         d.reasoning.toLowerCase().includes(query) ||
         (d.area || "").toLowerCase().includes(query));
     }
-    const areas = [];
-    for (const d of ds) if (!areas.includes(d.area)) areas.push(d.area);
-    const body = areas.map((area) => `
-      <h2 class="sec">${esc(area)}</h2>
-      ${ds.filter((d) => d.area === area).map((d) => `
+    // One flat register in ascending id order; the area travels on the card as a filter pill.
+    const body = ds.map((d) => `
         <div class="why" id="${esc(d.id)}">
           <div class="whyhead">
             <span class="did">${esc(d.id)}</span>
             <span class="wtitle">${esc(d.title)}</span>
+            ${d.area ? `<a class="pill draft" href="#/decisions?q=${encodeURIComponent(d.area)}" title="Filter by area">${esc(d.area)}</a>` : ""}
             ${d.invariant ? '<span class="pill inv">invariant</span>' : ""}
             ${(d.principles || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">applies ${esc(x)}</a>`).join("")}
           ${(d.motivatedBy || []).map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">motivated by ${esc(x)}</a>`).join("")}
@@ -653,7 +651,7 @@
             <ul>${d.rejected.map((r) => `<li>${esc(r)}</li>`).join("")}</ul></div>` : ""}
           ${d.termCuries.length ? `<div class="rej"><div class="rejlabel">Terms</div>
             <div class="chips" style="margin-top:.35rem">${d.termCuries.map((c) => link(c)).join("")}</div></div>` : ""}
-        </div>`).join("")}`).join("");
+        </div>`).join("");
     return `
       <div class="crumb"><a href="#/">Ontology</a> › Decisions</div>
       <h1 class="title">Decision register</h1>
