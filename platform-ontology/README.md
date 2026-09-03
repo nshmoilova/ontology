@@ -78,7 +78,7 @@ negative corpus (assurance chain, locality, sole-writer, enablement gate,
 offering coverage, azp binding, subject-identifier collisions, action
 vocabulary closure, portal coherence, …); all competency queries execute.
 
-## Before first internal release
+## TODO
 
 - Replace `w3id.org/examplebank` with the firm's registered base IRI.
 - Add a ROBOT OWL 2 QL profile check and reasoner coherence gate to CI.
