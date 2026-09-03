@@ -563,7 +563,7 @@
               ],
               [
                 "P6 OWL for semantics, SHACL for contracts",
-                "OWL says what a term means; SHACL says what data is admitted. No domain or range on shared properties.",
+                "OWL defines what a term means. SHACL decides what data is accepted. The two are never mixed: a definition never doubles as a validation rule.",
                 "OWL says a session is bound to a principal; SHACL says every session must have exactly one expiry.",
                 "Meaning and admission rules change at different speeds and answer to different reviewers."
               ],
