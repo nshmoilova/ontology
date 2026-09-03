@@ -52,3 +52,21 @@ scm:ObservationShape a sh:NodeShape ;
             }
         """ ;
     ] .
+
+# D59 — a commitment is a declaration; it is declared at or above the scope of
+# the offering it is for, so the declaration's approval rigor covers the promise.
+scm:CommitmentScopeShape a sh:NodeShape ;
+    sh:targetClass cmt:Commitment ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Commitment is declared in a scope that does not contain its offering's scope — a promise is declared at or above where it applies." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .
+                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?offScope .
+                FILTER NOT EXISTS { ?offScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }
+            }
+        """ ;
+    ] .
+

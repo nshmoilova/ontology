@@ -484,7 +484,7 @@
       "steps": [
         {
           "heading": "What a commitment is",
-          "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering and inherits its scope. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
+          "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
           "table": {
             "columns": [
               "Part",
@@ -494,6 +494,10 @@
               [
                 "Offering",
                 "notifications capability, production"
+              ],
+              [
+                "Declared",
+                "through the management plane, in the production scope, approved by a human"
               ],
               [
                 "Metric · comparator · target",
@@ -521,10 +525,12 @@
             "cmt:Commitment",
             "cmt:commitsTo",
             "cmt:metric",
-            "cp:CapabilityOffering"
+            "cp:CapabilityOffering",
+            "cp:DesiredStateDeclaration"
           ],
           "principles": [
-            "P18"
+            "P18",
+            "P3"
           ]
         },
         {
@@ -538,7 +544,7 @@
             "rows": [
               [
                 "A promise is a governed fact",
-                "It attaches to an offering and inherits scope; once commitments are declarations it gains an approver and supersession — the same machinery as every other platform intent, not a parallel one (P18)"
+                "It is a declaration: it has a scope, an approver where rigor requires one, and supersession — the same machinery as every other platform intent, not a parallel one (P18, D59)"
               ],
               [
                 "Questions are joins",
@@ -615,15 +621,13 @@
         },
         {
           "heading": "What comes next",
-          "body": "In order: the platform's own request path — ingress, decision point, session manager — as offerings, so they can carry commitments; whether commitments are declarations, giving each promise an accountable approver; a breach query by comparator. Out by decision: raw measurements, capacity, vendors.",
+          "body": "In order: the platform's own request path — ingress, decision point, session manager — as offerings, so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
-            "P9",
-            "P3"
+            "P9"
           ]
         }
       ],
       "openQuestions": [
-        "Are commitments declarations? If yes they gain scope, approval rigor and supersession, and every promise has an approver (P3, P17).",
         "Which metrics join the closed scheme next: successful-request ratio during failover, change-failure rate, time to restore redundancy — each a decision, not a string (P7)."
       ]
     }

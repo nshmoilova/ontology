@@ -12,12 +12,12 @@
 
 <https://w3id.org/examplebank/platform/commitment>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.1.0> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.2.0> ;
+    owl:versionInfo "0.2.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> , <https://www.w3.org/TR/vocab-ssn/> ;
     dct:title "Commitment Module"@en ;
-    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request."@en ;
+    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited."@en ;
     dct:created "2026-09-02"^^xsd:date .
 
 #################################################################
@@ -25,9 +25,10 @@
 #################################################################
 
 cmt:Commitment a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:prefLabel "Commitment"@en ;
     skos:altLabel "service-level objective"@en , "non-functional requirement"@en ;
-    skos:definition "A non-functional guarantee the platform makes for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism."@en ;
+    skos:definition "A desired-state declaration of a non-functional guarantee for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism."@en ;
     vs:term_status "draft" .
 
 cmt:Observation a owl:Class ;

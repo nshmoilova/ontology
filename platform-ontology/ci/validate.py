@@ -127,6 +127,7 @@ def main() -> int:
             "approved by the principal it admits",
             "unmeasured claim is aspirational",
             "different metric than the commitment",
+            "does not contain its offering's scope",
         ]
         for frag in expected_fragments:
             if frag in text:

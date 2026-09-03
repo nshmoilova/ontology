@@ -1,21 +1,21 @@
 {
  "generated": true,
- "sourceDigest": "8e68aedc9490",
+ "sourceDigest": "ce91cc5293ca",
  "stats": {
   "modules": 7,
   "classes": 79,
   "objectProperties": 99,
   "datatypeProperties": 37,
-  "shapes": 79,
-  "violations": 128,
+  "shapes": 80,
+  "violations": 129,
   "warnings": 7,
   "vocabularies": 14,
   "relationships": 60,
-  "decisions": 54,
+  "decisions": 55,
   "principles": 18,
   "standards": 13,
-  "realisedBacklog": 37,
-  "provisionalPrinciples": 12,
+  "realisedBacklog": 38,
+  "provisionalPrinciples": 11,
   "explainers": 3,
   "formalCQs": 11,
   "backlogCQs": 120
@@ -98,8 +98,8 @@
    "iri": "https://w3id.org/examplebank/platform/commitment",
    "prefix": "cmt",
    "title": "Commitment Module",
-   "version": "0.1.0",
-   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request.",
+   "version": "0.2.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited.",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
@@ -6873,6 +6873,7 @@
    "subPropertyOf": [],
    "disjointWith": [],
    "subClasses": [
+    "cmt:Commitment",
     "cp:ApplicationEnablement",
     "cp:JourneyDefinitionChange",
     "cp:RouteBindingChange"
@@ -6946,7 +6947,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D05"
+    "D05",
+    "D59"
    ],
    "principles": [
     "P2"
@@ -8191,7 +8193,8 @@
    "decisions": [
     "D03",
     "D04",
-    "D54"
+    "D54",
+    "D59"
    ],
    "principles": [
     "P16"
@@ -8506,7 +8509,8 @@
    "decisions": [
     "D05",
     "D12",
-    "D57"
+    "D57",
+    "D59"
    ],
    "principles": [
     "P3",
@@ -9163,7 +9167,7 @@
    "kind": "class",
    "module": "commitment",
    "label": "Commitment",
-   "definition": "A non-functional guarantee the platform makes for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism.",
+   "definition": "A desired-state declaration of a non-functional guarantee for a capability offering: one metric, a target with unit and comparator over a window, a measurement source, and a validation mechanism.",
    "editorialNote": null,
    "altLabels": [
     "non-functional requirement",
@@ -9171,14 +9175,17 @@
    ],
    "conformsTo": [],
    "status": "draft",
-   "subClassOf": [],
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
    "subPropertyOf": [],
    "disjointWith": [
     "cmt:Observation"
    ],
    "subClasses": [],
    "shapes": [
-    "CommitmentShape"
+    "CommitmentShape",
+    "CommitmentScopeShape"
    ],
    "constraints": [
     {
@@ -9315,6 +9322,12 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A commitment is in exactly one lifecycle state."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Commitment is declared in a scope that does not contain its offering's scope \u2014 a promise is declared at or above where it applies.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?offScope .\n                FILTER NOT EXISTS { ?offScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }\n            }"
     }
    ],
    "outgoing": [
@@ -9366,7 +9379,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D58"
+    "D58",
+    "D59"
    ],
    "principles": []
   },
@@ -9871,7 +9885,8 @@
    ],
    "vocabulary": [],
    "decisions": [
-    "D58"
+    "D58",
+    "D59"
    ],
    "principles": []
   },
@@ -11613,6 +11628,23 @@
    "principles": [
     "P13"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentScopeShape",
+   "name": "CommitmentScopeShape",
+   "targetClass": "cmt:Commitment",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Commitment is declared in a scope that does not contain its offering's scope \u2014 a promise is declared at or above where it applies.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?offScope .\n                FILTER NOT EXISTS { ?offScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentShape",
@@ -15247,6 +15279,41 @@
     "cmt:measuredBy",
     "cmt:validatedBy"
    ]
+  },
+  {
+   "id": "D59",
+   "title": "Commitments are declarations",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "motivatedBy": [
+    "P18"
+   ],
+   "principles": [
+    "P18",
+    "P3",
+    "P17",
+    "P2",
+    "P10"
+   ],
+   "reasoning": "D58 scaffolded commitments as their own class and deferred whether they join the declaration machinery. The availability and change questions made it pressing: a promise with no approver is not accountable (P3, P17), and a promise that is edited rather than superseded has no history. A commitment is now a desired-state declaration: declared through the management plane, bound to a scope, approved where the scope's rigor requires it, superseded rather than edited \u2014 the same machinery as every other platform intent (P18), not a parallel one. One new invariant: a commitment is declared at or above the scope of the offering it is for, so the declaration's rigor covers where the promise applies. CQ-9 now lists scope and approver.",
+   "rejected": [
+    "A separate approval property on commitments: a second approval mechanism beside the declaration's is exactly the parallel machinery P14 and P18 forbid.",
+    "Letting a commitment's scope float free of its offering's: a promise approved in a lax scope for an offering in a strict one would launder rigor; containment closes it."
+   ],
+   "terms": [
+    "Commitment",
+    "DesiredStateDeclaration",
+    "declarationScope",
+    "hasApproval",
+    "commitsTo"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:commitsTo",
+    "cp:DesiredStateDeclaration",
+    "cp:declarationScope",
+    "cp:hasApproval"
+   ]
   }
  ],
  "principles": [
@@ -16060,8 +16127,10 @@
     "cp:justifiedBy",
     "cp:requiredCapability"
    ],
-   "motivatedBy": [],
-   "status": "provisional"
+   "motivatedBy": [
+    "D59"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P19",
@@ -16268,13 +16337,13 @@
    "candidate": "Every guarantee is measured \u2014 any non-functional commitment has a measurable source and a validation mechanism; unmeasured claims are aspirational, not guarantees",
    "verdict": "not promoted \u2014 at method level it is P10 restated; at platform level its subject, non-functional commitments, is out of scope",
    "why": "At method level the candidate's closing sentence is P10's own: a constraint never seen to reject anything is a hope, not a control \u2014 and the validator's question gate (a formal question must return rows on the seed data) is the same idea applied to questions. At platform level no decision follows from it, because the model has no non-functional vocabulary: no availability, latency, recovery objective or service level anywhere, and no question asks for one (P9). Its test does bite on one in-scope family: the model records seven measurable sources and validates two. Assurance rank (a permit below the required level fires; CQ-1) and session count (the concurrent-session limit fires) are checked. Session and token expiry, validity windows on assertions, subscriptions and subject identifiers, grant distribution time, observation windows and assurance freshness decay (D28, 'flagged for revisiting') are recorded and never compared to any point in time. That is one coherent gap \u2014 every time bound is a source without a validator \u2014 and it is recorded as P15's known exception and consolidated in the backlog under Temporal validation, rather than promoted as a principle that would restate P10 and immediately own an exception larger than its enforced content.",
-   "todo": "Scoping decision taken (D58): the sibling `commitment` module holds commitments as governed intent with a measurement source and a validation reference; 'every guarantee is measured' is its CommitmentShape. Remaining: whether commitments join the declaration machinery (scope, approval, supersession)."
+   "todo": "Resolved: the sibling commitment module holds commitments (D58), and commitments are declarations (D59) \u2014 scoped, approved where rigor requires, superseded rather than edited. 'Every guarantee is measured' is its CommitmentShape."
   },
   {
    "candidate": "Non-functionals are scope, not overhead \u2014 a capability is not complete until it satisfies its associated non-functional requirements",
    "verdict": "not promoted \u2014 a delivery principle (a definition of done) in a model that governs neither delivery nor the non-functional requirements it presupposes",
    "why": "Not generative: no decision follows from it, and the model has no notion of a capability being complete or ready \u2014 subscriptions and memberships carry state schemes, capabilities and offerings carry none. Not testable in practice: 'do this capability's realizations satisfy its non-functionals?' has exactly one answerable instance and no vocabulary for any other. That instance is worth naming because it is the pattern the candidate wants: a capability declares its isolation model and a data plane under a cell-per-tenant capability may serve one tenant only (D08, delivered in D54) \u2014 a capability-level requirement enforced on its realizations. Extended to the sibling service-level ontology, the candidate is not a new principle but P18 applied \u2014 intent precedes state \u2014 with commitments as part of an offering's intent and an offering reaching an available state only when its commitments are validated; the strongest argument for that ontology sharing this principles layer rather than growing its own. The method-level echo is already stated in governance: a term reaches stable only with a question, a shape, both test corpora and steward sign-off, generated by P9 and P10. 'Overhead versus scope' cannot be a principle here because the fitness criteria require enforcement by an invariant, build check or review test in this repository, and a rule about how delivery teams define done is enforced in a delivery process, not a graph.",
-   "todo": "Scoping decision taken (D58): the `commitment` module exists. This candidate becomes its readiness gate once offerings gain an available state \u2014 an offering may not reach it while any attached commitment lacks validation. Not yet modelled."
+   "todo": "Commitments exist and are declarations (D58, D59). This candidate becomes a readiness gate once offerings gain an available state \u2014 an offering may not reach it while any attached commitment lacks validation. Not yet modelled."
   },
   {
    "candidate": "P11 \u2014 Every kind of statement has exactly one home",
@@ -16769,7 +16838,7 @@
    "steps": [
     {
      "heading": "What a commitment is",
-     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering and inherits its scope. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
+     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
      "table": {
       "columns": [
        "Part",
@@ -16779,6 +16848,10 @@
        [
         "Offering",
         "notifications capability, production"
+       ],
+       [
+        "Declared",
+        "through the management plane, in the production scope, approved by a human"
        ],
        [
         "Metric \u00b7 comparator \u00b7 target",
@@ -16806,10 +16879,12 @@
       "cmt:Commitment",
       "cmt:commitsTo",
       "cmt:metric",
-      "cp:CapabilityOffering"
+      "cp:CapabilityOffering",
+      "cp:DesiredStateDeclaration"
      ],
      "principles": [
-      "P18"
+      "P18",
+      "P3"
      ]
     },
     {
@@ -16823,7 +16898,7 @@
       "rows": [
        [
         "A promise is a governed fact",
-        "It attaches to an offering and inherits scope; once commitments are declarations it gains an approver and supersession \u2014 the same machinery as every other platform intent, not a parallel one (P18)"
+        "It is a declaration: it has a scope, an approver where rigor requires one, and supersession \u2014 the same machinery as every other platform intent, not a parallel one (P18, D59)"
        ],
        [
         "Questions are joins",
@@ -16900,15 +16975,13 @@
     },
     {
      "heading": "What comes next",
-     "body": "In order: the platform's own request path \u2014 ingress, decision point, session manager \u2014 as offerings, so they can carry commitments; whether commitments are declarations, giving each promise an accountable approver; a breach query by comparator. Out by decision: raw measurements, capacity, vendors.",
+     "body": "In order: the platform's own request path \u2014 ingress, decision point, session manager \u2014 as offerings, so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
      "principles": [
-      "P9",
-      "P3"
+      "P9"
      ]
     }
    ],
    "openQuestions": [
-    "Are commitments declarations? If yes they gain scope, approval rigor and supersession, and every promise has an approver (P3, P17).",
     "Which metrics join the closed scheme next: successful-request ratio during failover, change-failure rate, time to restore redundancy \u2014 each a decision, not a string (P7)."
    ],
    "stepCount": 5
@@ -17001,7 +17074,7 @@
     "id": "CQ-9",
     "question": "Which commitments does each offering carry \u2014 metric, target, source, validation \u2014 and what is the latest observation of each?",
     "query": "cq9-commitments-and-evidence.rq",
-    "sparql": "# CQ-9 \u2014 Which commitments does each offering carry, with metric, target, source\n# and validation, and what is the latest observation of each? A committed\n# commitment with no source or no validation is a violation before this runs.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?offering ?commitment ?metric ?comparator ?target ?unit ?window ?source ?validation ?latestResult WHERE {\n  ?commitment a cmt:Commitment ;\n      cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:target ?target ; cmt:unit ?unit ;\n      cmt:comparator ?cmp ; cmt:window ?window ; cmt:measuredBy ?source ; cmt:validatedBy ?validation .\n  ?m skos:notation ?metric . ?cmp skos:notation ?comparator .\n  OPTIONAL {\n    ?obs cmt:observationOf ?commitment ; sosa:hasSimpleResult ?latestResult ; cp:windowEnd ?end .\n    FILTER NOT EXISTS { ?obs2 cmt:observationOf ?commitment ; cp:windowEnd ?end2 . FILTER(?end2 > ?end) }\n  }\n}\nORDER BY ?offering ?commitment",
+    "sparql": "# CQ-9 \u2014 Which commitments does each offering carry, with metric, target, source\n# and validation, and what is the latest observation of each? A committed\n# commitment with no source or no validation is a violation before this runs.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?offering ?commitment ?scope ?approver ?metric ?comparator ?target ?unit ?window ?source ?validation ?latestResult WHERE {\n  ?commitment a cmt:Commitment ;\n      cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:target ?target ; cmt:unit ?unit ;\n      cmt:comparator ?cmp ; cmt:window ?window ; cmt:measuredBy ?source ; cmt:validatedBy ?validation .\n  ?m skos:notation ?metric . ?cmp skos:notation ?comparator .\n  OPTIONAL { ?commitment cp:declarationScope ?scope }\n  OPTIONAL { ?commitment cp:hasApproval ?a . ?a cp:approvedBy ?approver }\n  OPTIONAL {\n    ?obs cmt:observationOf ?commitment ; sosa:hasSimpleResult ?latestResult ; cp:windowEnd ?end .\n    FILTER NOT EXISTS { ?obs2 cmt:observationOf ?commitment ; cp:windowEnd ?end2 . FILTER(?end2 > ?end) }\n  }\n}\nORDER BY ?offering ?commitment",
     "modules": [
      "commitment",
      "control-plane"
@@ -17693,9 +17766,12 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Who is accountable for each commitment, and was its change approved? (commitments are declarations in all but class; whether they join the declaration machinery \u2014 scope, approval rigor, supersession \u2014 is the next decision)",
+    "question": "Who is accountable for each commitment, and was its change approved? (commitments are declarations \u2014 D59; CQ-9 lists scope and approver, and a commitment declared where rigor requires approval must carry one)",
     "expectedEmpty": false,
-    "realizedBy": []
+    "realizedBy": [
+     "ScopeRigorShape",
+     "CommitmentScopeShape"
+    ]
    },
    {
     "section": "Availability",

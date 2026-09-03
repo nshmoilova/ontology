@@ -411,6 +411,9 @@ ex:source-db-metrics a cmt:MeasurementSource ;
 
 ex:commit-db-availability a cmt:Commitment ;
     core:displayName "Managed database availability, production" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-1 ;
     cmt:commitsTo ex:offering-db-prod ;
     cmt:metric cmt:metric-availability ;
     cmt:target 99.95 ;
@@ -435,4 +438,8 @@ ex:grant-t123-region-us a authz:EntitlementGrant ;
     authz:entitlementValue "US" ;
     authz:derivedFrom ex:route-binding-8003 ;
     authz:distributedAt "2026-08-30T06:00:00Z"^^xsd:dateTime .
+
+ex:approval-commit-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-01T10:00:00Z"^^xsd:dateTime .
 

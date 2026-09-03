@@ -385,9 +385,8 @@ with no measurement source or no validation mechanism is a violation — the
   commitment than the tenant's contract requires? *(needs the contract
   side — see the published-contracts scoping decision)*
 - Who is accountable for each commitment, and was its change approved?
-  *(commitments are declarations in all but class; whether they join the
-  declaration machinery — scope, approval rigor, supersession — is the next
-  decision)*
+  *(commitments are declarations — D59; CQ-9 lists scope and approver, and
+  a commitment declared where rigor requires approval must carry one)* [realised: ScopeRigorShape, CommitmentScopeShape]
 
 ## The four platform questions
 

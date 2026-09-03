@@ -556,3 +556,22 @@ ex:obs-wrong-metric a cmt:Observation ;
     cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;
     cp:windowEnd "2026-08-31T23:59:59Z"^^xsd:dateTime .
 
+### 48. Commitment declared in a scope that does not contain its offering's scope (CommitmentScopeShape)
+ex:scope-cmt-a a cp:AdministrativeScope ; core:displayName "Scope A (root)" .
+ex:scope-cmt-b a cp:AdministrativeScope ; core:displayName "Scope B (root)" .
+ex:offering-cmt-neg a cp:CapabilityOffering ;
+    cp:offersCapability ex:cell-capability ;
+    cp:offeredInScope ex:scope-cmt-a .
+ex:commit-out-of-scope a cmt:Commitment ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:scope-cmt-b ;
+    cmt:commitsTo ex:offering-cmt-neg ;
+    cmt:metric cmt:metric-availability ;
+    cmt:target 99.9 ;
+    cmt:unit unit:PERCENT ;
+    cmt:comparator cmt:at-least ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+

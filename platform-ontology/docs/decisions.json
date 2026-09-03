@@ -970,6 +970,34 @@
         "measuredBy",
         "validatedBy"
       ]
+    },
+    {
+      "id": "D59",
+      "title": "Commitments are declarations",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P3",
+        "P17",
+        "P2",
+        "P10"
+      ],
+      "reasoning": "D58 scaffolded commitments as their own class and deferred whether they join the declaration machinery. The availability and change questions made it pressing: a promise with no approver is not accountable (P3, P17), and a promise that is edited rather than superseded has no history. A commitment is now a desired-state declaration: declared through the management plane, bound to a scope, approved where the scope's rigor requires it, superseded rather than edited — the same machinery as every other platform intent (P18), not a parallel one. One new invariant: a commitment is declared at or above the scope of the offering it is for, so the declaration's rigor covers where the promise applies. CQ-9 now lists scope and approver.",
+      "rejected": [
+        "A separate approval property on commitments: a second approval mechanism beside the declaration's is exactly the parallel machinery P14 and P18 forbid.",
+        "Letting a commitment's scope float free of its offering's: a promise approved in a lax scope for an offering in a strict one would launder rigor; containment closes it."
+      ],
+      "terms": [
+        "Commitment",
+        "DesiredStateDeclaration",
+        "declarationScope",
+        "hasApproval",
+        "commitsTo"
+      ]
     }
   ]
 }

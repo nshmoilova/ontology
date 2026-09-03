@@ -6,8 +6,10 @@ whether that promise is measured — never the measurements themselves.
 
 ## What a commitment is
 
-One node per promise, attached to a capability offering, which carries the
-scope. It states exactly one metric from a closed scheme, a target with a
+One node per promise, attached to a capability offering. A commitment is a
+desired-state declaration (D59): declared through the management plane, bound
+to a scope that contains the offering's, approved where that scope requires
+it, superseded rather than edited. It states exactly one metric from a closed scheme, a target with a
 QUDT unit and a comparator, the window it is judged over, at least one
 measurement source, at least one validation reference, and a lifecycle state.
 
@@ -28,9 +30,11 @@ they belong to the observability platform.
 2. Pick the metric from `cmt:MetricScheme`. A new metric is a decision, not
    a string.
 3. State target, unit (QUDT IRI), comparator, window.
-4. Name the measurement source and the validation reference — a query in
+4. Declare it: management plane, scope (at or above the offering's), and an
+   approval if the scope requires one.
+5. Name the measurement source and the validation reference — a query in
    `queries/competency/` or an external check, as an `xsd:anyURI`.
-5. Run `ci/validate.py`. CQ-9 lists every commitment with its latest
+6. Run `ci/validate.py`. CQ-9 lists every commitment with its latest
    observation.
 
 ## Vocabulary
@@ -41,7 +45,6 @@ names in terms; instances may name the real monitoring system.
 
 ## What is deliberately not here yet
 
-- Commitments as declarations (scope, approval rigor, supersession).
 - An offering readiness state gated on validated commitments.
 - The service catalogue (contracts, versions, consumers).
 - A JSON-LD projection for agents beyond the browser index.
