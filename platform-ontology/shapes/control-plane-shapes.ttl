@@ -395,6 +395,12 @@ scp:AcyclicDependencyShape a sh:NodeShape ;
                 $this <https://w3id.org/examplebank/platform/control-plane#dependsOn>+ $this .
             }
         """ ;
+    ] ;
+    sh:property [
+        sh:path cp:dependsOn ;
+        sh:class core:Capability ;
+        sh:severity sh:Violation ;
+        sh:message "A capability depends only on capabilities — the platform depends on no application." ;
     ] .
 
 # Supply-side closure: a capability offered in a scope needs its hard
@@ -613,3 +619,12 @@ scp:MembershipNotSelfApprovedShape a sh:NodeShape ;
         """ ;
     ] .
 
+# D60 — the platform depends on no application.
+scp:RequirementTargetShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityRequirement ;
+    sh:property [
+        sh:path cp:requiredCapability ;
+        sh:class core:Capability ;
+        sh:severity sh:Violation ;
+        sh:message "A requirement names a capability — an application requires platform capabilities, never another application." ;
+    ] .

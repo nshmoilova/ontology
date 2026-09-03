@@ -128,6 +128,8 @@ def main() -> int:
             "unmeasured claim is aspirational",
             "different metric than the commitment",
             "does not contain its offering's scope",
+            "the platform depends on no application",
+            "never another application",
         ]
         for frag in expected_fragments:
             if frag in text:

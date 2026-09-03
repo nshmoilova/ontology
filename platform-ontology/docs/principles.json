@@ -13,11 +13,13 @@
       "level": "platform",
       "statement": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. The platform never learns what is inside an application.",
       "test": "Could the platform still evaluate this check if every application were replaced by an opaque identifier with no documentation? If not, it is not a platform entitlement.",
-      "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary.",
+      "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary. Dependency runs one way: applications depend on platform capabilities, and the platform is complete with zero applications — no capability, plane, decision or commitment depends on anything an application is or does. The platform references applications only as governed things it admits and serves (ownership, enablement, portals, the route that serves them). A platform commitment is therefore never defined as an aggregate of application health.",
       "fitness": "generative (6 decisions, 2 invariants) · testable (the opacity question) · enforced",
       "enforcedBy": [
         "ActionVocabularyShape",
-        "EntitlementGrantShape"
+        "EntitlementGrantShape",
+        "scp:AcyclicDependencyShape",
+        "RequirementTargetShape"
       ],
       "appliedIn": [
         "D17",
@@ -25,7 +27,8 @@
         "D21",
         "D25",
         "D31",
-        "D48"
+        "D48",
+        "D60"
       ],
       "terms": [
         "Application",
@@ -732,6 +735,11 @@
       "candidate": "P11 — Every kind of statement has exactly one home",
       "verdict": "demoted — a stated convention with no decision applying it",
       "why": "Held as P11 from the layer's creation, it never generated a decision (appliedIn stayed empty) and had no enforcement; by the layer's own criteria it is a convention, not a principle. Its rule is unchanged and lives where it always did — the governance document's table of homes — and the fitness criteria still apply it at promotion time. The id is retired and never reused."
+    },
+    {
+      "candidate": "Dependency is unidirectional: applications depend on the platform, never the reverse",
+      "verdict": "not promoted — a consequence of P1, now stated on it; the two untyped edges that could have broken it are closed (D60)",
+      "why": "Not generative on its own: everything it would claim is attributed to P1 (applications opaque to the platform, D17, D31), P18 (enablement follows from offerings, D19) and D14 (hard dependencies are capability to capability). Its residue — the platform is complete with zero applications — is P1's test read from the architecture side: could every application be replaced by an opaque identifier? Evaluating it found the rule enforced by nothing: the hard-dependency edge and the requirement edge were untyped, so a capability could have depended on an application without any shape firing. D60 types both; P1's consequences now state the direction and its corollary for commitments — a platform availability commitment is never an aggregate of application health."
     }
   ]
 }

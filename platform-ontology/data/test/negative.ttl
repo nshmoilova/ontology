@@ -575,3 +575,13 @@ ex:commit-out-of-scope a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
     cmt:hasCommitmentState cmt:state-committed .
 
+### 49. A capability declaring a hard dependency on an application (scp:AcyclicDependencyShape)
+ex:cap-needs-app a core:Capability ;
+    core:displayName "Capability that depends on an application" ;
+    cp:dependsOn ex:app-bad .
+
+### 50. A requirement naming an application instead of a capability (RequirementTargetShape)
+ex:req-on-app a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-bad ;
+    cp:requiredCapability ex:app-bad .
+

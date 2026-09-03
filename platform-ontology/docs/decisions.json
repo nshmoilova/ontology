@@ -998,6 +998,31 @@
         "hasApproval",
         "commitsTo"
       ]
+    },
+    {
+      "id": "D60",
+      "title": "The platform depends on no application — the dependency edges are typed",
+      "area": "Foundations",
+      "invariant": true,
+      "motivatedBy": [
+        "P1"
+      ],
+      "principles": [
+        "P1",
+        "P10",
+        "P18"
+      ],
+      "reasoning": "Applications depend on platform capabilities; the platform depends on no application. The rule was true of every instance and enforced by nothing: cp:dependsOn and cp:requiredCapability carried no class constraint, so a capability could declare a hard dependency on an application, or a requirement could name one, without a violation. Both edges now require a capability as their target, with negative instances so the invariants fire. P1's consequences state the direction explicitly, including the corollary that a platform commitment is never defined as an aggregate of application health.",
+      "rejected": [
+        "A separate principle for dependency direction: it is P1's test read from the architecture side and would be a second home for the same rule.",
+        "Leaving the edges untyped because no data misuses them: a constraint that has never rejected anything is a hope, not a control (P10)."
+      ],
+      "terms": [
+        "dependsOn",
+        "requiredCapability",
+        "Capability",
+        "Application"
+      ]
     }
   ]
 }
