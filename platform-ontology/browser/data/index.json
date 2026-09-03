@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "a5beaafac3c5",
+ "sourceDigest": "6ed457f99e5a",
  "stats": {
   "modules": 7,
   "classes": 79,
@@ -16,8 +16,8 @@
   "standards": 13,
   "provisionalPrinciples": 12,
   "explainers": 2,
-  "formalCQs": 9,
-  "backlogCQs": 101
+  "formalCQs": 11,
+  "backlogCQs": 122
  },
  "modules": [
   {
@@ -16852,6 +16852,25 @@
      "commitment",
      "control-plane"
     ]
+   },
+   {
+    "id": "CQ-10",
+    "question": "Which tenants hold region-access grants for exactly one region, and in which other regions are their capabilities offered \u2014 who is refused, not served out of jurisdiction, during failover?",
+    "query": "cq10-region-bound-tenants.rq",
+    "sparql": "# CQ-10 \u2014 Will regulated traffic remain compliant during failover? Which tenants\n# hold region.access grants for exactly one region, and in which other regions\n# are their subscribed capabilities offered? During failover to such a region\n# the tenant is refused (P15), never served out of jurisdiction.\n# One row per tenant and failover region; failoverRegionWithoutGrant is\n# unbound when every offering the tenant subscribes to sits in its own region.\nPREFIX authz: <https://w3id.org/examplebank/platform/authz#>\nPREFIX cp:    <https://w3id.org/examplebank/platform/control-plane#>\n\nSELECT ?tenant ?onlyRegion ?failoverRegionWithoutGrant WHERE {\n  ?grant authz:grantedTo ?tenant ; authz:onDimension authz:dim-region ; authz:entitlementValue ?onlyRegion .\n  FILTER NOT EXISTS {\n    ?g2 authz:grantedTo ?tenant ; authz:onDimension authz:dim-region ; authz:entitlementValue ?r2 .\n    FILTER(?r2 != ?onlyRegion)\n  }\n  OPTIONAL {\n    ?sub cp:subscriber ?tenant ; cp:subscribedCapability ?cap .\n    ?off cp:offersCapability ?cap ; cp:offeredInScope ?scope .\n    ?node cp:subScopeOf* ?scope ; cp:inRegion ?failoverRegionWithoutGrant .\n    FILTER(?failoverRegionWithoutGrant != ?onlyRegion)\n  }\n}\nORDER BY ?tenant ?failoverRegionWithoutGrant",
+    "modules": [
+     "authz",
+     "control-plane"
+    ]
+   },
+   {
+    "id": "CQ-11",
+    "question": "Which capabilities are offered in exactly one region, so no failover target exists?",
+    "query": "cq11-single-region-offerings.rq",
+    "sparql": "# CQ-11 \u2014 Can we survive losing a region? Which capabilities are offered in\n# exactly one region, so that no failover target exists for them?\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX core: <https://w3id.org/examplebank/platform/core#>\n\nSELECT ?capability ?onlyRegion (COUNT(DISTINCT ?offering) AS ?offerings) WHERE {\n  ?offering cp:offersCapability ?capability ; cp:offeredInScope ?scope .\n  ?scope cp:subScopeOf* ?anc . ?anc cp:inRegion ?onlyRegion .\n  FILTER NOT EXISTS {\n    ?o2 cp:offersCapability ?capability ; cp:offeredInScope ?s2 .\n    ?s2 cp:subScopeOf* ?a2 . ?a2 cp:inRegion ?r2 . FILTER(?r2 != ?onlyRegion)\n  }\n}\nGROUP BY ?capability ?onlyRegion\nORDER BY ?capability",
+    "modules": [
+     "control-plane"
+    ]
    }
   ],
   "backlog": [
@@ -17358,6 +17377,111 @@
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
     "question": "Who is accountable for each commitment, and was its change approved? (commitments are declarations in all but class; whether they join the declaration machinery \u2014 scope, approval rigor, supersession \u2014 is the next decision)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "Will users lose requests when failure occurs? \u2192 which offerings carry a commitment on request loss during failover? (sibling; new metric by decision \u2014 successful-request ratio during failover. On control-plane failure ingress refuses by design, P15: refused, not dropped)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "Can recovery happen automatically without human intervention? \u2192 which data-plane mutations were executed by a workload under a standing, approved declaration, and which needed a fresh approval? (now \u2014 recovery is actuation, not a grant of authority; P3 requires the declaration's approval, not one per event)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "How long will users be impacted if an entire region fails? \u2192 which offerings carry a recovery-time commitment per region (sibling); which capabilities are offered in only one region (now \u2014 CQ-11)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "How quickly can we switch providers when a vendor fails? (invalid here \u2014 no vendor concept, P8; the only in-scope seam is the identity provider, see Subject identifiers)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "How fast can we recover and how much data could we lose? \u2192 which offerings carry recovery-time and recovery-point commitments per scope (sibling; both metrics exist)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Availability",
+    "question": "Can we deploy and evolve the platform without disrupting users? \u2192 which declarations took effect in production scopes, under whose approval, and which were followed by a commitment breach in the next window? (sibling + control-plane \u2014 the first cross-module question; needs the breach query and a change-failure metric)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "Can we survive losing a region? \u2192 single-region capabilities (now \u2014 CQ-11); hard dependencies offered in fewer regions than their dependents (now; partly enforced by OfferingSupplyClosureShape); recovery-time commitments per region (sibling)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "Are we truly running across regions or keeping standby infrastructure? \u2192 data planes per region, in what operational role? (terms \u2014 data planes have no operational state; one closed scheme, P7)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "How much state or data is at risk if a region fails right now? \u2192 which tenants' data planes exist in a single region (now); recovery-point commitments per region (sibling)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "Can we safely take a region out of service for maintenance? \u2192 which tenants and applications would lose their only data plane or route if the region's scope were drained, under which declaration and approval? (now \u2014 CQ-8 by region facet; draining as a state needs the same term as above)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "After losing a region, how quickly do we regain operational safety margin? \u2192 commitment on time to restore redundancy (sibling; new metric by decision. Capacity headroom itself is not a graph fact)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "Will regulated traffic remain compliant during failover? \u2192 which tenants hold region-access grants for one region only, so failover elsewhere refuses them rather than serving them out of jurisdiction? (now \u2014 CQ-10)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Multi-region resiliency",
+    "question": "Can the platform still be managed when a region is lost? \u2192 which data planes become unmanageable if a control plane is lost (now \u2014 sole-writer edges); where does each control plane run (terms \u2014 control planes are logical, D01/D02, with no placement; same decision as operational role). Behaviour during the loss is implied: intent persists so state persists (P18); management stalls, serving continues, declarations queue.",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Ingress and traffic management",
+    "question": "Can we safely roll out changes using canaries, blue-green and weighted routing? \u2192 which routes forward to more than one upstream, with what split, changed under which declaration and approval; which tenants sit behind a canary now? (terms \u2014 a weighted forwarding edge and a traffic-split change as a declaration subclass; governance then comes free via D43. \"Who is behind it\" is answerable now. Rollback-on-failure is the change-failure commitment, sibling)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Ingress and traffic management",
+    "question": "What happens when demand exceeds capacity? \u2192 which tenants share a data plane (now \u2014 the noisy-neighbour blast radius via the isolation model); throughput commitments per offering (sibling; new metric); is there any path under load where a request reaches an application without admission (P12/P15 asserted \u2014 the model states no bypass and cannot observe it). Capacity is not a graph fact. Load-shedding order would need a priority term that only this question asks for \u2014 deferred.",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "How much delay does the platform itself add to every request? \u2192 which request-path offerings carry a latency commitment at which percentile (sibling, after the request-path-as-offerings decision); which checks sit on the path for a given route (now)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "How much latency should consumers reserve for the platform? \u2192 the same commitment read from the consumer's side: the target is the budget (sibling \u2014 the one contract-shaped question that needs no catalogue)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "How long does a user take to sign in? \u2192 per journey definition and channel, execution duration from first to last event (now \u2014 executions and events are in-graph under P17, with timestamps); a duration commitment (sibling)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "How long does additional authentication take when required? \u2192 the same over elevation executions (now \u2014 D28); and which permits required an elevation at all (now)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "How quickly can the platform decide whether a request is allowed? \u2192 decision-latency commitment on the decision point (sibling only \u2014 requests are not reified, D31, so duration is not derivable; the design answer is structural: authority is projected to ingress, P4)",
+    "expectedEmpty": false
+   },
+   {
+    "section": "Performance",
+    "question": "What is the 99th-percentile latency now? / Is the platform up right now? (invalid \u2014 dashboard questions)",
     "expectedEmpty": false
    }
   ]

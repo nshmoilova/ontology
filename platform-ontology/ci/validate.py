@@ -147,6 +147,8 @@ def main() -> int:
         "cq7-application-entry-rights.rq",
         "cq8-blast-radius.rq",
         "cq9-commitments-and-evidence.rq",
+        "cq10-region-bound-tenants.rq",
+        "cq11-single-region-offerings.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

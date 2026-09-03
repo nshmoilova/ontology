@@ -1,0 +1,23 @@
+# CQ-10 — Will regulated traffic remain compliant during failover? Which tenants
+# hold region.access grants for exactly one region, and in which other regions
+# are their subscribed capabilities offered? During failover to such a region
+# the tenant is refused (P15), never served out of jurisdiction.
+# One row per tenant and failover region; failoverRegionWithoutGrant is
+# unbound when every offering the tenant subscribes to sits in its own region.
+PREFIX authz: <https://w3id.org/examplebank/platform/authz#>
+PREFIX cp:    <https://w3id.org/examplebank/platform/control-plane#>
+
+SELECT ?tenant ?onlyRegion ?failoverRegionWithoutGrant WHERE {
+  ?grant authz:grantedTo ?tenant ; authz:onDimension authz:dim-region ; authz:entitlementValue ?onlyRegion .
+  FILTER NOT EXISTS {
+    ?g2 authz:grantedTo ?tenant ; authz:onDimension authz:dim-region ; authz:entitlementValue ?r2 .
+    FILTER(?r2 != ?onlyRegion)
+  }
+  OPTIONAL {
+    ?sub cp:subscriber ?tenant ; cp:subscribedCapability ?cap .
+    ?off cp:offersCapability ?cap ; cp:offeredInScope ?scope .
+    ?node cp:subScopeOf* ?scope ; cp:inRegion ?failoverRegionWithoutGrant .
+    FILTER(?failoverRegionWithoutGrant != ?onlyRegion)
+  }
+}
+ORDER BY ?tenant ?failoverRegionWithoutGrant

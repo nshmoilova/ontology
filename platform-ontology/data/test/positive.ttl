@@ -428,3 +428,11 @@ ex:obs-db-availability-2026-08 a cmt:Observation ;
     cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;
     cp:windowEnd "2026-08-31T23:59:59Z"^^xsd:dateTime .
 
+### Region-bound tenant — a region.access grant for exactly one region (CQ-10)
+ex:grant-t123-region-us a authz:EntitlementGrant ;
+    authz:grantedTo ex:tenant-t123 ;
+    authz:onDimension authz:dim-region ;
+    authz:entitlementValue "US" ;
+    authz:derivedFrom ex:route-binding-8003 ;
+    authz:distributedAt "2026-08-30T06:00:00Z"^^xsd:dateTime .
+

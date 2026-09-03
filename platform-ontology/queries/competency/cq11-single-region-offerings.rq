@@ -1,0 +1,15 @@
+# CQ-11 — Can we survive losing a region? Which capabilities are offered in
+# exactly one region, so that no failover target exists for them?
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX core: <https://w3id.org/examplebank/platform/core#>
+
+SELECT ?capability ?onlyRegion (COUNT(DISTINCT ?offering) AS ?offerings) WHERE {
+  ?offering cp:offersCapability ?capability ; cp:offeredInScope ?scope .
+  ?scope cp:subScopeOf* ?anc . ?anc cp:inRegion ?onlyRegion .
+  FILTER NOT EXISTS {
+    ?o2 cp:offersCapability ?capability ; cp:offeredInScope ?s2 .
+    ?s2 cp:subScopeOf* ?a2 . ?a2 cp:inRegion ?r2 . FILTER(?r2 != ?onlyRegion)
+  }
+}
+GROUP BY ?capability ?onlyRegion
+ORDER BY ?capability

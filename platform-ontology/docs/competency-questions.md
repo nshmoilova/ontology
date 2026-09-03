@@ -16,6 +16,8 @@ scope creep.
 | CQ-7 | Does this subject's tenant have the right to enter this application through this platform-controlled endpoint and deployment scope? | `cq7-application-entry-rights.rq` | core, ingress, control-plane |
 | CQ-8 | Which tenants' data planes are reachable from a given desired-state declaration (blast radius)? | `cq8-blast-radius.rq` | control-plane, core |
 | CQ-9 | Which commitments does each offering carry — metric, target, source, validation — and what is the latest observation of each? | `cq9-commitments-and-evidence.rq` | commitment, control-plane |
+| CQ-10 | Which tenants hold region-access grants for exactly one region, and in which other regions are their capabilities offered — who is refused, not served out of jurisdiction, during failover? | `cq10-region-bound-tenants.rq` | authz, control-plane |
+| CQ-11 | Which capabilities are offered in exactly one region, so no failover target exists? | `cq11-single-region-offerings.rq` | control-plane |
 
 ## Backlog (draft, not yet modelled)
 
@@ -382,4 +384,114 @@ with no measurement source or no validation mechanism is a violation — the
   *(commitments are declarations in all but class; whether they join the
   declaration machinery — scope, approval rigor, supersession — is the next
   decision)*
+
+## The four platform questions
+
+Four questions asked of the platform, each broken into competency questions
+and judged by four tests: asked of the graph rather than a dashboard; in scope
+for this ontology or the commitment module; not already asked; decidable.
+Verdicts: **now** — answerable with existing terms and data; **sibling** — the
+commitment module, needing seeds or one metric; **terms** — valid, needs a
+modelling decision first; **invalid** — recorded so it is not re-asked.
+
+Two term decisions recur across the themes and are the next modelling steps:
+the platform's own request-path components (ingress, decision point, session
+manager, authentication) as platform-owned offerings, so they can carry
+commitments; and plane placement with an operational role (active, standby,
+draining) for data planes and control planes alike.
+
+### Availability
+
+- Will users lose requests when failure occurs? → which offerings carry a
+  commitment on request loss during failover? *(sibling; new metric by
+  decision — successful-request ratio during failover. On control-plane
+  failure ingress refuses by design, P15: refused, not dropped)*
+- Can recovery happen automatically without human intervention? → which
+  data-plane mutations were executed by a workload under a standing,
+  approved declaration, and which needed a fresh approval? *(now — recovery
+  is actuation, not a grant of authority; P3 requires the declaration's
+  approval, not one per event)*
+- How long will users be impacted if an entire region fails? → which
+  offerings carry a recovery-time commitment per region *(sibling)*; which
+  capabilities are offered in only one region *(now — CQ-11)*
+- How quickly can we switch providers when a vendor fails? *(invalid here —
+  no vendor concept, P8; the only in-scope seam is the identity provider,
+  see Subject identifiers)*
+- How fast can we recover and how much data could we lose? → which
+  offerings carry recovery-time and recovery-point commitments per scope
+  *(sibling; both metrics exist)*
+- Can we deploy and evolve the platform without disrupting users? → which
+  declarations took effect in production scopes, under whose approval, and
+  which were followed by a commitment breach in the next window? *(sibling
+  + control-plane — the first cross-module question; needs the breach query
+  and a change-failure metric)*
+
+### Multi-region resiliency
+
+- Can we survive losing a region? → single-region capabilities *(now —
+  CQ-11)*; hard dependencies offered in fewer regions than their dependents
+  *(now; partly enforced by OfferingSupplyClosureShape)*; recovery-time
+  commitments per region *(sibling)*
+- Are we truly running across regions or keeping standby infrastructure? →
+  data planes per region, in what operational role? *(terms — data planes
+  have no operational state; one closed scheme, P7)*
+- How much state or data is at risk if a region fails right now? → which
+  tenants' data planes exist in a single region *(now)*; recovery-point
+  commitments per region *(sibling)*
+- Can we safely take a region out of service for maintenance? → which
+  tenants and applications would lose their only data plane or route if the
+  region's scope were drained, under which declaration and approval? *(now
+  — CQ-8 by region facet; draining as a state needs the same term as above)*
+- After losing a region, how quickly do we regain operational safety
+  margin? → commitment on time to restore redundancy *(sibling; new metric
+  by decision. Capacity headroom itself is not a graph fact)*
+- Will regulated traffic remain compliant during failover? → which tenants
+  hold region-access grants for one region only, so failover elsewhere
+  refuses them rather than serving them out of jurisdiction? *(now — CQ-10)*
+- Can the platform still be managed when a region is lost? → which data
+  planes become unmanageable if a control plane is lost *(now — sole-writer
+  edges)*; where does each control plane run *(terms — control planes are
+  logical, D01/D02, with no placement; same decision as operational role)*.
+  Behaviour during the loss is implied: intent persists so state persists
+  (P18); management stalls, serving continues, declarations queue.
+
+### Ingress and traffic management
+
+- Can we safely roll out changes using canaries, blue-green and weighted
+  routing? → which routes forward to more than one upstream, with what
+  split, changed under which declaration and approval; which tenants sit
+  behind a canary now? *(terms — a weighted forwarding edge and a
+  traffic-split change as a declaration subclass; governance then comes
+  free via D43. "Who is behind it" is answerable now. Rollback-on-failure is
+  the change-failure commitment, sibling)*
+- What happens when demand exceeds capacity? → which tenants share a data
+  plane *(now — the noisy-neighbour blast radius via the isolation model)*;
+  throughput commitments per offering *(sibling; new metric)*; is there any
+  path under load where a request reaches an application without admission
+  *(P12/P15 asserted — the model states no bypass and cannot observe it)*.
+  Capacity is not a graph fact. Load-shedding order would need a priority
+  term that only this question asks for — deferred.
+
+### Performance
+
+- How much delay does the platform itself add to every request? → which
+  request-path offerings carry a latency commitment at which percentile
+  *(sibling, after the request-path-as-offerings decision)*; which checks
+  sit on the path for a given route *(now)*
+- How much latency should consumers reserve for the platform? → the same
+  commitment read from the consumer's side: the target is the budget
+  *(sibling — the one contract-shaped question that needs no catalogue)*
+- How long does a user take to sign in? → per journey definition and
+  channel, execution duration from first to last event *(now — executions
+  and events are in-graph under P17, with timestamps)*; a duration
+  commitment *(sibling)*
+- How long does additional authentication take when required? → the same
+  over elevation executions *(now — D28)*; and which permits required an
+  elevation at all *(now)*
+- How quickly can the platform decide whether a request is allowed? →
+  decision-latency commitment on the decision point *(sibling only —
+  requests are not reified, D31, so duration is not derivable; the design
+  answer is structural: authority is projected to ingress, P4)*
+- What is the 99th-percentile latency now? / Is the platform up right now?
+  *(invalid — dashboard questions)*
 
