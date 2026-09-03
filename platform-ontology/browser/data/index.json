@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "ecce83319169",
+ "sourceDigest": "2d3deba988e0",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15365,8 +15365,8 @@
        ],
        [
         "P12 One path, no bypass",
-        "Every governed target is reached through exactly one governed path; anything arriving outside it is a violation.",
-        "A grant with no derivation is forbidden; a mutation with no declaration is an orphan write; every route has exactly one enforcement point.",
+        "There is one way to reach anything the platform governs, and it is the governed way. Reaching it any other way is a violation, not an exception.",
+        "A request reaches an application only through a route with an enforcement point in front of it. A change reaches a data plane only through a declaration. A grant exists only because governance produced it. Anything arriving without that trail is rejected.",
         "Alternate paths are where controls are quietly bypassed."
        ],
        [
