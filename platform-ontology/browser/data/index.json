@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "51a1c38ee596",
+ "sourceDigest": "5b197f284111",
  "stats": {
   "modules": 6,
   "classes": 73,
@@ -15341,7 +15341,7 @@
       "rows": [
        [
         "P1 The boundary, not the resource",
-        "Platform authorization decides entry to an application and deployment boundary; what happens inside is the application's.",
+        "The platform decides one thing: whether this request may enter this application at this deployment \u2014 the tenant, environment, region and channel. What the request may then do inside \u2014 which records, which operations \u2014 is decided by the application, never by the platform.",
         "Ingress asks 'may this tenant's subject enter digital-bank at this endpoint in prod-US', never 'may they view account 42'.",
         "Keeps the platform ignorant of application internals, so an application can be replaced by an opaque identifier and every platform check still works."
        ],
