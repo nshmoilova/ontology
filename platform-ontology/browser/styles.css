@@ -396,3 +396,6 @@ footer.pagefoot {
 
 .todo { margin-top: .5rem; padding-top: .45rem; border-top: 1px dashed var(--rule); font-size: .92em; }
 .todo .pill { margin-right: .3rem; }
+
+.anchored { outline: 2px solid var(--m-control-plane); outline-offset: 4px; transition: outline-color 1.5s ease 1s; scroll-margin-top: 1rem; }
+[id^="P"], [id^="D"] { scroll-margin-top: 1rem; }

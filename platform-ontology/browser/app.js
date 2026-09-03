@@ -768,7 +768,8 @@
 
   /* ---------- router ---------- */
   function route() {
-    const raw = location.hash.replace(/^#/, "") || "/";
+    const full = location.hash.replace(/^#/, "") || "/";
+    const [raw, anchor] = full.split("#");        // "#/principles#P19" → route "/principles", anchor "P19"
     const [path, qs] = raw.split("?");
     const params = new URLSearchParams(qs || "");
     const q = params.get("q") || "";
@@ -787,8 +788,15 @@
     else if (parts[0] === "questions") html = viewQuestions(q);
     else html = `<div class="card err"><b>Not found</b><p>Nothing at <code>${esc(path)}</code>. <a href="#/">Start over</a>.</p></div>`;
     main.innerHTML = html;
-    main.scrollTop = 0;
-    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+    const target = anchor ? document.getElementById(decodeURIComponent(anchor)) : null;
+    if (target) {
+      target.scrollIntoView({ block: "start" });
+      target.classList.add("anchored");
+      setTimeout(() => target.classList.remove("anchored"), 2500);
+    } else {
+      main.scrollTop = 0;
+      window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+    }
     document.title = (parts.length ? decodeURIComponent(parts[1] || parts[0]) + " · " : "") + "Platform Ontology Browser";
     markActive();
   }
