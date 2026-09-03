@@ -551,7 +551,7 @@
         <section class="step">
           <div class="stepnum" style="background:var(--m-authz);border-color:var(--m-authz)">?</div>
           <div class="stepbody">
-            <h2 class="stephead">Open questions for the session</h2>
+            <h2 class="stephead">Open questions</h2>
             <p>Deliberately unsettled — these are the arguments worth having, not gaps to apologise for.</p>
             <ol class="openq">${e.openQuestions.map((q) => `<li>${esc(q)}</li>`).join("")}</ol>
           </div>
