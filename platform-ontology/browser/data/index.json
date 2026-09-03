@@ -1,21 +1,21 @@
 {
  "generated": true,
- "sourceDigest": "0afc6ba5bfc7",
+ "sourceDigest": "0afba3216867",
  "stats": {
   "modules": 7,
   "classes": 79,
   "objectProperties": 99,
   "datatypeProperties": 37,
-  "shapes": 80,
-  "violations": 129,
+  "shapes": 81,
+  "violations": 131,
   "warnings": 7,
   "vocabularies": 14,
-  "relationships": 60,
-  "decisions": 55,
+  "relationships": 62,
+  "decisions": 56,
   "principles": 18,
   "standards": 13,
   "realisedBacklog": 38,
-  "provisionalPrinciples": 11,
+  "provisionalPrinciples": 10,
   "explainers": 3,
   "formalCQs": 11,
   "backlogCQs": 120
@@ -168,7 +168,8 @@
    "vocabulary": [],
    "decisions": [
     "D09",
-    "D17"
+    "D17",
+    "D60"
    ],
    "principles": [
     "P1"
@@ -250,13 +251,36 @@
    ],
    "constraints": [
     {
+     "kind": "property",
+     "path": "cp:dependsOn",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#dependsOn",
+     "minCount": null,
+     "maxCount": null,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A capability depends only on capabilities \u2014 the platform depends on no application."
+    },
+    {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Capability participates in a circular capability dependency \u2014 hard dependencies must form a DAG.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#dependsOn>+ $this .\n            }"
     }
    ],
-   "outgoing": [],
+   "outgoing": [
+    {
+     "from": "core:Capability",
+     "property": "cp:dependsOn",
+     "to": "core:Capability",
+     "cardinality": "",
+     "severity": "Violation"
+    }
+   ],
    "incoming": [
     {
      "from": "cp:CapabilityControlPlane",
@@ -273,17 +297,32 @@
      "severity": "Violation"
     },
     {
+     "from": "cp:CapabilityRequirement",
+     "property": "cp:requiredCapability",
+     "to": "core:Capability",
+     "cardinality": "",
+     "severity": "Violation"
+    },
+    {
      "from": "cp:Subscription",
      "property": "cp:subscribedCapability",
      "to": "core:Capability",
      "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "core:Capability",
+     "property": "cp:dependsOn",
+     "to": "core:Capability",
+     "cardinality": "",
      "severity": "Violation"
     }
    ],
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D09"
+    "D09",
+    "D60"
    ],
    "principles": []
   },
@@ -6514,9 +6553,35 @@
    "subPropertyOf": [],
    "disjointWith": [],
    "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
+   "shapes": [
+    "RequirementTargetShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:requiredCapability",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#requiredCapability",
+     "minCount": null,
+     "maxCount": null,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A requirement names a capability \u2014 an application requires platform capabilities, never another application."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cp:CapabilityRequirement",
+     "property": "cp:requiredCapability",
+     "to": "core:Capability",
+     "cardinality": "",
+     "severity": "Violation"
+    }
+   ],
    "incoming": [],
    "usedBy": [],
    "vocabulary": [],
@@ -8342,10 +8407,19 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "core:Capability",
+     "property": "cp:dependsOn",
+     "to": "core:Capability",
+     "cardinality": "",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": [
-    "D14"
+    "D14",
+    "D60"
    ],
    "principles": [
     "P18"
@@ -8966,10 +9040,19 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [],
-   "usedBy": [],
+   "usedBy": [
+    {
+     "from": "cp:CapabilityRequirement",
+     "property": "cp:requiredCapability",
+     "to": "core:Capability",
+     "cardinality": "",
+     "severity": "Violation"
+    }
+   ],
    "vocabulary": [],
    "decisions": [
-    "D18"
+    "D18",
+    "D60"
    ],
    "principles": [
     "P18"
@@ -12438,6 +12521,35 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RequirementTargetShape",
+   "name": "RequirementTargetShape",
+   "targetClass": "cp:CapabilityRequirement",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityRequirement",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:requiredCapability",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#requiredCapability",
+     "minCount": null,
+     "maxCount": null,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A requirement names a capability \u2014 an application requires platform capabilities, never another application."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P1"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RouteBindingChangeShape",
    "name": "RouteBindingChangeShape",
    "targetClass": "cp:RouteBindingChange",
@@ -12728,14 +12840,32 @@
    "module": "core",
    "constraints": [
     {
+     "kind": "property",
+     "path": "cp:dependsOn",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#dependsOn",
+     "minCount": null,
+     "maxCount": null,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A capability depends only on capabilities \u2014 the platform depends on no application."
+    },
+    {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Capability participates in a circular capability dependency \u2014 hard dependencies must form a DAG.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#dependsOn>+ $this .\n            }"
     }
    ],
-   "violations": 1,
-   "warnings": 0
+   "violations": 2,
+   "warnings": 0,
+   "principles": [
+    "P1"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/core#ApplicationShape",
@@ -13769,6 +13899,13 @@
    "severity": "Violation"
   },
   {
+   "from": "core:Capability",
+   "property": "cp:dependsOn",
+   "to": "core:Capability",
+   "cardinality": "",
+   "severity": "Violation"
+  },
+  {
    "from": "core:PlatformEvent",
    "property": "core:performedBy",
    "to": "core:Principal",
@@ -13787,6 +13924,13 @@
    "property": "cp:governsCapability",
    "to": "core:Capability",
    "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:CapabilityRequirement",
+   "property": "cp:requiredCapability",
+   "to": "core:Capability",
+   "cardinality": "",
    "severity": "Violation"
   },
   {
@@ -15314,6 +15458,37 @@
     "cp:declarationScope",
     "cp:hasApproval"
    ]
+  },
+  {
+   "id": "D60",
+   "title": "The platform depends on no application \u2014 the dependency edges are typed",
+   "area": "Foundations",
+   "invariant": true,
+   "motivatedBy": [
+    "P1"
+   ],
+   "principles": [
+    "P1",
+    "P10",
+    "P18"
+   ],
+   "reasoning": "Applications depend on platform capabilities; the platform depends on no application. The rule was true of every instance and enforced by nothing: cp:dependsOn and cp:requiredCapability carried no class constraint, so a capability could declare a hard dependency on an application, or a requirement could name one, without a violation. Both edges now require a capability as their target, with negative instances so the invariants fire. P1's consequences state the direction explicitly, including the corollary that a platform commitment is never defined as an aggregate of application health.",
+   "rejected": [
+    "A separate principle for dependency direction: it is P1's test read from the architecture side and would be a second home for the same rule.",
+    "Leaving the edges untyped because no data misuses them: a constraint that has never rejected anything is a hope, not a control (P10)."
+   ],
+   "terms": [
+    "dependsOn",
+    "requiredCapability",
+    "Capability",
+    "Application"
+   ],
+   "termCuries": [
+    "core:Application",
+    "core:Capability",
+    "cp:dependsOn",
+    "cp:requiredCapability"
+   ]
   }
  ],
  "principles": [
@@ -15323,11 +15498,13 @@
    "level": "platform",
    "statement": "Coarse-grained platform authorization protects the right to enter an application and deployment boundary; resource authorization protects the right to perform an operation on an application resource. The platform never learns what is inside an application.",
    "test": "Could the platform still evaluate this check if every application were replaced by an opaque identifier with no documentation? If not, it is not a platform entitlement.",
-   "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary.",
+   "consequences": "One enforcement stack serves many independently developed applications only because the vocabulary ingress evaluates stays small, closed and platform-owned. Application verbs cannot enter the action scheme; application entitlements cannot enter the dimension scheme; a business object is never resolved above the boundary. Dependency runs one way: applications depend on platform capabilities, and the platform is complete with zero applications \u2014 no capability, plane, decision or commitment depends on anything an application is or does. The platform references applications only as governed things it admits and serves (ownership, enablement, portals, the route that serves them). A platform commitment is therefore never defined as an aggregate of application health.",
    "fitness": "generative (6 decisions, 2 invariants) \u00b7 testable (the opacity question) \u00b7 enforced",
    "enforcedBy": [
     "ActionVocabularyShape",
-    "EntitlementGrantShape"
+    "EntitlementGrantShape",
+    "AcyclicDependencyShape",
+    "RequirementTargetShape"
    ],
    "appliedIn": [
     "D17",
@@ -15335,7 +15512,8 @@
     "D21",
     "D25",
     "D31",
-    "D48"
+    "D48",
+    "D60"
    ],
    "terms": [
     "Application",
@@ -15354,8 +15532,10 @@
     "core:Application",
     "ingress:servesApplication"
    ],
-   "motivatedBy": [],
-   "status": "provisional"
+   "motivatedBy": [
+    "D60"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P2",
@@ -16349,6 +16529,11 @@
    "candidate": "P11 \u2014 Every kind of statement has exactly one home",
    "verdict": "demoted \u2014 a stated convention with no decision applying it",
    "why": "Held as P11 from the layer's creation, it never generated a decision (appliedIn stayed empty) and had no enforcement; by the layer's own criteria it is a convention, not a principle. Its rule is unchanged and lives where it always did \u2014 the governance document's table of homes \u2014 and the fitness criteria still apply it at promotion time. The id is retired and never reused."
+  },
+  {
+   "candidate": "Dependency is unidirectional: applications depend on the platform, never the reverse",
+   "verdict": "not promoted \u2014 a consequence of P1, now stated on it; the two untyped edges that could have broken it are closed (D60)",
+   "why": "Not generative on its own: everything it would claim is attributed to P1 (applications opaque to the platform, D17, D31), P18 (enablement follows from offerings, D19) and D14 (hard dependencies are capability to capability). Its residue \u2014 the platform is complete with zero applications \u2014 is P1's test read from the architecture side: could every application be replaced by an opaque identifier? Evaluating it found the rule enforced by nothing: the hard-dependency edge and the requirement edge were untyped, so a capability could have depended on an application without any shape firing. D60 types both; P1's consequences now state the direction and its corollary for commitments \u2014 a platform availability commitment is never an aggregate of application health."
   }
  ],
  "explainers": [
