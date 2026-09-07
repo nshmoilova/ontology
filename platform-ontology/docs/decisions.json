@@ -1108,6 +1108,41 @@
         "holdsDataCategory",
         "DataPlane"
       ]
+    },
+    {
+      "id": "D64",
+      "title": "Jurisdiction is not region: residency per data category, sovereignty per operator, three crossings",
+      "area": "Foundations",
+      "invariant": true,
+      "principles": [
+        "P16",
+        "P15",
+        "P18",
+        "P7",
+        "P1",
+        "P9",
+        "P14"
+      ],
+      "reasoning": "Region is where a data plane is deployed; jurisdiction is whose law applies; the two do not coincide and jurisdictions nest. Residency belongs to data, not to the tenant: a requirement per tenant and data category names where the data must be and may additionally be. Sovereignty is control: the jurisdiction of the legal entity that operates a plane. A crossing therefore has three kinds, each an invariant with a negative instance: storage (a plane in a jurisdiction the residency neither requires nor permits), control (a plane operated from one), access (an admission resolved from one) — and each is permitted only by a transfer permission declared with a basis. Residency requirements and transfer permissions are declarations, so they carry scope, approval and supersession (P18). Region becomes a closed scheme and the string facet is deprecated with a replacement, paying P16's region debt; environment remains. The legal entity and operated-by relation are the term the agent-channel questions also waited for (D61). Known limits: the access rule reads the tenant's residency for any category, since admissions do not yet carry the categories they touch; the platform's own evidence becomes judgeable only when its own data planes are modelled.",
+      "rejected": [
+        "One jurisdiction per region: wrong for the examples that matter — a region in California is under California and the United States.",
+        "Residency on the tenant as a whole: forces the strictest rule onto telemetry that may go anywhere.",
+        "Judging sovereignty by region: a plane in Frankfurt operated by an entity under another jurisdiction's compulsion laws is exactly the exposure the region cannot see.",
+        "Warnings instead of violations for crossings: a crossing without a basis is what regulators fine; P15 says a warning that lets it through is the wrong default."
+      ],
+      "terms": [
+        "Jurisdiction",
+        "Region",
+        "LegalEntity",
+        "ResidencyRequirement",
+        "TransferPermission",
+        "TransferBasis",
+        "hasRegion",
+        "inJurisdiction",
+        "underJurisdiction",
+        "operatedBy",
+        "resolvedRegion"
+      ]
     }
   ]
 }

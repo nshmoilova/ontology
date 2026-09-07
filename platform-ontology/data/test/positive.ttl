@@ -216,6 +216,7 @@ ex:rule-admission a authz:PolicyRule ;
     authz:effect "permit" .
 
 ex:admission-6001 a authz:IngressAdmissionDecision ;
+    authz:resolvedRegion core:region-us-west-2 ;
     core:occurredAtTime "2026-08-31T13:06:05Z"^^xsd:dateTime ;
     authz:requestingPrincipal ex:alice ;
     authz:withinSession ex:session-9001 ;
@@ -274,6 +275,7 @@ ex:scope-prod a cp:AdministrativeScope ;
     cp:subScopeOf ex:scope-root ;
     cp:inEnvironment "prod" ;
     cp:inRegion "US" ;
+    cp:hasRegion core:region-us-west-2 ;
     cp:requiresHumanApproval true ;
     cp:scopeIncludes ex:t123-db-plane .
 
@@ -382,6 +384,7 @@ ex:db-control-plane a cp:CapabilityControlPlane ;
     cp:actuates ex:t123-db-plane .
 
 ex:t123-db-plane a cp:DataPlane ;
+    core:operatedBy ex:examplebank ;
     cp:holdsDataCategory core:data-customer-personal , core:data-tenant-workload ;
     core:governedBy ex:policy-ledger-read ;
     core:displayName "Tenant T123 database data plane" ;
@@ -486,4 +489,32 @@ ex:approval-contract-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-15T10:00:00Z"^^xsd:dateTime .
 ex:req-digital-bank-db ctr:dependsOnContractVersion ex:contract-db-v1 .
+
+### Jurisdiction (D64): the platform's operating entity, T123's residency, and a permitted transfer
+ex:examplebank a core:LegalEntity ;
+    core:displayName "Example Bank AG (platform operator)" ;
+    core:underJurisdiction core:jurisdiction-us .
+ex:residency-t123-personal a cp:ResidencyRequirement ;
+    core:displayName "T123 customer personal data stays in the United States" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-residency-1 ;
+    cp:forTenant ex:tenant-t123 ;
+    cp:forDataCategory core:data-customer-personal ;
+    cp:requiredIn core:jurisdiction-us .
+ex:approval-residency-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-20T10:00:00Z"^^xsd:dateTime .
+ex:transfer-t123-eu a cp:TransferPermission ;
+    core:displayName "T123 customer personal data may cross into the EU under contractual clauses"@en ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-transfer-1 ;
+    cp:forTenant ex:tenant-t123 ;
+    cp:forDataCategory core:data-customer-personal ;
+    cp:toJurisdiction core:jurisdiction-eu ;
+    cp:transferBasis cp:basis-contractual-clauses .
+ex:approval-transfer-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-08-21T10:00:00Z"^^xsd:dateTime .
 

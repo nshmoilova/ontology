@@ -10,10 +10,10 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.6.0> ;
-    owl:versionInfo "0.6.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.7.0> ;
+    owl:versionInfo "0.7.0" ;
     dct:title "Platform Core Ontology"@en ;
-    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme — the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63)."@en ;
+    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme — the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63). Since 0.7.0: jurisdictions (nested), deployment regions mapped to jurisdictions, and legal entities under a jurisdiction that operate workloads and data planes — the three crossings of D64."@en ;
     dct:created "2026-08-31"^^xsd:date ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> .
 
@@ -249,4 +249,59 @@ core:data-observations a core:DataCategory ; skos:inScheme core:DataCategorySche
 core:data-tenant-workload a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
     skos:prefLabel "Tenant workload data"@en ; skos:notation "tenant-workload" ;
     skos:definition "The contents of data planes serving tenants — hosted by the platform without being understood by it. Residency and sovereignty apply by category alone."@en .
+
+#################################################################
+# Jurisdiction, region, legal entity (D64)
+#################################################################
+
+core:Jurisdiction a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Jurisdiction"@en ;
+    skos:definition "A legal or regulatory authority that governs data or processing. Jurisdictions nest: a narrower one sits inside a broader one (skos:broader)."@en ;
+    vs:term_status "draft" .
+
+core:Region a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Region"@en ;
+    skos:definition "Where a data plane or application is physically or logically deployed, at deployment-region granularity. A region lies in one or more jurisdictions."@en ;
+    vs:term_status "draft" .
+
+core:LegalEntity a owl:Class ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Legal entity"@en ;
+    skos:definition "A legal person under a jurisdiction's law that operates workloads or data planes. Sovereignty follows the operator's jurisdiction, not the region."@en ;
+    vs:term_status "draft" .
+
+core:inJurisdiction a owl:ObjectProperty ;
+    skos:prefLabel "in jurisdiction"@en ;
+    skos:definition "Jurisdiction a region lies in — one or more."@en ;
+    vs:term_status "draft" .
+
+core:underJurisdiction a owl:ObjectProperty ;
+    skos:prefLabel "under jurisdiction"@en ;
+    skos:definition "Jurisdiction whose law a legal entity is under."@en ;
+    vs:term_status "draft" .
+
+core:operatedBy a owl:ObjectProperty ;
+    skos:prefLabel "operated by"@en ;
+    skos:definition "Legal entity that operates a data plane or a workload principal — the accountability for operation, distinct from the authority the thing holds (D61)."@en ;
+    vs:term_status "draft" .
+
+core:JurisdictionScheme a skos:ConceptScheme ; skos:prefLabel "Jurisdictions"@en ;
+    skos:definition "Closed scheme of jurisdictions the platform reasons about. Extend by decision."@en .
+core:jurisdiction-us a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:prefLabel "United States"@en ; skos:notation "US" .
+core:jurisdiction-us-ca a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:broader core:jurisdiction-us ; skos:prefLabel "California"@en ; skos:notation "US-CA" .
+core:jurisdiction-eu a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:prefLabel "European Union"@en ; skos:notation "EU" .
+core:jurisdiction-de a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:broader core:jurisdiction-eu ; skos:prefLabel "Germany"@en ; skos:notation "DE" .
+core:jurisdiction-ie a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:broader core:jurisdiction-eu ; skos:prefLabel "Ireland"@en ; skos:notation "IE" .
+core:jurisdiction-ch a core:Jurisdiction ; skos:inScheme core:JurisdictionScheme ; skos:prefLabel "Switzerland"@en ; skos:notation "CH" .
+
+core:RegionScheme a skos:ConceptScheme ; skos:prefLabel "Deployment regions"@en ;
+    skos:definition "Closed scheme of deployment regions. Replaces the free-string region facet (P16)."@en .
+core:region-us-west-2 a core:Region ; skos:inScheme core:RegionScheme ; core:inJurisdiction core:jurisdiction-us ; skos:prefLabel "us-west-2"@en ; skos:notation "us-west-2" .
+core:region-us-west-1 a core:Region ; skos:inScheme core:RegionScheme ; core:inJurisdiction core:jurisdiction-us , core:jurisdiction-us-ca ; skos:prefLabel "us-west-1"@en ; skos:notation "us-west-1" .
+core:region-eu-central-1 a core:Region ; skos:inScheme core:RegionScheme ; core:inJurisdiction core:jurisdiction-eu , core:jurisdiction-de ; skos:prefLabel "eu-central-1"@en ; skos:notation "eu-central-1" .
+core:region-eu-west-1 a core:Region ; skos:inScheme core:RegionScheme ; core:inJurisdiction core:jurisdiction-eu , core:jurisdiction-ie ; skos:prefLabel "eu-west-1"@en ; skos:notation "eu-west-1" .
 

@@ -1,0 +1,16 @@
+# CQ-13 — Which jurisdictions must each tenant's data of each category stay in,
+# which may it additionally sit in, and which transfers are permitted under
+# what basis? The declared residency picture the three crossing invariants
+# are judged against.
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX core: <https://w3id.org/examplebank/platform/core#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?tenant ?category ?requiredIn ?permittedIn ?transferTo ?basis WHERE {
+  ?req a cp:ResidencyRequirement ; cp:forTenant ?tenant ; cp:forDataCategory ?cat ; cp:requiredIn ?rq .
+  ?cat skos:notation ?category . ?rq skos:notation ?requiredIn .
+  OPTIONAL { ?req cp:permittedIn ?pm . ?pm skos:notation ?permittedIn }
+  OPTIONAL { ?tp a cp:TransferPermission ; cp:forTenant ?tenant ; cp:forDataCategory ?cat ; cp:toJurisdiction ?tj ; cp:transferBasis ?b .
+             ?tj skos:notation ?transferTo . ?b skos:prefLabel ?basis }
+}
+ORDER BY ?tenant ?category

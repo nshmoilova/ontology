@@ -19,6 +19,7 @@ scope creep.
 | CQ-10 | Which tenants hold region-access grants for exactly one region, and in which other regions are their capabilities offered — who is refused, not served out of jurisdiction, during failover? | `cq10-region-bound-tenants.rq` | authz, control-plane |
 | CQ-11 | Which capabilities are offered in exactly one region, so no failover target exists? | `cq11-single-region-offerings.rq` | control-plane |
 | CQ-12 | Which contract versions does each application depend on, at which deployment scope? | `cq12-application-contract-dependencies.rq` | contract, control-plane |
+| CQ-13 | Which jurisdictions must each tenant's data of each category stay in, which may it additionally sit in, and which transfers are permitted under what basis? | `cq13-residency-and-transfers.rq` | control-plane, core |
 
 ## Backlog and realised invariants
 
@@ -392,11 +393,11 @@ candidate principle — data does not cross a jurisdiction without a recorded
 basis — is logged as terms-first. These questions are the trigger.
 
 - Which tenants' data planes sit outside the tenant's home jurisdiction with
-  no recorded transfer basis? *(expected empty)*
+  no recorded transfer basis? *(expected empty)* [realised: StorageCrossingShape, ControlCrossingShape]
 - Which failover targets would move a tenant's data across a jurisdiction?
   *(the jurisdiction-aware form of CQ-10)*
 - Which admissions reached a tenant's data from a jurisdiction other than
-  its home, and under what basis? *(access is a crossing)*
+  its home, and under what basis? *(access is a crossing)* [realised: AccessCrossingShape]
 - Where is the platform's own evidence about a tenant's principals stored —
   authentication events, decisions, subject identifiers, observations? *(the
   graph's contents are personal data too)*
@@ -411,10 +412,13 @@ the agent-channel questions wait for. A crossing therefore has three kinds:
 by storage (checked at provisioning), by access (checked at admission), by
 control (checked against the operator's jurisdiction). Done so far: the
 data-category scheme (D63) — seven kinds, annotated on stored classes and
-declared on data planes. Still to build: the region scheme (paying P16's
-debt), the jurisdiction scheme with nesting, the residency requirement and
-transfer permission as declarations, the transfer-basis scheme, the party
-with its jurisdiction. Residency is a boundary, not a commitment:
+declared on data planes. Built (D64): the region scheme (P16's region debt paid; the string facet is
+deprecated), the jurisdiction scheme with nesting, residency requirements and
+transfer permissions as declarations, the transfer-basis scheme, the legal
+entity with its jurisdiction and the operated-by relation. CQ-13 shows the
+declared picture; three crossing invariants fire. The access rule is coarse —
+any residency requirement of the tenant, whatever the category — until
+admissions carry the categories they touch. Residency is a boundary, not a commitment:
 control-plane and authz, not the commitment module.
 
 - Which stored classes and which data planes carry no data category?

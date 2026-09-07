@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.8.0> ;
-    owl:versionInfo "0.8.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.9.0> ;
+    owl:versionInfo "0.9.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     owl:imports <https://w3id.org/examplebank/platform/session> ;
@@ -329,6 +329,8 @@ cp:inEnvironment a owl:DatatypeProperty ;
     vs:term_status "draft" .
 
 cp:inRegion a owl:DatatypeProperty ;
+    owl:deprecated true ;
+    dct:isReplacedBy cp:hasRegion ;
     skos:definition "Region facet of a scope node (e.g., 'US', 'EU'), for cross-cutting queries. To be promoted to a SKOS scheme before stable."@en ;
     vs:term_status "draft" .
 
@@ -402,3 +404,46 @@ cp:memberstate-suspended a cp:MembershipState ;
 cp:memberstate-terminated a cp:MembershipState ;
     skos:inScheme cp:MembershipStateScheme ;
     skos:prefLabel "Terminated"@en .
+
+#################################################################
+# Residency and transfer (D64)
+#################################################################
+
+cp:hasRegion a owl:ObjectProperty ;
+    skos:prefLabel "has region"@en ;
+    skos:definition "Deployment region of a scope node, from the closed region scheme; inherited down the scope tree. Replaces the string facet cp:inRegion."@en ;
+    vs:term_status "draft" .
+
+cp:ResidencyRequirement a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Residency requirement"@en ;
+    skos:definition "A declaration that a tenant's data of one category must be stored in certain jurisdictions and may be stored in certain others."@en ;
+    vs:term_status "draft" .
+
+cp:TransferPermission a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Transfer permission"@en ;
+    skos:definition "A declaration that a tenant's data of one category may cross into a jurisdiction, under a recorded transfer basis."@en ;
+    vs:term_status "draft" .
+
+cp:TransferBasis a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Transfer basis"@en ;
+    skos:definition "The legal basis on which data may cross into a jurisdiction, from the closed scheme."@en ;
+    vs:term_status "draft" .
+
+cp:forTenant a owl:ObjectProperty ; skos:prefLabel "for tenant"@en ; skos:definition "Tenant a residency requirement or transfer permission is about."@en ; vs:term_status "draft" .
+cp:forDataCategory a owl:ObjectProperty ; skos:prefLabel "for data category"@en ; skos:definition "Data category a residency requirement or transfer permission is about."@en ; vs:term_status "draft" .
+cp:requiredIn a owl:ObjectProperty ; skos:prefLabel "required in"@en ; skos:definition "Jurisdiction the data must be stored in."@en ; vs:term_status "draft" .
+cp:permittedIn a owl:ObjectProperty ; skos:prefLabel "permitted in"@en ; skos:definition "Jurisdiction the data may additionally be stored in without a transfer permission."@en ; vs:term_status "draft" .
+cp:toJurisdiction a owl:ObjectProperty ; skos:prefLabel "to jurisdiction"@en ; skos:definition "Jurisdiction a transfer permission allows the data to cross into."@en ; vs:term_status "draft" .
+cp:transferBasis a owl:ObjectProperty ; skos:prefLabel "transfer basis"@en ; skos:definition "Legal basis of a transfer permission."@en ; vs:term_status "draft" .
+
+cp:TransferBasisScheme a skos:ConceptScheme ; skos:prefLabel "Transfer bases"@en .
+cp:basis-adequacy a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "adequacy decision"@en .
+cp:basis-contractual-clauses a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "contractual clauses"@en .
+cp:basis-consent a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "consent"@en .
+cp:basis-legal-obligation a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "legal obligation"@en .
+

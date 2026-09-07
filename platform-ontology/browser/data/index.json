@@ -1,23 +1,23 @@
 {
  "generated": true,
- "sourceDigest": "a98914913ee2",
+ "sourceDigest": "8f1f00fab62d",
  "stats": {
   "modules": 8,
-  "classes": 85,
-  "objectProperties": 109,
+  "classes": 91,
+  "objectProperties": 120,
   "datatypeProperties": 40,
-  "shapes": 89,
-  "violations": 142,
+  "shapes": 94,
+  "violations": 152,
   "warnings": 9,
-  "vocabularies": 17,
-  "relationships": 67,
-  "decisions": 59,
+  "vocabularies": 20,
+  "relationships": 74,
+  "decisions": 60,
   "principles": 19,
   "standards": 15,
-  "realisedBacklog": 42,
+  "realisedBacklog": 44,
   "provisionalPrinciples": 9,
   "explainers": 3,
-  "formalCQs": 12,
+  "formalCQs": 13,
   "backlogCQs": 137
  },
  "modules": [
@@ -26,8 +26,8 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.6.0",
-   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme \u2014 the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63).",
+   "version": "0.7.0",
+   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme \u2014 the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63). Since 0.7.0: jurisdictions (nested), deployment regions mapped to jurisdictions, and legal entities under a jurisdiction that operate workloads and data planes \u2014 the three crossings of D64.",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
   },
@@ -72,7 +72,7 @@
    "iri": "https://w3id.org/examplebank/platform/authz",
    "prefix": "authz",
    "title": "Authorization Module",
-   "version": "0.3.1",
+   "version": "0.4.0",
    "description": "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation \u2014 distinct from an attribute assertion, which is an observation.",
    "blurb": "ABAC-first authorization plus the platform-owned coarse-grained layer: dimensions, grants, actions and admission decisions.",
    "imports": [
@@ -84,7 +84,7 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.8.0",
+   "version": "0.9.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
@@ -378,6 +378,20 @@
      "to": "core:DataCategory",
      "cardinality": "1..*",
      "severity": "Warning"
+    },
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
     }
    ],
    "usedBy": [],
@@ -592,6 +606,152 @@
    "principles": [
     "P14"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#Jurisdiction",
+   "name": "Jurisdiction",
+   "curie": "core:Jurisdiction",
+   "kind": "class",
+   "module": "core",
+   "label": "Jurisdiction",
+   "definition": "A legal or regulatory authority that governs data or processing. Jurisdictions nest: a narrower one sits inside a broader one (skos:broader).",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:requiredIn",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:toJurisdiction",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-us-ca",
+     "curie": "core:jurisdiction-us-ca",
+     "label": "California",
+     "notation": "US-CA",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-eu",
+     "curie": "core:jurisdiction-eu",
+     "label": "European Union",
+     "notation": "EU",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-de",
+     "curie": "core:jurisdiction-de",
+     "label": "Germany",
+     "notation": "DE",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-ie",
+     "curie": "core:jurisdiction-ie",
+     "label": "Ireland",
+     "notation": "IE",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-ch",
+     "curie": "core:jurisdiction-ch",
+     "label": "Switzerland",
+     "notation": "CH",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-us",
+     "curie": "core:jurisdiction-us",
+     "label": "United States",
+     "notation": "US",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    }
+   ],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#LegalEntity",
+   "name": "LegalEntity",
+   "curie": "core:LegalEntity",
+   "kind": "class",
+   "module": "core",
+   "label": "Legal entity",
+   "definition": "A legal person under a jurisdiction's law that operates workloads or data planes. Sovereignty follows the operator's jurisdiction, not the region.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/core#PlatformEvent",
@@ -979,6 +1139,85 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/core#Region",
+   "name": "Region",
+   "curie": "core:Region",
+   "kind": "class",
+   "module": "core",
+   "label": "Region",
+   "definition": "Where a data plane or application is physically or logically deployed, at deployment-region granularity. A region lies in one or more jurisdictions.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-eu-central-1",
+     "curie": "core:region-eu-central-1",
+     "label": "eu-central-1",
+     "notation": "eu-central-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-eu-west-1",
+     "curie": "core:region-eu-west-1",
+     "label": "eu-west-1",
+     "notation": "eu-west-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-us-west-1",
+     "curie": "core:region-us-west-1",
+     "label": "us-west-1",
+     "notation": "us-west-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-us-west-2",
+     "curie": "core:region-us-west-2",
+     "label": "us-west-2",
+     "notation": "us-west-2",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    }
+   ],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/core#Resource",
    "name": "Resource",
    "curie": "core:Resource",
@@ -1069,6 +1308,13 @@
      "severity": "Violation"
     },
     {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cp:Subscription",
      "property": "cp:subscriber",
      "to": "core:Tenant",
@@ -1078,6 +1324,13 @@
     {
      "from": "cp:TenantMembership",
      "property": "cp:memberOfTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forTenant",
      "to": "core:Tenant",
      "cardinality": "1..1",
      "severity": "Violation"
@@ -1428,6 +1681,62 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/core#inJurisdiction",
+   "name": "inJurisdiction",
+   "curie": "core:inJurisdiction",
+   "kind": "objectProperty",
+   "module": "core",
+   "label": "in jurisdiction",
+   "definition": "Jurisdiction a region lies in \u2014 one or more.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#operatedBy",
+   "name": "operatedBy",
+   "curie": "core:operatedBy",
+   "kind": "objectProperty",
+   "module": "core",
+   "label": "operated by",
+   "definition": "Legal entity that operates a data plane or a workload principal \u2014 the accountability for operation, distinct from the authority the thing holds (D61).",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/core#ownedBy",
    "name": "ownedBy",
    "curie": "core:ownedBy",
@@ -1545,6 +1854,34 @@
    "principles": [
     "P6"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#underJurisdiction",
+   "name": "underJurisdiction",
+   "curie": "core:underJurisdiction",
+   "kind": "objectProperty",
+   "module": "core",
+   "label": "under jurisdiction",
+   "definition": "Jurisdiction whose law a legal entity is under.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/authn#AssuranceLevel",
@@ -5479,7 +5816,8 @@
    "subClasses": [],
    "shapes": [
     "IngressAdmissionDecisionShape",
-    "AdmissionRequiresMembershipShape"
+    "AdmissionRequiresMembershipShape",
+    "AccessCrossingShape"
    ],
    "constraints": [
     {
@@ -5517,6 +5855,12 @@
      "severity": "Violation",
      "message": "Admission decision evaluated a tenant's grants for a principal holding no active membership in that tenant.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authz#requestingPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/authz#evaluatedGrant> ?g .\n                ?g <https://w3id.org/examplebank/platform/authz#grantedTo> ?t .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState>\n                       <https://w3id.org/examplebank/platform/control-plane#memberstate-active> .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Admission resolved in a region whose jurisdiction the tenant's residency neither requires nor permits, with no transfer permission \u2014 an access crossing without a basis.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authz#resolvedRegion> ?r ; <https://w3id.org/examplebank/platform/authz#evaluatedGrant> ?g .\n                ?g <https://w3id.org/examplebank/platform/authz#grantedTo> ?t .\n                ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
     }
    ],
    "outgoing": [
@@ -6502,6 +6846,34 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/authz#resolvedRegion",
+   "name": "resolvedRegion",
+   "curie": "authz:resolvedRegion",
+   "kind": "objectProperty",
+   "module": "authz",
+   "label": "resolved region",
+   "definition": "Deployment region the ingress deployment that received the request resolved (D24) \u2014 the evidence an access crossing is judged on.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/authz#viaChannel",
    "name": "viaChannel",
    "curie": "authz:viaChannel",
@@ -7069,7 +7441,9 @@
     "DataPlaneShape",
     "DataPlaneOfferedShape",
     "IsolationModelShape",
-    "DataPlaneDataCategoryShape"
+    "DataPlaneDataCategoryShape",
+    "StorageCrossingShape",
+    "ControlCrossingShape"
    ],
    "constraints": [
     {
@@ -7113,6 +7487,18 @@
      "maxInclusive": null,
      "severity": "Warning",
      "message": "Data plane declares no data category \u2014 residency and sovereignty cannot be judged for it; route to stewardship."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane holds a tenant's data in a jurisdiction its residency neither requires nor permits, with no transfer permission \u2014 a storage crossing without a basis.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c .\n                ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> $this . ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?anc . ?anc <https://w3id.org/examplebank/platform/control-plane#hasRegion> ?r . ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane holding a tenant's data is operated by a legal entity under a jurisdiction its residency neither requires nor permits, with no transfer permission \u2014 a control crossing without a basis (sovereignty).",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c ; <https://w3id.org/examplebank/platform/core#operatedBy> ?e .\n                ?e <https://w3id.org/examplebank/platform/core#underJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
     }
    ],
    "outgoing": [
@@ -7265,7 +7651,9 @@
     "cmt:Commitment",
     "cp:ApplicationEnablement",
     "cp:JourneyDefinitionChange",
+    "cp:ResidencyRequirement",
     "cp:RouteBindingChange",
+    "cp:TransferPermission",
     "ctr:ContractChange"
    ],
    "shapes": [
@@ -7701,6 +8089,106 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement",
+   "name": "ResidencyRequirement",
+   "curie": "cp:ResidencyRequirement",
+   "kind": "class",
+   "module": "control-plane",
+   "label": "Residency requirement",
+   "definition": "A declaration that a tenant's data of one category must be stored in certain jurisdictions and may be stored in certain others.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "ResidencyRequirementShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:forTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forTenant",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement is about exactly one tenant."
+    },
+    {
+     "kind": "property",
+     "path": "cp:forDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forDataCategory",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement is about exactly one data category."
+    },
+    {
+     "kind": "property",
+     "path": "cp:requiredIn",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#requiredIn",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Jurisdiction",
+     "classIri": "https://w3id.org/examplebank/platform/core#Jurisdiction",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement names at least one jurisdiction the data must be stored in."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:requiredIn",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#RouteBindingChange",
    "name": "RouteBindingChange",
    "curie": "cp:RouteBindingChange",
@@ -8101,6 +8589,215 @@
     "P18",
     "P19"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#TransferBasis",
+   "name": "TransferBasis",
+   "curie": "cp:TransferBasis",
+   "kind": "class",
+   "module": "control-plane",
+   "label": "Transfer basis",
+   "definition": "The legal basis on which data may cross into a jurisdiction, from the closed scheme.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:transferBasis",
+     "to": "cp:TransferBasis",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-adequacy",
+     "curie": "cp:basis-adequacy",
+     "label": "adequacy decision",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-consent",
+     "curie": "cp:basis-consent",
+     "label": "consent",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-contractual-clauses",
+     "curie": "cp:basis-contractual-clauses",
+     "label": "contractual clauses",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-legal-obligation",
+     "curie": "cp:basis-legal-obligation",
+     "label": "legal obligation",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    }
+   ],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#TransferPermission",
+   "name": "TransferPermission",
+   "curie": "cp:TransferPermission",
+   "kind": "class",
+   "module": "control-plane",
+   "label": "Transfer permission",
+   "definition": "A declaration that a tenant's data of one category may cross into a jurisdiction, under a recorded transfer basis.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "TransferPermissionShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:forTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forTenant",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission is about exactly one tenant."
+    },
+    {
+     "kind": "property",
+     "path": "cp:forDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forDataCategory",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission is about exactly one data category."
+    },
+    {
+     "kind": "property",
+     "path": "cp:toJurisdiction",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#toJurisdiction",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Jurisdiction",
+     "classIri": "https://w3id.org/examplebank/platform/core#Jurisdiction",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission names exactly one destination jurisdiction."
+    },
+    {
+     "kind": "property",
+     "path": "cp:transferBasis",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#transferBasis",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:TransferBasis",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#TransferBasis",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission records exactly one basis \u2014 a crossing without a basis is not permitted."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:toJurisdiction",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:transferBasis",
+     "to": "cp:TransferBasis",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#approvedAtTime",
@@ -8878,6 +9575,88 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#forDataCategory",
+   "name": "forDataCategory",
+   "curie": "cp:forDataCategory",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "for data category",
+   "definition": "Data category a residency requirement or transfer permission is about.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#forTenant",
+   "name": "forTenant",
+   "curie": "cp:forTenant",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "for tenant",
+   "definition": "Tenant a residency requirement or transfer permission is about.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:forTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:forTenant",
+     "to": "core:Tenant",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#governsCapability",
    "name": "governsCapability",
    "curie": "cp:governsCapability",
@@ -9010,6 +9789,34 @@
    "vocabulary": [],
    "decisions": [
     "D45"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#hasRegion",
+   "name": "hasRegion",
+   "curie": "cp:hasRegion",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "has region",
+   "definition": "Deployment region of a scope node, from the closed region scheme; inherited down the scope tree. Replaces the string facet cp:inRegion.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D64"
    ],
    "principles": []
   },
@@ -9369,6 +10176,32 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#permittedIn",
+   "name": "permittedIn",
+   "curie": "cp:permittedIn",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "permitted in",
+   "definition": "Jurisdiction the data may additionally be stored in without a transfer permission.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#policyForTenant",
    "name": "policyForTenant",
    "curie": "cp:policyForTenant",
@@ -9496,6 +10329,40 @@
    "principles": [
     "P18"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#requiredIn",
+   "name": "requiredIn",
+   "curie": "cp:requiredIn",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "required in",
+   "definition": "Jurisdiction the data must be stored in.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:ResidencyRequirement",
+     "property": "cp:requiredIn",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..*",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#scopeIncludes",
@@ -9686,6 +10553,74 @@
    "decisions": [
     "D05"
    ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#toJurisdiction",
+   "name": "toJurisdiction",
+   "curie": "cp:toJurisdiction",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "to jurisdiction",
+   "definition": "Jurisdiction a transfer permission allows the data to cross into.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:toJurisdiction",
+     "to": "core:Jurisdiction",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#transferBasis",
+   "name": "transferBasis",
+   "curie": "cp:transferBasis",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "transfer basis",
+   "definition": "Legal basis of a transfer permission.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:TransferPermission",
+     "property": "cp:transferBasis",
+     "to": "cp:TransferBasis",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
    "principles": []
   },
   {
@@ -11456,6 +12391,87 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/core#JurisdictionScheme",
+   "curie": "core:JurisdictionScheme",
+   "title": "JurisdictionScheme",
+   "note": null,
+   "module": "core",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-us-ca",
+     "curie": "core:jurisdiction-us-ca",
+     "label": "California",
+     "notation": "US-CA",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-eu",
+     "curie": "core:jurisdiction-eu",
+     "label": "European Union",
+     "notation": "EU",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-de",
+     "curie": "core:jurisdiction-de",
+     "label": "Germany",
+     "notation": "DE",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-ie",
+     "curie": "core:jurisdiction-ie",
+     "label": "Ireland",
+     "notation": "IE",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-ch",
+     "curie": "core:jurisdiction-ch",
+     "label": "Switzerland",
+     "notation": "CH",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#jurisdiction-us",
+     "curie": "core:jurisdiction-us",
+     "label": "United States",
+     "notation": "US",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Jurisdiction"
+     ]
+    }
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/core#DeliveryChannelScheme",
    "curie": "core:DeliveryChannelScheme",
    "title": "Platform Delivery Channels",
@@ -11508,6 +12524,63 @@
      "rank": null,
      "types": [
       "core:DeliveryChannel"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#RegionScheme",
+   "curie": "core:RegionScheme",
+   "title": "RegionScheme",
+   "note": null,
+   "module": "core",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-eu-central-1",
+     "curie": "core:region-eu-central-1",
+     "label": "eu-central-1",
+     "notation": "eu-central-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-eu-west-1",
+     "curie": "core:region-eu-west-1",
+     "label": "eu-west-1",
+     "notation": "eu-west-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-us-west-1",
+     "curie": "core:region-us-west-1",
+     "label": "us-west-1",
+     "notation": "us-west-1",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#region-us-west-2",
+     "curie": "core:region-us-west-2",
+     "label": "us-west-2",
+     "notation": "us-west-2",
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:Region"
      ]
     }
    ]
@@ -12054,6 +13127,63 @@
      "rank": null,
      "types": [
       "cp:MembershipState"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#TransferBasisScheme",
+   "curie": "cp:TransferBasisScheme",
+   "title": "TransferBasisScheme",
+   "note": null,
+   "module": "control-plane",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-adequacy",
+     "curie": "cp:basis-adequacy",
+     "label": "adequacy decision",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-consent",
+     "curie": "cp:basis-consent",
+     "label": "consent",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-contractual-clauses",
+     "curie": "cp:basis-contractual-clauses",
+     "label": "contractual clauses",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#basis-legal-obligation",
+     "curie": "cp:basis-legal-obligation",
+     "label": "legal obligation",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:TransferBasis"
      ]
     }
    ]
@@ -12676,6 +13806,26 @@
    ],
    "violations": 1,
    "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/authz#AccessCrossingShape",
+   "name": "AccessCrossingShape",
+   "targetClass": "authz:IngressAdmissionDecision",
+   "targetClassIri": "https://w3id.org/examplebank/platform/authz#IngressAdmissionDecision",
+   "module": "authz",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Admission resolved in a region whose jurisdiction the tenant's residency neither requires nor permits, with no transfer permission \u2014 an access crossing without a basis.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/authz#resolvedRegion> ?r ; <https://w3id.org/examplebank/platform/authz#evaluatedGrant> ?g .\n                ?g <https://w3id.org/examplebank/platform/authz#grantedTo> ?t .\n                ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/authz#ActionVocabularyShape",
@@ -13568,6 +14718,26 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ControlCrossingShape",
+   "name": "ControlCrossingShape",
+   "targetClass": "cp:DataPlane",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#DataPlane",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane holding a tenant's data is operated by a legal entity under a jurisdiction its residency neither requires nor permits, with no transfer permission \u2014 a control crossing without a basis (sovereignty).",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c ; <https://w3id.org/examplebank/platform/core#operatedBy> ?e .\n                ?e <https://w3id.org/examplebank/platform/core#underJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P16"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneDataCategoryShape",
    "name": "DataPlaneDataCategoryShape",
    "targetClass": "cp:DataPlane",
@@ -14147,6 +15317,62 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ResidencyRequirementShape",
+   "name": "ResidencyRequirementShape",
+   "targetClass": "cp:ResidencyRequirement",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:forTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forTenant",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement is about exactly one tenant."
+    },
+    {
+     "kind": "property",
+     "path": "cp:forDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forDataCategory",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement is about exactly one data category."
+    },
+    {
+     "kind": "property",
+     "path": "cp:requiredIn",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#requiredIn",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:Jurisdiction",
+     "classIri": "https://w3id.org/examplebank/platform/core#Jurisdiction",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A residency requirement names at least one jurisdiction the data must be stored in."
+    }
+   ],
+   "violations": 3,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RouteBindingChangeShape",
    "name": "RouteBindingChangeShape",
    "targetClass": "cp:RouteBindingChange",
@@ -14253,6 +15479,26 @@
    "principles": [
     "P12",
     "P17"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#StorageCrossingShape",
+   "name": "StorageCrossingShape",
+   "targetClass": "cp:DataPlane",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#DataPlane",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Data plane holds a tenant's data in a jurisdiction its residency neither requires nor permits, with no transfer permission \u2014 a storage crossing without a basis.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c .\n                ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> $this . ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?anc . ?anc <https://w3id.org/examplebank/platform/control-plane#hasRegion> ?r . ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .\n                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .\n                FILTER NOT EXISTS {\n                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .\n                }\n                FILTER NOT EXISTS {\n                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;\n                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .\n                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P16"
    ]
   },
   {
@@ -14451,6 +15697,77 @@
     "P14",
     "P16"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#TransferPermissionShape",
+   "name": "TransferPermissionShape",
+   "targetClass": "cp:TransferPermission",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#TransferPermission",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:forTenant",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forTenant",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Tenant",
+     "classIri": "https://w3id.org/examplebank/platform/core#Tenant",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission is about exactly one tenant."
+    },
+    {
+     "kind": "property",
+     "path": "cp:forDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#forDataCategory",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission is about exactly one data category."
+    },
+    {
+     "kind": "property",
+     "path": "cp:toJurisdiction",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#toJurisdiction",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Jurisdiction",
+     "classIri": "https://w3id.org/examplebank/platform/core#Jurisdiction",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission names exactly one destination jurisdiction."
+    },
+    {
+     "kind": "property",
+     "path": "cp:transferBasis",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#transferBasis",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:TransferBasis",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#TransferBasis",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A transfer permission records exactly one basis \u2014 a crossing without a basis is not permitted."
+    }
+   ],
+   "violations": 4,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#AcyclicDependencyShape",
@@ -15610,6 +16927,27 @@
    "severity": "Violation"
   },
   {
+   "from": "cp:ResidencyRequirement",
+   "property": "cp:forDataCategory",
+   "to": "core:DataCategory",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:ResidencyRequirement",
+   "property": "cp:forTenant",
+   "to": "core:Tenant",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:ResidencyRequirement",
+   "property": "cp:requiredIn",
+   "to": "core:Jurisdiction",
+   "cardinality": "1..*",
+   "severity": "Violation"
+  },
+  {
    "from": "cp:RouteBindingChange",
    "property": "cp:declaresRouteBinding",
    "to": "ingress:Route",
@@ -15655,6 +16993,34 @@
    "from": "cp:TenantMembership",
    "property": "cp:memberPrincipal",
    "to": "core:Principal",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:TransferPermission",
+   "property": "cp:forDataCategory",
+   "to": "core:DataCategory",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:TransferPermission",
+   "property": "cp:forTenant",
+   "to": "core:Tenant",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:TransferPermission",
+   "property": "cp:toJurisdiction",
+   "to": "core:Jurisdiction",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:TransferPermission",
+   "property": "cp:transferBasis",
+   "to": "cp:TransferBasis",
    "cardinality": "1..1",
    "severity": "Violation"
   },
@@ -17249,6 +18615,54 @@
     "cp:DataPlane",
     "cp:holdsDataCategory"
    ]
+  },
+  {
+   "id": "D64",
+   "title": "Jurisdiction is not region: residency per data category, sovereignty per operator, three crossings",
+   "area": "Foundations",
+   "invariant": true,
+   "principles": [
+    "P16",
+    "P15",
+    "P18",
+    "P7",
+    "P1",
+    "P9",
+    "P14"
+   ],
+   "reasoning": "Region is where a data plane is deployed; jurisdiction is whose law applies; the two do not coincide and jurisdictions nest. Residency belongs to data, not to the tenant: a requirement per tenant and data category names where the data must be and may additionally be. Sovereignty is control: the jurisdiction of the legal entity that operates a plane. A crossing therefore has three kinds, each an invariant with a negative instance: storage (a plane in a jurisdiction the residency neither requires nor permits), control (a plane operated from one), access (an admission resolved from one) \u2014 and each is permitted only by a transfer permission declared with a basis. Residency requirements and transfer permissions are declarations, so they carry scope, approval and supersession (P18). Region becomes a closed scheme and the string facet is deprecated with a replacement, paying P16's region debt; environment remains. The legal entity and operated-by relation are the term the agent-channel questions also waited for (D61). Known limits: the access rule reads the tenant's residency for any category, since admissions do not yet carry the categories they touch; the platform's own evidence becomes judgeable only when its own data planes are modelled.",
+   "rejected": [
+    "One jurisdiction per region: wrong for the examples that matter \u2014 a region in California is under California and the United States.",
+    "Residency on the tenant as a whole: forces the strictest rule onto telemetry that may go anywhere.",
+    "Judging sovereignty by region: a plane in Frankfurt operated by an entity under another jurisdiction's compulsion laws is exactly the exposure the region cannot see.",
+    "Warnings instead of violations for crossings: a crossing without a basis is what regulators fine; P15 says a warning that lets it through is the wrong default."
+   ],
+   "terms": [
+    "Jurisdiction",
+    "Region",
+    "LegalEntity",
+    "ResidencyRequirement",
+    "TransferPermission",
+    "TransferBasis",
+    "hasRegion",
+    "inJurisdiction",
+    "underJurisdiction",
+    "operatedBy",
+    "resolvedRegion"
+   ],
+   "termCuries": [
+    "authz:resolvedRegion",
+    "core:Jurisdiction",
+    "core:LegalEntity",
+    "core:Region",
+    "core:inJurisdiction",
+    "core:operatedBy",
+    "core:underJurisdiction",
+    "cp:ResidencyRequirement",
+    "cp:TransferBasis",
+    "cp:TransferPermission",
+    "cp:hasRegion"
+   ]
   }
  ],
  "principles": [
@@ -17878,9 +19292,9 @@
    "id": "P16",
    "title": "Isolation boundaries are explicit and enforced",
    "level": "platform",
-   "statement": "Every isolation boundary is stated in the model, and every crossing of it is rejected by an invariant. Tenant, administrative scope and a capability's isolation model are enforced today; environment and region are stated as scope facets pending their own invariants; zone is not modelled. The reach of any one declaration is bounded by scope containment.",
+   "statement": "Every isolation boundary is stated in the model, and every crossing of it is rejected by an invariant. Tenant, administrative scope, a capability's isolation model and jurisdiction \u2014 through the region scheme \u2014 are enforced today; environment is stated as a scope facet pending its own invariant; zone is not modelled. The reach of any one declaration is bounded by scope containment.",
    "test": "Which boundary does this cross, and which invariant rejects the crossing? A boundary with no rejecting invariant is a label, not a boundary.",
-   "consequences": "Tenant: a route serves only its bound tenant's applications, one address resolves to one tenant, admission requires membership, a grant confers exactly one tenant, a portal groups only its owner's applications. Scope: a declaration is bound to exactly one scope, a mutation's data plane must lie inside its declaration's scope (locality, D04), enablement and deployment outside offered scope are violations, and a control plane may not administer the scope holding its own declarations. Isolation model: a data plane under a cell-per-tenant capability serves at most one tenant (D54). Blast radius: the data planes reachable from a declaration are exactly those its scope contains \u2014 CQ-8 answers it, and the sole-writer and self-governance invariants bound who can act on them. Not yet enforced: environment and region are facets on scope nodes, to be promoted to closed schemes with rejecting invariants before stable; zone does not exist in the model. Runtime enforcement is asserted; the graph enforces the data contract and CI.",
+   "consequences": "Tenant: a route serves only its bound tenant's applications, one address resolves to one tenant, admission requires membership, a grant confers exactly one tenant, a portal groups only its owner's applications. Scope: a declaration is bound to exactly one scope, a mutation's data plane must lie inside its declaration's scope (locality, D04), enablement and deployment outside offered scope are violations, and a control plane may not administer the scope holding its own declarations. Isolation model: a data plane under a cell-per-tenant capability serves at most one tenant (D54). Blast radius: the data planes reachable from a declaration are exactly those its scope contains \u2014 CQ-8 answers it, and the sole-writer and self-governance invariants bound who can act on them. Not yet enforced: environment and region are facets on scope nodes, to be promoted to closed schemes with rejecting invariants before stable; zone does not exist in the model. Runtime enforcement is asserted; the graph enforces the data contract and CI. Jurisdiction (D64): regions are a closed scheme mapped to nested jurisdictions; a tenant's data of a category may not sit in, be operated from, or be accessed from a jurisdiction its residency neither requires nor permits without a recorded transfer permission \u2014 the storage, control and access crossings.",
    "fitness": "generative (9 decisions, 14 invariants) \u00b7 testable \u2014 found D08's undelivered invariant on first application \u00b7 enforced for tenant, scope and isolation model; environment and region stated only",
    "enforcedBy": [
     "RouteApplicationOwnershipShape",
@@ -17896,7 +19310,10 @@
     "EnablementOfferingCoverageShape",
     "DataPlaneOfferedShape",
     "SelfGovernanceLoopShape",
-    "IsolationModelShape"
+    "IsolationModelShape",
+    "StorageCrossingShape",
+    "ControlCrossingShape",
+    "AccessCrossingShape"
    ],
    "appliedIn": [
     "D03",
@@ -17908,7 +19325,8 @@
     "D43",
     "D45",
     "D48",
-    "D54"
+    "D54",
+    "D64"
    ],
    "terms": [
     "Tenant",
@@ -19133,6 +20551,16 @@
      "contract",
      "control-plane"
     ]
+   },
+   {
+    "id": "CQ-13",
+    "question": "Which jurisdictions must each tenant's data of each category stay in, which may it additionally sit in, and which transfers are permitted under what basis?",
+    "query": "cq13-residency-and-transfers.rq",
+    "sparql": "# CQ-13 \u2014 Which jurisdictions must each tenant's data of each category stay in,\n# which may it additionally sit in, and which transfers are permitted under\n# what basis? The declared residency picture the three crossing invariants\n# are judged against.\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX core: <https://w3id.org/examplebank/platform/core#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?tenant ?category ?requiredIn ?permittedIn ?transferTo ?basis WHERE {\n  ?req a cp:ResidencyRequirement ; cp:forTenant ?tenant ; cp:forDataCategory ?cat ; cp:requiredIn ?rq .\n  ?cat skos:notation ?category . ?rq skos:notation ?requiredIn .\n  OPTIONAL { ?req cp:permittedIn ?pm . ?pm skos:notation ?permittedIn }\n  OPTIONAL { ?tp a cp:TransferPermission ; cp:forTenant ?tenant ; cp:forDataCategory ?cat ; cp:toJurisdiction ?tj ; cp:transferBasis ?b .\n             ?tj skos:notation ?transferTo . ?b skos:prefLabel ?basis }\n}\nORDER BY ?tenant ?category",
+    "modules": [
+     "control-plane",
+     "core"
+    ]
    }
   ],
   "backlog": [
@@ -19813,7 +21241,10 @@
     "section": "Jurisdiction and data residency (terms deliberately deferred)",
     "question": "Which tenants' data planes sit outside the tenant's home jurisdiction with no recorded transfer basis? (expected empty)",
     "expectedEmpty": true,
-    "realizedBy": []
+    "realizedBy": [
+     "StorageCrossingShape",
+     "ControlCrossingShape"
+    ]
    },
    {
     "section": "Jurisdiction and data residency (terms deliberately deferred)",
@@ -19825,7 +21256,9 @@
     "section": "Jurisdiction and data residency (terms deliberately deferred)",
     "question": "Which admissions reached a tenant's data from a jurisdiction other than its home, and under what basis? (access is a crossing)",
     "expectedEmpty": false,
-    "realizedBy": []
+    "realizedBy": [
+     "AccessCrossingShape"
+    ]
    },
    {
     "section": "Jurisdiction and data residency (terms deliberately deferred)",

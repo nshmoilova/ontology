@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/authz>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.3.1> ;
-    owl:versionInfo "0.3.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/authz/0.4.0> ;
+    owl:versionInfo "0.4.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authn> ;
     dct:title "Authorization Module"@en ;
     dct:description "ABAC-first authorization: policies, rules, attribute assertions with provenance, roles, decisions, and obligations. Vocabulary aligns to XACML architecture. Since 0.2.0: the closed, platform-owned entitlement dimension scheme and entitlement grants (machine-generated projections of upstream governance, distributed to ingress), plus ingress admission decisions. A grant is a conferral with lifecycle and derivation — distinct from an attribute assertion, which is an observation."@en .
@@ -265,3 +265,9 @@ authz:dim-region a authz:EntitlementDimension ;
 authz:dim-channel a authz:EntitlementDimension ;
     skos:inScheme authz:EntitlementDimensionScheme ;
     skos:prefLabel "channel.access"@en .
+
+authz:resolvedRegion a owl:ObjectProperty ;
+    skos:prefLabel "resolved region"@en ;
+    skos:definition "Deployment region the ingress deployment that received the request resolved (D24) — the evidence an access crossing is judged on."@en ;
+    vs:term_status "draft" .
+

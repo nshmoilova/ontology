@@ -136,6 +136,9 @@ def main() -> int:
             "no change declaration behind it",
             "consumer on a dead contract",
             "deployed without a contract",
+            "a storage crossing without a basis",
+            "a control crossing without a basis",
+            "an access crossing without a basis",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -159,6 +162,7 @@ def main() -> int:
         "cq10-region-bound-tenants.rq",
         "cq11-single-region-offerings.rq",
         "cq12-application-contract-dependencies.rq",
+        "cq13-residency-and-transfers.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

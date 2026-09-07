@@ -706,3 +706,65 @@ scp:DataPlaneDataCategoryShape a sh:NodeShape ;
         sh:message "Data plane declares no data category — residency and sovereignty cannot be judged for it; route to stewardship." ;
     ] .
 
+# D64 — data does not cross a jurisdiction without a recorded basis: three crossings.
+scp:ResidencyRequirementShape a sh:NodeShape ;
+    sh:targetClass cp:ResidencyRequirement ;
+    sh:property [ sh:path cp:forTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:Tenant ; sh:severity sh:Violation ; sh:message "A residency requirement is about exactly one tenant." ] ;
+    sh:property [ sh:path cp:forDataCategory ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:DataCategory ; sh:severity sh:Violation ; sh:message "A residency requirement is about exactly one data category." ] ;
+    sh:property [ sh:path cp:requiredIn ; sh:minCount 1 ; sh:class core:Jurisdiction ; sh:severity sh:Violation ; sh:message "A residency requirement names at least one jurisdiction the data must be stored in." ] .
+
+scp:TransferPermissionShape a sh:NodeShape ;
+    sh:targetClass cp:TransferPermission ;
+    sh:property [ sh:path cp:forTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:Tenant ; sh:severity sh:Violation ; sh:message "A transfer permission is about exactly one tenant." ] ;
+    sh:property [ sh:path cp:forDataCategory ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:DataCategory ; sh:severity sh:Violation ; sh:message "A transfer permission is about exactly one data category." ] ;
+    sh:property [ sh:path cp:toJurisdiction ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:Jurisdiction ; sh:severity sh:Violation ; sh:message "A transfer permission names exactly one destination jurisdiction." ] ;
+    sh:property [ sh:path cp:transferBasis ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cp:TransferBasis ; sh:severity sh:Violation ; sh:message "A transfer permission records exactly one basis — a crossing without a basis is not permitted." ] .
+
+scp:StorageCrossingShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data plane holds a tenant's data in a jurisdiction its residency neither requires nor permits, with no transfer permission — a storage crossing without a basis." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c .
+                ?s <https://w3id.org/examplebank/platform/control-plane#scopeIncludes> $this . ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?anc . ?anc <https://w3id.org/examplebank/platform/control-plane#hasRegion> ?r . ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .
+                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .
+                FILTER NOT EXISTS {
+                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .
+                }
+                FILTER NOT EXISTS {
+                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;
+                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .
+                }
+            }
+        """ ;
+    ] .
+
+scp:ControlCrossingShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Data plane holding a tenant's data is operated by a legal entity under a jurisdiction its residency neither requires nor permits, with no transfer permission — a control crossing without a basis (sovereignty)." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#holdsDataCategory> ?c ; <https://w3id.org/examplebank/platform/core#operatedBy> ?e .
+                ?e <https://w3id.org/examplebank/platform/core#underJurisdiction> ?j .
+                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .
+                FILTER NOT EXISTS {
+                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .
+                }
+                FILTER NOT EXISTS {
+                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;
+                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .
+                }
+            }
+        """ ;
+    ] .
+

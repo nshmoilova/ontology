@@ -1,3 +1,4 @@
+@prefix cp: <https://w3id.org/examplebank/platform/control-plane#> .
 @prefix sh:    <http://www.w3.org/ns/shacl#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix core:  <https://w3id.org/examplebank/platform/core#> .
@@ -220,3 +221,30 @@ sz:EntitlementGrantShape a sh:NodeShape ;
         sh:severity sh:Warning ;
         sh:message "Grant has no distribution timestamp — staleness queries cannot cover it." ;
     ] .
+
+# D64 — access is a crossing: an admission from a region outside the tenant's residency needs a basis.
+sz:AccessCrossingShape a sh:NodeShape ;
+    sh:targetClass authz:IngressAdmissionDecision ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Admission resolved in a region whose jurisdiction the tenant's residency neither requires nor permits, with no transfer permission — an access crossing without a basis." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/authz#resolvedRegion> ?r ; <https://w3id.org/examplebank/platform/authz#evaluatedGrant> ?g .
+                ?g <https://w3id.org/examplebank/platform/authz#grantedTo> ?t .
+                ?r <https://w3id.org/examplebank/platform/core#inJurisdiction> ?j .
+                ?req a <https://w3id.org/examplebank/platform/control-plane#ResidencyRequirement> ; <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c .
+                FILTER NOT EXISTS {
+                    ?req <https://w3id.org/examplebank/platform/control-plane#requiredIn>|<https://w3id.org/examplebank/platform/control-plane#permittedIn> ?ok .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?ok .
+                }
+                FILTER NOT EXISTS {
+                    ?tp a <https://w3id.org/examplebank/platform/control-plane#TransferPermission> ;
+                        <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .
+                    ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .
+                }
+            }
+        """ ;
+    ] .
+

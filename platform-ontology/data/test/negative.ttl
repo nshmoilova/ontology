@@ -645,3 +645,41 @@ ex:contract-deprecate-1 a ctr:ContractChange ;
     ctr:deprecatesVersion ex:contract-neg-v1d .
 # (the offering ex:offering-cmt-neg realises ex:cell-capability, which has no published version — OfferingWithoutContractShape fires on it)
 
+### 55. Storage crossing — EU-resident tenant's customer data in a US region, no permission (StorageCrossingShape)
+ex:residency-bad-eu a cp:ResidencyRequirement ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:forTenant ex:bad-tenant ;
+    cp:forDataCategory core:data-customer-personal ;
+    cp:requiredIn core:jurisdiction-eu .
+ex:scope-us-neg a cp:AdministrativeScope ;
+    cp:hasRegion core:region-us-west-2 ;
+    cp:scopeIncludes ex:plane-storage-crossing .
+ex:plane-storage-crossing a cp:DataPlane ;
+    cp:realizesCapability ex:cell-capability ;
+    cp:servesTenant ex:bad-tenant ;
+    cp:holdsDataCategory core:data-customer-personal .
+
+### 56. Control crossing — EU-resident data on a plane operated by a US entity, no permission (ControlCrossingShape)
+ex:operator-us a core:LegalEntity ;
+    core:underJurisdiction core:jurisdiction-us .
+ex:scope-eu-neg a cp:AdministrativeScope ;
+    cp:hasRegion core:region-eu-central-1 ;
+    cp:scopeIncludes ex:plane-control-crossing .
+ex:plane-control-crossing a cp:DataPlane ;
+    cp:realizesCapability ex:cell-capability ;
+    cp:servesTenant ex:bad-tenant ;
+    cp:holdsDataCategory core:data-customer-personal ;
+    core:operatedBy ex:operator-us .
+
+### 57. Access crossing — admission for the EU-resident tenant resolved in a US region, no permission (AccessCrossingShape)
+ex:grant-bad-tenant-channel a authz:EntitlementGrant ;
+    authz:grantedTo ex:bad-tenant ;
+    authz:onDimension authz:dim-channel ;
+    authz:entitlementValue "web" .
+ex:admission-crossing a authz:IngressAdmissionDecision ;
+    core:occurredAtTime "2026-09-01T10:00:00Z"^^xsd:dateTime ;
+    authz:resolvedRegion core:region-us-west-2 ;
+    authz:evaluatedGrant ex:grant-bad-tenant-channel ;
+    authz:decisionOutcome authz:outcome-permit .
+
