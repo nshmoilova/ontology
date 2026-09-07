@@ -419,6 +419,12 @@ with no measurement source or no validation mechanism is a violation — the
 - Which tenants are subscribed in a scope whose offering carries a weaker
   commitment than the tenant's contract requires? *(needs the contract
   side — see the published-contracts scoping decision)*
+- Which committed latency promises rest on an isolated benchmark with no
+  production observation? *(needs a closed scheme for the kind of evidence
+  behind a measurement source — isolated benchmark or production telemetry)*
+- Which offerings fall short of an industry-benchmark floor by the widest
+  margin? *(the floor is an externally sourced baseline at a scope — needs
+  the baseline design; 'focused improvement' as a query)*
 - Who is accountable for each commitment, and was its change approved?
   *(commitments are declarations — D59; CQ-9 lists scope and approver, and
   a commitment declared where rigor requires approval must carry one)* [realised: ScopeRigorShape, CommitmentScopeShape]
