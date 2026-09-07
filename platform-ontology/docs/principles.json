@@ -700,6 +700,53 @@
         "CapabilityRequirement",
         "Subscription"
       ]
+    },
+    {
+      "id": "P21",
+      "title": "Data does not cross a jurisdiction without a recorded basis",
+      "level": "platform",
+      "scope": [
+        "contract",
+        "runtime-asserted"
+      ],
+      "statement": "Every tenant's data of every category has jurisdictions it must stay in and may additionally sit in. Storing it, operating it, or admitting access to it from any other jurisdiction is a crossing, and a crossing exists only under a transfer permission with a recorded basis. Jurisdiction is law, not location: a region lies in jurisdictions, jurisdictions nest, and sovereignty follows the operator's jurisdiction, not the region's.",
+      "test": "Which jurisdictions does this tenant's data of this category belong in, which crossing does the proposal create — storage, control or access — and which recorded permission with a basis allows it? No basis, no crossing.",
+      "consequences": "Storage: a data plane holding a tenant's data in a jurisdiction its residency neither requires nor permits is a violation. Control: a plane operated by a legal entity under such a jurisdiction is a violation — sovereignty. Access: an admission resolved from a region in such a jurisdiction is a violation — access is a crossing, and admission fails closed (P15). Each is lifted only by a transfer permission — a declaration with scope, approval and supersession (P18) — naming the destination and its basis from the closed scheme. Residency is declared per tenant and data category (D63, D64), never per tenant as a whole. Regions are a closed scheme mapped to nested jurisdictions, which paid P16's region debt. Residency is a boundary, not a commitment: it lives in control-plane and authorization, not in the commitment module. Known limits: the access rule reads any residency requirement of the tenant until admissions carry the categories they touch; the platform's own evidence about principals becomes judgeable only when the platform's own data planes are modelled — until then that half of the fourth backlog question stays open.",
+      "fitness": "generative (D64 made because of it; 3 crossing invariants plus the residency and transfer shapes) · testable · enforced on the data contract; runtime enforcement at provisioning and admission asserted",
+      "exceptions": [
+        {
+          "clause": "Access is a crossing",
+          "gap": "Admissions do not carry the data categories they touch, so the access rule reads any residency requirement of the tenant; and the platform's own evidence is not yet held in modelled data planes, so its residency cannot be judged.",
+          "backlog": "Jurisdiction and data residency",
+          "owner": "control-plane steward",
+          "since": "2026-09-03"
+        }
+      ],
+      "enforcedBy": [
+        "StorageCrossingShape",
+        "ControlCrossingShape",
+        "AccessCrossingShape",
+        "ResidencyRequirementShape",
+        "TransferPermissionShape"
+      ],
+      "appliedIn": [
+        "D63",
+        "D64"
+      ],
+      "terms": [
+        "Jurisdiction",
+        "Region",
+        "LegalEntity",
+        "ResidencyRequirement",
+        "TransferPermission",
+        "TransferBasis",
+        "DataCategory",
+        "inJurisdiction",
+        "underJurisdiction",
+        "operatedBy",
+        "resolvedRegion",
+        "holdsDataCategory"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [
@@ -785,9 +832,9 @@
     },
     {
       "candidate": "Data does not cross a jurisdiction without a recorded basis — every tenant's data has a home jurisdiction; storing, replicating, failing over, processing or admitting access to it from another jurisdiction is a crossing that exists only under a recorded transfer basis, enforced where the platform provisions and where it admits",
-      "verdict": "not yet promotable — terms first (P9); the boundary is real and the enforcement points exist, but jurisdiction, residency and transfer basis are not terms",
+      "verdict": "promoted as P21 after the jurisdiction model was built (D63, D64)",
       "why": "Fits the model's shape: jurisdiction is a boundary in P16's sense, distinct from region (several regions in one jurisdiction; one region under several), and both enforcement points already exist — admission fails closed with region resolved from the ingress deployment (D24, P15), and where a tenant's data may sit is governed through offerings per scope and data planes serving named tenants (D16, D08). Access counts as a crossing, which is why admission is where it bites. Not generative or enforceable today: no jurisdiction scheme, no region-to-jurisdiction mapping, no residency requirement on the tenant, no transfer-basis scheme, and no question yet. Residency is a boundary, not a non-functional commitment, so it belongs in the control-plane and authorization modules, not in the commitment module.",
-      "todo": "Sequence: (1) the four questions are in the backlog under 'Jurisdiction and data residency'; (2) terms — a closed jurisdiction scheme with region→jurisdiction mapping, a residency requirement on the tenant as a declaration, a closed transfer-basis scheme; (3) shapes with negative instances — data plane outside home jurisdiction without a basis; failover target across a jurisdiction; admission from another jurisdiction without a basis; (4) re-evaluate once two decisions have been made because of it. Pays P16's region debt on the way."
+      "todo": "Promoted 2026-09-03. Kept so the original terms-first verdict is not repeated."
     },
     {
       "candidate": "Performance is a core platform capability — features and controls are benchmarked in isolation so their latency is understood and documented; new capabilities arrive with a measured performance impact, comparable against industry benchmarks, so improvement is focused where it matters",

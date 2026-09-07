@@ -1095,7 +1095,8 @@
         "P7",
         "P1",
         "P9",
-        "P8"
+        "P8",
+        "P21"
       ],
       "reasoning": "Residency, sovereignty, retention and minimisation are all stated against the kind of data, not against a system or a tenant as a whole: a tenant may have customer data that must stay home and telemetry that may go anywhere. One closed scheme of seven categories, in core, answers 'what kind of data is this' for all four concerns. It attaches in three places: as an annotation on every stored class, so the ontology's own evidence is an ordinary case rather than a special one; on data planes, as what a plane holds, so storage crossings are judged per plane and category; and, when they exist, on residency requirements and retention rules. Tenant workload data is the decisive member — it lets residency apply to what the platform hosts without understanding (P1). Two personal-data members cite the regulation's definition (P8). Sensitivity is a second axis and waits for a question. The build notes stored classes with no category; the fail-closed gate is deferred until the classification has been reviewed, so it never fails on day one for a reason nobody chose. The annotation property itself (core:dataCategory) is not yet a browsable term: the index collects classes and object/datatype properties only; showing annotation properties is a builder change for later.",
       "rejected": [
@@ -1115,6 +1116,7 @@
       "area": "Foundations",
       "invariant": true,
       "principles": [
+        "P21",
         "P16",
         "P15",
         "P18",
@@ -1142,6 +1144,9 @@
         "underJurisdiction",
         "operatedBy",
         "resolvedRegion"
+      ],
+      "motivatedBy": [
+        "P21"
       ]
     }
   ]
