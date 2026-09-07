@@ -443,3 +443,24 @@ ex:approval-commit-1 a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-01T10:00:00Z"^^xsd:dateTime .
 
+### The platform is a distinguished tenant (D10); its staff hold memberships in it,
+### so their approvals of platform-level changes come from the authorizing party (D61)
+ex:platform-tenant a core:PlatformTenant ;
+    core:displayName "The platform" .
+ex:membership-alice-platform a cp:TenantMembership ;
+    cp:memberPrincipal ex:alice ;
+    cp:memberOfTenant ex:platform-tenant ;
+    cp:hasMembershipState cp:memberstate-active ;
+    cp:hasApproval ex:approval-plat-alice .
+ex:approval-plat-alice a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-08-01T09:00:00Z"^^xsd:dateTime .
+ex:membership-dana-platform a cp:TenantMembership ;
+    cp:memberPrincipal ex:dana ;
+    cp:memberOfTenant ex:platform-tenant ;
+    cp:hasMembershipState cp:memberstate-active ;
+    cp:hasApproval ex:approval-plat-dana .
+ex:approval-plat-dana a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-01T09:05:00Z"^^xsd:dateTime .
+

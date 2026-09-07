@@ -628,3 +628,70 @@ scp:RequirementTargetShape a sh:NodeShape ;
         sh:severity sh:Violation ;
         sh:message "A requirement names a capability — an application requires platform capabilities, never another application." ;
     ] .
+
+# D61 — the accountable human belongs to the authorizing party (P3, tightened):
+# a member of the tenant whose authority is granted, or of the platform tenant.
+scp:MembershipApproverPartyShape a sh:NodeShape ;
+    sh:targetClass cp:TenantMembership ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Membership approved by a principal outside the authorizing party — the approver holds no active membership in this tenant or the platform tenant." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;
+                      <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                FILTER NOT EXISTS {
+                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;
+                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .
+                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })
+                }
+            }
+        """ ;
+    ] .
+
+scp:SubscriptionApproverPartyShape a sh:NodeShape ;
+    sh:targetClass cp:Subscription ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Subscription activation approved by a principal outside the subscribing tenant or the platform — the approver belongs to neither." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState> <https://w3id.org/examplebank/platform/control-plane#substate-active> ;
+                      <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;
+                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                FILTER NOT EXISTS {
+                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;
+                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .
+                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })
+                }
+            }
+        """ ;
+    ] .
+
+scp:PolicyChangeApproverPartyShape a sh:NodeShape ;
+    sh:targetClass cp:PolicyChangeEvent ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Policy change approved by a principal who is not a member of the platform tenant — platform authority is the platform's to grant." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
+                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .
+                FILTER NOT EXISTS {
+                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;
+                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .
+                    ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> .
+                }
+            }
+        """ ;
+    ] .
+

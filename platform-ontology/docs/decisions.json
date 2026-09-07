@@ -1023,6 +1023,34 @@
         "Capability",
         "Application"
       ]
+    },
+    {
+      "id": "D61",
+      "title": "The accountable human belongs to the authorizing party",
+      "area": "Audit round",
+      "invariant": true,
+      "motivatedBy": [
+        "P3"
+      ],
+      "principles": [
+        "P3",
+        "P19",
+        "P14",
+        "P10"
+      ],
+      "reasoning": "P3 said 'a human' and the approval shapes checked for any human principal. Once agents may be operated by external legal entities, that is a hole: an operator's employee is a human principal and could approve the admission of the operator's own agent to a tenant, with every shape passing — P19 does not catch it, since approver and admitted principal differ. The rule P3 meant is narrower and was enforceable with existing terms: the approver of a membership admission or a subscription activation holds an active membership in that tenant or in the platform tenant; the approver of a policy change holds one in the platform tenant (the platform is a tenant, D10). Three shapes, three negative instances. Accountability for operating an agent is a distinct relation the model does not yet record; deferred to the agent-channel questions rather than modelled without one.",
+      "rejected": [
+        "Requiring the approver to be a member of the exact tenant only: the first membership of a new tenant must be approved by someone, and that someone is platform staff — hence 'or the platform tenant'.",
+        "Covering declarations (route bindings, enablements, commitments) in the same change: their authorizing party is indirect — a tenant-scoped enablement may legitimately be approved by the tenant's administrator or by platform staff — and deserves its own decision.",
+        "Modelling the agent's operator now: no question yet asks which party operates a workload; P9 says the question comes first."
+      ],
+      "terms": [
+        "approvedBy",
+        "memberOfTenant",
+        "memberPrincipal",
+        "PlatformTenant",
+        "hasApproval"
+      ]
     }
   ]
 }

@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "512dffd75db1",
+ "sourceDigest": "6e5dc98d8576",
  "stats": {
   "modules": 7,
   "classes": 79,
   "objectProperties": 99,
   "datatypeProperties": 37,
-  "shapes": 81,
-  "violations": 131,
+  "shapes": 84,
+  "violations": 134,
   "warnings": 7,
   "vocabularies": 14,
   "relationships": 62,
-  "decisions": 56,
+  "decisions": 57,
   "principles": 18,
   "standards": 13,
-  "realisedBacklog": 38,
-  "provisionalPrinciples": 10,
+  "realisedBacklog": 39,
+  "provisionalPrinciples": 9,
   "explainers": 3,
   "formalCQs": 11,
-  "backlogCQs": 124
+  "backlogCQs": 128
  },
  "modules": [
   {
@@ -551,7 +551,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D10"
+    "D10",
+    "D61"
    ],
    "principles": []
   },
@@ -7216,7 +7217,8 @@
    "shapes": [
     "PolicyChangeEventShape",
     "HumanAuthorizationShape",
-    "ApprovalNotSelfShape"
+    "ApprovalNotSelfShape",
+    "PolicyChangeApproverPartyShape"
    ],
    "constraints": [
     {
@@ -7275,6 +7277,12 @@
      "severity": "Violation",
      "message": "Policy change approved by the principal that executed it \u2014 no one approves their own act.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#executedBy> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Policy change approved by a principal who is not a member of the platform tenant \u2014 platform authority is the platform's to grant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> .\n                }\n            }"
     }
    ],
    "outgoing": [
@@ -7442,7 +7450,8 @@
    "shapes": [
     "SubscriptionShape",
     "SubscriptionActivationApprovalShape",
-    "SubscriptionClosureShape"
+    "SubscriptionClosureShape",
+    "SubscriptionApproverPartyShape"
    ],
    "constraints": [
     {
@@ -7501,6 +7510,12 @@
      "severity": "Violation",
      "message": "Active subscription lacks an active subscription for its hard dependency \u2014 the closure is auto-included and materialized at subscription time.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>\n                      <https://w3id.org/examplebank/platform/control-plane#substate-active> ;\n                      <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#subscribedCapability> ?c .\n                ?c <https://w3id.org/examplebank/platform/control-plane#dependsOn> ?dep .\n                FILTER NOT EXISTS {\n                    ?s2 <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;\n                        <https://w3id.org/examplebank/platform/control-plane#subscribedCapability> ?dep ;\n                        <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState>\n                        <https://w3id.org/examplebank/platform/control-plane#substate-active> .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Subscription activation approved by a principal outside the subscribing tenant or the platform \u2014 the approver belongs to neither.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState> <https://w3id.org/examplebank/platform/control-plane#substate-active> ;\n                      <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })\n                }\n            }"
     }
    ],
    "outgoing": [
@@ -7645,7 +7660,8 @@
     "TenantMembershipShape",
     "MembershipApprovalShape",
     "DuplicateMembershipShape",
-    "MembershipNotSelfApprovedShape"
+    "MembershipNotSelfApprovedShape",
+    "MembershipApproverPartyShape"
    ],
    "constraints": [
     {
@@ -7710,6 +7726,12 @@
      "severity": "Violation",
      "message": "Tenant membership approved by the principal it admits \u2014 no one approves their own access.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Membership approved by a principal outside the authorizing party \u2014 the approver holds no active membership in this tenant or the platform tenant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                      <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })\n                }\n            }"
     }
    ],
    "outgoing": [
@@ -8165,7 +8187,8 @@
    ],
    "vocabulary": [],
    "decisions": [
-    "D57"
+    "D57",
+    "D61"
    ],
    "principles": [
     "P3",
@@ -8584,7 +8607,8 @@
     "D05",
     "D12",
     "D57",
-    "D59"
+    "D59",
+    "D61"
    ],
    "principles": [
     "P3",
@@ -8721,7 +8745,8 @@
    ],
    "vocabulary": [],
    "decisions": [
-    "D45"
+    "D45",
+    "D61"
    ],
    "principles": []
   },
@@ -8757,7 +8782,8 @@
    "vocabulary": [],
    "decisions": [
     "D45",
-    "D57"
+    "D57",
+    "D61"
    ],
    "principles": [
     "P19"
@@ -12364,6 +12390,26 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#MembershipApproverPartyShape",
+   "name": "MembershipApproverPartyShape",
+   "targetClass": "cp:TenantMembership",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#TenantMembership",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Membership approved by a principal outside the authorizing party \u2014 the approver holds no active membership in this tenant or the platform tenant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                      <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#MembershipNotSelfApprovedShape",
    "name": "MembershipNotSelfApprovedShape",
    "targetClass": "cp:TenantMembership",
@@ -12399,6 +12445,26 @@
    ],
    "violations": 1,
    "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#PolicyChangeApproverPartyShape",
+   "name": "PolicyChangeApproverPartyShape",
+   "targetClass": "cp:PolicyChangeEvent",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#PolicyChangeEvent",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Policy change approved by a principal who is not a member of the platform tenant \u2014 platform authority is the platform's to grant.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P3"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#PolicyChangeEventShape",
@@ -12677,6 +12743,26 @@
    "principles": [
     "P3",
     "P14"
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SubscriptionApproverPartyShape",
+   "name": "SubscriptionApproverPartyShape",
+   "targetClass": "cp:Subscription",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#Subscription",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Subscription activation approved by a principal outside the subscribing tenant or the platform \u2014 the approver belongs to neither.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasSubscriptionState> <https://w3id.org/examplebank/platform/control-plane#substate-active> ;\n                      <https://w3id.org/examplebank/platform/control-plane#subscriber> ?t ;\n                      <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                ?a <https://w3id.org/examplebank/platform/control-plane#approvedBy> ?p .\n                FILTER NOT EXISTS {\n                    ?m <https://w3id.org/examplebank/platform/control-plane#memberPrincipal> ?p ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasMembershipState> <https://w3id.org/examplebank/platform/control-plane#memberstate-active> ;\n                       <https://w3id.org/examplebank/platform/control-plane#memberOfTenant> ?x .\n                    FILTER(?x = ?t || EXISTS { ?x a <https://w3id.org/examplebank/platform/core#PlatformTenant> })\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0,
+   "principles": [
+    "P3"
    ]
   },
   {
@@ -15489,6 +15575,41 @@
     "cp:dependsOn",
     "cp:requiredCapability"
    ]
+  },
+  {
+   "id": "D61",
+   "title": "The accountable human belongs to the authorizing party",
+   "area": "Audit round",
+   "invariant": true,
+   "motivatedBy": [
+    "P3"
+   ],
+   "principles": [
+    "P3",
+    "P19",
+    "P14",
+    "P10"
+   ],
+   "reasoning": "P3 said 'a human' and the approval shapes checked for any human principal. Once agents may be operated by external legal entities, that is a hole: an operator's employee is a human principal and could approve the admission of the operator's own agent to a tenant, with every shape passing \u2014 P19 does not catch it, since approver and admitted principal differ. The rule P3 meant is narrower and was enforceable with existing terms: the approver of a membership admission or a subscription activation holds an active membership in that tenant or in the platform tenant; the approver of a policy change holds one in the platform tenant (the platform is a tenant, D10). Three shapes, three negative instances. Accountability for operating an agent is a distinct relation the model does not yet record; deferred to the agent-channel questions rather than modelled without one.",
+   "rejected": [
+    "Requiring the approver to be a member of the exact tenant only: the first membership of a new tenant must be approved by someone, and that someone is platform staff \u2014 hence 'or the platform tenant'.",
+    "Covering declarations (route bindings, enablements, commitments) in the same change: their authorizing party is indirect \u2014 a tenant-scoped enablement may legitimately be approved by the tenant's administrator or by platform staff \u2014 and deserves its own decision.",
+    "Modelling the agent's operator now: no question yet asks which party operates a workload; P9 says the question comes first."
+   ],
+   "terms": [
+    "approvedBy",
+    "memberOfTenant",
+    "memberPrincipal",
+    "PlatformTenant",
+    "hasApproval"
+   ],
+   "termCuries": [
+    "core:PlatformTenant",
+    "cp:approvedBy",
+    "cp:hasApproval",
+    "cp:memberOfTenant",
+    "cp:memberPrincipal"
+   ]
   }
  ],
  "principles": [
@@ -15591,22 +15712,26 @@
    "title": "Agents execute; humans authorize",
    "level": "platform",
    "formerly": "D40",
-   "statement": "Automation may act, but a human must be accountable for every grant of authority: policy changes, declarations in rigor-requiring scopes, subscription activations, membership admissions and requirement confirmations all carry a human approval. Revocation is the deliberate exception \u2014 taking access away fast is safe; giving it back is the boundary.",
-   "test": "Does this change grant authority? Then which human is accountable for it?",
-   "consequences": "Approvals by workload principals alone never satisfy an invariant. The same asymmetry recurs wherever authority is conferred, and its planned counterpart is that revocation needs no approval while reinstatement does.",
+   "statement": "Automation may act, but a human of the authorizing party must be accountable for every grant of authority: policy changes, declarations in rigor-requiring scopes, subscription activations, membership admissions and requirement confirmations all carry a human approval \u2014 by a member of the tenant whose authority is granted, or of the platform tenant for platform authority. Revocation is the deliberate exception \u2014 taking access away fast is safe; giving it back is the boundary.",
+   "test": "Does this change grant authority? Then which human is accountable for it \u2014 and do they belong to the party whose authority it is?",
+   "consequences": "Approvals by workload principals alone never satisfy an invariant. The same asymmetry recurs wherever authority is conferred, and its planned counterpart is that revocation needs no approval while reinstatement does. Which human: the approver of a membership admission or subscription activation holds an active membership in that tenant or in the platform tenant; the approver of a policy change holds one in the platform tenant (D61). Agents may be operated by external legal entities: operating an agent is a separate accountability from granting it authority, and never confers the right to approve the agent's own admission. Who operates a workload is not yet a relation the model records \u2014 the agent-channel questions are the trigger.",
    "fitness": "generative (5 decisions, 4 invariants) \u00b7 testable \u00b7 enforced",
    "enforcedBy": [
     "HumanAuthorizationShape",
     "ScopeRigorShape",
     "SubscriptionActivationApprovalShape",
-    "MembershipApprovalShape"
+    "MembershipApprovalShape",
+    "MembershipApproverPartyShape",
+    "SubscriptionApproverPartyShape",
+    "PolicyChangeApproverPartyShape"
    ],
    "appliedIn": [
     "D05",
     "D06",
     "D12",
     "D18",
-    "D45"
+    "D45",
+    "D61"
    ],
    "terms": [
     "PolicyChangeEvent",
@@ -15630,8 +15755,10 @@
     "cp:hasApproval",
     "cp:requiresHumanApproval"
    ],
-   "motivatedBy": [],
-   "status": "provisional"
+   "motivatedBy": [
+    "D61"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P4",
@@ -17893,6 +18020,34 @@
    {
     "section": "Agent channel (terms deliberately deferred)",
     "question": "Which agent-channel grants permit autonomous action versus delegated-only action?",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Agent channel (terms deliberately deferred)",
+    "question": "Which workload principals are operated by an external legal entity, and which tenant memberships and grants do they hold? (needs a party term and an operated-by relation \u2014 the operator is a separate accountability from the authority, D61)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Agent channel (terms deliberately deferred)",
+    "question": "Which approvals were given by a principal outside the authorizing party \u2014 no active membership in the tenant whose authority was granted, nor in the platform tenant? (expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "MembershipApproverPartyShape",
+     "SubscriptionApproverPartyShape",
+     "PolicyChangeApproverPartyShape"
+    ]
+   },
+   {
+    "section": "Agent channel (terms deliberately deferred)",
+    "question": "Which externally operated agents hold authority that outlived the relationship that justified it? (P18's contingency clause applied to operators; needs the operator relation)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Agent channel (terms deliberately deferred)",
+    "question": "Which acts on the agent channel were executed by an externally operated agent, and under which delegation?",
     "expectedEmpty": false,
     "realizedBy": []
    },

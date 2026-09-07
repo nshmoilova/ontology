@@ -585,3 +585,24 @@ ex:req-on-app a cp:CapabilityRequirement ;
     cp:ofApplication ex:app-bad ;
     cp:requiredCapability ex:app-bad .
 
+### 51. Approvals by a human who belongs to no authorizing party (D61)
+ex:outsider a core:HumanPrincipal ;
+    core:displayName "Employee of an external operator, member of nothing" .
+ex:approval-outsider-1 a cp:ChangeApproval ; cp:approvedBy ex:outsider ; cp:approvedAtTime "2026-09-01T09:00:00Z"^^xsd:dateTime .
+ex:approval-outsider-2 a cp:ChangeApproval ; cp:approvedBy ex:outsider ; cp:approvedAtTime "2026-09-01T09:01:00Z"^^xsd:dateTime .
+ex:approval-outsider-3 a cp:ChangeApproval ; cp:approvedBy ex:outsider ; cp:approvedAtTime "2026-09-01T09:02:00Z"^^xsd:dateTime .
+ex:membership-outsider-approved a cp:TenantMembership ;
+    cp:memberPrincipal ex:sod-human ;
+    cp:memberOfTenant ex:bad-tenant ;
+    cp:hasMembershipState cp:memberstate-active ;
+    cp:hasApproval ex:approval-outsider-1 .
+ex:sub-outsider-approved a cp:Subscription ;
+    cp:subscriber ex:bad-tenant ;
+    cp:hasSubscriptionState <https://w3id.org/examplebank/platform/control-plane#substate-active> ;
+    cp:hasApproval ex:approval-outsider-2 .
+ex:change-outsider-approved a cp:PolicyChangeEvent ;
+    core:occurredAtTime "2026-09-01T09:03:00Z"^^xsd:dateTime ;
+    cp:changedPolicy ex:policy-x ;
+    cp:executedBy ex:sod-human ;
+    cp:hasApproval ex:approval-outsider-3 .
+

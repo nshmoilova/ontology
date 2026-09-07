@@ -315,6 +315,18 @@ execution's.
   authority was it exercising, and under what delegation?
 - Which agent-channel grants permit autonomous action versus delegated-only
   action?
+- Which workload principals are operated by an external legal entity, and
+  which tenant memberships and grants do they hold? *(needs a party term and
+  an operated-by relation — the operator is a separate accountability from
+  the authority, D61)*
+- Which approvals were given by a principal outside the authorizing party —
+  no active membership in the tenant whose authority was granted, nor in the
+  platform tenant? *(expected empty)* [realised: MembershipApproverPartyShape, SubscriptionApproverPartyShape, PolicyChangeApproverPartyShape]
+- Which externally operated agents hold authority that outlived the
+  relationship that justified it? *(P18's contingency clause applied to
+  operators; needs the operator relation)*
+- Which acts on the agent channel were executed by an externally operated
+  agent, and under which delegation?
 
 ### Trust zones (terms deliberately deferred)
 

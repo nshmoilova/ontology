@@ -130,6 +130,9 @@ def main() -> int:
             "does not contain its offering's scope",
             "the platform depends on no application",
             "never another application",
+            "no active membership in this tenant or the platform tenant",
+            "the approver belongs to neither",
+            "not a member of the platform tenant",
         ]
         for frag in expected_fragments:
             if frag in text:
