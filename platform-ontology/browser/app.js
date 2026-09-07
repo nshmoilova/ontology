@@ -509,7 +509,9 @@
   function firstCell(cell) {
     const m = /^(P\d+)\b\s*(.*)$/s.exec(cell || "");
     if (m && prinById.has(m[1])) {
-      return `<a class="pill prin" href="#/principles#${esc(m[1])}" title="${esc(prinById.get(m[1]).title)}">${esc(m[1])}</a> <b>${esc(m[2])}</b>`;
+      const pr = prinById.get(m[1]);
+      const status = pr.status === "provisional" ? `<span class="pill draft" title="No decision has yet been made because of this principle">provisional</span>` : `<span class="pill prin" title="Confirmed by a decision made because of it">confirmed</span>`;
+      return `<a class="pill prin" href="#/principles#${esc(m[1])}" title="${esc(pr.title)}">${esc(m[1])}</a> <b>${esc(m[2])}</b> ${status}`;
     }
     return `<code>${esc(cell)}</code>`;
   }

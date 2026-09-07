@@ -248,9 +248,9 @@
     {
       "id": "principles",
       "title": "Principles at a glance",
-      "subtitle": "What a principle is, how one is derived, and what each of the eighteen means",
+      "subtitle": "What a principle is, how one is derived, what each one means, and which candidates were evaluated and why they stand where they do",
       "audience": "Anyone reading or proposing a change to the ontology — architects, reviewers, and agents checking a proposal against the rules.",
-      "summary": "A decision picks among alternatives once. A principle constrains every future pick. This ontology keeps eighteen, each stated once, each with a test a proposal is checked against, and each tied to the invariants that enforce it. Nothing becomes a principle by being asserted: a candidate is evaluated against four fitness criteria, and most candidates end up recorded as decisions, out of scope, or not yet decided.",
+      "summary": "A decision picks among alternatives once. A principle constrains every future pick. This ontology keeps twenty, each stated once, each with a test a proposal is checked against, and each tied to the invariants that enforce it. Nothing becomes a principle by being asserted: a candidate is evaluated against four fitness criteria, and most candidates end up recorded as decisions, out of scope, or not yet decided.",
       "steps": [
         {
           "heading": "What a principle is",
@@ -261,7 +261,7 @@
         },
         {
           "heading": "How a principle is derived",
-          "body": "A candidate sentence is evaluated, never simply added. It passes only if it meets all four criteria: generative — it has already produced more than one decision or invariant; testable — it can be asked as a question of a new proposal; a commitment, not a choice — it constrains all future selections rather than making one; enforced or enforceable — an invariant, build check or CI gate realises it. Candidates that fail are recorded with the reason so the evaluation is not repeated: fourteen so far, kept as decisions, out of scope, or open. A promoted principle carries its scope (contract, CI, runtime-asserted, review-time), any open exception with an owner and a backlog address, and a status: provisional until some decision is made because of it, confirmed after. Evaluating a candidate has repeatedly found gaps — an undelivered invariant, an optional actor on a decision, a self-approved membership in the seed data — which is the strongest evidence a rule is real.",
+          "body": "A candidate sentence is evaluated, never simply added. It passes only if it meets all four criteria: generative — it has already produced more than one decision or invariant; testable — it can be asked as a question of a new proposal; a commitment, not a choice — it constrains all future selections rather than making one; enforced or enforceable — an invariant, build check or CI gate realises it. Candidates that fail are recorded with the reason so the evaluation is not repeated — kept as decisions, out of scope, or terms-first; a few were later promoted once the terms existed, and the record says so. Each row below shows the principle's live status: confirmed once a decision was made because of it, provisional until then. A promoted principle carries its scope (contract, CI, runtime-asserted, review-time), any open exception with an owner and a backlog address, and a status: provisional until some decision is made because of it, confirmed after. Evaluating a candidate has repeatedly found gaps — an undelivered invariant, an optional actor on a decision, a self-approved membership in the seed data — which is the strongest evidence a rule is real.",
           "table": {
             "columns": [
               "Criterion",
@@ -367,6 +367,18 @@
                 "The executor of a change is never its approver; the principal an admission grants access to never approves it.",
                 "alice may not approve her own tenant membership; an agent's change is approved by someone other than the agent.",
                 "Separation of duties is the control auditors test first, and it was one shape away from enforced."
+              ],
+              [
+                "P20 Consumers depend on contracts, never on implementations",
+                "A capability is consumed through its published contract; a consumer depends on a contract version, never on what realises the capability; a contract changes only through a published, approved version.",
+                "An application's requirement pins version 1.2.0 of the managed-database contract; a version published without a change declaration, or a consumer left on a retired version, is a violation.",
+                "Consumers survive re-implementation; a change to an interface has an approver and a history."
+              ],
+              [
+                "P21 Data does not cross a jurisdiction without a recorded basis",
+                "A tenant's data of each category has jurisdictions it must stay in and may sit in; storing, operating or admitting access to it from any other is a crossing, allowed only under a transfer permission with a basis. Jurisdiction is law, not location.",
+                "A tenant's customer data in a US region while its residency requires the EU, a plane operated by an entity under another jurisdiction, or an admission resolved from one — each a violation unless a permission with a basis exists.",
+                "Residency and sovereignty become facts the graph defends at provisioning and admission, rather than clauses in a contract nobody can run."
               ]
             ]
           },
@@ -381,7 +393,9 @@
             "P16",
             "P17",
             "P18",
-            "P19"
+            "P19",
+            "P20",
+            "P21"
           ]
         },
         {
@@ -466,13 +480,100 @@
           ]
         },
         {
+          "heading": "Evaluated and not promoted, or not yet",
+          "body": "Every candidate is recorded with its verdict so the argument is not had twice. Most fail one criterion cleanly. Some were valid but out of scope until a module existed, and were promoted once it did — the register keeps the original verdict beside the promotion. One principle was demoted for never generating a decision.",
+          "table": {
+            "columns": [
+              "Candidate",
+              "What it says",
+              "Status and why"
+            ],
+            "rows": [
+              [
+                "Events are PROV activities (D41); Two clients, kept apart (D47); Decisions name their PDP (D49); No cross-scope parity (D16); One logical management plane (D01)",
+                "Five foundational choices",
+                "Decisions. Each picks once and constrains nothing beyond itself; each is correctly attributed to the principle it applies."
+              ],
+              [
+                "A definition denotes, nothing else",
+                "Definition style",
+                "Absorbed into governance prose when P11 was demoted; the fitness criteria apply it at promotion."
+              ],
+              [
+                "Deny by default",
+                "No grant, no permit",
+                "Undecided. A corollary of P4 plus a combining rule, which is a decision: the policy declares its required dimensions and a permit needs a grant on each. Waits on that decision."
+              ],
+              [
+                "Controls are enforced by the platform, not delegated",
+                "Applications do not re-enforce platform controls",
+                "Not promoted. A corollary of P1 and P2; its one novel clause cannot be enforced because P1 keeps application internals out of the graph."
+              ],
+              [
+                "Capabilities are consumed through published contracts",
+                "Consumers depend on contracts",
+                "Promoted as P20 once the contract module existed (D62). Out of scope before that."
+              ],
+              [
+                "Substitutability at the seams that matter",
+                "Active substitution of critical dependencies",
+                "Not promoted. Out of scope: no infrastructure-dependency concept. Its one in-scope seam, the identity provider, is a backlog question — identifiers are issuer-scoped, so switching is a migration."
+              ],
+              [
+                "Least privilege by default",
+                "Minimal access",
+                "Not promoted as worded. 'Least' has no baseline of need for principals; 'by default' is the deny-by-default question. Its rule became P18."
+              ],
+              [
+                "Every guarantee is measured",
+                "Unmeasured claims are aspirational",
+                "Not promoted. At method level it is P10; at platform level it became CommitmentShape in the commitment module."
+              ],
+              [
+                "Non-functionals are scope, not overhead",
+                "A capability is not complete until its NFRs hold",
+                "Not promoted. A definition of done; becomes the readiness gate once offerings gain an available state."
+              ],
+              [
+                "P11 Every kind of statement has exactly one home",
+                "One home per statement",
+                "Demoted. A convention no decision ever applied; its rule lives in governance."
+              ],
+              [
+                "Dependency is unidirectional",
+                "Applications depend on the platform, never the reverse",
+                "Not promoted. A consequence of P1, now stated on it; the two untyped edges that could have broken it were closed (D60)."
+              ],
+              [
+                "Data does not cross a jurisdiction without a recorded basis",
+                "Residency, sovereignty, access as crossings",
+                "Promoted as P21 once the jurisdiction model existed (D63, D64). Terms-first before that."
+              ],
+              [
+                "Performance is a core platform capability",
+                "Benchmark features in isolation",
+                "Not promoted. An engineering practice; two of its pieces — the kind of evidence behind a measurement, and industry benchmarks as floors — are terms-first."
+              ],
+              [
+                "Nothing is stored without a question",
+                "Data minimisation as P9 applied to facts",
+                "Promotable now: five decisions embody it and the questions are its baseline of need. Awaiting the go-ahead; retention would be its known exception."
+              ]
+            ]
+          },
+          "principles": [
+            "P9",
+            "P10"
+          ]
+        },
+        {
           "heading": "Reading a principle card",
           "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things beyond the statement: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice."
         }
       ],
       "openQuestions": [
         "Deny by default: whether the absence of any grant is itself a deny remains undecided. P15 settles the absence-of-decision case and P18 the justification case; this is the one left.",
-        "Twelve principles are provisional: they were promoted on decisions made before they were stated. Each is confirmed by the first decision made because of it."
+        "Several principles are provisional: they were promoted on decisions made before they were stated. Each is confirmed by the first decision made because of it, and the rows above show which."
       ]
     },
     {
