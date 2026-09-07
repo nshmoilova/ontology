@@ -430,6 +430,7 @@ cp:TransferPermission a owl:Class ;
 
 cp:TransferBasis a owl:Class ;
     rdfs:subClassOf skos:Concept ;
+    core:dataCategory core:data-governance ;
     skos:prefLabel "Transfer basis"@en ;
     skos:definition "The legal basis on which data may cross into a jurisdiction, from the closed scheme."@en ;
     vs:term_status "draft" .
