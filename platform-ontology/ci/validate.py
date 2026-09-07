@@ -141,6 +141,8 @@ def main() -> int:
             "an access crossing without a basis",
             "carries no committed commitment",
             "does not contain the scope it offers in",
+            "a promise below the baseline",
+            "not ready against the baseline",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -166,6 +168,7 @@ def main() -> int:
         "cq12-application-contract-dependencies.rq",
         "cq13-residency-and-transfers.rq",
         "cq14-offering-readiness.rq",
+        "cq15-floors-and-coverage.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

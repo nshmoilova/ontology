@@ -1,0 +1,13 @@
+# CQ-15 — Which floors apply to which offerings, and does each offering carry a
+# committed commitment on the floor's metric at least as strong?
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?floor ?floorScope ?metric ?comparator ?floorTarget ?offering ?commitment ?target WHERE {
+  ?floor a cmt:CommitmentBaseline ; cp:declarationScope ?floorScope ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?floorTarget .
+  ?m skos:notation ?metric . ?c skos:notation ?comparator .
+  ?offering a cp:CapabilityOffering ; cp:offeredInScope ?os . ?os cp:subScopeOf* ?floorScope .
+  OPTIONAL { ?commitment cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?target }
+}
+ORDER BY ?floor ?offering

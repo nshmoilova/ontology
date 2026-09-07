@@ -434,6 +434,7 @@ ex:commit-db-availability a cmt:Commitment ;
     cmt:window "P30D"^^xsd:duration ;
     cmt:measuredBy ex:source-db-metrics ;
     cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-availability ;
     cmt:hasCommitmentState cmt:state-committed .
 
 ex:obs-db-availability-2026-08 a cmt:Observation ;
@@ -524,4 +525,20 @@ ex:transfer-t123-eu a cp:TransferPermission ;
 ex:approval-transfer-1 a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-08-21T10:00:00Z"^^xsd:dateTime .
+
+### Baseline (D66): the production availability floor every production offering must meet
+ex:floor-prod-availability a cmt:CommitmentBaseline ;
+    core:displayName "Production floor: availability at least 99.9 % over 30 days" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-floor-1 ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.9 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:referenceSource "https://standards.example/platform/production-floors/2026"^^xsd:anyURI .
+ex:approval-floor-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-08-05T10:00:00Z"^^xsd:dateTime .
 

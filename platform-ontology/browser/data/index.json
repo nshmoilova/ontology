@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "609974551073",
+ "sourceDigest": "e440df6e1ceb",
  "stats": {
   "modules": 8,
-  "classes": 92,
-  "objectProperties": 121,
-  "datatypeProperties": 40,
-  "shapes": 96,
-  "violations": 155,
+  "classes": 93,
+  "objectProperties": 122,
+  "datatypeProperties": 41,
+  "shapes": 99,
+  "violations": 162,
   "warnings": 9,
   "vocabularies": 21,
-  "relationships": 75,
-  "decisions": 61,
+  "relationships": 77,
+  "decisions": 62,
   "principles": 20,
   "standards": 15,
-  "realisedBacklog": 45,
+  "realisedBacklog": 46,
   "provisionalPrinciples": 9,
   "explainers": 3,
-  "formalCQs": 14,
-  "backlogCQs": 138
+  "formalCQs": 15,
+  "backlogCQs": 139
  },
  "modules": [
   {
@@ -98,8 +98,8 @@
    "iri": "https://w3id.org/examplebank/platform/commitment",
    "prefix": "cmt",
    "title": "Commitment Module",
-   "version": "0.2.0",
-   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited.",
+   "version": "0.3.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66).",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
@@ -7174,12 +7174,19 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "FloorCoverageShape",
     "OfferingWithoutContractShape",
     "OfferingReadinessShape",
     "OfferingSupplyClosureShape",
     "OfferingStateShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Available offering carries no committed commitment on a metric its scope's floor requires \u2014 not ready against the baseline.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> ; <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .\n                ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m .\n                FILTER NOT EXISTS { ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> . }\n            }"
+    },
     {
      "kind": "sparql",
      "severity": "Violation",
@@ -7243,7 +7250,8 @@
    "decisions": [
     "D16",
     "D35",
-    "D65"
+    "D65",
+    "D66"
    ],
    "principles": [
     "P2",
@@ -7706,6 +7714,7 @@
    "disjointWith": [],
    "subClasses": [
     "cmt:Commitment",
+    "cmt:CommitmentBaseline",
     "cp:ApplicationEnablement",
     "cp:CapabilityOffering",
     "cp:JourneyDefinitionChange",
@@ -10827,7 +10836,8 @@
    "subClasses": [],
    "shapes": [
     "CommitmentShape",
-    "CommitmentScopeShape"
+    "CommitmentScopeShape",
+    "NoWeakerThanFloorShape"
    ],
    "constraints": [
     {
@@ -10970,6 +10980,12 @@
      "severity": "Violation",
      "message": "Commitment is declared in a scope that does not contain its offering's scope \u2014 a promise is declared at or above where it applies.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?offScope .\n                FILTER NOT EXISTS { ?offScope <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Committed commitment is weaker than the floor declared for its offering's scope \u2014 a promise below the baseline.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?t ;\n                      <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?ft .\n                FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?t < ?ft) || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?t > ?ft) )\n            }"
     }
    ],
    "outgoing": [
@@ -11022,7 +11038,134 @@
    "vocabulary": [],
    "decisions": [
     "D58",
-    "D59"
+    "D59",
+    "D66"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentBaseline",
+   "name": "CommitmentBaseline",
+   "curie": "cmt:CommitmentBaseline",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Commitment baseline",
+   "definition": "A floor declared at a scope: one metric, a comparator, a target with unit, and a window, that every offering in the scope's subtree must meet with a committed commitment at least as strong. A requirement, not a promise: it needs no measurement source.",
+   "editorialNote": null,
+   "altLabels": [
+    "baseline NFR",
+    "floor"
+   ],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "CommitmentBaselineShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline states exactly one unit."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:window",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#window",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:duration",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline is judged over exactly one window."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D66"
    ],
    "principles": []
   },
@@ -11123,6 +11266,13 @@
    "outgoing": [],
    "incoming": [
     {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cmt:Commitment",
      "property": "cmt:comparator",
      "to": "cmt:Comparator",
@@ -11222,6 +11372,13 @@
    "constraints": [],
    "outgoing": [],
    "incoming": [
+    {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
     {
      "from": "cmt:Commitment",
      "property": "cmt:metric",
@@ -11425,6 +11582,34 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/commitment#referenceSource",
+   "name": "referenceSource",
+   "curie": "cmt:referenceSource",
+   "kind": "datatypeProperty",
+   "module": "commitment",
+   "label": "reference source",
+   "definition": "Where a baseline's target comes from, as an xsd:anyURI \u2014 an industry benchmark, a regulation, or an internal standard.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D66"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/commitment#target",
    "name": "target",
    "curie": "cmt:target",
@@ -11564,6 +11749,13 @@
    "incoming": [],
    "usedBy": [
     {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cmt:Commitment",
      "property": "cmt:comparator",
      "to": "cmt:Comparator",
@@ -11668,6 +11860,13 @@
    "incoming": [],
    "usedBy": [
     {
+     "from": "cmt:CommitmentBaseline",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cmt:Commitment",
      "property": "cmt:metric",
      "to": "cmt:Metric",
@@ -11711,6 +11910,34 @@
    ],
    "vocabulary": [],
    "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#satisfiesBaseline",
+   "name": "satisfiesBaseline",
+   "curie": "cmt:satisfiesBaseline",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "satisfies baseline",
+   "definition": "Baseline a commitment was made to meet \u2014 an optional derivation edge; containment binds them whether or not it is stated.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D66"
+   ],
    "principles": []
   },
   {
@@ -14463,6 +14690,92 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentBaselineShape",
+   "name": "CommitmentBaselineShape",
+   "targetClass": "cmt:CommitmentBaseline",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#CommitmentBaseline",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline states exactly one unit."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:window",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#window",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:duration",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A baseline is judged over exactly one window."
+    }
+   ],
+   "violations": 5,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentScopeShape",
    "name": "CommitmentScopeShape",
    "targetClass": "cmt:Commitment",
@@ -14623,6 +14936,23 @@
     }
    ],
    "violations": 9,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#NoWeakerThanFloorShape",
+   "name": "NoWeakerThanFloorShape",
+   "targetClass": "cmt:Commitment",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Committed commitment is weaker than the floor declared for its offering's scope \u2014 a promise below the baseline.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?t ;\n                      <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?ft .\n                FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?t < ?ft) || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?t > ?ft) )\n            }"
+    }
+   ],
+   "violations": 1,
    "warnings": 0
   },
   {
@@ -15182,6 +15512,23 @@
     "P16",
     "P18"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#FloorCoverageShape",
+   "name": "FloorCoverageShape",
+   "targetClass": "cp:CapabilityOffering",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Available offering carries no committed commitment on a metric its scope's floor requires \u2014 not ready against the baseline.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> ; <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .\n                ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m .\n                FILTER NOT EXISTS { ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> . }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#HumanAuthorizationShape",
@@ -17096,6 +17443,20 @@
    "severity": "Violation"
   },
   {
+   "from": "cmt:CommitmentBaseline",
+   "property": "cmt:comparator",
+   "to": "cmt:Comparator",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:CommitmentBaseline",
+   "property": "cmt:metric",
+   "to": "cmt:Metric",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
    "from": "cmt:Observation",
    "property": "cmt:observationOf",
    "to": "cmt:Commitment",
@@ -18993,6 +19354,43 @@
     "cp:OfferingState",
     "cp:hasOfferingState"
    ]
+  },
+  {
+   "id": "D66",
+   "title": "Baselines are floors declared at a scope",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "motivatedBy": [
+    "P18"
+   ],
+   "principles": [
+    "P18",
+    "P16",
+    "P7",
+    "P10",
+    "P15",
+    "P9"
+   ],
+   "reasoning": "A baseline non-functional requirement is a requirement, not a promise: it needs no measurement source, and it must apply to offerings that do not exist yet. Both point at the same shape \u2014 a declaration at a scope, inherited by containment the way approval rigor is (D06). A floor states one metric, comparator, target, unit and window, optionally with a reference source, so an industry benchmark is a floor whose source is external. Two invariants give it teeth: a committed commitment on a covered offering may not be weaker than the floor by its comparator, and an available offering under a floor must carry a committed commitment on the floor's metric \u2014 the readiness gate's second version. A commitment may cite the floor it satisfies; containment binds them whether or not it does.",
+   "rejected": [
+    "A baseline on the capability: inheritance across offerings, which SHACL does badly, and it cannot say 'everything in production'.",
+    "A baseline as a commitment with no offering: breaks the one-offering rule and blurs the requirement/guarantee distinction that makes 'unmeasured is aspirational' work.",
+    "Tiers now: gold and silver are bundles of floors, expanded on declaration as capability bundles are (D15); no question asks for them yet."
+   ],
+   "terms": [
+    "CommitmentBaseline",
+    "satisfiesBaseline",
+    "referenceSource",
+    "Commitment",
+    "CapabilityOffering"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:CommitmentBaseline",
+    "cmt:referenceSource",
+    "cmt:satisfiesBaseline",
+    "cp:CapabilityOffering"
+   ]
   }
  ],
  "principles": [
@@ -19823,7 +20221,8 @@
    ],
    "motivatedBy": [
     "D59",
-    "D65"
+    "D65",
+    "D66"
    ],
    "status": "confirmed"
   },
@@ -20186,7 +20585,7 @@
    "candidate": "Performance is a core platform capability \u2014 features and controls are benchmarked in isolation so their latency is understood and documented; new capabilities arrive with a measured performance impact, comparable against industry benchmarks, so improvement is focused where it matters",
    "verdict": "not promoted \u2014 an engineering-practice principle; most of it is the commitment module's already or the readiness gate that waits on offerings becoming declarations; two pieces are new and taken as terms",
    "why": "Not generative: no decision was made because of it \u2014 the latency metric, the commitment per offering and 'measured or rejected' came from other candidates. Not testable as worded: it bundles four claims, of which 'benchmarked in isolation' is a question about method the graph cannot see, and 'a new capability has a measured impact' is the readiness gate already on the backlog. Enforced only by proxy: any latency promise that enters the graph must carry a source and validation (CommitmentShape), but nothing requires a promise to exist for a new capability because an offering has no state to gate. Wording: 'performance is a capability' collides with the model's word \u2014 a capability is what the platform offers and tenants subscribe to; performance is a property of capabilities, held as commitments.",
-   "todo": "Two terms, questions first: (1) a closed scheme for the kind of evidence behind a measurement source \u2014 isolated benchmark or production telemetry \u2014 so a commitment can say what backs it; question: which committed latency promises rest on an isolated benchmark with no production observation? (2) the industry benchmark as an externally sourced baseline floor at a scope; question: which offerings fall short of the floor by the widest margin? \u2014 'focused improvement' as a query. Both wait on the baseline design and the offering-as-declaration decision; see the commitment backlog."
+   "todo": "Partly resolved (D66): baselines exist as floors declared at a scope, with a reference source \u2014 an industry benchmark is a floor whose source is external. Remaining: the kind of evidence behind a measurement source (isolated benchmark vs production telemetry), and the margin query."
   }
  ],
  "explainers": [
@@ -20777,7 +21176,7 @@
    "steps": [
     {
      "heading": "What a commitment is",
-     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
+     "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9. A baseline is a floor declared at a scope: every offering beneath it must carry a committed commitment on the floor's metric at least as strong, and cannot be available without one.",
      "table": {
       "columns": [
        "Part",
@@ -20819,7 +21218,8 @@
       "cmt:commitsTo",
       "cmt:metric",
       "cp:CapabilityOffering",
-      "cp:DesiredStateDeclaration"
+      "cp:DesiredStateDeclaration",
+      "cmt:CommitmentBaseline"
      ],
      "principles": [
       "P18",
@@ -20914,7 +21314,7 @@
     },
     {
      "heading": "What comes next",
-     "body": "In order: offerings for the platform's own request-path capabilities \u2014 ingress, decision point, session manager \u2014 so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
+     "body": "In order: offerings for the platform's own request-path capabilities \u2014 ingress, decision point, session manager \u2014 so they can carry commitments; a breach query by comparator, and the margin against a floor; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
      "principles": [
       "P9"
      ]
@@ -21068,6 +21468,16 @@
      "control-plane",
      "contract",
      "commitment"
+    ]
+   },
+   {
+    "id": "CQ-15",
+    "question": "Which floors apply to which offerings, and does each carry a committed commitment on the floor's metric at least as strong?",
+    "query": "cq15-floors-and-coverage.rq",
+    "sparql": "# CQ-15 \u2014 Which floors apply to which offerings, and does each offering carry a\n# committed commitment on the floor's metric at least as strong?\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?floor ?floorScope ?metric ?comparator ?floorTarget ?offering ?commitment ?target WHERE {\n  ?floor a cmt:CommitmentBaseline ; cp:declarationScope ?floorScope ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?floorTarget .\n  ?m skos:notation ?metric . ?c skos:notation ?comparator .\n  ?offering a cp:CapabilityOffering ; cp:offeredInScope ?os . ?os cp:subScopeOf* ?floorScope .\n  OPTIONAL { ?commitment cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?target }\n}\nORDER BY ?floor ?offering",
+    "modules": [
+     "commitment",
+     "control-plane"
     ]
    }
   ],
@@ -21857,9 +22267,18 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Which offerings fall short of an industry-benchmark floor by the widest margin? (the floor is an externally sourced baseline at a scope \u2014 needs the baseline design; 'focused improvement' as a query)",
+    "question": "Which offerings fall short of an industry-benchmark floor by the widest margin? (baselines exist \u2014 D66 \u2014 with a reference source; a floor with an external source is the benchmark; the margin query is the remaining step)",
     "expectedEmpty": false,
     "realizedBy": []
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Which committed commitments are weaker than the floor for their scope, and which available offerings carry no commitment on a floor's metric? (expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "NoWeakerThanFloorShape",
+     "FloorCoverageShape"
+    ]
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",

@@ -585,7 +585,7 @@
       "steps": [
         {
           "heading": "What a commitment is",
-          "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9.",
+          "body": "The platform manages capabilities, not the services that realise them, so a commitment attaches to a capability offering. It is a declaration: declared through the management plane, bound to a scope that contains the offering's, approved where that scope requires it, and superseded rather than edited. Example: the notifications capability, offered in production, commits to at least 99.95 percent availability over any 30-day window, measured by the platform metrics feed and validated by CQ-9. A baseline is a floor declared at a scope: every offering beneath it must carry a committed commitment on the floor's metric at least as strong, and cannot be available without one.",
           "table": {
             "columns": [
               "Part",
@@ -627,7 +627,8 @@
             "cmt:commitsTo",
             "cmt:metric",
             "cp:CapabilityOffering",
-            "cp:DesiredStateDeclaration"
+            "cp:DesiredStateDeclaration",
+            "cmt:CommitmentBaseline"
           ],
           "principles": [
             "P18",
@@ -722,7 +723,7 @@
         },
         {
           "heading": "What comes next",
-          "body": "In order: offerings for the platform's own request-path capabilities — ingress, decision point, session manager — so they can carry commitments; a breach query by comparator; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
+          "body": "In order: offerings for the platform's own request-path capabilities — ingress, decision point, session manager — so they can carry commitments; a breach query by comparator, and the margin against a floor; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
             "P9"
           ]

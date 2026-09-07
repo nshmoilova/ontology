@@ -12,12 +12,12 @@
 
 <https://w3id.org/examplebank/platform/commitment>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.2.0> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> , <https://www.w3.org/TR/vocab-ssn/> ;
     dct:title "Commitment Module"@en ;
-    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited."@en ;
+    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines — floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66)."@en ;
     dct:created "2026-09-02"^^xsd:date .
 
 #################################################################
@@ -145,3 +145,26 @@ cmt:CommitmentStateScheme a skos:ConceptScheme ; skos:prefLabel "Commitment stat
 cmt:state-draft a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "draft"@en .
 cmt:state-committed a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "committed"@en .
 cmt:state-withdrawn a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "withdrawn"@en .
+
+#################################################################
+# Baselines — floors declared at a scope (D66)
+#################################################################
+
+cmt:CommitmentBaseline a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Commitment baseline"@en ;
+    skos:altLabel "floor"@en , "baseline NFR"@en ;
+    skos:definition "A floor declared at a scope: one metric, a comparator, a target with unit, and a window, that every offering in the scope's subtree must meet with a committed commitment at least as strong. A requirement, not a promise: it needs no measurement source."@en ;
+    vs:term_status "draft" .
+
+cmt:satisfiesBaseline a owl:ObjectProperty ;
+    skos:prefLabel "satisfies baseline"@en ;
+    skos:definition "Baseline a commitment was made to meet — an optional derivation edge; containment binds them whether or not it is stated."@en ;
+    vs:term_status "draft" .
+
+cmt:referenceSource a owl:DatatypeProperty ;
+    skos:prefLabel "reference source"@en ;
+    skos:definition "Where a baseline's target comes from, as an xsd:anyURI — an industry benchmark, a regulation, or an internal standard."@en ;
+    vs:term_status "draft" .
+

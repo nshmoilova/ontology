@@ -70,3 +70,46 @@ scm:CommitmentScopeShape a sh:NodeShape ;
         """ ;
     ] .
 
+# D66 — baselines: well-formed floors; no committed commitment weaker than a floor
+# that covers its offering; an available offering under a floor carries a commitment on the floor's metric.
+scm:CommitmentBaselineShape a sh:NodeShape ;
+    sh:targetClass cmt:CommitmentBaseline ;
+    sh:property [ sh:path cmt:metric ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Metric ; sh:severity sh:Violation ; sh:message "A baseline targets exactly one metric from the closed scheme." ] ;
+    sh:property [ sh:path cmt:comparator ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Comparator ; sh:severity sh:Violation ; sh:message "A baseline states exactly one comparator." ] ;
+    sh:property [ sh:path cmt:target ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:severity sh:Violation ; sh:message "A baseline has exactly one decimal target." ] ;
+    sh:property [ sh:path cmt:unit ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ; sh:severity sh:Violation ; sh:message "A baseline states exactly one unit." ] ;
+    sh:property [ sh:path cmt:window ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:duration ; sh:severity sh:Violation ; sh:message "A baseline is judged over exactly one window." ] .
+
+scm:NoWeakerThanFloorShape a sh:NodeShape ;
+    sh:targetClass cmt:Commitment ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Committed commitment is weaker than the floor declared for its offering's scope — a promise below the baseline." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?t ;
+                      <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .
+                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .
+                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ; <https://w3id.org/examplebank/platform/commitment#target> ?ft .
+                FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?t < ?ft) || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?t > ?ft) )
+            }
+        """ ;
+    ] .
+
+scm:FloorCoverageShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityOffering ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Available offering carries no committed commitment on a metric its scope's floor requires — not ready against the baseline." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> ; <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .
+                ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .
+                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m .
+                FILTER NOT EXISTS { ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> . }
+            }
+        """ ;
+    ] .
+

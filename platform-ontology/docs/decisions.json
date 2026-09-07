@@ -1178,6 +1178,36 @@
         "DesiredStateDeclaration",
         "ApplicationEnablement"
       ]
+    },
+    {
+      "id": "D66",
+      "title": "Baselines are floors declared at a scope",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P16",
+        "P7",
+        "P10",
+        "P15",
+        "P9"
+      ],
+      "reasoning": "A baseline non-functional requirement is a requirement, not a promise: it needs no measurement source, and it must apply to offerings that do not exist yet. Both point at the same shape — a declaration at a scope, inherited by containment the way approval rigor is (D06). A floor states one metric, comparator, target, unit and window, optionally with a reference source, so an industry benchmark is a floor whose source is external. Two invariants give it teeth: a committed commitment on a covered offering may not be weaker than the floor by its comparator, and an available offering under a floor must carry a committed commitment on the floor's metric — the readiness gate's second version. A commitment may cite the floor it satisfies; containment binds them whether or not it does.",
+      "rejected": [
+        "A baseline on the capability: inheritance across offerings, which SHACL does badly, and it cannot say 'everything in production'.",
+        "A baseline as a commitment with no offering: breaks the one-offering rule and blurs the requirement/guarantee distinction that makes 'unmeasured is aspirational' work.",
+        "Tiers now: gold and silver are bundles of floors, expanded on declaration as capability bundles are (D15); no question asks for them yet."
+      ],
+      "terms": [
+        "CommitmentBaseline",
+        "satisfiesBaseline",
+        "referenceSource",
+        "Commitment",
+        "CapabilityOffering"
+      ]
     }
   ]
 }

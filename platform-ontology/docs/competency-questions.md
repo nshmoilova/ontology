@@ -21,6 +21,7 @@ scope creep.
 | CQ-12 | Which contract versions does each application depend on, at which deployment scope? | `cq12-application-contract-dependencies.rq` | contract, control-plane |
 | CQ-13 | Which jurisdictions must each tenant's data of each category stay in, which may it additionally sit in, and which transfers are permitted under what basis? | `cq13-residency-and-transfers.rq` | control-plane, core |
 | CQ-14 | Which offerings are in which state in each scope, and does each available one carry a published contract and a committed commitment? | `cq14-offering-readiness.rq` | control-plane, contract, commitment |
+| CQ-15 | Which floors apply to which offerings, and does each carry a committed commitment on the floor's metric at least as strong? | `cq15-floors-and-coverage.rq` | commitment, control-plane |
 
 ## Backlog and realised invariants
 
@@ -468,8 +469,11 @@ with no measurement source or no validation mechanism is a violation — the
   production observation? *(needs a closed scheme for the kind of evidence
   behind a measurement source — isolated benchmark or production telemetry)*
 - Which offerings fall short of an industry-benchmark floor by the widest
-  margin? *(the floor is an externally sourced baseline at a scope — needs
-  the baseline design; 'focused improvement' as a query)*
+  margin? *(baselines exist — D66 — with a reference source; a floor with an
+  external source is the benchmark; the margin query is the remaining step)*
+- Which committed commitments are weaker than the floor for their scope, and
+  which available offerings carry no commitment on a floor's metric?
+  *(expected empty)* [realised: NoWeakerThanFloorShape, FloorCoverageShape]
 - Who is accountable for each commitment, and was its change approved?
   *(commitments are declarations — D59; CQ-9 lists scope and approver, and
   a commitment declared where rigor requires approval must carry one)* [realised: ScopeRigorShape, CommitmentScopeShape]

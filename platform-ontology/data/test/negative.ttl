@@ -717,3 +717,32 @@ ex:offering-below a cp:CapabilityOffering ;
     cp:offersCapability ex:planned-capability ;
     cp:offeredInScope ex:scope-cmt-a .
 
+### 61. Committed commitment weaker than the floor for its scope (NoWeakerThanFloorShape)
+ex:floor-lax-availability a cmt:CommitmentBaseline ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.9 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration .
+ex:offering-lax a cp:CapabilityOffering ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:cell-capability ;
+    cp:offeredInScope ex:lax-scope .
+ex:commit-below-floor a cmt:Commitment ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cmt:commitsTo ex:offering-lax ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.5 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+# ex:offering-unready (available in lax-scope, no commitments) now also fails FloorCoverageShape against this floor.
+
