@@ -1148,6 +1148,36 @@
       "motivatedBy": [
         "P21"
       ]
+    },
+    {
+      "id": "D65",
+      "title": "An offering is a declaration with a lifecycle state; only an available offering covers enablement",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P2",
+        "P3",
+        "P17",
+        "P20",
+        "P10"
+      ],
+      "reasoning": "Judged by the model's own tests an offering is intent (P2), changes what tenants may have (P3), has history anyone asks for (P17), is bound to a scope whose rigor matters (D06), and is what almost everything else depends on being authoritative (D16). It was a plain node only by order of construction. It is now a desired-state declaration — management plane, scope, approval, supersession — declared at or above the scope it offers in, with a lifecycle state from a closed scheme. Two teeth: an available offering must carry a published contract version and a committed commitment (the readiness gate the 'non-functionals are scope' candidate asked for), and an enablement is covered only by an available offering, so a tenant cannot enable on a plan. Deployment stays permitted under a planned offering: deploying ahead of availability is launch preparation, and DataPlaneOfferedShape keeps reading existence.",
+      "rejected": [
+        "Keeping offerings as plain nodes because they rarely change: the argument that fails the dependency test — if an offering is wrong, enablement, deployment, subscription reach, commitments and contracts are wrong with it.",
+        "Gating deployment on availability too: a plane under a planned offering is how a launch is prepared; the gate belongs on what tenants get, which is enablement.",
+        "Requiring a commitment on every baseline metric at availability: baselines do not exist yet; the gate's second version arrives with them."
+      ],
+      "terms": [
+        "CapabilityOffering",
+        "OfferingState",
+        "hasOfferingState",
+        "DesiredStateDeclaration",
+        "ApplicationEnablement"
+      ]
     }
   ]
 }

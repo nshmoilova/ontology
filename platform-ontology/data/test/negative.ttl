@@ -683,3 +683,37 @@ ex:admission-crossing a authz:IngressAdmissionDecision ;
     authz:evaluatedGrant ex:grant-bad-tenant-channel ;
     authz:decisionOutcome authz:outcome-permit .
 
+### 58. Available offering with no published contract and no commitment (OfferingWithoutContractShape, OfferingReadinessShape)
+ex:nocontract-capability a core:Capability ; core:displayName "Capability with no contract" .
+ex:offering-unready a cp:CapabilityOffering ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:hasOfferingState cp:offering-available ;
+    cp:offersCapability ex:nocontract-capability ;
+    cp:offeredInScope ex:lax-scope .
+
+### 59. Enablement whose only covering offering is planned (EnablementOfferingCoverageShape, narrowed to available)
+ex:planned-capability a core:Capability ; core:displayName "Capability offered only as planned" .
+ex:offering-planned a cp:CapabilityOffering ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:planned-capability ;
+    cp:offeredInScope ex:lax-scope .
+ex:req-planned a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-bad ;
+    cp:requiredCapability ex:planned-capability ;
+    cp:hasApproval ex:approval-outsider-1 .
+ex:enable-on-planned a cp:ApplicationEnablement ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cp:forApplication ex:app-bad .
+
+### 60. Offering declared below the scope it offers in (OfferingStateShape)
+ex:offering-below a cp:CapabilityOffering ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:scope-cmt-b ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:planned-capability ;
+    cp:offeredInScope ex:scope-cmt-a .
+

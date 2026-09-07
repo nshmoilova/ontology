@@ -1,0 +1,16 @@
+# CQ-14 — Which offerings are in which lifecycle state in each scope, and does
+# each carry what availability requires: a published contract version and at
+# least one committed commitment?
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX ctr:  <https://w3id.org/examplebank/platform/contract#>
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?offering ?capability ?scope ?state (COUNT(DISTINCT ?pv) AS ?publishedVersions) (COUNT(DISTINCT ?cm) AS ?committedCommitments) WHERE {
+  ?offering a cp:CapabilityOffering ; cp:offersCapability ?capability ; cp:offeredInScope ?scope ; cp:hasOfferingState ?st .
+  ?st skos:prefLabel ?state .
+  OPTIONAL { ?ct ctr:contractOf ?capability . ?pv ctr:versionOf ?ct ; ctr:hasVersionState ctr:state-published }
+  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:hasCommitmentState cmt:state-committed }
+}
+GROUP BY ?offering ?capability ?scope ?state
+ORDER BY ?offering

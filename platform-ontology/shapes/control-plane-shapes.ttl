@@ -532,7 +532,7 @@ scp:EnablementOfferingCoverageShape a sh:NodeShape ;
     sh:targetClass cp:ApplicationEnablement ;
     sh:sparql [
         a sh:SPARQLConstraint ;
-        sh:message "Application enablement's scope is not covered by any offering of a confirmed required capability — enabled where the capability does not exist." ;
+        sh:message "Application enablement's scope is not covered by any available offering of a confirmed required capability — enabled where the capability is not available." ;
         sh:severity sh:Violation ;
         sh:select """
             SELECT $this WHERE {
@@ -543,7 +543,8 @@ scp:EnablementOfferingCoverageShape a sh:NodeShape ;
                    <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .
                 FILTER NOT EXISTS {
                     ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;
-                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .
+                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;
+                       <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .
                     ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .
                 }
             }
@@ -764,6 +765,23 @@ scp:ControlCrossingShape a sh:NodeShape ;
                         <https://w3id.org/examplebank/platform/control-plane#forTenant> ?t ; <https://w3id.org/examplebank/platform/control-plane#forDataCategory> ?c ; <https://w3id.org/examplebank/platform/control-plane#toJurisdiction> ?tj .
                     ?j <http://www.w3.org/2004/02/skos/core#broader>* ?tj .
                 }
+            }
+        """ ;
+    ] .
+
+# D65 — an offering is a declaration with a lifecycle state; only an available offering covers enablement.
+scp:OfferingStateShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityOffering ;
+    sh:property [ sh:path cp:hasOfferingState ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cp:OfferingState ; sh:severity sh:Violation ;
+        sh:message "An offering is in exactly one lifecycle state — planned, available or withdrawn." ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Offering is declared in a scope that does not contain the scope it offers in — an offering is declared at or above where it applies." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .
+                FILTER NOT EXISTS { ?off <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }
             }
         """ ;
     ] .

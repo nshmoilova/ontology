@@ -20,6 +20,7 @@ scope creep.
 | CQ-11 | Which capabilities are offered in exactly one region, so no failover target exists? | `cq11-single-region-offerings.rq` | control-plane |
 | CQ-12 | Which contract versions does each application depend on, at which deployment scope? | `cq12-application-contract-dependencies.rq` | contract, control-plane |
 | CQ-13 | Which jurisdictions must each tenant's data of each category stay in, which may it additionally sit in, and which transfers are permitted under what basis? | `cq13-residency-and-transfers.rq` | control-plane, core |
+| CQ-14 | Which offerings are in which state in each scope, and does each available one carry a published contract and a committed commitment? | `cq14-offering-readiness.rq` | control-plane, contract, commitment |
 
 ## Backlog and realised invariants
 
@@ -437,8 +438,11 @@ approval and supersession.
   deployment scope? *(formal — CQ-12)*
 - Which applications are affected by deprecating a given contract version?
   *(the blast radius of a change — descriptive; the join exists)*
-- Which offerings realise a capability with no published contract version?
-  *(deployed without a contract — expected empty)* [realised: OfferingWithoutContractShape]
+- Which available offerings realise a capability with no published contract
+  version? *(available without a contract — expected empty)* [realised: OfferingWithoutContractShape]
+- Which available offerings carry no committed commitment, and which
+  enablements sit on a merely planned offering? *(the readiness gate — D65;
+  expected empty)* [realised: OfferingReadinessShape, EnablementOfferingCoverageShape]
 - Which contract versions were published, deprecated or retired with no
   change declaration behind them? *(expected empty)* [realised: ContractVersionShape]
 - Which requirements pin a retired version? *(a consumer on a dead

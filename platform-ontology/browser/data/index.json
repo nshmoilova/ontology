@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "2cd3690007b7",
+ "sourceDigest": "609974551073",
  "stats": {
   "modules": 8,
-  "classes": 91,
-  "objectProperties": 120,
+  "classes": 92,
+  "objectProperties": 121,
   "datatypeProperties": 40,
-  "shapes": 94,
-  "violations": 152,
+  "shapes": 96,
+  "violations": 155,
   "warnings": 9,
-  "vocabularies": 20,
-  "relationships": 74,
-  "decisions": 60,
+  "vocabularies": 21,
+  "relationships": 75,
+  "decisions": 61,
   "principles": 20,
   "standards": 15,
-  "realisedBacklog": 44,
+  "realisedBacklog": 45,
   "provisionalPrinciples": 9,
   "explainers": 3,
-  "formalCQs": 13,
-  "backlogCQs": 137
+  "formalCQs": 14,
+  "backlogCQs": 138
  },
  "modules": [
   {
@@ -84,7 +84,7 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.9.0",
+   "version": "0.10.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
@@ -7022,8 +7022,8 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Application enablement's scope is not covered by any offering of a confirmed required capability \u2014 enabled where the capability does not exist.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s ;\n                      <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .\n                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                FILTER NOT EXISTS {\n                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .\n                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                }\n            }"
+     "message": "Application enablement's scope is not covered by any available offering of a confirmed required capability \u2014 enabled where the capability is not available.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s ;\n                      <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .\n                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                FILTER NOT EXISTS {\n                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                }\n            }"
     }
    ],
    "outgoing": [],
@@ -7032,7 +7032,8 @@
    "vocabulary": [],
    "decisions": [
     "D19",
-    "D35"
+    "D35",
+    "D65"
    ],
    "principles": [
     "P18"
@@ -7166,29 +7167,68 @@
    "conformsTo": [],
    "dataCategory": "core:data-governance",
    "status": "draft",
-   "subClassOf": [],
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
    "subPropertyOf": [],
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
     "OfferingWithoutContractShape",
-    "OfferingSupplyClosureShape"
+    "OfferingReadinessShape",
+    "OfferingSupplyClosureShape",
+    "OfferingStateShape"
    ],
    "constraints": [
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Offering realises a capability with no published contract version \u2014 deployed without a contract.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
+     "message": "Available offering realises a capability with no published contract version \u2014 available without a contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap ; <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Available offering carries no committed commitment \u2014 not ready: nothing is promised for it.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                FILTER NOT EXISTS {\n                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                }\n            }"
     },
     {
      "kind": "sparql",
      "severity": "Violation",
      "message": "Capability offering sits in a scope where a hard dependency lacks a covering offering \u2014 an unfulfillable promise.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                      <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?s .\n                ?c <https://w3id.org/examplebank/platform/control-plane#dependsOn> ?dep .\n                FILTER NOT EXISTS {\n                    ?o2 <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?dep ;\n                        <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?s2 .\n                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?s2 .\n                }\n            }"
+    },
+    {
+     "kind": "property",
+     "path": "cp:hasOfferingState",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#hasOfferingState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:OfferingState",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#OfferingState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An offering is in exactly one lifecycle state \u2014 planned, available or withdrawn."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Offering is declared in a scope that does not contain the scope it offers in \u2014 an offering is declared at or above where it applies.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .\n                FILTER NOT EXISTS { ?off <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }\n            }"
     }
    ],
-   "outgoing": [],
+   "outgoing": [
+    {
+     "from": "cp:CapabilityOffering",
+     "property": "cp:hasOfferingState",
+     "to": "cp:OfferingState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
    "incoming": [
     {
      "from": "cmt:Commitment",
@@ -7202,7 +7242,8 @@
    "vocabulary": [],
    "decisions": [
     "D16",
-    "D35"
+    "D35",
+    "D65"
    ],
    "principles": [
     "P2",
@@ -7666,6 +7707,7 @@
    "subClasses": [
     "cmt:Commitment",
     "cp:ApplicationEnablement",
+    "cp:CapabilityOffering",
     "cp:JourneyDefinitionChange",
     "cp:ResidencyRequirement",
     "cp:RouteBindingChange",
@@ -7742,7 +7784,8 @@
    "vocabulary": [],
    "decisions": [
     "D05",
-    "D59"
+    "D59",
+    "D65"
    ],
    "principles": [
     "P2"
@@ -7926,6 +7969,81 @@
    "principles": [
     "P7"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#OfferingState",
+   "name": "OfferingState",
+   "curie": "cp:OfferingState",
+   "kind": "class",
+   "module": "control-plane",
+   "label": "Offering state",
+   "definition": "Lifecycle state of a capability offering: planned, available, or withdrawn. Only an available offering covers enablement.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cp:CapabilityOffering",
+     "property": "cp:hasOfferingState",
+     "to": "cp:OfferingState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-available",
+     "curie": "cp:offering-available",
+     "label": "available",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-planned",
+     "curie": "cp:offering-planned",
+     "label": "planned",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-withdrawn",
+     "curie": "cp:offering-withdrawn",
+     "label": "withdrawn",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    }
+   ],
+   "decisions": [
+    "D65"
+   ],
+   "principles": []
   },
   {
    "iri": "https://w3id.org/examplebank/platform/control-plane#PolicyChangeEvent",
@@ -9811,6 +9929,42 @@
    "vocabulary": [],
    "decisions": [
     "D45"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#hasOfferingState",
+   "name": "hasOfferingState",
+   "curie": "cp:hasOfferingState",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "has offering state",
+   "definition": "Current lifecycle state of the offering \u2014 exactly one.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:CapabilityOffering",
+     "property": "cp:hasOfferingState",
+     "to": "cp:OfferingState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D65"
    ],
    "principles": []
   },
@@ -13042,6 +13196,51 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#OfferingStateScheme",
+   "curie": "cp:OfferingStateScheme",
+   "title": "OfferingStateScheme",
+   "note": null,
+   "module": "control-plane",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-available",
+     "curie": "cp:offering-available",
+     "label": "available",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-planned",
+     "curie": "cp:offering-planned",
+     "label": "planned",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/control-plane#offering-withdrawn",
+     "curie": "cp:offering-withdrawn",
+     "label": "withdrawn",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cp:OfferingState"
+     ]
+    }
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#SubscriptionStateScheme",
    "curie": "cp:SubscriptionStateScheme",
    "title": "Subscription Lifecycle States",
@@ -14973,8 +15172,8 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Application enablement's scope is not covered by any offering of a confirmed required capability \u2014 enabled where the capability does not exist.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s ;\n                      <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .\n                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                FILTER NOT EXISTS {\n                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os .\n                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                }\n            }"
+     "message": "Application enablement's scope is not covered by any available offering of a confirmed required capability \u2014 enabled where the capability is not available.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s ;\n                      <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app .\n                ?r <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasApproval> ?a .\n                FILTER NOT EXISTS {\n                    ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                       <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;\n                       <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                    ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                }\n            }"
     }
    ],
    "violations": 1,
@@ -15117,6 +15316,55 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/contract#OfferingReadinessShape",
+   "name": "OfferingReadinessShape",
+   "targetClass": "cp:CapabilityOffering",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Available offering carries no committed commitment \u2014 not ready: nothing is promised for it.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                FILTER NOT EXISTS {\n                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#OfferingStateShape",
+   "name": "OfferingStateShape",
+   "targetClass": "cp:CapabilityOffering",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:hasOfferingState",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#hasOfferingState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cp:OfferingState",
+     "classIri": "https://w3id.org/examplebank/platform/control-plane#OfferingState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "An offering is in exactly one lifecycle state \u2014 planned, available or withdrawn."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Offering is declared in a scope that does not contain the scope it offers in \u2014 an offering is declared at or above where it applies.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?off ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?decl .\n                FILTER NOT EXISTS { ?off <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?decl . }\n            }"
+    }
+   ],
+   "violations": 2,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#OfferingSupplyClosureShape",
    "name": "OfferingSupplyClosureShape",
    "targetClass": "cp:CapabilityOffering",
@@ -15143,8 +15391,8 @@
     {
      "kind": "sparql",
      "severity": "Violation",
-     "message": "Offering realises a capability with no published contract version \u2014 deployed without a contract.",
-     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
+     "message": "Available offering realises a capability with no published contract version \u2014 available without a contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap ; <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
     }
    ],
    "violations": 1,
@@ -16893,6 +17141,13 @@
    "from": "cp:CapabilityControlPlane",
    "property": "cp:governsCapability",
    "to": "core:Capability",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cp:CapabilityOffering",
+   "property": "cp:hasOfferingState",
+   "to": "cp:OfferingState",
    "cardinality": "1..1",
    "severity": "Violation"
   },
@@ -18701,6 +18956,43 @@
     "cp:TransferPermission",
     "cp:hasRegion"
    ]
+  },
+  {
+   "id": "D65",
+   "title": "An offering is a declaration with a lifecycle state; only an available offering covers enablement",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "motivatedBy": [
+    "P18"
+   ],
+   "principles": [
+    "P18",
+    "P2",
+    "P3",
+    "P17",
+    "P20",
+    "P10"
+   ],
+   "reasoning": "Judged by the model's own tests an offering is intent (P2), changes what tenants may have (P3), has history anyone asks for (P17), is bound to a scope whose rigor matters (D06), and is what almost everything else depends on being authoritative (D16). It was a plain node only by order of construction. It is now a desired-state declaration \u2014 management plane, scope, approval, supersession \u2014 declared at or above the scope it offers in, with a lifecycle state from a closed scheme. Two teeth: an available offering must carry a published contract version and a committed commitment (the readiness gate the 'non-functionals are scope' candidate asked for), and an enablement is covered only by an available offering, so a tenant cannot enable on a plan. Deployment stays permitted under a planned offering: deploying ahead of availability is launch preparation, and DataPlaneOfferedShape keeps reading existence.",
+   "rejected": [
+    "Keeping offerings as plain nodes because they rarely change: the argument that fails the dependency test \u2014 if an offering is wrong, enablement, deployment, subscription reach, commitments and contracts are wrong with it.",
+    "Gating deployment on availability too: a plane under a planned offering is how a launch is prepared; the gate belongs on what tenants get, which is enablement.",
+    "Requiring a commitment on every baseline metric at availability: baselines do not exist yet; the gate's second version arrives with them."
+   ],
+   "terms": [
+    "CapabilityOffering",
+    "OfferingState",
+    "hasOfferingState",
+    "DesiredStateDeclaration",
+    "ApplicationEnablement"
+   ],
+   "termCuries": [
+    "cp:ApplicationEnablement",
+    "cp:CapabilityOffering",
+    "cp:DesiredStateDeclaration",
+    "cp:OfferingState",
+    "cp:hasOfferingState"
+   ]
   }
  ],
  "principles": [
@@ -19480,7 +19772,7 @@
    "level": "platform",
    "statement": "Every provisioned, enabled, granted or admitted state follows from a governance intent that precedes it. It extends no further than that intent's scope, and it ends when the intent ends.",
    "test": "Which intent does this state follow from, and is it within that intent's scope? A state with no intent behind it, or that could outlive it, is rejected.",
-   "consequences": "Justified: a tenant-provisioning declaration names the subscription that justifies it \u2014 commercial intent precedes technical intent (D13); enablement requires confirmed requirements covered by active subscriptions and by offerings in the enablement scope (D18, D19, D35); admission requires an active membership (D45); a grant carries its derivation from a subscription, registration or enablement (D22); an active subscription carries its hard-dependency closure (D14). Bounded: a grant confers one tenant on one dimension; a route reaches only where the application is enabled; a data plane exists only where an offering covers; a client registration serves one audience. Contingent: a teardown declaration references the terminated subscription, grants are revocable projections that do not freeze at issuance (P4), and an inactive membership fails admission. This is provenance and reach, not quantity: the model checks where a privilege came from and how far it extends, and cannot measure whether it is the least that would do, because it holds no statement of need for principals \u2014 the Role class is an unused draft stub. Minimality exists only as reconciliation at the application level: capability-use observations propose requirements, humans confirm them, and drift is watched in both directions (D18).",
+   "consequences": "Justified: a tenant-provisioning declaration names the subscription that justifies it \u2014 commercial intent precedes technical intent (D13); enablement requires confirmed requirements covered by active subscriptions and by offerings in the enablement scope (D18, D19, D35); admission requires an active membership (D45); a grant carries its derivation from a subscription, registration or enablement (D22); an active subscription carries its hard-dependency closure (D14). Bounded: a grant confers one tenant on one dimension; a route reaches only where the application is enabled; a data plane exists only where an offering covers; a client registration serves one audience. Contingent: a teardown declaration references the terminated subscription, grants are revocable projections that do not freeze at issuance (P4), and an inactive membership fails admission. This is provenance and reach, not quantity: the model checks where a privilege came from and how far it extends, and cannot measure whether it is the least that would do, because it holds no statement of need for principals \u2014 the Role class is an unused draft stub. Minimality exists only as reconciliation at the application level: capability-use observations propose requirements, humans confirm them, and drift is watched in both directions (D18). Availability is a governed state that intent precedes (D65): an offering is a declaration in a lifecycle state \u2014 planned, available, withdrawn \u2014 and reaches available only with a published contract and a committed commitment; only an available offering covers an enablement.",
    "fitness": "generative (7 decisions, 9 invariants \u2014 four of the invariants had no principle at all) \u00b7 testable \u00b7 enforced on the data contract",
    "enforcedBy": [
     "ProvisioningJustificationShape",
@@ -19530,7 +19822,8 @@
     "cp:requiredCapability"
    ],
    "motivatedBy": [
-    "D59"
+    "D59",
+    "D65"
    ],
    "status": "confirmed"
   },
@@ -19871,7 +20164,7 @@
    "candidate": "Non-functionals are scope, not overhead \u2014 a capability is not complete until it satisfies its associated non-functional requirements",
    "verdict": "not promoted \u2014 a delivery principle (a definition of done) in a model that governs neither delivery nor the non-functional requirements it presupposes",
    "why": "Not generative: no decision follows from it, and the model has no notion of a capability being complete or ready \u2014 subscriptions and memberships carry state schemes, capabilities and offerings carry none. Not testable in practice: 'do this capability's realizations satisfy its non-functionals?' has exactly one answerable instance and no vocabulary for any other. That instance is worth naming because it is the pattern the candidate wants: a capability declares its isolation model and a data plane under a cell-per-tenant capability may serve one tenant only (D08, delivered in D54) \u2014 a capability-level requirement enforced on its realizations. Extended to the sibling service-level ontology, the candidate is not a new principle but P18 applied \u2014 intent precedes state \u2014 with commitments as part of an offering's intent and an offering reaching an available state only when its commitments are validated; the strongest argument for that ontology sharing this principles layer rather than growing its own. The method-level echo is already stated in governance: a term reaches stable only with a question, a shape, both test corpora and steward sign-off, generated by P9 and P10. 'Overhead versus scope' cannot be a principle here because the fitness criteria require enforcement by an invariant, build check or review test in this repository, and a rule about how delivery teams define done is enforced in a delivery process, not a graph.",
-   "todo": "Commitments exist and are declarations (D58, D59). This candidate becomes a readiness gate once offerings gain an available state \u2014 an offering may not reach it while any attached commitment lacks validation. Not yet modelled."
+   "todo": "Resolved (D65): offerings are declarations with a lifecycle state, and the readiness gate exists \u2014 an offering may not be available without a published contract and a committed commitment, and only an available offering covers enablement. The candidate is P18 applied, not a principle."
   },
   {
    "candidate": "P11 \u2014 Every kind of statement has exactly one home",
@@ -20765,6 +21058,17 @@
      "control-plane",
      "core"
     ]
+   },
+   {
+    "id": "CQ-14",
+    "question": "Which offerings are in which state in each scope, and does each available one carry a published contract and a committed commitment?",
+    "query": "cq14-offering-readiness.rq",
+    "sparql": "# CQ-14 \u2014 Which offerings are in which lifecycle state in each scope, and does\n# each carry what availability requires: a published contract version and at\n# least one committed commitment?\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX ctr:  <https://w3id.org/examplebank/platform/contract#>\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?offering ?capability ?scope ?state (COUNT(DISTINCT ?pv) AS ?publishedVersions) (COUNT(DISTINCT ?cm) AS ?committedCommitments) WHERE {\n  ?offering a cp:CapabilityOffering ; cp:offersCapability ?capability ; cp:offeredInScope ?scope ; cp:hasOfferingState ?st .\n  ?st skos:prefLabel ?state .\n  OPTIONAL { ?ct ctr:contractOf ?capability . ?pv ctr:versionOf ?ct ; ctr:hasVersionState ctr:state-published }\n  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:hasCommitmentState cmt:state-committed }\n}\nGROUP BY ?offering ?capability ?scope ?state\nORDER BY ?offering",
+    "modules": [
+     "control-plane",
+     "contract",
+     "commitment"
+    ]
    }
   ],
   "backlog": [
@@ -21490,10 +21794,19 @@
    },
    {
     "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
-    "question": "Which offerings realise a capability with no published contract version? (deployed without a contract \u2014 expected empty)",
+    "question": "Which available offerings realise a capability with no published contract version? (available without a contract \u2014 expected empty)",
     "expectedEmpty": true,
     "realizedBy": [
      "OfferingWithoutContractShape"
+    ]
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which available offerings carry no committed commitment, and which enablements sit on a merely planned offering? (the readiness gate \u2014 D65; expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "OfferingReadinessShape",
+     "EnablementOfferingCoverageShape"
     ]
    },
    {

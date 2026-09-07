@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.9.0> ;
-    owl:versionInfo "0.9.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.10.0> ;
+    owl:versionInfo "0.10.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     owl:imports <https://w3id.org/examplebank/platform/session> ;
@@ -104,6 +104,7 @@ cp:CapabilityBundle a owl:Class ;
     vs:term_status "draft" .
 
 cp:CapabilityOffering a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
     core:dataCategory core:data-governance ;
     skos:definition "Governed intent that a capability is offered in a scope. No cross-scope parity is assumed: a capability exists where an offering says it does. Data planes are actuation and must conform: deployed-where-not-offered violates; offered-but-undeployed is launch tracking."@en ;
     vs:term_status "draft" .
@@ -447,4 +448,25 @@ cp:basis-adequacy a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; sk
 cp:basis-contractual-clauses a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "contractual clauses"@en .
 cp:basis-consent a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "consent"@en .
 cp:basis-legal-obligation a cp:TransferBasis ; skos:inScheme cp:TransferBasisScheme ; skos:prefLabel "legal obligation"@en .
+
+#################################################################
+# Offering state (D65)
+#################################################################
+
+cp:OfferingState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Offering state"@en ;
+    skos:definition "Lifecycle state of a capability offering: planned, available, or withdrawn. Only an available offering covers enablement."@en ;
+    vs:term_status "draft" .
+
+cp:hasOfferingState a owl:ObjectProperty ;
+    skos:prefLabel "has offering state"@en ;
+    skos:definition "Current lifecycle state of the offering — exactly one."@en ;
+    vs:term_status "draft" .
+
+cp:OfferingStateScheme a skos:ConceptScheme ; skos:prefLabel "Offering states"@en .
+cp:offering-planned a cp:OfferingState ; skos:inScheme cp:OfferingStateScheme ; skos:prefLabel "planned"@en .
+cp:offering-available a cp:OfferingState ; skos:inScheme cp:OfferingStateScheme ; skos:prefLabel "available"@en .
+cp:offering-withdrawn a cp:OfferingState ; skos:inScheme cp:OfferingStateScheme ; skos:prefLabel "withdrawn"@en .
 

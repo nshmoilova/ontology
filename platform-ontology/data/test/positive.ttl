@@ -322,8 +322,15 @@ ex:approval-9001 a cp:ChangeApproval ;
 
 ex:offering-db-prod a cp:CapabilityOffering ;
     core:displayName "Managed database offered in prod/US" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-offering-1 ;
+    cp:hasOfferingState cp:offering-available ;
     cp:offersCapability ex:db-capability ;
     cp:offeredInScope ex:scope-prod .
+ex:approval-offering-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-10T10:00:00Z"^^xsd:dateTime .
 
 ### Application, confirmed requirement, enablement, portal
 ex:app-digital-bank a core:Application ;

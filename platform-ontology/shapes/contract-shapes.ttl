@@ -2,6 +2,7 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix core: <https://w3id.org/examplebank/platform/core#> .
 @prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
 @prefix ctr:  <https://w3id.org/examplebank/platform/contract#> .
 @prefix sct:  <https://w3id.org/examplebank/platform/shapes/contract#> .
 
@@ -66,11 +67,11 @@ sct:OfferingWithoutContractShape a sh:NodeShape ;
     sh:targetClass cp:CapabilityOffering ;
     sh:sparql [
         a sh:SPARQLConstraint ;
-        sh:message "Offering realises a capability with no published contract version — deployed without a contract." ;
+        sh:message "Available offering realises a capability with no published contract version — available without a contract." ;
         sh:severity sh:Violation ;
         sh:select """
             SELECT $this WHERE {
-                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .
+                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap ; <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .
                 FILTER NOT EXISTS {
                     ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .
                     ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .
@@ -78,3 +79,22 @@ sct:OfferingWithoutContractShape a sh:NodeShape ;
             }
         """ ;
     ] .
+
+# D65 — readiness: an available offering carries at least one committed commitment
+# (its contract is required by OfferingWithoutContractShape above).
+sct:OfferingReadinessShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityOffering ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Available offering carries no committed commitment — not ready: nothing is promised for it." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .
+                FILTER NOT EXISTS {
+                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> $this ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .
+                }
+            }
+        """ ;
+    ] .
+

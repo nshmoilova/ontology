@@ -98,7 +98,7 @@ def main() -> int:
             "arrive via exactly one channel",
             "at least one entitlement grant",
             "application owned by another tenant",
-            "not covered by any offering",
+            "not covered by any available offering",
             "same domain and path to different tenants",
             "no route-binding declaration behind it",
             "binds a tenant but declares no hostname",
@@ -135,10 +135,12 @@ def main() -> int:
             "not a member of the platform tenant",
             "no change declaration behind it",
             "consumer on a dead contract",
-            "deployed without a contract",
+            "available without a contract",
             "a storage crossing without a basis",
             "a control crossing without a basis",
             "an access crossing without a basis",
+            "carries no committed commitment",
+            "does not contain the scope it offers in",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -163,6 +165,7 @@ def main() -> int:
         "cq11-single-region-offerings.rq",
         "cq12-application-contract-dependencies.rq",
         "cq13-residency-and-transfers.rq",
+        "cq14-offering-readiness.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:
