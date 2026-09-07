@@ -1,0 +1,136 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix core:  <https://w3id.org/examplebank/platform/core#> .
+@prefix cp:    <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix ctr:   <https://w3id.org/examplebank/platform/contract#> .
+
+<https://w3id.org/examplebank/platform/contract>
+    a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/contract/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
+    dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> ;
+    dct:title "Contract Module"@en ;
+    dct:description "Published contracts of capabilities and their versions: a contract is the published interface of exactly one capability; a version has a lifecycle state and a compatibility; publication, deprecation and retirement are contract changes — desired-state declarations with scope, approval and supersession. Consumers are applications, through their capability requirements pinning a version. A sibling of the identity modules: imports core and control-plane; nothing imports it. Scaffolded at 0.1.0 (D62) with one competency question. The catalogue contracts capabilities, not services."@en ;
+    dct:created "2026-09-03"^^xsd:date .
+
+#################################################################
+# Classes
+#################################################################
+
+ctr:Contract a owl:Class ;
+    skos:prefLabel "Contract"@en ;
+    skos:definition "The published interface of exactly one capability, through which consumers depend on the capability rather than on what realises it."@en ;
+    vs:term_status "draft" .
+
+ctr:ContractVersion a owl:Class ;
+    skos:prefLabel "Contract version"@en ;
+    skos:definition "One version of a contract: a version string, a lifecycle state, a compatibility with its predecessor, and a reference to the interface artifact."@en ;
+    vs:term_status "draft" .
+
+ctr:ContractChange a owl:Class ;
+    rdfs:subClassOf cp:DesiredStateDeclaration ;
+    skos:prefLabel "Contract change"@en ;
+    skos:definition "A desired-state declaration that publishes, deprecates or retires a contract version — the published change process, with scope, approval rigor and supersession inherited from the declaration machinery."@en ;
+    vs:term_status "draft" .
+
+ctr:Compatibility a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Compatibility"@en ;
+    skos:definition "Whether a version is compatible with its predecessor or breaks it."@en ;
+    vs:term_status "draft" .
+
+ctr:ContractVersionState a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Contract version state"@en ;
+    skos:definition "Lifecycle state of a contract version: draft, published, deprecated, or retired."@en ;
+    vs:term_status "draft" .
+
+ctr:Contract owl:disjointWith ctr:ContractVersion .
+
+#################################################################
+# Object properties (no domain/range — typing is SHACL's job, P6)
+#################################################################
+
+ctr:contractOf a owl:ObjectProperty ;
+    skos:prefLabel "contract of"@en ;
+    skos:definition "Capability whose published interface this contract is — exactly one."@en ;
+    vs:term_status "draft" .
+
+ctr:versionOf a owl:ObjectProperty ;
+    skos:prefLabel "version of"@en ;
+    skos:definition "Contract a version belongs to — exactly one."@en ;
+    vs:term_status "draft" .
+
+ctr:hasVersionState a owl:ObjectProperty ;
+    skos:prefLabel "has version state"@en ;
+    skos:definition "Current lifecycle state of the version."@en ;
+    vs:term_status "draft" .
+
+ctr:compatibility a owl:ObjectProperty ;
+    skos:prefLabel "compatibility"@en ;
+    skos:definition "Compatibility of the version with the one it supersedes."@en ;
+    vs:term_status "draft" .
+
+ctr:supersedesVersion a owl:ObjectProperty ;
+    skos:prefLabel "supersedes version"@en ;
+    skos:definition "Predecessor version this version replaces."@en ;
+    vs:term_status "draft" .
+
+ctr:dependsOnContractVersion a owl:ObjectProperty ;
+    skos:prefLabel "depends on contract version"@en ;
+    skos:definition "Contract version a capability requirement pins — how an application depends on a contract rather than on an implementation."@en ;
+    vs:term_status "draft" .
+
+ctr:publishesVersion a owl:ObjectProperty ;
+    skos:prefLabel "publishes version"@en ;
+    skos:definition "Version a contract change publishes."@en ;
+    vs:term_status "draft" .
+
+ctr:deprecatesVersion a owl:ObjectProperty ;
+    skos:prefLabel "deprecates version"@en ;
+    skos:definition "Version a contract change deprecates."@en ;
+    vs:term_status "draft" .
+
+ctr:retiresVersion a owl:ObjectProperty ;
+    skos:prefLabel "retires version"@en ;
+    skos:definition "Version a contract change retires."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+ctr:versionString a owl:DatatypeProperty ;
+    skos:prefLabel "version string"@en ;
+    skos:definition "Semantic version of a contract version, MAJOR.MINOR.PATCH."@en ;
+    vs:term_status "draft" .
+
+ctr:artifact a owl:DatatypeProperty ;
+    dct:conformsTo <https://spec.openapis.org/oas/latest.html> , <https://www.asyncapi.com/docs/reference/specification/latest> ;
+    skos:prefLabel "artifact"@en ;
+    skos:definition "Reference to the interface description of a version, as an xsd:anyURI — an OpenAPI or AsyncAPI document, never a tool."@en ;
+    vs:term_status "draft" .
+
+ctr:toleranceUntil a owl:DatatypeProperty ;
+    skos:prefLabel "tolerance until"@en ;
+    skos:definition "Instant until which a deprecated version remains served, giving consumers a window to move."@en ;
+    vs:term_status "draft" .
+
+#################################################################
+# Closed schemes (P7)
+#################################################################
+
+ctr:ContractVersionStateScheme a skos:ConceptScheme ; skos:prefLabel "Contract version states"@en .
+ctr:state-draft a ctr:ContractVersionState ; skos:inScheme ctr:ContractVersionStateScheme ; skos:prefLabel "draft"@en .
+ctr:state-published a ctr:ContractVersionState ; skos:inScheme ctr:ContractVersionStateScheme ; skos:prefLabel "published"@en .
+ctr:state-deprecated a ctr:ContractVersionState ; skos:inScheme ctr:ContractVersionStateScheme ; skos:prefLabel "deprecated"@en .
+ctr:state-retired a ctr:ContractVersionState ; skos:inScheme ctr:ContractVersionStateScheme ; skos:prefLabel "retired"@en .
+
+ctr:CompatibilityScheme a skos:ConceptScheme ; skos:prefLabel "Compatibility"@en .
+ctr:compatible a ctr:Compatibility ; skos:inScheme ctr:CompatibilityScheme ; skos:prefLabel "compatible"@en .
+ctr:breaking a ctr:Compatibility ; skos:inScheme ctr:CompatibilityScheme ; skos:prefLabel "breaking"@en .

@@ -18,6 +18,7 @@ scope creep.
 | CQ-9 | Which commitments does each offering carry — metric, target, source, validation — and what is the latest observation of each? | `cq9-commitments-and-evidence.rq` | commitment, control-plane |
 | CQ-10 | Which tenants hold region-access grants for exactly one region, and in which other regions are their capabilities offered — who is refused, not served out of jurisdiction, during failover? | `cq10-region-bound-tenants.rq` | authz, control-plane |
 | CQ-11 | Which capabilities are offered in exactly one region, so no failover target exists? | `cq11-single-region-offerings.rq` | control-plane |
+| CQ-12 | Which contract versions does each application depend on, at which deployment scope? | `cq12-application-contract-dependencies.rq` | contract, control-plane |
 
 ## Backlog and realised invariants
 
@@ -404,6 +405,27 @@ When the terms enter: a closed jurisdiction scheme with a region→jurisdiction
 mapping; a residency requirement on the tenant as a declaration (approver,
 supersession); a closed transfer-basis scheme. Residency is a boundary, not a
 commitment: control-plane and authz, not the commitment module.
+
+### Contracts and versions (module `contract`, scaffolded — D62)
+
+The catalogue contracts capabilities, not services: a contract is the
+published interface of exactly one capability; consumers are applications,
+through the capability requirement that pins a version; publication,
+deprecation and retirement are contract changes — declarations with scope,
+approval and supersession.
+
+- Which contract versions does each application depend on, at which
+  deployment scope? *(formal — CQ-12)*
+- Which applications are affected by deprecating a given contract version?
+  *(the blast radius of a change — descriptive; the join exists)*
+- Which offerings realise a capability with no published contract version?
+  *(deployed without a contract — expected empty)* [realised: OfferingWithoutContractShape]
+- Which contract versions were published, deprecated or retired with no
+  change declaration behind them? *(expected empty)* [realised: ContractVersionShape]
+- Which requirements pin a retired version? *(a consumer on a dead
+  contract — expected empty)* [realised: RequirementOnRetiredVersionShape]
+- Which breaking versions deprecate their predecessor with no tolerance
+  window? *(warning — stewardship)*
 
 ### Non-functional commitments (module `commitment`, scaffolded — D58)
 

@@ -10,6 +10,7 @@
 @prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
 @prefix sosa: <http://www.w3.org/ns/sosa/> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix ctr:  <https://w3id.org/examplebank/platform/contract#> .
 
 ### Principals
 ex:alice a core:HumanPrincipal ;
@@ -463,4 +464,25 @@ ex:membership-dana-platform a cp:TenantMembership ;
 ex:approval-plat-dana a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-01T09:05:00Z"^^xsd:dateTime .
+
+### Contract module — the managed-database capability's published contract (D62)
+ex:contract-db a ctr:Contract ;
+    core:displayName "Managed database capability contract" ;
+    ctr:contractOf ex:db-capability .
+ex:contract-db-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-db ;
+    ctr:versionString "1.2.0" ;
+    ctr:hasVersionState ctr:state-published ;
+    ctr:compatibility ctr:compatible ;
+    ctr:artifact "https://contracts.example/platform/db/1.2.0/openapi.yaml"^^xsd:anyURI .
+ex:contract-change-1 a ctr:ContractChange ;
+    core:displayName "Publish managed database contract 1.2.0" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-contract-1 ;
+    ctr:publishesVersion ex:contract-db-v1 .
+ex:approval-contract-1 a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-08-15T10:00:00Z"^^xsd:dateTime .
+ex:req-digital-bank-db ctr:dependsOnContractVersion ex:contract-db-v1 .
 

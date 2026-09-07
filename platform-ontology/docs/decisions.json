@@ -1051,6 +1051,35 @@
         "PlatformTenant",
         "hasApproval"
       ]
+    },
+    {
+      "id": "D62",
+      "title": "A sibling module for published contracts — the catalogue contracts capabilities, not services",
+      "area": "Foundations",
+      "invariant": true,
+      "principles": [
+        "P9",
+        "P8",
+        "P18",
+        "P12",
+        "P7",
+        "P10",
+        "P1"
+      ],
+      "reasoning": "The published-contracts candidate was not promoted for lack of vocabulary and a question. The scoping decision it waited on is taken: contract the capability. A contract is the published interface of exactly one capability, so no 'service' concept is needed and the consumer edge already exists — an application's capability requirement now pins a version. Publication, deprecation and retirement are contract changes, subclasses of desired-state declaration, so the 'published change process' is the declaration machinery (P18) rather than a parallel one. Vocabulary from specifications (P8): OpenAPI and AsyncAPI for the artifact. One question first (P9): CQ-12. Four invariants fire (P10): no publication without a declaration, no consumer on a retired version, no offering without a published contract, plus the well-formedness of contracts and versions; a breaking change without a tolerance window is a stewardship warning, mirroring the ontology's own deprecation rule.",
+      "rejected": [
+        "Contracting services or upstreams: 'service' has no definition in the model and the consumer edge would have had to be invented; capabilities already have consumers, offerings and dependencies.",
+        "Versions as edits of one contract node: a version that is edited has no history; versions are individuals and changes are declarations, as everywhere else (D05).",
+        "Making the tolerance-window rule a violation: a deprecation with no window is a stewardship matter first; the ontology's own governance gives one MINOR cycle and does not fail the build for its absence."
+      ],
+      "terms": [
+        "Contract",
+        "ContractVersion",
+        "ContractChange",
+        "dependsOnContractVersion",
+        "contractOf",
+        "versionOf"
+      ]
     }
   ]
 }

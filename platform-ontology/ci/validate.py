@@ -133,6 +133,9 @@ def main() -> int:
             "no active membership in this tenant or the platform tenant",
             "the approver belongs to neither",
             "not a member of the platform tenant",
+            "no change declaration behind it",
+            "consumer on a dead contract",
+            "deployed without a contract",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -155,6 +158,7 @@ def main() -> int:
         "cq9-commitments-and-evidence.rq",
         "cq10-region-bound-tenants.rq",
         "cq11-single-region-offerings.rq",
+        "cq12-application-contract-dependencies.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

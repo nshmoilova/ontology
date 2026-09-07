@@ -26,8 +26,8 @@ BASE = "https://w3id.org/examplebank/platform/"
 SH = "http://www.w3.org/ns/shacl#"
 VS = URIRef("http://www.w3.org/2003/06/sw-vocab-status/ns#term_status")
 
-MODULE_ORDER = ["core", "authn", "session", "ingress", "authz", "control-plane", "commitment"]
-MODULE_PREFIX = {"control-plane": "cp", "commitment": "cmt"}
+MODULE_ORDER = ["core", "authn", "session", "ingress", "authz", "control-plane", "commitment", "contract"]
+MODULE_PREFIX = {"control-plane": "cp", "commitment": "cmt", "contract": "ctr"}
 MODULE_BLURB = {
     "core": "Upper module: principals, tenancy, capabilities, applications, "
             "authorized parties, delivery channels and the XACML roles.",
@@ -42,6 +42,7 @@ MODULE_BLURB = {
     "control-plane": "Two-tier planes, the scope tree, and the chain from "
                      "subscriptions and offerings to declarations and mutations.",
     "commitment": "Non-functional commitments on offerings — metric, target, window, measurement source, validation — and the windowed observations that evidence them. A sibling module; nothing imports it.",
+    "contract": "Published contracts of capabilities and their versions — publication, deprecation and retirement as governed changes; consumers pin a version through their requirements. A sibling module; nothing imports it.",
 }
 
 

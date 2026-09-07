@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "4fc15382a606",
+ "sourceDigest": "c48e4282c382",
  "stats": {
-  "modules": 7,
-  "classes": 79,
-  "objectProperties": 99,
-  "datatypeProperties": 37,
-  "shapes": 84,
-  "violations": 134,
-  "warnings": 7,
-  "vocabularies": 14,
-  "relationships": 62,
-  "decisions": 57,
+  "modules": 8,
+  "classes": 84,
+  "objectProperties": 108,
+  "datatypeProperties": 40,
+  "shapes": 88,
+  "violations": 142,
+  "warnings": 8,
+  "vocabularies": 16,
+  "relationships": 66,
+  "decisions": 58,
   "principles": 18,
-  "standards": 13,
-  "realisedBacklog": 39,
+  "standards": 15,
+  "realisedBacklog": 42,
   "provisionalPrinciples": 9,
   "explainers": 3,
-  "formalCQs": 11,
-  "backlogCQs": 130
+  "formalCQs": 12,
+  "backlogCQs": 136
  },
  "modules": [
   {
@@ -101,6 +101,19 @@
    "version": "0.2.0",
    "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited.",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
+   "imports": [
+    "control-plane",
+    "core"
+   ]
+  },
+  {
+   "name": "contract",
+   "iri": "https://w3id.org/examplebank/platform/contract",
+   "prefix": "ctr",
+   "title": "Contract Module",
+   "version": "0.1.0",
+   "description": "Published contracts of capabilities and their versions: a contract is the published interface of exactly one capability; a version has a lifecycle state and a compatibility; publication, deprecation and retirement are contract changes \u2014 desired-state declarations with scope, approval and supersession. Consumers are applications, through their capability requirements pinning a version. A sibling of the identity modules: imports core and control-plane; nothing imports it. Scaffolded at 0.1.0 (D62) with one competency question. The catalogue contracts capabilities, not services.",
+   "blurb": "Published contracts of capabilities and their versions \u2014 publication, deprecation and retirement as governed changes; consumers pin a version through their requirements. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
     "core"
@@ -282,6 +295,13 @@
     }
    ],
    "incoming": [
+    {
+     "from": "ctr:Contract",
+     "property": "ctr:contractOf",
+     "to": "core:Capability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
     {
      "from": "cp:CapabilityControlPlane",
      "property": "cp:governsCapability",
@@ -6507,9 +6527,16 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "OfferingWithoutContractShape",
     "OfferingSupplyClosureShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Offering realises a capability with no published contract version \u2014 deployed without a contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
+    },
     {
      "kind": "sparql",
      "severity": "Violation",
@@ -6555,9 +6582,16 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "RequirementOnRetiredVersionShape",
     "RequirementTargetShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Requirement pins a retired contract version \u2014 a consumer on a dead contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#dependsOnContractVersion> ?v .\n                ?v <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-retired> .\n            }"
+    },
     {
      "kind": "property",
      "path": "cp:requiredCapability",
@@ -6942,7 +6976,8 @@
     "cmt:Commitment",
     "cp:ApplicationEnablement",
     "cp:JourneyDefinitionChange",
-    "cp:RouteBindingChange"
+    "cp:RouteBindingChange",
+    "ctr:ContractChange"
    ],
    "shapes": [
     "DesiredStateDeclarationShape",
@@ -10192,6 +10227,707 @@
    "vocabulary": [],
    "decisions": [],
    "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#Compatibility",
+   "name": "Compatibility",
+   "curie": "ctr:Compatibility",
+   "kind": "class",
+   "module": "contract",
+   "label": "Compatibility",
+   "definition": "Whether a version is compatible with its predecessor or breaks it.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:compatibility",
+     "to": "ctr:Compatibility",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#breaking",
+     "curie": "ctr:breaking",
+     "label": "breaking",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:Compatibility"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#compatible",
+     "curie": "ctr:compatible",
+     "label": "compatible",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:Compatibility"
+     ]
+    }
+   ],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#Contract",
+   "name": "Contract",
+   "curie": "ctr:Contract",
+   "kind": "class",
+   "module": "contract",
+   "label": "Contract",
+   "definition": "The published interface of exactly one capability, through which consumers depend on the capability rather than on what realises it.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [
+    "ctr:ContractVersion"
+   ],
+   "subClasses": [],
+   "shapes": [
+    "ContractShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "ctr:contractOf",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#contractOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract is the published interface of exactly one capability."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "ctr:Contract",
+     "property": "ctr:contractOf",
+     "to": "core:Capability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:versionOf",
+     "to": "ctr:Contract",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#ContractChange",
+   "name": "ContractChange",
+   "curie": "ctr:ContractChange",
+   "kind": "class",
+   "module": "contract",
+   "label": "Contract change",
+   "definition": "A desired-state declaration that publishes, deprecates or retires a contract version \u2014 the published change process, with scope, approval rigor and supersession inherited from the declaration machinery.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [
+    "cp:DesiredStateDeclaration"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#ContractVersion",
+   "name": "ContractVersion",
+   "curie": "ctr:ContractVersion",
+   "kind": "class",
+   "module": "contract",
+   "label": "Contract version",
+   "definition": "One version of a contract: a version string, a lifecycle state, a compatibility with its predecessor, and a reference to the interface artifact.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "ContractVersionShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "ctr:versionOf",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#versionOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ctr:Contract",
+     "classIri": "https://w3id.org/examplebank/platform/contract#Contract",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version belongs to exactly one contract."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:versionString",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#versionString",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version carries exactly one MAJOR.MINOR.PATCH version string."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:hasVersionState",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#hasVersionState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ctr:ContractVersionState",
+     "classIri": "https://w3id.org/examplebank/platform/contract#ContractVersionState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version is in exactly one lifecycle state."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:compatibility",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#compatibility",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "ctr:Compatibility",
+     "classIri": "https://w3id.org/examplebank/platform/contract#Compatibility",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Compatibility, if stated, is one value from the closed scheme."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Contract version is published, deprecated or retired with no change declaration behind it \u2014 a publication is a governed change.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#hasVersionState> ?s .\n                FILTER(?s IN (<https://w3id.org/examplebank/platform/contract#state-published>, <https://w3id.org/examplebank/platform/contract#state-deprecated>, <https://w3id.org/examplebank/platform/contract#state-retired>))\n                FILTER NOT EXISTS {\n                    ?c a <https://w3id.org/examplebank/platform/contract#ContractChange> .\n                    ?c <https://w3id.org/examplebank/platform/contract#publishesVersion>|<https://w3id.org/examplebank/platform/contract#deprecatesVersion>|<https://w3id.org/examplebank/platform/contract#retiresVersion> $this .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Breaking version deprecates its predecessor with no tolerance window \u2014 consumers have no time to move; route to stewardship.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#compatibility> <https://w3id.org/examplebank/platform/contract#breaking> ; <https://w3id.org/examplebank/platform/contract#supersedesVersion> ?prev .\n                ?prev <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-deprecated> .\n                FILTER NOT EXISTS { ?c <https://w3id.org/examplebank/platform/contract#deprecatesVersion> ?prev ; <https://w3id.org/examplebank/platform/contract#toleranceUntil> ?until . }\n            }"
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:versionOf",
+     "to": "ctr:Contract",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:hasVersionState",
+     "to": "ctr:ContractVersionState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:compatibility",
+     "to": "ctr:Compatibility",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#ContractVersionState",
+   "name": "ContractVersionState",
+   "curie": "ctr:ContractVersionState",
+   "kind": "class",
+   "module": "contract",
+   "label": "Contract version state",
+   "definition": "Lifecycle state of a contract version: draft, published, deprecated, or retired.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:hasVersionState",
+     "to": "ctr:ContractVersionState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-deprecated",
+     "curie": "ctr:state-deprecated",
+     "label": "deprecated",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-draft",
+     "curie": "ctr:state-draft",
+     "label": "draft",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-published",
+     "curie": "ctr:state-published",
+     "label": "published",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-retired",
+     "curie": "ctr:state-retired",
+     "label": "retired",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    }
+   ],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#artifact",
+   "name": "artifact",
+   "curie": "ctr:artifact",
+   "kind": "datatypeProperty",
+   "module": "contract",
+   "label": "artifact",
+   "definition": "Reference to the interface description of a version, as an xsd:anyURI \u2014 an OpenAPI or AsyncAPI document, never a tool.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [
+    "https://spec.openapis.org/oas/latest.html",
+    "https://www.asyncapi.com/docs/reference/specification/latest"
+   ],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#toleranceUntil",
+   "name": "toleranceUntil",
+   "curie": "ctr:toleranceUntil",
+   "kind": "datatypeProperty",
+   "module": "contract",
+   "label": "tolerance until",
+   "definition": "Instant until which a deprecated version remains served, giving consumers a window to move.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#versionString",
+   "name": "versionString",
+   "curie": "ctr:versionString",
+   "kind": "datatypeProperty",
+   "module": "contract",
+   "label": "version string",
+   "definition": "Semantic version of a contract version, MAJOR.MINOR.PATCH.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#compatibility",
+   "name": "compatibility",
+   "curie": "ctr:compatibility",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "compatibility",
+   "definition": "Compatibility of the version with the one it supersedes.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:compatibility",
+     "to": "ctr:Compatibility",
+     "cardinality": "0..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#contractOf",
+   "name": "contractOf",
+   "curie": "ctr:contractOf",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "contract of",
+   "definition": "Capability whose published interface this contract is \u2014 exactly one.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "ctr:Contract",
+     "property": "ctr:contractOf",
+     "to": "core:Capability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#dependsOnContractVersion",
+   "name": "dependsOnContractVersion",
+   "curie": "ctr:dependsOnContractVersion",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "depends on contract version",
+   "definition": "Contract version a capability requirement pins \u2014 how an application depends on a contract rather than on an implementation.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#deprecatesVersion",
+   "name": "deprecatesVersion",
+   "curie": "ctr:deprecatesVersion",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "deprecates version",
+   "definition": "Version a contract change deprecates.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#hasVersionState",
+   "name": "hasVersionState",
+   "curie": "ctr:hasVersionState",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "has version state",
+   "definition": "Current lifecycle state of the version.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:hasVersionState",
+     "to": "ctr:ContractVersionState",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#publishesVersion",
+   "name": "publishesVersion",
+   "curie": "ctr:publishesVersion",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "publishes version",
+   "definition": "Version a contract change publishes.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#retiresVersion",
+   "name": "retiresVersion",
+   "curie": "ctr:retiresVersion",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "retires version",
+   "definition": "Version a contract change retires.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#supersedesVersion",
+   "name": "supersedesVersion",
+   "curie": "ctr:supersedesVersion",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "supersedes version",
+   "definition": "Predecessor version this version replaces.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#versionOf",
+   "name": "versionOf",
+   "curie": "ctr:versionOf",
+   "kind": "objectProperty",
+   "module": "contract",
+   "label": "version of",
+   "definition": "Contract a version belongs to \u2014 exactly one.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "ctr:ContractVersion",
+     "property": "ctr:versionOf",
+     "to": "ctr:Contract",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D62"
+   ],
+   "principles": []
   }
  ],
  "vocabularies": [
@@ -10929,6 +11665,96 @@
      "rank": null,
      "types": [
       "cmt:Metric"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#CompatibilityScheme",
+   "curie": "ctr:CompatibilityScheme",
+   "title": "CompatibilityScheme",
+   "note": null,
+   "module": "contract",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#breaking",
+     "curie": "ctr:breaking",
+     "label": "breaking",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:Compatibility"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#compatible",
+     "curie": "ctr:compatible",
+     "label": "compatible",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:Compatibility"
+     ]
+    }
+   ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/contract#ContractVersionStateScheme",
+   "curie": "ctr:ContractVersionStateScheme",
+   "title": "ContractVersionStateScheme",
+   "note": null,
+   "module": "contract",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-deprecated",
+     "curie": "ctr:state-deprecated",
+     "label": "deprecated",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-draft",
+     "curie": "ctr:state-draft",
+     "label": "draft",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-published",
+     "curie": "ctr:state-published",
+     "label": "published",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/contract#state-retired",
+     "curie": "ctr:state-retired",
+     "label": "retired",
+     "notation": null,
+     "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "ctr:ContractVersionState"
      ]
     }
    ]
@@ -11994,6 +12820,115 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/contract#ContractShape",
+   "name": "ContractShape",
+   "targetClass": "ctr:Contract",
+   "targetClassIri": "https://w3id.org/examplebank/platform/contract#Contract",
+   "module": "contract",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "ctr:contractOf",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#contractOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "core:Capability",
+     "classIri": "https://w3id.org/examplebank/platform/core#Capability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract is the published interface of exactly one capability."
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/contract#ContractVersionShape",
+   "name": "ContractVersionShape",
+   "targetClass": "ctr:ContractVersion",
+   "targetClassIri": "https://w3id.org/examplebank/platform/contract#ContractVersion",
+   "module": "contract",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "ctr:versionOf",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#versionOf",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ctr:Contract",
+     "classIri": "https://w3id.org/examplebank/platform/contract#Contract",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version belongs to exactly one contract."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:versionString",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#versionString",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version carries exactly one MAJOR.MINOR.PATCH version string."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:hasVersionState",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#hasVersionState",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "ctr:ContractVersionState",
+     "classIri": "https://w3id.org/examplebank/platform/contract#ContractVersionState",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A contract version is in exactly one lifecycle state."
+    },
+    {
+     "kind": "property",
+     "path": "ctr:compatibility",
+     "pathIri": "https://w3id.org/examplebank/platform/contract#compatibility",
+     "minCount": null,
+     "maxCount": 1,
+     "class": "ctr:Compatibility",
+     "classIri": "https://w3id.org/examplebank/platform/contract#Compatibility",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "Compatibility, if stated, is one value from the closed scheme."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Contract version is published, deprecated or retired with no change declaration behind it \u2014 a publication is a governed change.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#hasVersionState> ?s .\n                FILTER(?s IN (<https://w3id.org/examplebank/platform/contract#state-published>, <https://w3id.org/examplebank/platform/contract#state-deprecated>, <https://w3id.org/examplebank/platform/contract#state-retired>))\n                FILTER NOT EXISTS {\n                    ?c a <https://w3id.org/examplebank/platform/contract#ContractChange> .\n                    ?c <https://w3id.org/examplebank/platform/contract#publishesVersion>|<https://w3id.org/examplebank/platform/contract#deprecatesVersion>|<https://w3id.org/examplebank/platform/contract#retiresVersion> $this .\n                }\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Breaking version deprecates its predecessor with no tolerance window \u2014 consumers have no time to move; route to stewardship.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#compatibility> <https://w3id.org/examplebank/platform/contract#breaking> ; <https://w3id.org/examplebank/platform/contract#supersedesVersion> ?prev .\n                ?prev <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-deprecated> .\n                FILTER NOT EXISTS { ?c <https://w3id.org/examplebank/platform/contract#deprecatesVersion> ?prev ; <https://w3id.org/examplebank/platform/contract#toleranceUntil> ?until . }\n            }"
+    }
+   ],
+   "violations": 5,
+   "warnings": 1
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ApprovalNotSelfShape",
    "name": "ApprovalNotSelfShape",
    "targetClass": "cp:PolicyChangeEvent",
@@ -12447,6 +13382,23 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/contract#OfferingWithoutContractShape",
+   "name": "OfferingWithoutContractShape",
+   "targetClass": "cp:CapabilityOffering",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityOffering",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Offering realises a capability with no published contract version \u2014 deployed without a contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .\n                FILTER NOT EXISTS {\n                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .\n                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#PolicyChangeApproverPartyShape",
    "name": "PolicyChangeApproverPartyShape",
    "targetClass": "cp:PolicyChangeEvent",
@@ -12585,6 +13537,23 @@
    "principles": [
     "P18"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/contract#RequirementOnRetiredVersionShape",
+   "name": "RequirementOnRetiredVersionShape",
+   "targetClass": "cp:CapabilityRequirement",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityRequirement",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Requirement pins a retired contract version \u2014 a consumer on a dead contract.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/contract#dependsOnContractVersion> ?v .\n                ?v <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-retired> .\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RequirementTargetShape",
@@ -14118,6 +15087,34 @@
    "severity": "Violation"
   },
   {
+   "from": "ctr:Contract",
+   "property": "ctr:contractOf",
+   "to": "core:Capability",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "ctr:ContractVersion",
+   "property": "ctr:compatibility",
+   "to": "ctr:Compatibility",
+   "cardinality": "0..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "ctr:ContractVersion",
+   "property": "ctr:hasVersionState",
+   "to": "ctr:ContractVersionState",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "ctr:ContractVersion",
+   "property": "ctr:versionOf",
+   "to": "ctr:Contract",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
    "from": "ingress:Gateway",
    "property": "ingress:hasListener",
    "to": "ingress:Listener",
@@ -15610,6 +16607,43 @@
     "cp:memberOfTenant",
     "cp:memberPrincipal"
    ]
+  },
+  {
+   "id": "D62",
+   "title": "A sibling module for published contracts \u2014 the catalogue contracts capabilities, not services",
+   "area": "Foundations",
+   "invariant": true,
+   "principles": [
+    "P9",
+    "P8",
+    "P18",
+    "P12",
+    "P7",
+    "P10",
+    "P1"
+   ],
+   "reasoning": "The published-contracts candidate was not promoted for lack of vocabulary and a question. The scoping decision it waited on is taken: contract the capability. A contract is the published interface of exactly one capability, so no 'service' concept is needed and the consumer edge already exists \u2014 an application's capability requirement now pins a version. Publication, deprecation and retirement are contract changes, subclasses of desired-state declaration, so the 'published change process' is the declaration machinery (P18) rather than a parallel one. Vocabulary from specifications (P8): OpenAPI and AsyncAPI for the artifact. One question first (P9): CQ-12. Four invariants fire (P10): no publication without a declaration, no consumer on a retired version, no offering without a published contract, plus the well-formedness of contracts and versions; a breaking change without a tolerance window is a stewardship warning, mirroring the ontology's own deprecation rule.",
+   "rejected": [
+    "Contracting services or upstreams: 'service' has no definition in the model and the consumer edge would have had to be invented; capabilities already have consumers, offerings and dependencies.",
+    "Versions as edits of one contract node: a version that is edited has no history; versions are individuals and changes are declarations, as everywhere else (D05).",
+    "Making the tolerance-window rule a violation: a deprecation with no window is a stewardship matter first; the ontology's own governance gives one MINOR cycle and does not fail the build for its absence."
+   ],
+   "terms": [
+    "Contract",
+    "ContractVersion",
+    "ContractChange",
+    "dependsOnContractVersion",
+    "contractOf",
+    "versionOf"
+   ],
+   "termCuries": [
+    "ctr:Contract",
+    "ctr:ContractChange",
+    "ctr:ContractVersion",
+    "ctr:contractOf",
+    "ctr:dependsOnContractVersion",
+    "ctr:versionOf"
+   ]
   }
  ],
  "principles": [
@@ -16530,6 +17564,18 @@
    ]
   },
   {
+   "url": "https://spec.openapis.org/oas/latest.html",
+   "terms": [
+    "ctr:artifact"
+   ]
+  },
+  {
+   "url": "https://www.asyncapi.com/docs/reference/specification/latest",
+   "terms": [
+    "ctr:artifact"
+   ]
+  },
+  {
    "url": "https://www.rfc-editor.org/rfc/rfc6749",
    "terms": [
     "authn:OAuthClientRegistration",
@@ -16626,7 +17672,7 @@
    "candidate": "Capabilities are consumed through published contracts; consumers depend on contracts, not implementations; contracts are versioned and managed through a published change process",
    "verdict": "not promoted \u2014 out of scope for this ontology; revisit pending a scoping decision",
    "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them \u2014 none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 \u2014 offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
-   "todo": "Scoping decision pending: does contract versioning enter this ontology, or a separate service-catalogue ontology this one links to (recommended)? If it enters, the route is P9 \u2014 competency questions first (which contract version does this application depend on at this deployment scope; which consumers are affected by deprecating a contract version), then Contract and ContractVersion terms, then shapes. Update 2026-09-02: the commitment module (D58) exists as a sibling; the catalogue stays unbuilt until a question asks for it, and 'service' stays out of module names until the catalogue decision says what a service is."
+   "todo": "Scoping decision taken (D62): the sibling `contract` module contracts capabilities, not services; consumers are applications through their requirements; publication, deprecation and retirement are declarations. Re-evaluate for promotion once two decisions have been made because of it \u2014 the first deprecation with a tolerance window would be one."
   },
   {
    "candidate": "Substitutability is designed in at the dependency seams that matter; for critical dependencies such as DNS, CDN and edge services the platform supports active substitution rather than only migration",
@@ -17423,6 +18469,16 @@
     "modules": [
      "control-plane"
     ]
+   },
+   {
+    "id": "CQ-12",
+    "question": "Which contract versions does each application depend on, at which deployment scope?",
+    "query": "cq12-application-contract-dependencies.rq",
+    "sparql": "# CQ-12 \u2014 Which contract versions does each application depend on, at which\n# deployment scope? Consumers depend on contracts (a pinned version), never on\n# what realises the capability.\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX ctr:  <https://w3id.org/examplebank/platform/contract#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?application ?capability ?contract ?version ?state ?scope WHERE {\n  ?req cp:ofApplication ?application ; cp:requiredCapability ?capability ;\n       ctr:dependsOnContractVersion ?v .\n  ?v ctr:versionOf ?contract ; ctr:versionString ?version ; ctr:hasVersionState ?st .\n  ?st skos:prefLabel ?state .\n  OPTIONAL { ?en cp:forApplication ?application ; cp:declarationScope ?scope }\n}\nORDER BY ?application ?contract ?version",
+    "modules": [
+     "contract",
+     "control-plane"
+    ]
    }
   ],
   "backlog": [
@@ -18120,6 +19176,48 @@
    {
     "section": "Jurisdiction and data residency (terms deliberately deferred)",
     "question": "Where is the platform's own evidence about a tenant's principals stored \u2014 authentication events, decisions, subject identifiers, observations? (the graph's contents are personal data too)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which contract versions does each application depend on, at which deployment scope? (formal \u2014 CQ-12)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which applications are affected by deprecating a given contract version? (the blast radius of a change \u2014 descriptive; the join exists)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which offerings realise a capability with no published contract version? (deployed without a contract \u2014 expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "OfferingWithoutContractShape"
+    ]
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which contract versions were published, deprecated or retired with no change declaration behind them? (expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "ContractVersionShape"
+    ]
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which requirements pin a retired version? (a consumer on a dead contract \u2014 expected empty)",
+    "expectedEmpty": true,
+    "realizedBy": [
+     "RequirementOnRetiredVersionShape"
+    ]
+   },
+   {
+    "section": "Contracts and versions (module `contract`, scaffolded \u2014 D62)",
+    "question": "Which breaking versions deprecate their predecessor with no tolerance window? (warning \u2014 stewardship)",
     "expectedEmpty": false,
     "realizedBy": []
    },

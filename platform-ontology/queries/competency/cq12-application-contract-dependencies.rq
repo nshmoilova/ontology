@@ -1,0 +1,15 @@
+# CQ-12 — Which contract versions does each application depend on, at which
+# deployment scope? Consumers depend on contracts (a pinned version), never on
+# what realises the capability.
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX ctr:  <https://w3id.org/examplebank/platform/contract#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?application ?capability ?contract ?version ?state ?scope WHERE {
+  ?req cp:ofApplication ?application ; cp:requiredCapability ?capability ;
+       ctr:dependsOnContractVersion ?v .
+  ?v ctr:versionOf ?contract ; ctr:versionString ?version ; ctr:hasVersionState ?st .
+  ?st skos:prefLabel ?state .
+  OPTIONAL { ?en cp:forApplication ?application ; cp:declarationScope ?scope }
+}
+ORDER BY ?application ?contract ?version

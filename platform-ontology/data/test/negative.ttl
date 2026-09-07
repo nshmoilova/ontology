@@ -12,6 +12,7 @@
 @prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .
 @prefix sosa: <http://www.w3.org/ns/sosa/> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix ctr:  <https://w3id.org/examplebank/platform/contract#> .
 
 ex:bob a core:HumanPrincipal ;
     core:identifier "dir:bob.ray" .
@@ -605,4 +606,42 @@ ex:change-outsider-approved a cp:PolicyChangeEvent ;
     cp:changedPolicy ex:policy-x ;
     cp:executedBy ex:sod-human ;
     cp:hasApproval ex:approval-outsider-3 .
+
+### 52. Contract version published with no change declaration (ContractVersionShape)
+ex:contract-neg a ctr:Contract ; ctr:contractOf ex:cell-capability .
+ex:contract-neg-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-neg ;
+    ctr:versionString "1.0.0" ;
+    ctr:hasVersionState ctr:state-published .
+
+### 53. Requirement pinning a retired contract version (RequirementOnRetiredVersionShape)
+ex:contract-neg-v0 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-neg ;
+    ctr:versionString "0.9.0" ;
+    ctr:hasVersionState ctr:state-retired .
+ex:contract-retire-0 a ctr:ContractChange ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    ctr:retiresVersion ex:contract-neg-v0 .
+ex:req-dead-contract a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-bad ;
+    cp:requiredCapability ex:cell-capability ;
+    ctr:dependsOnContractVersion ex:contract-neg-v0 .
+
+### 54. Breaking version deprecating its predecessor with no tolerance window (warning)
+ex:contract-neg-v2 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-neg ;
+    ctr:versionString "2.0.0" ;
+    ctr:hasVersionState ctr:state-draft ;
+    ctr:compatibility ctr:breaking ;
+    ctr:supersedesVersion ex:contract-neg-v1d .
+ex:contract-neg-v1d a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-neg ;
+    ctr:versionString "1.1.0" ;
+    ctr:hasVersionState ctr:state-deprecated .
+ex:contract-deprecate-1 a ctr:ContractChange ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    ctr:deprecatesVersion ex:contract-neg-v1d .
+# (the offering ex:offering-cmt-neg realises ex:cell-capability, which has no published version — OfferingWithoutContractShape fires on it)
 

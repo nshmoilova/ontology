@@ -1,0 +1,80 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix core: <https://w3id.org/examplebank/platform/core#> .
+@prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .
+@prefix ctr:  <https://w3id.org/examplebank/platform/contract#> .
+@prefix sct:  <https://w3id.org/examplebank/platform/shapes/contract#> .
+
+sct:ContractShape a sh:NodeShape ;
+    sh:targetClass ctr:Contract ;
+    sh:property [ sh:path ctr:contractOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class core:Capability ; sh:severity sh:Violation ;
+        sh:message "A contract is the published interface of exactly one capability." ] .
+
+sct:ContractVersionShape a sh:NodeShape ;
+    sh:targetClass ctr:ContractVersion ;
+    sh:property [ sh:path ctr:versionOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ctr:Contract ; sh:severity sh:Violation ;
+        sh:message "A contract version belongs to exactly one contract." ] ;
+    sh:property [ sh:path ctr:versionString ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^[0-9]+\\.[0-9]+\\.[0-9]+$" ; sh:severity sh:Violation ;
+        sh:message "A contract version carries exactly one MAJOR.MINOR.PATCH version string." ] ;
+    sh:property [ sh:path ctr:hasVersionState ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ctr:ContractVersionState ; sh:severity sh:Violation ;
+        sh:message "A contract version is in exactly one lifecycle state." ] ;
+    sh:property [ sh:path ctr:compatibility ; sh:maxCount 1 ; sh:class ctr:Compatibility ; sh:severity sh:Violation ;
+        sh:message "Compatibility, if stated, is one value from the closed scheme." ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Contract version is published, deprecated or retired with no change declaration behind it — a publication is a governed change." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/contract#hasVersionState> ?s .
+                FILTER(?s IN (<https://w3id.org/examplebank/platform/contract#state-published>, <https://w3id.org/examplebank/platform/contract#state-deprecated>, <https://w3id.org/examplebank/platform/contract#state-retired>))
+                FILTER NOT EXISTS {
+                    ?c a <https://w3id.org/examplebank/platform/contract#ContractChange> .
+                    ?c <https://w3id.org/examplebank/platform/contract#publishesVersion>|<https://w3id.org/examplebank/platform/contract#deprecatesVersion>|<https://w3id.org/examplebank/platform/contract#retiresVersion> $this .
+                }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Breaking version deprecates its predecessor with no tolerance window — consumers have no time to move; route to stewardship." ;
+        sh:severity sh:Warning ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/contract#compatibility> <https://w3id.org/examplebank/platform/contract#breaking> ; <https://w3id.org/examplebank/platform/contract#supersedesVersion> ?prev .
+                ?prev <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-deprecated> .
+                FILTER NOT EXISTS { ?c <https://w3id.org/examplebank/platform/contract#deprecatesVersion> ?prev ; <https://w3id.org/examplebank/platform/contract#toleranceUntil> ?until . }
+            }
+        """ ;
+    ] .
+
+sct:RequirementOnRetiredVersionShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityRequirement ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Requirement pins a retired contract version — a consumer on a dead contract." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/contract#dependsOnContractVersion> ?v .
+                ?v <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-retired> .
+            }
+        """ ;
+    ] .
+
+sct:OfferingWithoutContractShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityOffering ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Offering realises a capability with no published contract version — deployed without a contract." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?cap .
+                FILTER NOT EXISTS {
+                    ?ct <https://w3id.org/examplebank/platform/contract#contractOf> ?cap .
+                    ?v <https://w3id.org/examplebank/platform/contract#versionOf> ?ct ; <https://w3id.org/examplebank/platform/contract#hasVersionState> <https://w3id.org/examplebank/platform/contract#state-published> .
+                }
+            }
+        """ ;
+    ] .
