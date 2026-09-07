@@ -382,6 +382,7 @@ ex:db-control-plane a cp:CapabilityControlPlane ;
     cp:actuates ex:t123-db-plane .
 
 ex:t123-db-plane a cp:DataPlane ;
+    cp:holdsDataCategory core:data-customer-personal , core:data-tenant-workload ;
     core:governedBy ex:policy-ledger-read ;
     core:displayName "Tenant T123 database data plane" ;
     cp:realizesCapability ex:db-capability ;

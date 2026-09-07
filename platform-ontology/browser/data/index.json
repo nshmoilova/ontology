@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "253f79504ccf",
+ "sourceDigest": "a98914913ee2",
  "stats": {
   "modules": 8,
-  "classes": 84,
-  "objectProperties": 108,
+  "classes": 85,
+  "objectProperties": 109,
   "datatypeProperties": 40,
-  "shapes": 88,
+  "shapes": 89,
   "violations": 142,
-  "warnings": 8,
-  "vocabularies": 16,
-  "relationships": 66,
-  "decisions": 58,
+  "warnings": 9,
+  "vocabularies": 17,
+  "relationships": 67,
+  "decisions": 59,
   "principles": 19,
   "standards": 15,
   "realisedBacklog": 42,
   "provisionalPrinciples": 9,
   "explainers": 3,
   "formalCQs": 12,
-  "backlogCQs": 136
+  "backlogCQs": 137
  },
  "modules": [
   {
@@ -26,8 +26,8 @@
    "iri": "https://w3id.org/examplebank/platform/core",
    "prefix": "core",
    "title": "Platform Core Ontology",
-   "version": "0.5.1",
-   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13).",
+   "version": "0.6.0",
+   "description": "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary \u2014 platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint \u2014 a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme \u2014 the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63).",
    "blurb": "Upper module: principals, tenancy, capabilities, applications, authorized parties, delivery channels and the XACML roles.",
    "imports": []
   },
@@ -84,7 +84,7 @@
    "iri": "https://w3id.org/examplebank/platform/control-plane",
    "prefix": "cp",
    "title": "Control Plane Module",
-   "version": "0.7.1",
+   "version": "0.8.0",
    "description": "Control plane components, administrative scopes, and meta-authorization: policy/config change events and their human approvals. Encodes the 'agents execute, humans authorize' invariant, with management vs. capability control planes separating governance from actuation. Since 0.3.0: the scope tree with locality and scope-dependent approval rigor; capability subscriptions, bundles, hard dependencies, and per-scope offerings (no cross-scope parity); application enablement, observed-then-confirmed capability requirements, and portals. Tenant and Capability were promoted to core in this version, while draft.",
    "blurb": "Two-tier planes, the scope tree, and the chain from subscriptions and offerings to declarations and mutations.",
    "imports": [
@@ -132,6 +132,7 @@
    "editorialNote": "What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -202,6 +203,7 @@
     "customer"
    ],
    "conformsTo": [],
+   "dataCategory": "core:data-customer-personal",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -254,6 +256,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -347,6 +350,129 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/core#DataCategory",
+   "name": "DataCategory",
+   "curie": "core:DataCategory",
+   "kind": "class",
+   "module": "core",
+   "label": "Data category",
+   "definition": "The kind of data a stored fact or a data plane holds, from the closed scheme; the axis residency, sovereignty, retention and minimisation are stated against. Kind, not sensitivity.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cp:DataPlane",
+     "property": "cp:holdsDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..*",
+     "severity": "Warning"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-authn-evidence",
+     "curie": "core:data-authn-evidence",
+     "label": "Authentication and session evidence",
+     "notation": "authn-evidence",
+     "definition": "Authentication events, journey executions, sessions, tokens and devices \u2014 security evidence that exists for traceability.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-authz-evidence",
+     "curie": "core:data-authz-evidence",
+     "label": "Authorization evidence",
+     "notation": "authz-evidence",
+     "definition": "Decisions, entitlement grants and attribute assertions.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-customer-personal",
+     "curie": "core:data-customer-personal",
+     "label": "Customer personal data",
+     "notation": "customer-personal",
+     "definition": "Data about business clients and the people behind them \u2014 personal data in the regulation's sense, held in tenant data planes.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-governance",
+     "curie": "core:data-governance",
+     "label": "Governance records",
+     "notation": "governance",
+     "definition": "Declarations, approvals, subscriptions, offerings, commitments, contracts and configuration \u2014 retained for audit.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-observations",
+     "curie": "core:data-observations",
+     "label": "Operational observations",
+     "notation": "observations",
+     "definition": "Windowed aggregates of capability use and of commitment metrics \u2014 never per-request.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-principal-identity",
+     "curie": "core:data-principal-identity",
+     "label": "Principal identity data",
+     "notation": "principal-identity",
+     "definition": "Data about principals held by the platform itself: subject identifiers, credentials, proof-of-possession keys, memberships.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-tenant-workload",
+     "curie": "core:data-tenant-workload",
+     "label": "Tenant workload data",
+     "notation": "tenant-workload",
+     "definition": "The contents of data planes serving tenants \u2014 hosted by the platform without being understood by it. Residency and sovereignty apply by category alone.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    }
+   ],
+   "decisions": [
+    "D63"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/core#DeliveryChannel",
    "name": "DeliveryChannel",
    "curie": "core:DeliveryChannel",
@@ -357,6 +483,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -445,6 +572,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [
     "core:Principal"
@@ -478,6 +606,7 @@
    "conformsTo": [
     "https://www.w3.org/TR/prov-o/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "prov:Activity"
@@ -557,6 +686,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Tenant"
@@ -589,6 +719,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -618,6 +749,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -662,6 +794,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -703,6 +836,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -728,6 +862,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -854,6 +989,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -904,6 +1040,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -982,6 +1119,7 @@
    "conformsTo": [
     "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
    ],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [
     "core:Principal"
@@ -1021,6 +1159,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1048,6 +1187,7 @@
    "conformsTo": [
     "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1080,6 +1220,7 @@
    "conformsTo": [
     "https://www.w3.org/TR/prov-o/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -1111,6 +1252,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1136,6 +1278,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1161,6 +1304,7 @@
    "editorialNote": "Distinct from tenant membership. Whether a business client is ever also a tenant is deliberately left open.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1188,6 +1332,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1224,6 +1369,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1253,6 +1399,7 @@
    "conformsTo": [
     "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1291,6 +1438,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1336,6 +1484,7 @@
    "conformsTo": [
     "https://www.w3.org/TR/prov-o/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -1378,6 +1527,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1409,6 +1559,7 @@
    "conformsTo": [
     "https://pages.nist.gov/800-63-3/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -1477,6 +1628,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -1582,6 +1734,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1619,6 +1772,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -1757,6 +1911,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -1856,6 +2011,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1933,6 +2089,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -1986,6 +2143,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc6749"
    ],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2077,6 +2235,7 @@
     "confirmation key (cnf)"
    ],
    "conformsTo": [],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2137,6 +2296,7 @@
     "https://openid.net/specs/openid-connect-core-1_0.html",
     "https://www.rfc-editor.org/rfc/rfc9493"
    ],
+   "dataCategory": "core:data-principal-identity",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2263,6 +2423,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc9493"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -2339,6 +2500,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2370,6 +2532,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc6749"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2397,6 +2560,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2426,6 +2590,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc7638"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2453,6 +2618,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2480,6 +2646,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2505,6 +2672,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2532,6 +2700,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2567,6 +2736,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -2609,6 +2779,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2649,6 +2820,7 @@
     "https://www.rfc-editor.org/rfc/rfc7800",
     "https://www.rfc-editor.org/rfc/rfc9449"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2684,6 +2856,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2717,6 +2890,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2755,6 +2929,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc6749"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2784,6 +2959,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc9493"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2819,6 +2995,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2854,6 +3031,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2889,6 +3067,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc6749"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2924,6 +3103,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2952,6 +3132,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -2977,6 +3158,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3012,6 +3194,7 @@
    "conformsTo": [
     "https://www.rfc-editor.org/rfc/rfc6749"
    ],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -3043,6 +3226,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3122,6 +3306,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -3190,6 +3375,7 @@
    "conformsTo": [
     "https://openid.net/specs/openid-connect-core-1_0.html"
    ],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -3220,6 +3406,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [
     "session:Token"
@@ -3247,6 +3434,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3489,6 +3677,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3546,6 +3735,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -3632,6 +3822,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authn-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3683,6 +3874,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3708,6 +3900,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3733,6 +3926,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3766,6 +3960,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3801,6 +3996,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3836,6 +4032,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3871,6 +4068,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3904,6 +4102,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3931,6 +4130,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3956,6 +4156,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -3991,6 +4192,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4026,6 +4228,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4055,6 +4258,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -4110,6 +4314,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4192,6 +4397,7 @@
     "application access endpoint"
    ],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -4360,6 +4566,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4387,6 +4594,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -4425,6 +4633,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4452,6 +4661,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4479,6 +4689,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4504,6 +4715,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4529,6 +4741,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4554,6 +4767,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4591,6 +4805,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4616,6 +4831,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4649,6 +4865,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4674,6 +4891,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4707,6 +4925,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4745,6 +4964,7 @@
    "editorialNote": "Application verbs such as transfer or approve belong to Level-3 application authorization and must never appear here.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -4834,6 +5054,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authz-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -4934,6 +5155,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -5021,6 +5243,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -5122,6 +5345,7 @@
    "editorialNote": "The token is evidence; the grant is authority.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authz-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5245,6 +5469,7 @@
    "conformsTo": [
     "https://openid.net/specs/authorization-api-1_0.html"
    ],
+   "dataCategory": "core:data-authz-evidence",
    "status": "draft",
    "subClassOf": [
     "authz:PolicyDecision"
@@ -5332,6 +5557,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authz-evidence",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5357,6 +5583,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5420,6 +5647,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-authz-evidence",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -5583,6 +5811,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5637,6 +5866,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5662,6 +5892,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5687,6 +5918,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5712,6 +5944,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5741,6 +5974,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5766,6 +6000,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5793,6 +6028,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5826,6 +6062,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5851,6 +6088,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5889,6 +6127,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5922,6 +6161,7 @@
    "editorialNote": "Platform, tenant and channel grants properly originate in the tenant onboarding record, which is not yet modelled.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5960,6 +6200,7 @@
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html",
     "https://openid.net/specs/authorization-api-1_0.html"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -5996,6 +6237,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6031,6 +6273,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6066,6 +6309,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6101,6 +6345,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6134,6 +6379,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6159,6 +6405,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6198,6 +6445,7 @@
    "conformsTo": [
     "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -6238,6 +6486,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6263,6 +6512,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6298,6 +6548,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6323,6 +6574,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6360,6 +6612,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -6408,6 +6661,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6435,6 +6689,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:ControlPlaneComponent"
@@ -6521,6 +6776,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6576,6 +6832,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6639,6 +6896,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-observations",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -6668,6 +6926,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6739,6 +6998,7 @@
    "editorialNote": "A device class with no policy is unbounded, which is a stewardship concern rather than a safe default. Modelled as plain configuration rather than a governed declaration \u2014 a security control with no approver, the same asymmetry route bindings had before they were governed.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -6766,6 +7026,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -6796,6 +7057,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:Resource"
@@ -6806,7 +7068,8 @@
    "shapes": [
     "DataPlaneShape",
     "DataPlaneOfferedShape",
-    "IsolationModelShape"
+    "IsolationModelShape",
+    "DataPlaneDataCategoryShape"
    ],
    "constraints": [
     {
@@ -6835,9 +7098,31 @@
      "severity": "Violation",
      "message": "Data plane serves more than one tenant under a cell-per-tenant capability \u2014 the declared isolation model is violated.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#realizesCapability> ?c .\n                ?c <https://w3id.org/examplebank/platform/control-plane#isolationModel> \"cell-per-tenant\" .\n                $this <https://w3id.org/examplebank/platform/control-plane#servesTenant> ?t1 , ?t2 .\n                FILTER(?t1 != ?t2)\n            }"
+    },
+    {
+     "kind": "property",
+     "path": "cp:holdsDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#holdsDataCategory",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Warning",
+     "message": "Data plane declares no data category \u2014 residency and sovereignty cannot be judged for it; route to stewardship."
     }
    ],
    "outgoing": [
+    {
+     "from": "cp:DataPlane",
+     "property": "cp:holdsDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..*",
+     "severity": "Warning"
+    },
     {
      "from": "cp:DataPlane",
      "property": "cp:realizesCapability",
@@ -6859,7 +7144,8 @@
    "vocabulary": [],
    "decisions": [
     "D07",
-    "D54"
+    "D54",
+    "D63"
    ],
    "principles": [
     "P16"
@@ -6876,6 +7162,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -6969,6 +7256,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7067,6 +7355,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -7096,6 +7385,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:ControlPlaneComponent"
@@ -7155,6 +7445,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -7243,6 +7534,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "core:PlatformEvent"
@@ -7352,6 +7644,7 @@
    "editorialNote": "Whether a portal is per delivery channel is deliberately left open \u2014 a request's channel comes from the session's device class, not from anything the portal declares.",
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7418,6 +7711,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -7476,6 +7770,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7600,6 +7895,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -7688,6 +7984,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7816,6 +8113,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7843,6 +8141,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7871,6 +8170,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7900,6 +8200,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7929,6 +8230,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7959,6 +8261,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -7986,6 +8289,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8013,6 +8317,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8040,6 +8345,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8069,6 +8375,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8096,6 +8403,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8123,6 +8431,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8152,6 +8461,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8177,6 +8487,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8204,6 +8515,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8244,6 +8556,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8271,6 +8584,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8296,6 +8610,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8336,6 +8651,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8371,6 +8687,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8398,6 +8715,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8433,6 +8751,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8458,6 +8777,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8496,6 +8816,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [
@@ -8538,6 +8859,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8566,6 +8888,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8601,6 +8924,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8629,6 +8953,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8663,6 +8988,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8698,6 +9024,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8723,6 +9050,42 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/control-plane#holdsDataCategory",
+   "name": "holdsDataCategory",
+   "curie": "cp:holdsDataCategory",
+   "kind": "objectProperty",
+   "module": "control-plane",
+   "label": "holds data category",
+   "definition": "Kind of data a data plane holds, from the closed data-category scheme; the fact storage crossings and residency are judged against.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cp:DataPlane",
+     "property": "cp:holdsDataCategory",
+     "to": "core:DataCategory",
+     "cardinality": "1..*",
+     "severity": "Warning"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D63"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/control-plane#justifiedBy",
    "name": "justifiedBy",
    "curie": "cp:justifiedBy",
@@ -8733,6 +9096,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8762,6 +9126,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8798,6 +9163,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8837,6 +9203,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8872,6 +9239,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8899,6 +9267,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8926,6 +9295,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8953,6 +9323,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -8980,6 +9351,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9007,6 +9379,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9034,6 +9407,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9067,6 +9441,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9094,6 +9469,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9132,6 +9508,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9161,6 +9538,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9191,6 +9569,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9220,6 +9599,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9255,6 +9635,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9290,6 +9671,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9320,6 +9702,7 @@
     "service-level objective"
    ],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -9541,6 +9924,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -9613,6 +9997,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -9673,6 +10058,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9710,6 +10096,7 @@
    "conformsTo": [
     "https://www.w3.org/TR/vocab-ssn/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "sosa:ObservableProperty",
@@ -9806,6 +10193,7 @@
    "conformsTo": [
     "https://www.w3.org/TR/vocab-ssn/"
    ],
+   "dataCategory": "core:data-observations",
    "status": "draft",
    "subClassOf": [
     "sosa:Observation"
@@ -9934,6 +10322,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9959,6 +10348,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -9986,6 +10376,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10011,6 +10402,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10047,6 +10439,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10080,6 +10473,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10113,6 +10507,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10148,6 +10543,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10181,6 +10577,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10216,6 +10613,7 @@
    "conformsTo": [
     "https://qudt.org/"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10241,6 +10639,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -10301,6 +10700,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10366,6 +10766,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [
     "cp:DesiredStateDeclaration"
@@ -10397,6 +10798,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": "core:data-governance",
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10523,6 +10925,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [
     "skos:Concept"
@@ -10610,6 +11013,7 @@
     "https://spec.openapis.org/oas/latest.html",
     "https://www.asyncapi.com/docs/reference/specification/latest"
    ],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10635,6 +11039,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10660,6 +11065,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10685,6 +11091,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10718,6 +11125,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10755,6 +11163,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10784,6 +11193,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10809,6 +11219,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10844,6 +11255,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10869,6 +11281,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10894,6 +11307,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10919,6 +11333,7 @@
    "editorialNote": null,
    "altLabels": [],
    "conformsTo": [],
+   "dataCategory": null,
    "status": "draft",
    "subClassOf": [],
    "subPropertyOf": [],
@@ -10947,6 +11362,99 @@
   }
  ],
  "vocabularies": [
+  {
+   "iri": "https://w3id.org/examplebank/platform/core#DataCategoryScheme",
+   "curie": "core:DataCategoryScheme",
+   "title": "DataCategoryScheme",
+   "note": null,
+   "module": "core",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-authn-evidence",
+     "curie": "core:data-authn-evidence",
+     "label": "Authentication and session evidence",
+     "notation": "authn-evidence",
+     "definition": "Authentication events, journey executions, sessions, tokens and devices \u2014 security evidence that exists for traceability.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-authz-evidence",
+     "curie": "core:data-authz-evidence",
+     "label": "Authorization evidence",
+     "notation": "authz-evidence",
+     "definition": "Decisions, entitlement grants and attribute assertions.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-customer-personal",
+     "curie": "core:data-customer-personal",
+     "label": "Customer personal data",
+     "notation": "customer-personal",
+     "definition": "Data about business clients and the people behind them \u2014 personal data in the regulation's sense, held in tenant data planes.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-governance",
+     "curie": "core:data-governance",
+     "label": "Governance records",
+     "notation": "governance",
+     "definition": "Declarations, approvals, subscriptions, offerings, commitments, contracts and configuration \u2014 retained for audit.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-observations",
+     "curie": "core:data-observations",
+     "label": "Operational observations",
+     "notation": "observations",
+     "definition": "Windowed aggregates of capability use and of commitment metrics \u2014 never per-request.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-principal-identity",
+     "curie": "core:data-principal-identity",
+     "label": "Principal identity data",
+     "notation": "principal-identity",
+     "definition": "Data about principals held by the platform itself: subject identifiers, credentials, proof-of-possession keys, memberships.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/core#data-tenant-workload",
+     "curie": "core:data-tenant-workload",
+     "label": "Tenant workload data",
+     "notation": "tenant-workload",
+     "definition": "The contents of data planes serving tenants \u2014 hosted by the platform without being understood by it. Residency and sovereignty apply by category alone.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "core:DataCategory"
+     ]
+    }
+   ]
+  },
   {
    "iri": "https://w3id.org/examplebank/platform/core#DeliveryChannelScheme",
    "curie": "core:DeliveryChannelScheme",
@@ -13060,6 +13568,32 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneDataCategoryShape",
+   "name": "DataPlaneDataCategoryShape",
+   "targetClass": "cp:DataPlane",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#DataPlane",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cp:holdsDataCategory",
+     "pathIri": "https://w3id.org/examplebank/platform/control-plane#holdsDataCategory",
+     "minCount": 1,
+     "maxCount": null,
+     "class": "core:DataCategory",
+     "classIri": "https://w3id.org/examplebank/platform/core#DataCategory",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Warning",
+     "message": "Data plane declares no data category \u2014 residency and sovereignty cannot be judged for it; route to stewardship."
+    }
+   ],
+   "violations": 0,
+   "warnings": 1
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#DataPlaneMutationShape",
    "name": "DataPlaneMutationShape",
    "targetClass": "cp:DataPlaneMutation",
@@ -15028,6 +15562,13 @@
   },
   {
    "from": "cp:DataPlane",
+   "property": "cp:holdsDataCategory",
+   "to": "core:DataCategory",
+   "cardinality": "1..*",
+   "severity": "Warning"
+  },
+  {
+   "from": "cp:DataPlane",
    "property": "cp:realizesCapability",
    "to": "core:Capability",
    "cardinality": "1..1",
@@ -16679,6 +17220,34 @@
     "ctr:contractOf",
     "ctr:dependsOnContractVersion",
     "ctr:versionOf"
+   ]
+  },
+  {
+   "id": "D63",
+   "title": "Data categories: kind, not sensitivity",
+   "area": "Foundations",
+   "invariant": false,
+   "principles": [
+    "P7",
+    "P1",
+    "P9",
+    "P8"
+   ],
+   "reasoning": "Residency, sovereignty, retention and minimisation are all stated against the kind of data, not against a system or a tenant as a whole: a tenant may have customer data that must stay home and telemetry that may go anywhere. One closed scheme of seven categories, in core, answers 'what kind of data is this' for all four concerns. It attaches in three places: as an annotation on every stored class, so the ontology's own evidence is an ordinary case rather than a special one; on data planes, as what a plane holds, so storage crossings are judged per plane and category; and, when they exist, on residency requirements and retention rules. Tenant workload data is the decisive member \u2014 it lets residency apply to what the platform hosts without understanding (P1). Two personal-data members cite the regulation's definition (P8). Sensitivity is a second axis and waits for a question. The build notes stored classes with no category; the fail-closed gate is deferred until the classification has been reviewed, so it never fails on day one for a reason nobody chose. The annotation property itself (core:dataCategory) is not yet a browsable term: the index collects classes and object/datatype properties only; showing annotation properties is a builder change for later.",
+   "rejected": [
+    "Classifying by sensitivity (public / internal / confidential / restricted): a different axis, answering a different question, and no question asks it yet.",
+    "Residency on the tenant as a whole: forces the strictest rule onto everything a tenant holds.",
+    "Classifying data planes only, not the ontology's classes: leaves the platform's own evidence about principals \u2014 the question most models forget to ask of themselves \u2014 unanswerable."
+   ],
+   "terms": [
+    "DataCategory",
+    "holdsDataCategory",
+    "DataPlane"
+   ],
+   "termCuries": [
+    "core:DataCategory",
+    "cp:DataPlane",
+    "cp:holdsDataCategory"
    ]
   }
  ],
@@ -19261,6 +19830,12 @@
    {
     "section": "Jurisdiction and data residency (terms deliberately deferred)",
     "question": "Where is the platform's own evidence about a tenant's principals stored \u2014 authentication events, decisions, subject identifiers, observations? (the graph's contents are personal data too)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
+    "section": "Jurisdiction and data residency (terms deliberately deferred)",
+    "question": "Which stored classes and which data planes carry no data category? (stewardship warning on planes today; a build gate on classes once the classification is reviewed \u2014 D63)",
     "expectedEmpty": false,
     "realizedBy": []
    },

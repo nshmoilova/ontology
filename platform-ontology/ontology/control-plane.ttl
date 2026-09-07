@@ -10,8 +10,8 @@
 
 <https://w3id.org/examplebank/platform/control-plane>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.7.1> ;
-    owl:versionInfo "0.7.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/control-plane/0.8.0> ;
+    owl:versionInfo "0.8.0" ;
     owl:imports <https://w3id.org/examplebank/platform/authz> ;
     owl:imports <https://w3id.org/examplebank/platform/ingress> ;
     owl:imports <https://w3id.org/examplebank/platform/session> ;
@@ -28,48 +28,58 @@ cp:ControlPlaneComponent a owl:Class ;
     vs:term_status "draft" .
 
 cp:AdministrativeScope a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A bounded set of resources over which administrative authority is granted (tenant, namespace, line of business)."@en ;
     vs:term_status "draft" .
 
 cp:PolicyChangeEvent a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A mutation of authorization policy or security-relevant configuration."@en ;
     vs:term_status "draft" .
 
 cp:ChangeApproval a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "An approval attached to a change event, given by a principal. Every policy change must carry at least one approval by a human principal (enforced in SHACL)."@en ;
     vs:term_status "draft" .
 
 cp:ManagementControlPlane a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:ControlPlaneComponent ;
     skos:definition "The control plane that owns the governance layer: tenant registration, entitlement configuration, and desired-state declarations. It defines; it never actuates a data plane (enforced in SHACL)."@en ;
     vs:term_status "draft" .
 
 cp:CapabilityControlPlane a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:ControlPlaneComponent ;
     skos:definition "A control plane governing one platform capability, and the designated writer that actuates governed desired state into that capability's data planes."@en ;
     vs:term_status "draft" .
 
 cp:DataPlane a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Resource ;
     skos:definition "A runtime plane realizing one capability and serving zero or more tenants; mutated only by its capability control plane's acting identity (sole-writer, enforced in SHACL)."@en ;
     vs:term_status "draft" .
 
 cp:DesiredStateDeclaration a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A governed statement of intended data-plane state, declared through the management control plane. Data-plane mutations must trace to one (no orphan writes)."@en ;
     vs:term_status "draft" .
 
 cp:DataPlaneMutation a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A write into a data plane performed by a control plane's acting identity, realizing a desired-state declaration."@en ;
     vs:term_status "draft" .
 
 cp:ConcurrentSessionPolicy a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "The maximum number of concurrent active sessions a principal of a tenant may hold on devices of one class, configured per tenant per device class."@en ;
     skos:editorialNote "A device class with no policy is unbounded, which is a stewardship concern rather than a safe default. Modelled as plain configuration rather than a governed declaration — a security control with no approver, the same asymmetry route bindings had before they were governed."@en ;
     vs:term_status "draft" .
 
 cp:TenantMembership a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A governed record that a principal may act for a tenant, in a stated capacity, with a lifecycle and a human approval. One principal may hold memberships in several tenants."@en ;
     vs:term_status "draft" .
 
@@ -79,6 +89,7 @@ cp:MembershipState a owl:Class ;
     vs:term_status "draft" .
 
 cp:Subscription a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A first-class, scope-free record of a tenant holding a platform capability, with an access-relevant lifecycle and human-approved activation. Subscriptions target capabilities only — applications are owned, not subscribed."@en ;
     vs:term_status "draft" .
 
@@ -88,38 +99,46 @@ cp:SubscriptionState a owl:Class ;
     vs:term_status "draft" .
 
 cp:CapabilityBundle a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A named set of capabilities offered for subscription together. Bundles are sales-time convenience: subscribing to one expands to per-capability subscriptions, materialized; enforcement and reachability never see bundles."@en ;
     vs:term_status "draft" .
 
 cp:CapabilityOffering a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "Governed intent that a capability is offered in a scope. No cross-scope parity is assumed: a capability exists where an offering says it does. Data planes are actuation and must conform: deployed-where-not-offered violates; offered-but-undeployed is launch tracking."@en ;
     vs:term_status "draft" .
 
 cp:CapabilityRequirement a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A capability an application requires, proposed by observed usage and confirmed by a human approval — 'agents observe, humans confirm'. Only confirmed requirements gate enablement; drift against live observation is watched in both directions."@en ;
     vs:term_status "draft" .
 
 cp:CapabilityUseObservation a owl:Class ;
+    core:dataCategory core:data-observations ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A windowed aggregate observation, ingested from telemetry, that an application exercised a capability during a time window. Kept in-graph so requirement-drift questions stay answerable in CI; never per-request."@en ;
     vs:term_status "draft" .
 
 cp:ApplicationEnablement a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:definition "A desired-state declaration enabling an application within the declaration's scope. Enablement inherits the full declaration machinery — scope, approval rigor, supersession; an application is enabled where a current, approved enablement says so, gated on its owner's subscription and offering coverage."@en ;
     vs:term_status "draft" .
 
 cp:JourneyDefinitionChange a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:definition "A desired-state declaration changing an authentication journey definition. Journey definitions are security-relevant desired state; this subclass gives their changes scope, approval rigor, and supersession through the standard declaration machinery."@en ;
     vs:term_status "draft" .
 
 cp:RouteBindingChange a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:definition "A desired-state declaration binding an ingress route to a tenant, inheriting scope, approval rigor and supersession from the declaration machinery."@en ;
     vs:term_status "draft" .
 
 cp:Portal a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A tenant-owned presentation grouping of applications. Presentation only: admission stays per-application and the enforcement vocabulary never sees portals."@en ;
     skos:editorialNote "Whether a portal is per delivery channel is deliberately left open — a request's channel comes from the session's device class, not from anything the portal declares."@en ;
     vs:term_status "draft" .
@@ -166,6 +185,11 @@ cp:actuates a owl:ObjectProperty ;
 
 cp:realizesCapability a owl:ObjectProperty ;
     skos:definition "Capability a data plane is a runtime realization of."@en ;
+    vs:term_status "draft" .
+
+cp:holdsDataCategory a owl:ObjectProperty ;
+    skos:prefLabel "holds data category"@en ;
+    skos:definition "Kind of data a data plane holds, from the closed data-category scheme; the fact storage crossings and residency are judged against."@en ;
     vs:term_status "draft" .
 
 cp:servesTenant a owl:ObjectProperty ;

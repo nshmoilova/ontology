@@ -20,15 +20,18 @@
 #################################################################
 
 ingress:Gateway a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Resource ;
     skos:definition "A network entry point into the platform, exposing one or more listeners through which external traffic arrives."@en ;
     vs:term_status "draft" .
 
 ingress:Listener a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A protocol/port binding on a gateway."@en ;
     vs:term_status "draft" .
 
 ingress:Route a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Resource ;
     skos:prefLabel "Route"@en ;
     skos:altLabel "application access endpoint"@en ;
@@ -36,11 +39,13 @@ ingress:Route a owl:Class ;
     vs:term_status "draft" .
 
 ingress:UpstreamService a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Resource ;
     skos:definition "A backend service to which routes forward traffic."@en ;
     vs:term_status "draft" .
 
 ingress:TLSConfiguration a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "TLS settings applied at a listener, including where TLS terminates relative to policy enforcement."@en ;
     vs:term_status "draft" .
 

@@ -23,16 +23,19 @@
 #################################################################
 
 ctr:Contract a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:prefLabel "Contract"@en ;
     skos:definition "The published interface of exactly one capability, through which consumers depend on the capability rather than on what realises it."@en ;
     vs:term_status "draft" .
 
 ctr:ContractVersion a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:prefLabel "Contract version"@en ;
     skos:definition "One version of a contract: a version string, a lifecycle state, a compatibility with its predecessor, and a reference to the interface artifact."@en ;
     vs:term_status "draft" .
 
 ctr:ContractChange a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:prefLabel "Contract change"@en ;
     skos:definition "A desired-state declaration that publishes, deprecates or retires a contract version — the published change process, with scope, approval rigor and supersession inherited from the declaration machinery."@en ;

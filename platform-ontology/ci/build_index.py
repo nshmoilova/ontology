@@ -145,6 +145,7 @@ def collect_terms(g: Graph):
                 "editorialNote": lit(g, s, SKOS.editorialNote),
                 "altLabels": lits(g, s, SKOS.altLabel),
                 "conformsTo": sorted(str(o) for o in g.objects(s, DCTERMS.conformsTo)),
+                "dataCategory": next((curie(str(o)) for o in g.objects(s, URIRef(BASE + "core#dataCategory"))), None),
                 "status": lit(g, s, VS) or "draft",
                 "subClassOf": [
                     curie(str(o)) for o in g.objects(s, RDFS.subClassOf)
@@ -610,6 +611,11 @@ def main() -> int:
         if sh.get("decisions"):
             sh["decisions"] = sorted(set(sh["decisions"]), key=dnum)
     standards = check_standards(terms, decisions)
+    # D63: stored classes should carry a data category; a note until the gate is switched on
+    unclassified = [t["curie"] for t in terms.values() if t["kind"] == "class" and not t.get("dataCategory")
+                    and not t["subClasses"] and not any(t["name"].endswith(x) for x in ("Scheme", "State", "Format", "Method", "Level", "Outcome", "Dimension", "Action", "Channel", "Class", "Metric", "Comparator", "Compatibility", "Category"))]
+    if unclassified:
+        print(f"  note: {len(unclassified)} stored classes carry no data category: {', '.join(unclassified[:8])}{' …' if len(unclassified) > 8 else ''}")
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
     formal, backlog = load_competency_questions()

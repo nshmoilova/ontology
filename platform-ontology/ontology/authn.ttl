@@ -20,15 +20,18 @@
 #################################################################
 
 authn:Credential a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     skos:definition "An artifact used to prove an identity claim (password record, FIDO2 key registration, client certificate, workload SVID)."@en ;
     vs:term_status "draft" .
 
 authn:AuthenticationEvent a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A discrete attempt (successful or failed) to authenticate a principal."@en ;
     vs:term_status "draft" .
 
 authn:IdentityProvider a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A system that asserts principal identities (enterprise IdP, workload identity issuer)."@en ;
     vs:term_status "draft" .
 
@@ -44,15 +47,18 @@ authn:AssuranceLevel a owl:Class ;
     vs:term_status "draft" .
 
 authn:AuthenticationJourneyDefinition a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A governed template of an authentication flow (e.g., 'web-default: password then OTP, yields AAL2'), bound to the delivery channels it serves. Changes to definitions are security-relevant desired state and flow through the control plane's declaration and approval machinery."@en ;
     vs:term_status "draft" .
 
 authn:AuthenticationJourneyExecution a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "A principal's concrete traversal of a journey definition, comprising the authentication events actually performed. Achieved assurance is a property of the completed flow, not of any single step."@en ;
     vs:term_status "draft" .
 
 authn:SubjectIdentifier a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     dct:conformsTo <https://www.rfc-editor.org/rfc/rfc9493> , <https://openid.net/specs/openid-connect-core-1_0.html> ;
     skos:definition "A naming fact: at one issuer, one subject value denotes one principal (RFC 9493 / OIDC sub). Read in reverse at resolution time — a token or security event carries the subject, and this yields the principal."@en ;
     vs:term_status "draft" .
@@ -66,6 +72,7 @@ authn:SubjectIdentifierFormat a owl:Class ;
 authn:Credential owl:disjointWith authn:AuthenticationEvent .
 authn:AuthenticationJourneyDefinition owl:disjointWith authn:AuthenticationJourneyExecution .
 authn:ProofOfPossessionKey a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     skos:prefLabel "Proof-of-possession key"@en ;
     skos:altLabel "confirmation key (cnf)"@en , "DPoP key"@en ;
     skos:definition "The public half of a key pair whose private half the presenting software proves possession of per request, sender-constraining the session or token bound to it."@en ;
@@ -73,6 +80,7 @@ authn:ProofOfPossessionKey a owl:Class ;
     vs:term_status "draft" .
 
 authn:OAuthClientRegistration a owl:Class ;
+    core:dataCategory core:data-governance ;
     dct:conformsTo <https://www.rfc-editor.org/rfc/rfc6749> ;
     skos:prefLabel "OAuth client registration"@en ;
     skos:altLabel "client_id"@en ;

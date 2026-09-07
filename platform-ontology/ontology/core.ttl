@@ -10,10 +10,10 @@
 
 <https://w3id.org/examplebank/platform/core>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.5.1> ;
-    owl:versionInfo "0.5.1" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/core/0.6.0> ;
+    owl:versionInfo "0.6.0" ;
     dct:title "Platform Core Ontology"@en ;
-    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13)."@en ;
+    dct:description "Upper module for the application platform ontology: principals, resources, events, and XACML-style policy architecture roles. All domain modules import this module. Since 0.2.0: tenants (the platform itself being a distinguished tenant), capabilities, tenant-owned applications, and the closed delivery-channel vocabulary — platform-wide primitives promoted from the control-plane module while all terms are draft. Since 0.5.0: the decision point and the enforcement point are disjoint — a decision is rendered by one component and acted on by another (P13). Since 0.6.0: the closed data-category scheme — the kind of data a stored fact or a data plane holds, for residency, sovereignty, retention and minimisation; kind, not sensitivity (D63)."@en ;
     dct:created "2026-08-31"^^xsd:date ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> .
 
@@ -22,22 +22,26 @@
 #################################################################
 
 core:Principal a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     rdfs:isDefinedBy <https://w3id.org/examplebank/platform/core> ;
     skos:definition "An entity that can be authenticated and to which authorization decisions apply."@en ;
     vs:term_status "draft" .
 
 core:HumanPrincipal a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     rdfs:subClassOf core:Principal ;
     skos:definition "A principal representing a human user, identified via the firm's directory (e.g., SID/HR identifier)."@en ;
     vs:term_status "draft" .
 
 core:WorkloadPrincipal a owl:Class ;
+    core:dataCategory core:data-principal-identity ;
     dct:conformsTo <https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md> ;
     rdfs:subClassOf core:Principal ;
     skos:definition "A principal representing a non-human workload (service, agent, job), identified via a workload identity such as a SPIFFE ID."@en ;
     vs:term_status "draft" .
 
 core:Resource a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "Anything access to which is governed by policy: services, routes, data assets, control-plane operations."@en ;
     vs:term_status "draft" .
 
@@ -48,45 +52,54 @@ core:PlatformEvent a owl:Class ;
     vs:term_status "draft" .
 
 core:PolicyDecisionPoint a owl:Class ;
+    core:dataCategory core:data-governance ;
     dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that evaluates policy and renders authorization decisions (XACML PDP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyEnforcementPoint a owl:Class ;
+    core:dataCategory core:data-governance ;
     dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that intercepts access and enforces PDP decisions (XACML PEP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyInformationPoint a owl:Class ;
+    core:dataCategory core:data-governance ;
     dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component that supplies attribute values used in policy evaluation (XACML PIP)."@en ;
     vs:term_status "draft" .
 
 core:PolicyAdministrationPoint a owl:Class ;
+    core:dataCategory core:data-governance ;
     dct:conformsTo <https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html> ;
     skos:definition "Component through which policy is authored and managed (XACML PAP)."@en ;
     vs:term_status "draft" .
 
 core:Tenant a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "An organizational unit onboarded to the platform, to which subscriptions, applications, entitlement grants, and data planes are scoped."@en ;
     vs:term_status "draft" .
 
 core:PlatformTenant a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Tenant ;
     skos:definition "The distinguished singleton tenant representing the platform itself. Platform-owned applications are owned by it, and it holds capability subscriptions like any tenant, keeping every ownership and coverage rule uniform. Exactly one individual is expected (stewardship-enforced)."@en ;
     vs:term_status "draft" .
 
 core:Capability a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A platform offering provided to tenants via subscription. Each capability is governed by exactly one capability control plane."@en ;
     vs:term_status "draft" .
 
 core:Application a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf core:Resource ;
     skos:definition "An independently developed application owned by exactly one tenant, reachable through ingress once enabled, and consuming platform capabilities per its confirmed requirements."@en ;
     skos:editorialNote "What a subject may do inside the application is application-owned (Level 3) and deliberately out of this ontology's scope."@en ;
     vs:term_status "draft" .
 
 core:BusinessClient a owl:Class ;
+    core:dataCategory core:data-customer-personal ;
     skos:prefLabel "Business client"@en ;
     skos:altLabel "customer"@en , "counterparty"@en ;
     skos:definition "A party holding a business relationship with the firm — the firm's customer, retail or corporate. A business client is not itself authenticable; principals act for it, which is what lets one corporate client have many users and one person hold both a staff identity and a client relationship."@en ;
@@ -194,3 +207,46 @@ core:channel-agent a core:DeliveryChannel ;
     skos:inScheme core:DeliveryChannelScheme ;
     skos:prefLabel "AI agent"@en ;
     skos:editorialNote "Delegation semantics deliberately deferred; see the agent-channel backlog questions."@en .
+
+#################################################################
+# Data categories — kind, not sensitivity (D63)
+#################################################################
+
+core:DataCategory a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Data category"@en ;
+    skos:definition "The kind of data a stored fact or a data plane holds, from the closed scheme; the axis residency, sovereignty, retention and minimisation are stated against. Kind, not sensitivity."@en ;
+    vs:term_status "draft" .
+
+core:dataCategory a owl:AnnotationProperty ;
+    skos:prefLabel "data category"@en ;
+    skos:definition "Data category of the instances of a class — an annotation on the class, so the ontology's own contents are classified."@en ;
+    vs:term_status "draft" .
+
+core:DataCategoryScheme a skos:ConceptScheme ; skos:prefLabel "Data categories"@en ;
+    skos:definition "Closed scheme of the kinds of data the platform holds or hosts. Extend by decision, never by string."@en .
+
+core:data-customer-personal a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    dct:conformsTo <https://eur-lex.europa.eu/eli/reg/2016/679/oj> ;
+    skos:prefLabel "Customer personal data"@en ; skos:notation "customer-personal" ;
+    skos:definition "Data about business clients and the people behind them — personal data in the regulation's sense, held in tenant data planes."@en .
+core:data-principal-identity a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    dct:conformsTo <https://eur-lex.europa.eu/eli/reg/2016/679/oj> ;
+    skos:prefLabel "Principal identity data"@en ; skos:notation "principal-identity" ;
+    skos:definition "Data about principals held by the platform itself: subject identifiers, credentials, proof-of-possession keys, memberships."@en .
+core:data-authn-evidence a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    skos:prefLabel "Authentication and session evidence"@en ; skos:notation "authn-evidence" ;
+    skos:definition "Authentication events, journey executions, sessions, tokens and devices — security evidence that exists for traceability."@en .
+core:data-authz-evidence a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    skos:prefLabel "Authorization evidence"@en ; skos:notation "authz-evidence" ;
+    skos:definition "Decisions, entitlement grants and attribute assertions."@en .
+core:data-governance a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    skos:prefLabel "Governance records"@en ; skos:notation "governance" ;
+    skos:definition "Declarations, approvals, subscriptions, offerings, commitments, contracts and configuration — retained for audit."@en .
+core:data-observations a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    skos:prefLabel "Operational observations"@en ; skos:notation "observations" ;
+    skos:definition "Windowed aggregates of capability use and of commitment metrics — never per-request."@en .
+core:data-tenant-workload a core:DataCategory ; skos:inScheme core:DataCategoryScheme ;
+    skos:prefLabel "Tenant workload data"@en ; skos:notation "tenant-workload" ;
+    skos:definition "The contents of data planes serving tenants — hosted by the platform without being understood by it. Residency and sovereignty apply by category alone."@en .
+

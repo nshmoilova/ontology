@@ -21,27 +21,33 @@
 #################################################################
 
 authz:Policy a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A named, versioned unit of authorization logic governing one or more resources."@en ;
     vs:term_status "draft" .
 
 authz:PolicyRule a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A single rule within a policy, with an effect (permit/deny) and conditions over attributes."@en ;
     vs:term_status "draft" .
 
 authz:AttributeAssertion a owl:Class ;
+    core:dataCategory core:data-authz-evidence ;
     skos:definition "A first-class attribute statement about a principal or resource: name, value, issuer, and validity window. Attributes carry provenance rather than being baked into role hierarchies."@en ;
     vs:term_status "draft" .
 
 authz:Role a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:definition "A named collection of permissions; retained for RBAC interop, but modelled as one source of attribute assertions among others."@en ;
     vs:term_status "draft" .
 
 authz:PolicyDecision a owl:Class ;
+    core:dataCategory core:data-authz-evidence ;
     rdfs:subClassOf core:PlatformEvent ;
     skos:definition "An evaluation of policy for a specific access request, with an outcome."@en ;
     vs:term_status "draft" .
 
 authz:Obligation a owl:Class ;
+    core:dataCategory core:data-authz-evidence ;
     skos:definition "An action the enforcement point must perform alongside enforcing a decision (log, step-up, watermark)."@en ;
     vs:term_status "draft" .
 
@@ -57,6 +63,7 @@ authz:EntitlementDimension a owl:Class ;
     vs:term_status "draft" .
 
 authz:EntitlementGrant a owl:Class ;
+    core:dataCategory core:data-authz-evidence ;
     skos:definition "A conferral of platform access to a tenant on one entitlement dimension, with a value and validity window. Always a materialized projection of upstream governance, distributed to ingress."@en ;
     skos:editorialNote "The token is evidence; the grant is authority."@en ;
     vs:term_status "draft" .
@@ -68,6 +75,7 @@ authz:Action a owl:Class ;
     vs:term_status "draft" .
 
 authz:IngressAdmissionDecision a owl:Class ;
+    core:dataCategory core:data-authz-evidence ;
     dct:conformsTo <https://openid.net/specs/authorization-api-1_0.html> ;
     rdfs:subClassOf authz:PolicyDecision ;
     skos:definition "A decision at the ingress policy enforcement point admitting a request across a platform or application boundary: subject, action and target evaluated against distributed entitlement grants."@en ;

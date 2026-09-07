@@ -695,3 +695,14 @@ scp:PolicyChangeApproverPartyShape a sh:NodeShape ;
         """ ;
     ] .
 
+# D63 — a data plane says what kind of data it holds; a stewardship warning until every plane is classified.
+scp:DataPlaneDataCategoryShape a sh:NodeShape ;
+    sh:targetClass cp:DataPlane ;
+    sh:property [
+        sh:path cp:holdsDataCategory ;
+        sh:minCount 1 ;
+        sh:class core:DataCategory ;
+        sh:severity sh:Warning ;
+        sh:message "Data plane declares no data category — residency and sovereignty cannot be judged for it; route to stewardship." ;
+    ] .
+

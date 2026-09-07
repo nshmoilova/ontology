@@ -401,10 +401,25 @@ basis — is logged as terms-first. These questions are the trigger.
   authentication events, decisions, subject identifiers, observations? *(the
   graph's contents are personal data too)*
 
-When the terms enter: a closed jurisdiction scheme with a region→jurisdiction
-mapping; a residency requirement on the tenant as a declaration (approver,
-supersession); a closed transfer-basis scheme. Residency is a boundary, not a
-commitment: control-plane and authz, not the commitment module.
+The model to build (refined 2026-09-03): region is where a data plane is
+deployed (us-west-2 granularity) and maps to a *set* of jurisdictions, which
+nest (California within the United States); residency belongs to data, not
+to the tenant — a requirement per tenant and data category, with required-in
+and permitted-in jurisdictions; sovereignty is control — the jurisdiction of
+the legal entity that operates a data plane, the same operated-by relation
+the agent-channel questions wait for. A crossing therefore has three kinds:
+by storage (checked at provisioning), by access (checked at admission), by
+control (checked against the operator's jurisdiction). Done so far: the
+data-category scheme (D63) — seven kinds, annotated on stored classes and
+declared on data planes. Still to build: the region scheme (paying P16's
+debt), the jurisdiction scheme with nesting, the residency requirement and
+transfer permission as declarations, the transfer-basis scheme, the party
+with its jurisdiction. Residency is a boundary, not a commitment:
+control-plane and authz, not the commitment module.
+
+- Which stored classes and which data planes carry no data category?
+  *(stewardship warning on planes today; a build gate on classes once the
+  classification is reviewed — D63)*
 
 ### Contracts and versions (module `contract`, scaffolded — D62)
 

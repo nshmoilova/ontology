@@ -25,6 +25,7 @@
 #################################################################
 
 cmt:Commitment a owl:Class ;
+    core:dataCategory core:data-governance ;
     rdfs:subClassOf cp:DesiredStateDeclaration ;
     skos:prefLabel "Commitment"@en ;
     skos:altLabel "service-level objective"@en , "non-functional requirement"@en ;
@@ -32,6 +33,7 @@ cmt:Commitment a owl:Class ;
     vs:term_status "draft" .
 
 cmt:Observation a owl:Class ;
+    core:dataCategory core:data-observations ;
     rdfs:subClassOf sosa:Observation ;
     dct:conformsTo <https://www.w3.org/TR/vocab-ssn/> ;
     skos:prefLabel "Observation"@en ;
@@ -39,6 +41,7 @@ cmt:Observation a owl:Class ;
     vs:term_status "draft" .
 
 cmt:MeasurementSource a owl:Class ;
+    core:dataCategory core:data-governance ;
     skos:prefLabel "Measurement source"@en ;
     skos:definition "A system or feed from which a commitment's metric is observed. Instances may name the actual monitoring system; the term does not."@en ;
     vs:term_status "draft" .

@@ -21,25 +21,30 @@
 #################################################################
 
 session:Session a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     skos:definition "A bounded period of authenticated interaction between a principal and the platform, established by an authentication event."@en ;
     vs:term_status "draft" .
 
 session:Token a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     skos:definition "A signed artifact carrying claims, issued within a session."@en ;
     vs:term_status "draft" .
 
 session:AccessToken a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     dct:conformsTo <https://www.rfc-editor.org/rfc/rfc6749> ;
     rdfs:subClassOf session:Token ;
     skos:definition "Token presented to resource servers to authorize requests (e.g., OAuth 2.0 access token)."@en ;
     vs:term_status "draft" .
 
 session:RefreshToken a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     rdfs:subClassOf session:Token ;
     skos:definition "Token exchanged for new access tokens without re-authentication."@en ;
     vs:term_status "draft" .
 
 session:IDToken a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     dct:conformsTo <https://openid.net/specs/openid-connect-core-1_0.html> ;
     rdfs:subClassOf session:Token ;
     skos:definition "OIDC ID token asserting the authentication of a principal."@en ;
@@ -51,6 +56,7 @@ session:SessionState a owl:Class ;
     vs:term_status "draft" .
 
 session:Device a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     skos:definition "The requesting client a principal holds a session on, identified in the firm's registry and the unit of session identity: the platform issues one session per principal per device. Non-interactive callers have no device."@en ;
     vs:term_status "draft" .
 
@@ -60,6 +66,7 @@ session:DeviceClass a owl:Class ;
     vs:term_status "draft" .
 
 session:SessionHandle a owl:Class ;
+    core:dataCategory core:data-authn-evidence ;
     skos:definition "The opaque value presented to identify a session, typically carried in a cookie. It identifies but does not authenticate; several handles may resolve to one session across rotations."@en ;
     vs:term_status "draft" .
 
