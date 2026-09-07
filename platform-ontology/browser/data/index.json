@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "c48e4282c382",
+ "sourceDigest": "253f79504ccf",
  "stats": {
   "modules": 8,
   "classes": 84,
@@ -12,7 +12,7 @@
   "vocabularies": 16,
   "relationships": 66,
   "decisions": 58,
-  "principles": 18,
+  "principles": 19,
   "standards": 15,
   "realisedBacklog": 42,
   "provisionalPrinciples": 9,
@@ -6624,7 +6624,8 @@
     "D18"
    ],
    "principles": [
-    "P18"
+    "P18",
+    "P20"
    ]
   },
   {
@@ -7584,7 +7585,8 @@
     "D12"
    ],
    "principles": [
-    "P18"
+    "P18",
+    "P20"
    ]
   },
   {
@@ -10349,7 +10351,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#ContractChange",
@@ -10378,7 +10382,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#ContractVersion",
@@ -10502,7 +10508,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#ContractVersionState",
@@ -10732,7 +10740,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#dependsOnContractVersion",
@@ -10759,7 +10769,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#deprecatesVersion",
@@ -10817,7 +10829,9 @@
    ],
    "vocabulary": [],
    "decisions": [],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/contract#publishesVersion",
@@ -10927,7 +10941,9 @@
    "decisions": [
     "D62"
    ],
-   "principles": []
+   "principles": [
+    "P20"
+   ]
   }
  ],
  "vocabularies": [
@@ -12843,7 +12859,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/contract#ContractVersionShape",
@@ -12926,7 +12945,10 @@
     }
    ],
    "violations": 5,
-   "warnings": 1
+   "warnings": 1,
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#ApprovalNotSelfShape",
@@ -13396,7 +13418,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#PolicyChangeApproverPartyShape",
@@ -13553,7 +13578,10 @@
     }
    ],
    "violations": 1,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#RequirementTargetShape",
@@ -13808,7 +13836,10 @@
     }
    ],
    "violations": 3,
-   "warnings": 0
+   "warnings": 0,
+   "principles": [
+    "P20"
+   ]
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/control-plane#SupersededRealizationShape",
@@ -15433,7 +15464,8 @@
     "Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule \u2014 a design smell."
    ],
    "principles": [
-    "P7"
+    "P7",
+    "P20"
    ],
    "invariant": false,
    "termCuries": [
@@ -16614,6 +16646,7 @@
    "area": "Foundations",
    "invariant": true,
    "principles": [
+    "P20",
     "P9",
     "P8",
     "P18",
@@ -16635,6 +16668,9 @@
     "dependsOnContractVersion",
     "contractOf",
     "versionOf"
+   ],
+   "motivatedBy": [
+    "P20"
    ],
    "termCuries": [
     "ctr:Contract",
@@ -17513,6 +17549,55 @@
     "D57"
    ],
    "status": "confirmed"
+  },
+  {
+   "id": "P20",
+   "title": "Consumers depend on contracts, never on implementations",
+   "level": "platform",
+   "scope": [
+    "contract"
+   ],
+   "statement": "A capability is consumed through its published contract. A consumer depends on a contract version, never on what realises the capability. A contract changes only through a published, approved version, and a consumer is never left on a retired one.",
+   "test": "Does this consumer depend on a contract version, or on what realises the capability? Does this change to a contract go through a published, approved declaration? A no to either is rejected.",
+   "consequences": "Consumed through contracts: an offering whose capability has no published contract version is a violation \u2014 deployed without a contract. Not implementations: a requirement names a capability and pins a version (the edges are typed, D60), and a subscription targets a capability, never a data plane (D11); a requirement on a retired version is a violation \u2014 a consumer on a dead contract. Versioned through a governed process: publication, deprecation and retirement are contract changes \u2014 declarations with scope, approval and supersession (D62) \u2014 and a version in any of those states with no declaration behind it is a violation; a breaking version that deprecates its predecessor with no tolerance window is a stewardship warning, mirroring the ontology's own deprecation rule. What this principle adds to P2 and D11, which already separated interface from realisation, is the governed version lifecycle. Refused alternative, kept on the card so it does not reopen: contracting services or upstreams \u2014 'service' has no definition in the model and the consumer edge would have had to be invented, whereas capabilities already have consumers, offerings and dependencies.",
+   "fitness": "generative (D62 made because of it; 4 invariants) \u00b7 testable \u00b7 enforced on the data contract",
+   "enforcedBy": [
+    "ContractShape",
+    "ContractVersionShape",
+    "RequirementOnRetiredVersionShape",
+    "OfferingWithoutContractShape",
+    "SubscriptionShape"
+   ],
+   "appliedIn": [
+    "D11",
+    "D62"
+   ],
+   "terms": [
+    "Contract",
+    "ContractVersion",
+    "ContractChange",
+    "dependsOnContractVersion",
+    "contractOf",
+    "versionOf",
+    "hasVersionState",
+    "CapabilityRequirement",
+    "Subscription"
+   ],
+   "termCuries": [
+    "cp:CapabilityRequirement",
+    "cp:Subscription",
+    "ctr:Contract",
+    "ctr:ContractChange",
+    "ctr:ContractVersion",
+    "ctr:contractOf",
+    "ctr:dependsOnContractVersion",
+    "ctr:hasVersionState",
+    "ctr:versionOf"
+   ],
+   "motivatedBy": [
+    "D62"
+   ],
+   "status": "confirmed"
   }
  ],
  "standards": [
@@ -17670,9 +17755,9 @@
   },
   {
    "candidate": "Capabilities are consumed through published contracts; consumers depend on contracts, not implementations; contracts are versioned and managed through a published change process",
-   "verdict": "not promoted \u2014 out of scope for this ontology; revisit pending a scoping decision",
+   "verdict": "promoted as P20 after the contract module was scaffolded (D62)",
    "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them \u2014 none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 \u2014 offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
-   "todo": "Scoping decision taken (D62): the sibling `contract` module contracts capabilities, not services; consumers are applications through their requirements; publication, deprecation and retirement are declarations. Re-evaluate for promotion once two decisions have been made because of it \u2014 the first deprecation with a tolerance window would be one."
+   "todo": "Promoted 2026-09-03. Kept here so the original evaluation is not repeated: it was out of scope until the module existed."
   },
   {
    "candidate": "Substitutability is designed in at the dependency seams that matter; for critical dependencies such as DNS, CDN and edge services the platform supports active substitution rather than only migration",

@@ -273,7 +273,8 @@
         "Scoped subscriptions ('DBaaS in EU-prod'): creates a second place where region and environment live, permanently able to contradict the tenant's entitlement grants, which would then need a precedence rule — a design smell."
       ],
       "principles": [
-        "P7"
+        "P7",
+        "P20"
       ]
     },
     {
@@ -1058,6 +1059,7 @@
       "area": "Foundations",
       "invariant": true,
       "principles": [
+        "P20",
         "P9",
         "P8",
         "P18",
@@ -1079,6 +1081,9 @@
         "dependsOnContractVersion",
         "contractOf",
         "versionOf"
+      ],
+      "motivatedBy": [
+        "P20"
       ]
     }
   ]

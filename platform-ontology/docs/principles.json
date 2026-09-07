@@ -662,6 +662,40 @@
         "PolicyChangeEvent",
         "TenantMembership"
       ]
+    },
+    {
+      "id": "P20",
+      "title": "Consumers depend on contracts, never on implementations",
+      "level": "platform",
+      "scope": [
+        "contract"
+      ],
+      "statement": "A capability is consumed through its published contract. A consumer depends on a contract version, never on what realises the capability. A contract changes only through a published, approved version, and a consumer is never left on a retired one.",
+      "test": "Does this consumer depend on a contract version, or on what realises the capability? Does this change to a contract go through a published, approved declaration? A no to either is rejected.",
+      "consequences": "Consumed through contracts: an offering whose capability has no published contract version is a violation — deployed without a contract. Not implementations: a requirement names a capability and pins a version (the edges are typed, D60), and a subscription targets a capability, never a data plane (D11); a requirement on a retired version is a violation — a consumer on a dead contract. Versioned through a governed process: publication, deprecation and retirement are contract changes — declarations with scope, approval and supersession (D62) — and a version in any of those states with no declaration behind it is a violation; a breaking version that deprecates its predecessor with no tolerance window is a stewardship warning, mirroring the ontology's own deprecation rule. What this principle adds to P2 and D11, which already separated interface from realisation, is the governed version lifecycle. Refused alternative, kept on the card so it does not reopen: contracting services or upstreams — 'service' has no definition in the model and the consumer edge would have had to be invented, whereas capabilities already have consumers, offerings and dependencies.",
+      "fitness": "generative (D62 made because of it; 4 invariants) · testable · enforced on the data contract",
+      "enforcedBy": [
+        "ContractShape",
+        "ContractVersionShape",
+        "RequirementOnRetiredVersionShape",
+        "OfferingWithoutContractShape",
+        "SubscriptionShape"
+      ],
+      "appliedIn": [
+        "D11",
+        "D62"
+      ],
+      "terms": [
+        "Contract",
+        "ContractVersion",
+        "ContractChange",
+        "dependsOnContractVersion",
+        "contractOf",
+        "versionOf",
+        "hasVersionState",
+        "CapabilityRequirement",
+        "Subscription"
+      ]
     }
   ],
   "evaluatedNotPrinciples": [
@@ -707,9 +741,9 @@
     },
     {
       "candidate": "Capabilities are consumed through published contracts; consumers depend on contracts, not implementations; contracts are versioned and managed through a published change process",
-      "verdict": "not promoted — out of scope for this ontology; revisit pending a scoping decision",
+      "verdict": "promoted as P20 after the contract module was scaffolded (D62)",
       "why": "Sound for the platform's interface-governance domain, but nothing in the identity-and-access ontology depends on it. Not generative: no decision or shape follows from it, and the ontology has no contract, version, interface or consumer term. Not testable in practice: 'which contract does this consumer depend on?' would be answered 'not applicable' by every proposal that enters this ontology. Not enforceable: nothing could enforce it until Contract and ContractVersion terms exist, and under P9 those cannot be added before a competency question asks for them — none does. The first sentence already has an identity-domain counterpart that is enforced: a subscription targets a capability and never a data plane, and enablement references the capability (D11, P2 — offerings are intent, data planes are actuation). Versioning and a published change process have no counterpart. Not to be conflated with the ontology's own governance (semantic versioning, deprecation, change control), which applies this rule to the ontology as an artefact, not to platform capabilities.",
-      "todo": "Scoping decision taken (D62): the sibling `contract` module contracts capabilities, not services; consumers are applications through their requirements; publication, deprecation and retirement are declarations. Re-evaluate for promotion once two decisions have been made because of it — the first deprecation with a tolerance window would be one."
+      "todo": "Promoted 2026-09-03. Kept here so the original evaluation is not repeated: it was out of scope until the module existed."
     },
     {
       "candidate": "Substitutability is designed in at the dependency seams that matter; for critical dependencies such as DNS, CDN and edge services the platform supports active substitution rather than only migration",
