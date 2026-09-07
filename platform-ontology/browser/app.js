@@ -388,7 +388,10 @@
     if (t.subClassOf.length) hierarchy.push(`<div><b>Subclass of</b> <span class="chips">${t.subClassOf.map((c) => link(c)).join("")}</span></div>`);
     if (t.subPropertyOf.length) hierarchy.push(`<div><b>Subproperty of</b> <span class="chips">${t.subPropertyOf.map((c) => link(c)).join("")}</span></div>`);
     if (t.subClasses.length) hierarchy.push(`<div><b>Subclasses</b> <span class="chips">${t.subClasses.map((c) => link(c)).join("")}</span></div>`);
-    if (t.dataCategory) hierarchy.push(`<div><b>Data category</b> <span class="chips">${link(t.dataCategory)}</span></div>`);
+    if (t.dataCategory) {
+      const member = (DB.vocabularies || []).flatMap((v) => v.members || []).find((m) => m.curie === t.dataCategory);
+      hierarchy.push(`<div><b>Data category</b> <span class="chips"><a class="pill" href="#/term/core%3ADataCategory" title="${esc(t.dataCategory)}">${esc(member ? member.label : t.dataCategory)}</a></span></div>`);
+    }
     if ((t.conformsTo || []).length) hierarchy.push(`<div><b>Conforms to</b> <span class="chips">${t.conformsTo.map((u) => `<a class="pill" href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//, "").replace(/\/$/, "").split("/").slice(-1)[0] || u)}</a>`).join("")}</span></div>`);
     if (t.disjointWith.length) hierarchy.push(`<div><b>Disjoint with</b> <span class="chips">${t.disjointWith.map((c) => link(c)).join("")}</span></div>`);
 
