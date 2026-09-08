@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "6fc1f7316fe5",
+ "sourceDigest": "349460e7b43a",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -21265,9 +21265,9 @@
        ],
        [
         "P3 Agents execute; humans authorize",
-        "Automation may act, but a human is accountable for every grant of authority. Revocation is exempt.",
-        "A payments agent executes a policy change; alice's approval is attached. Taking access away needs no approval.",
-        "Automation scales action; accountability must not scale away with it."
+        "Any automation may act \u2014 a scheduled job, a service, an AI agent \u2014 whether the platform, a tenant or an external legal entity runs it. Every grant of authority carries a human approval by a member of the party whose authority it is: the tenant's for tenant authority, the platform's for platform authority. Revocation is exempt.",
+        "A provisioning agent run by a third party executes a data-plane change under a declaration a platform member approved: allowed. The same agent's admission to a tenant approved by its operator's staff: rejected \u2014 they are members of no authorizing party. Withdrawing the agent's access needs no approval at all.",
+        "Automation scales action; accountability must not scale away with it \u2014 least of all when the automation is somebody else's. Operating an agent and authorizing it are two accountabilities, and the second never follows from the first."
        ],
        [
         "P4 The token is evidence; the grant is authority",
