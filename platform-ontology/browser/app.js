@@ -506,6 +506,28 @@
       </div>`;
   }
 
+  // A small markdown subset for explainer bodies: fenced code, inline code, **bold**, "- " bullets, blank-line paragraphs.
+  function md(text) {
+    const inline = (t) => esc(t)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+    const out = [];
+    const parts = text.split(/```/);
+    parts.forEach((part, i) => {
+      if (i % 2 === 1) { out.push(`<pre class="fence">${esc(part.replace(/^[a-z]*\n/, ""))}</pre>`); return; }
+      part.split(/\n\s*\n/).forEach((para) => {
+        const lines = para.split("\n").filter((l) => l.trim().length);
+        if (!lines.length) return;
+        if (lines.every((l) => /^\s*- /.test(l))) {
+          out.push(`<ul class="mdlist">${lines.map((l) => `<li>${inline(l.replace(/^\s*- /, ""))}</li>`).join("")}</ul>`);
+        } else {
+          out.push(`<p>${inline(lines.join(" "))}</p>`);
+        }
+      });
+    });
+    return out.join("");
+  }
+
   function firstCell(cell) {
     const m = /^(P\d+)\b\s*(.*)$/s.exec(cell || "");
     if (m && prinById.has(m[1])) {
@@ -526,7 +548,7 @@
         <div class="stepbody">
           <h2 class="stephead">${esc(st.heading)}</h2>
           ${st.svg ? `<figure class="stepfig">${st.svg}</figure>` : ""}
-          ${(st.body || "").split("\n\n").map((p) => `<p>${esc(p)}</p>`).join("")}
+          ${md(st.body || "")}
           ${st.table ? `<div class="tablewrap" style="margin-top:.9rem"><table class="data">
             <tr>${st.table.columns.map((c) => `<th>${esc(c)}</th>`).join("")}</tr>
             ${st.table.rows.map((r) => `<tr>${r.map((cell, ci) =>

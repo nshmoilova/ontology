@@ -1045,6 +1045,142 @@
       "openQuestions": [
         "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each — a promise made and not yet evidenced."
       ]
+    },
+    {
+      "id": "graphs-not-guesses",
+      "title": "Graphs, not guesses",
+      "subtitle": "How an ontology, a knowledge graph and a context graph give a language model institutional memory and reasoning it cannot fake — with this platform ontology as the worked example",
+      "audience": "Technical leaders, enterprise architects and AI developers who want to move past retrieval over text chunks and ground a model in structured, governed facts.",
+      "summary": "A language model guesses well, and inside an enterprise that is the problem: it cannot tell three meanings of one word apart, and retrieval over text chunks does not help. This post uses the platform ontology itself to show what does: a dictionary and grammar for the terms, an atlas of what is happening, and a log of what was decided and refused, with rules that fail closed and questions that run as queries.",
+      "steps": [
+        {
+          "heading": "The illusion of understanding",
+          "body": "A language model is a very good guesser. Given the words so far, it produces the words most likely to follow, and it does this so fluently that the output reads like understanding. It is not. The model has no way to tell a sentence that is true from one that merely sounds like the sentences it was trained on, and inside an enterprise the sentences it was trained on are somebody else's.\n\nRetrieval-augmented generation was the first serious answer. Find the passages relevant to the question, paste them into the prompt, and let the model answer from them. It helps, and it has a ceiling, because a passage is flat. It carries words in order. It does not carry the fact that two words in two documents name different things, or the same thing, or that one thing may not exist without another.\n\nTake `client_id`. In this platform's documents the word \"client\" meant three things. The product documents meant the browser or the mobile app that calls the platform. The architecture documents meant the OAuth client, the registration through which the platform obtains tokens from the identity provider. The design documents meant the business client, the firm's customer, on whose behalf a person acts. Ask a retrieval pipeline \"which client does this token belong to\" and it retrieves all three meanings, and the model answers with the most probable blend of them.\n\nWe watched this happen in miniature while building the ontology. A standards review noticed that tokens carry a `client_id` claim with no home in the model, and a class was introduced on the assumption that the claim named tenant-owned, channel-bound software. It did not. The OAuth client turned out to be the session manager, holding one registration per audience, and the claim carries no tenancy and no channel at all. The class was removed, and the removal was written down as a decision rather than deleted, because reasoning that failed in an instructive way is worth keeping.\n\nThat episode is the whole argument in one story. A statistical system would have kept blending the three meanings. The graph forced the question \"which thing is this an identifier of\", and it would not proceed until the answer was a fact. Today the model has three terms, one per meaning, a rule that keeps two of them apart, and a principle that says an identifier resolves to a thing and never substitutes for one. A language model working over that has an anchor. Working over the documents alone, it has a vocabulary and a coin.",
+          "terms": [
+            "core:BusinessClient",
+            "authn:OAuthClientRegistration",
+            "authn:clientId",
+            "session:Device"
+          ],
+          "decisions": [
+            "D29",
+            "D47",
+            "D50"
+          ],
+          "principles": [
+            "P5"
+          ]
+        },
+        {
+          "heading": "Three pillars, kept distinct",
+          "body": "The three words get used interchangeably, and they should not be. Each answers a different question, and an enterprise that builds one while calling it another ends up with the wrong thing.\n\nAn **ontology** is the dictionary and the grammar. It says what the terms mean and which combinations are allowed. A principal is an entity that can be authenticated; a human principal and a workload principal are disjoint; a session is bound to exactly one principal and has at most one device. In this repository the dictionary is eight OWL modules and the grammar is a set of SHACL shapes, and they are kept apart on purpose: OWL says what a term means, SHACL says what data is admitted.\n\nA **knowledge graph** is the atlas drawn with that grammar. It holds the instances and the facts between them: alice is a human principal, a member of tenant T123, holding a session on a browser, admitted to the digital-bank application through a route that serves it. It answers \"what is happening\".\n\nA **context graph** is the ship's log. It holds what the organisation decided, what it refused, and why. Here it is a register of decisions, each with the alternatives rejected; a layer of principles, each with the question a reviewer asks of a proposal and a status that says whether any decision has yet been made because of it; a list of candidate principles evaluated and not promoted, with the reason, so the argument is not had twice; and a backlog of questions with a verdict on each. It answers \"why it is this way, and what we already decided not to do\".\n\nMost graph projects stop at the second pillar, then wonder why the model still argues from generic priors when asked to propose a change. The third pillar is where institutional memory lives. Without it, the model knows the facts and none of the reasons.",
+          "table": {
+            "columns": [
+              "Pillar",
+              "Analogy",
+              "Answers",
+              "In this repository"
+            ],
+            "rows": [
+              [
+                "Ontology",
+                "Dictionary and grammar",
+                "What things mean; what is allowed",
+                "Eight modules; one hundred shapes; closed vocabularies; a specification cited on every term that adopts one"
+              ],
+              [
+                "Knowledge graph",
+                "Atlas",
+                "What is happening",
+                "Principals, tenants, routes, sessions, grants, decisions, commitments, contracts, and the edges between them"
+              ],
+              [
+                "Context graph",
+                "Ship's log",
+                "Why, and what was refused",
+                "Seventy-one decisions with rejected alternatives; twenty principles with tests and status; seventeen candidates not promoted; the question backlog"
+              ]
+            ]
+          },
+          "principles": [
+            "P6",
+            "P7"
+          ],
+          "decisions": [
+            "D05",
+            "D22"
+          ]
+        },
+        {
+          "heading": "From guesswork to logic",
+          "body": "Here is the difference in one contrast. A model that has read enough logs will learn that sessions usually have a device. The ontology says something else: a session has at most one device, a principal holds at most one active session per device, and a second one is a violation. The first is an association with a probability attached. The second is a rule with a consequence attached. You can argue with the first. You cannot argue with the second; you can only change it, and changing it is a recorded decision with an approver.\n\nThree things follow, and each one is something a statistical system cannot do.\n\n- **Spotting inconsistency.** The seed corpus of this ontology contained a tenant membership approved by the very principal it admitted. It had been there for weeks. Nobody noticed, because nobody reads seed data looking for that. A separation-of-duties shape found it the first time it ran. The rule is four lines of SPARQL and its message says what it caught.\n- **Inferring what follows.** When commitments became a kind of desired-state declaration, they inherited a management plane, a scope, an approval where the scope requires one, and supersession instead of editing, with no new rule written. The inference is the axiom. A model that learned about commitments from prose would have to be told each of those four things separately, and would forget one.\n- **Refusing, instead of answering worse.** An admission decision that evaluates no entitlement grant is a violation, not an answer with lower confidence. A promise with no measurement source cannot be recorded at all; the sentence \"unmeasured claims are aspirational, not guarantees\" was evaluated as a principle and not promoted, and it lives on as a shape that refuses the data. The graph fails closed.\n\n```\nPolicy change approved by the principal that executed it — no one approves their own act.\n\nSELECT $this WHERE {\n    $this cp:executedBy ?p ; cp:hasApproval ?a .\n    ?a cp:approvedBy ?p .\n}\n```\n\nDoes this stop a model from hallucinating? Not in its own head. It can still say wrong things. What it cannot do is write them into the graph, and when it reads from the graph it reads facts that passed seventy-one checks that morning, each proven to fire on a deliberately broken example. The model's imagination is bounded by what it is allowed to assert, and that is the kind of boundary that matters.",
+          "shapes": [
+            "ApprovalNotSelfShape",
+            "IngressAdmissionDecisionShape",
+            "CommitmentShape"
+          ],
+          "decisions": [
+            "D57",
+            "D59",
+            "D53"
+          ],
+          "principles": [
+            "P10",
+            "P15",
+            "P19"
+          ]
+        },
+        {
+          "heading": "How a model asks the graph",
+          "body": "The practical change is what the model receives. Under ordinary retrieval it receives passages. Under graph-augmented generation it receives answers to questions, and the questions were written before the terms were.\n\nEvery formal competency question in this repository is a SPARQL query that continuous integration runs on every commit, against seed data, and requires to return rows. \"Does this subject's tenant have the right to enter this application through this endpoint\" is one of them. A model that needs that answer does not read the ingress documentation and reason about it. It runs the query, receives rows with identifiers, and cites them.\n\n```\nquestion ─▶ find the term or the question   (embeddings over the index, JSON-LD context)\n         ─▶ run the query                   (SPARQL over the graph, same result every time)\n         ─▶ rows with IRIs                  (facts that passed the shapes)\n         ─▶ answer, with citations          (the model's part: choose the question, phrase the result)\n```\n\nThe hybrid is not a compromise between two retrieval styles. Each does the job the other is bad at. Embeddings are good at finding which term or which question a loosely worded request is about; they are bad at answering it. The graph is bad at guessing what you meant; it is very good at answering exactly what you asked. So the vector search picks the question, and the graph answers it.\n\nA row from the commitment status query looks like this, and a model can read it without interpretation:\n\n```\ncommitment      offering                  metric        target   latest   status\ncommit-db-lat   offering-db-prod          latency.p99   250.0    —        no observation\ncommit-db-avail offering-db-prod          availability  99.95    99.97    met\n```\n\nThe context graph answers too, and this is the part most pipelines lack. Ask \"why is there no session identifier in the token\" and a model over documents will produce a plausible reason. A model over this graph returns decision D56: the platform issues sessions, not the identity provider; a claim would freeze session state at issuance; the cookie handle is sender-constrained and a claim cannot be. The model quotes the reason that was actually given, with its rejected alternatives, and it can tell you which principle that decision was made because of.\n\nDeterministic is the right word for this, and it is worth being precise about what it means. The same query over the same graph returns the same rows. The model's contribution is choosing the question and phrasing the answer. Everything that could be wrong in a way that matters has been moved out of the part that guesses.",
+          "questions": [
+            "CQ-7",
+            "CQ-16"
+          ],
+          "decisions": [
+            "D56",
+            "D25"
+          ],
+          "principles": [
+            "P9",
+            "P4"
+          ]
+        },
+        {
+          "heading": "A blueprint for starting",
+          "body": "None of this requires a large graph. This one is a few thousand triples, and it answers more reliably than the document store it was extracted from. What it requires is doing the steps in the right order, and the order is the opposite of the usual one.\n\n- **Write the questions first.** Not the schema. The questions people actually ask: who may enter what, who approved this, what did we promise and is anyone measuring it. A term exists to answer a question; a term with no question behind it is scope creep, and the build here reports every such term.\n- **Build the ontology small, in modules, with a data contract.** Meaning in OWL, admission in SHACL, and no typing on shared properties, so a term can be reused across modules without dragging its constraints along. Cite the specification on any term that adopts one; name no products.\n- **Let the model extract instances, and let the shapes decide.** An LLM is good at reading a design document and proposing that this route serves that application. It is not good at knowing whether the proposal is consistent. Every load goes through the shapes. A negative corpus holds one deliberately broken instance per rule, and the build proves every rule fires on it before anything ships. A rule that has never rejected anything is a hope, not a control.\n- **Keep the context graph as data, not prose.** Decisions with rejected alternatives. Principles with the test a reviewer asks and a status that only a later decision can change. Candidates evaluated and not promoted. Exceptions with an owner and an address in the backlog. Collisions between principles resolved per decision, with a record of which one yielded.\n- **Generate the surface the agent uses.** A browsable index for people, a JSON-LD context for machines, both built from the same source on every commit, so they cannot disagree.\n- **Wire the agent to questions, not documents.** A question maps to a query. A proposal to add a term is checked against the principles' tests before it becomes a term. A proposal to change a governed fact is a declaration that needs a human approval from the party whose authority it is, which means the agent can propose and cannot self-authorize.\n- **Govern like software.** Versions per module, deprecation before removal, a change to the principles needs the same review as a change to the authorization module.\n\nA commitment written by an agent against the generated context looks like this, and it is valid RDF the moment it is written:\n\n```\n{ \"@context\": \".../commitment-context.jsonld\",\n  \"@id\": \"ex:commit-notifications-availability\",\n  \"@type\": \"Commitment\",\n  \"commitsTo\": \"ex:offering-notifications-prod\",\n  \"metric\": \"cmt:metric-availability\", \"comparator\": \"cmt:at-least\",\n  \"target\": 99.95, \"unit\": \"unit:PERCENT\", \"window\": \"P30D\",\n  \"measuredBy\": \"ex:source-platform-metrics\",\n  \"validatedBy\": \"queries/competency/cq16-commitment-status.rq\" }\n```\n\nIf it lacks the measurement source, the shape refuses it. That is the blueprint in one line: the agent may write, and the graph may say no.",
+          "principles": [
+            "P9",
+            "P10",
+            "P8",
+            "P3",
+            "P18"
+          ],
+          "decisions": [
+            "D58",
+            "D62",
+            "D53"
+          ],
+          "questions": [
+            "CQ-9"
+          ]
+        },
+        {
+          "heading": "Clarity is the new agility",
+          "body": "The usual argument for more data is that the model will find the signal in it. In an enterprise the signal is often the fact that three documents use one word for three things, and no amount of volume surfaces that. Structure does. A graph that knows the three meanings of \"client\" beats a corpus that mentions all of them ten thousand times.\n\nThe second thing structure buys is memory of a particular kind: not what was said, but what was decided, and what was refused, and why. That is the memory an organisation actually runs on, and it is the memory a new engineer or a new agent lacks on day one. Written as decisions with alternatives, principles with tests, and candidates that failed, it is the difference between an agent that proposes what was rejected last quarter and one that knows not to.\n\nThe agents worth building are the ones that reason over governed facts, propose changes as declarations that a human must approve, and are refused when the evidence is missing. Everything in this repository was built to make that agent possible: the terms it may use, the questions it may ask, the rules that will say no, and the record of why the rules are what they are.\n\nIt will still guess. The point is that the guessing now happens in the one place where guessing is allowed.",
+          "principles": [
+            "P3",
+            "P15",
+            "P17"
+          ],
+          "decisions": [
+            "D61"
+          ]
+        }
+      ],
+      "openQuestions": [
+        "Where does the agent's own record go? Every proposal an agent makes, accepted or refused, is a decision or a non-decision worth keeping; the context graph has a place for both, and the first agent to use it will show whether the schema is enough."
+      ]
     }
   ]
 }
