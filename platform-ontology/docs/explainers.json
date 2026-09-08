@@ -1104,13 +1104,6 @@
           ]
         },
         {
-          "heading": "One decision, concretely",
-          "body": "A platform receives a request for tenant T123's digital bank application. What does each layer do?\n\nThe ontology says: a tenant owns applications, applications are reached through routes, capabilities exist only where offerings cover them. Nothing ambiguous.\n\nThe knowledge graph records: T123 owns this app, a route at t123.apps.examplebank.com/digital-bank serves it, T123 subscribes to required capabilities, those capabilities have published offerings in production.\n\nThe context graph for this question assembles: Is the membership active? Yes. Is the route bound to T123? Yes. Does the enablement cover production? Yes. Does the subscription exist? Yes. Is the capability offered here? Yes.\n\nThe LLM interprets: All constraints satisfied — permit entry. And because the graph enforces it, no ambiguity about what \"entry\" means or whether a different interpretation would silently permit something it shouldn't.",
-          "questions": [
-            "CQ-7"
-          ]
-        },
-        {
           "heading": "Accuracy at each level",
           "body": "Concrete research on accuracy gains as you move through the maturity levels: Text-to-SQL with a language model alone achieves 16 percent baseline accuracy on complex database questions. Adding knowledge graph retrieval jumps to 54 percent. Adding ontology-governed reasoning — where the system validates answers against fixed semantic constraints — reaches 80 percent.\n\nThat progression is not about having a better model. At each level, the same underlying LLM is constrained differently. The model is more useful when it operates inside a semantic cage.",
           "terms": []

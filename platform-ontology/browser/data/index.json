@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "3c50626e7c9f",
+ "sourceDigest": "956d003a4033",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -21965,13 +21965,6 @@
      ]
     },
     {
-     "heading": "One decision, concretely",
-     "body": "A platform receives a request for tenant T123's digital bank application. What does each layer do?\n\nThe ontology says: a tenant owns applications, applications are reached through routes, capabilities exist only where offerings cover them. Nothing ambiguous.\n\nThe knowledge graph records: T123 owns this app, a route at t123.apps.examplebank.com/digital-bank serves it, T123 subscribes to required capabilities, those capabilities have published offerings in production.\n\nThe context graph for this question assembles: Is the membership active? Yes. Is the route bound to T123? Yes. Does the enablement cover production? Yes. Does the subscription exist? Yes. Is the capability offered here? Yes.\n\nThe LLM interprets: All constraints satisfied \u2014 permit entry. And because the graph enforces it, no ambiguity about what \"entry\" means or whether a different interpretation would silently permit something it shouldn't.",
-     "questions": [
-      "CQ-7"
-     ]
-    },
-    {
      "heading": "Accuracy at each level",
      "body": "Concrete research on accuracy gains as you move through the maturity levels: Text-to-SQL with a language model alone achieves 16 percent baseline accuracy on complex database questions. Adding knowledge graph retrieval jumps to 54 percent. Adding ontology-governed reasoning \u2014 where the system validates answers against fixed semantic constraints \u2014 reaches 80 percent.\n\nThat progression is not about having a better model. At each level, the same underlying LLM is constrained differently. The model is more useful when it operates inside a semantic cage.",
      "terms": []
@@ -21981,7 +21974,7 @@
      "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- Fr\u00e9d\u00e9ric Verhelst, The Ontology Imperative, Substack essays (accuracy progression from [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)):\n  - [Start here: The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n  - [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n  - [Knowledge graph competitive landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n  - [The hidden governance crisis](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n  - [The stakes and the false solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n  - [The missing contract: Why most boards cannot govern what they cannot define](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)"
     }
    ],
-   "stepCount": 10
+   "stepCount": 9
   }
  ],
  "competencyQuestions": {
