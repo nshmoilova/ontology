@@ -1158,45 +1158,6 @@
           ]
         },
         {
-          "heading": "From token claims to typed facts, correctly",
-          "body": "A tempting shortcut is to map a token's claims directly onto entitlements: if a claim says a region or a capability, treat that as authority and reason over it. We deliberately do not do this, because a token's claims freeze at the moment it is issued and an entitlement minted into one stays true until it expires, which is exactly the window in which offboarding or a compromise needs to take effect. Authority is a grant the control plane projects to the enforcement point, revoked without reissuing anything; a token is evidence of who is asking and how strongly they authenticated, nothing more.",
-          "table": {
-            "columns": [
-              "A claims-mapping approach would treat this as authority",
-              "What actually resolves it here",
-              "Term"
-            ],
-            "rows": [
-              [
-                "A tenant or capability claim in the token",
-                "The request's host and path, resolved by the route",
-                "ingress:Route"
-              ],
-              [
-                "An environment or region claim in the token",
-                "Which ingress deployment received the request",
-                "authz:resolvedRegion"
-              ],
-              [
-                "A channel claim in the token",
-                "The session's device class",
-                "session:hasDeviceClass"
-              ],
-              [
-                "Everything else",
-                "Identity and assurance only — who is asking, how strongly authenticated",
-                "authn:achievedAssuranceLevel"
-              ]
-            ]
-          },
-          "principles": [
-            "P4"
-          ],
-          "decisions": [
-            "D24"
-          ]
-        },
-        {
           "heading": "Contradictions become a query, not an opinion",
           "body": "Once categories and relations are fixed, checking two facts against each other stops being a paragraph a model writes and becomes a query with a yes or no answer. Five examples, each real and checked in continuous integration against a deliberately broken instance in our negative test data:\n\n- A capability that depends on itself through a chain of other capabilities — dependencies must form a DAG, never a cycle.\n- A route reachable at a scope its application's enablement does not cover.\n- An offering marked available with no published contract behind the capability it offers.\n- Two active memberships for one principal in one tenant, where exactly one is expected.\n- An application verb like \"approve payment\" reaching a platform decision, which is Level-3 and out of scope by definition.\n\nNone of these are patterns a model learned to recognize. Each is a structural violation of a relationship the ontology defined in advance.",
           "shapes": [
