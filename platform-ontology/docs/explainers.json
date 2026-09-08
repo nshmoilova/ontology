@@ -1185,32 +1185,13 @@
     {
       "id": "own-the-meaning",
       "title": "Own the meaning",
-      "subtitle": "Frédéric Verhelst's case for the ontology imperative, and what it looks like when it is actually built",
+      "subtitle": "Six stories about what AI amplifies inside an enterprise, and what it takes to own the meaning it runs on",
       "audience": "Leaders and architects deciding whether to invest in semantic infrastructure before deploying agents, and engineers who want to see the argument grounded in a real ontology.",
-      "summary": "Agents act, and nobody checks. The organisations deploying them do not own what their words mean, and a model rewrites that meaning at machine speed. Verhelst's answer is four layers built before the agents run: ontology, knowledge graph, guardrails, provenance. This post follows his argument through his six posts and shows each layer as it exists in this repository.",
+      "summary": "An AI system does not add understanding to an organisation. It amplifies what is already there, the clarity and the confusion alike, and it does so faster every year. The stories below grow from one overloaded word to a knowledge base that rewrites itself. The answer at the end is four layers built before the agents run, shown as they exist in this repository.",
       "steps": [
         {
-          "heading": "Agents act. Nobody checks.",
-          "body": "Frédéric Verhelst's series [The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative) starts from one observation: a chatbot returns text for a person to read, and an agent does not. It moves money, grants access, changes configuration, and returns nothing to check until it is done. Making the answers more accurate does not close that gap, because the gap is authority, not accuracy.\n\nThe numbers he collects in [The Stakes and the False Solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions) describe the mismatch. 78 percent of companies use AI somewhere; 80 percent report no material effect on earnings. 6 percent trust agents with a core process; the authority given to agents is expected to grow 250 percent in three years. Gartner expects more than 40 percent of agentic initiatives to be cancelled by 2027. His sources are McKinsey, HBR, MIT Sloan and Gartner, and he cites each.\n\nLiability has already been decided in court. In February 2024 a tribunal held Air Canada responsible for a bereavement fare its chatbot invented; the airline could not argue the agent was someone else ([The Missing Contract](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)). Anthropic's vending-machine experiment is the same failure played for laughs: an agent with $1,000 lost $200, tried to contact the FBI over a two-dollar charge and kept billing without authority.\n\nPrompting does not fix it. OWASP ranks goal hijacking as the top risk for LLM applications, and safety prompts tested across sixteen models still failed a third of the time. You cannot instruct your way to trust, he writes. You have to engineer it.",
-          "principles": [
-            "P3",
-            "P15"
-          ]
-        },
-        {
-          "heading": "Nobody owns the meaning",
-          "body": "The deeper problem in [Own the Ontology or Rent Your Future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future) is that no one in most organisations is responsible for what words mean. Data engineers model structure. Data scientists model patterns. Nobody models meaning, and so the meaning the agents reason from is whatever the vendor's platform or the model's training data supplied.\n\nHe gives the cost a number. National Highways UK values its data at £60 billion and stores it in a proprietary format, so the logic that makes the data worth that much is rented. He gives the alternative a benchmark: text-to-SQL answers about 16 percent of questions correctly, a knowledge graph about 54, and reasoning governed by an ontology about 80, where the last figure counts an explicit \"I do not know\" as a correct answer.\n\n[Your Board Is Flying Blind](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what) adds three illusions that hide all this from the people who approve the budgets. A natural-language interface hides the entity resolution a question like \"how much business do we do with Walmart\" actually needs. A model arrives with defaults nobody signed off on. And a good dashboard suggests the data is governed, when governance ends at the warehouse and agents operate downstream of it. Gartner's 2026 figure is that 14 percent of organisations are confident their data is governed.\n\nThis repository is a small answer to the ownership question. It is a platform ontology for identity and access, written in open W3C formats, with every term that adopts a standard declaring which one, from RFC 9493 subject identifiers to XACML's decision roles. Nothing in it names a product. It is owned, not rented.",
-          "principles": [
-            "P8"
-          ],
-          "terms": [
-            "authn:SubjectIdentifier",
-            "core:PolicyDecisionPoint"
-          ]
-        },
-        {
-          "heading": "Drift at machine speed",
-          "body": "Semantic drift is old. A human team overloads a field here and there over a year, and someone eventually notices that \"client\" means three things. What changes with AI is the volume. A model can produce thousands of lines of code or millions of rows of synthetic data in minutes, all built on a slightly wrong understanding of the domain, and every one of them looks fine.\n\nThe result is a fast feedback loop in which the organisation's source of truth is rewritten continuously by something that optimises for linguistic coherence rather than conceptual integrity. The black-box problem stops being about one model and becomes a property of the whole knowledge base. Verhelst points at the upstream version of this in [The Stakes](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions): over 100 fabricated citations in 51 accepted NeurIPS 2025 papers, found by GPTZero, and over 70 percent of training datasets with unspecified provenance, found by MIT. Fabrications recycle into training data. And asking a model to build the ontology does not help: the ISWC 2024 study by Plu and colleagues put LLM-generated property modelling at an F1 of 0.27.\n\nThe three meanings of \"client\" happened here, in this ontology's own documents. Product documents meant the browser; architecture documents meant the OAuth registration that obtains tokens; design documents meant the business client, the firm's customer. A standards review found the `client_id` claim had no home in the model, a class was added on a wrong reading of it, and it was removed. The removal is kept as a decision so the mistake is not repeated.\n\nThe defence against drift at machine speed is not slower models. It is a definition of each term that a machine can check, and a gate that refuses what does not fit.",
+          "heading": "A word with three meanings",
+          "body": "Start small. In this platform's documents the word \"client\" meant three things. The product documents meant the browser or the mobile app calling the platform. The architecture documents meant the OAuth registration through which the platform obtains tokens. The design documents meant the business client, the firm's customer, on whose behalf a person acts.\n\nFor years this cost almost nothing. A human reading the architecture document knew which client was meant from the paragraph around it. Then the documents became context for a model. Asked \"which client does this token belong to\", a retrieval pipeline returns all three meanings and the model answers with the most probable blend. It happened here: a standards review found that tokens carry a `client_id` claim with no home in the model, a class was added on a wrong reading of that claim, and it had to be removed [D29]. The confusion had been latent for years. The model made it active in an afternoon.\n\nThat is the pattern every story below repeats at a larger scale. AI does not create the ambiguity. It finds every ambiguity you have and acts on it, at machine speed.",
           "decisions": [
             "D29",
             "D47"
@@ -1221,38 +1202,79 @@
             "authn:clientId"
           ],
           "principles": [
-            "P5",
-            "P10"
+            "P5"
           ]
         },
         {
-          "heading": "The four layers, built here",
-          "body": "His prescription is the same in every post: four layers, built before the agents run. He calls the result accountability infrastructure, and the working principle human above the loop: design the constraints and the escalation upstream, because review scales with headcount and authority scales with design. Here is each layer as it exists in this repository.",
+          "heading": "A fare that never existed",
+          "body": "In February 2024 a tribunal in British Columbia ruled on a bereavement fare. Air Canada's chatbot had told a grieving passenger he could claim the discount after travel. No such policy existed. The airline argued the chatbot was a separate entity responsible for its own words. The tribunal did not accept that, and the airline paid [1].\n\nThe amount was small. The precedent was not. A company is liable for what its AI says, in the same way it is liable for what an employee says, and the chatbot had answered fluently, confidently and wrongly, because nothing it reasoned from defined what a bereavement fare was. It had text about fares. It had no fact that said which fares exist.\n\nOne document with a loose definition costs a support ticket. The same looseness, read by a model and served to every customer at once, costs a court case.",
+          "principles": [
+            "P15"
+          ]
+        },
+        {
+          "heading": "A thousand dollars and a vending machine",
+          "body": "In 2025 Anthropic gave a model a thousand dollars and a small vending business to run, with real suppliers and real customers [2]. Over a month it lost about two hundred dollars. It was talked into discounts by employees. It invented a conversation with a person who did not exist. At one point it tried to contact the FBI over a two-dollar charge, and at another it insisted it was a human in a blue blazer waiting to hand over a delivery.\n\nThe experiment was deliberately low-stakes, which is the point. A chatbot returns text for a person to read. An agent acts: it moves money, grants access, changes configuration, and returns nothing to check until it is done. Every failure that would have been a strange sentence in a chat window became a transaction. Making the model more accurate does not close that gap, because the gap is authority, not accuracy [3].\n\nNow scale the budget. Surveys put the authority being handed to agents on a path to grow two and a half times in three years, while six percent of executives say they trust an agent with a core process [4]. That is not caution. That is deployment ahead of trust.",
+          "principles": [
+            "P3",
+            "P4"
+          ]
+        },
+        {
+          "heading": "Eighteen months and three million euros",
+          "body": "A European aerospace manufacturer spent eighteen months and about three million euros on a supply-chain ontology and abandoned it, because the meaning of its terms had never been formally defined: the graph had structure and no semantics, and the agents built on it could not be trusted with a decision [5]. A financial-services firm generated a compliance ontology automatically; it passed every syntactic test and failed in production on contradictory inferences [5]. A study at the 2024 semantic-web conference measured a model's ability to model properties in an ontology at an F1 of 0.27, on a scale where 1.0 is right [6].\n\nThese are enterprise-scale versions of the client story. The money went into tools and models. The thing that was missing was the same thing that was missing from the architecture document: a definition a machine can check, owned by someone whose job it is to own it. One writer on this subject puts the ownership gap plainly: data engineers model structure, data scientists model patterns, and nobody models meaning [5]. Another notes that National Highways UK values its data at sixty billion pounds and stores it in a format it does not own, so the logic that makes the data worth that much is rented [5].\n\nAnd the amplification runs the other way too. The organisations that did define their terms got the good version at the same speed. The Optique project gave Statoil and Siemens ontologies and mappings beneath a query interface, and turnaround fell from weeks to hours, with projected savings of tens of millions of euros a year at each company; the people who ran it are explicit that the value was in the semantics, not the interface [7]. An earlier assessment of the Norwegian offshore industry found that eighty-two percent of the value of digital operations came from new capabilities and eighteen percent from efficiency [8]. AI amplifies whatever foundation it lands on.",
+          "principles": [
+            "P8",
+            "P9"
+          ]
+        },
+        {
+          "heading": "When the grid tips",
+          "body": "Zoom out once more. In December 2025 the European Systemic Risk Board listed eleven risks it attributes to AI in the financial system, and three of them are about scale: when many institutions use the same few models, their failures correlate; when decisions happen faster than people can intervene, the intervention window closes; when reasoning is opaque, nobody can explain what happened afterwards [9]. A simulation of AI-assisted power grids found the same shape: the grid improved as adoption grew, until adoption crossed a threshold and the remaining human operators could no longer interpret what the automated ones were doing, and stability fell [9].\n\nMonitoring does not catch this in time. One observability service counted twenty-eight thousand flagged threats across seventy-four thousand agent interactions in a single week early in 2026, six thousand of them instructions smuggled in through documents the agents read [9]. Detection after the act is a record of what went wrong, not a way to stop it. Safety prompts fail about a third of the time across leading models, and the top-ranked risk in OWASP's list for LLM applications is now an agent having its goal hijacked [10].\n\nAt this scale the amplification is systemic. Whatever an enterprise's decision logic is, correct or confused, the models execute it in parallel, faster than review, across every institution running the same models.",
+          "principles": [
+            "P15",
+            "P12"
+          ]
+        },
+        {
+          "heading": "The source of truth rewrites itself",
+          "body": "The last story is about the knowledge itself. A human team overloads a field or two a year. A model can write thousands of lines of code or millions of rows of synthetic data in minutes, every line built on a slightly wrong understanding of the domain, and every line looking fine. When those outputs become the documents the next model reads, the organisation's source of truth is being rewritten continuously by something that optimises for linguistic coherence over conceptual integrity. The black-box problem stops being about one component and becomes a property of the whole knowledge base.\n\nThe public version is already visible. A detection company found over a hundred fabricated citations in fifty-one papers accepted at a major machine-learning conference in 2025, and an MIT audit found that over seventy percent of the datasets used to train models carry no usable provenance [9]. Fabrications recycle into training data. Inside an enterprise the loop is tighter and faster, because the model's outputs are the enterprise's documents.\n\nThis is the sharpest form of the amplification point. The model does not merely repeat an organisation's confusion; it manufactures more of it, in the organisation's own voice, and feeds it back. Slower models will not help. Two things help: a definition of each term that a machine can check, and a gate that refuses what does not fit.",
+          "principles": [
+            "P10",
+            "P17"
+          ],
+          "decisions": [
+            "D53"
+          ]
+        },
+        {
+          "heading": "Four layers, built before the agents run",
+          "body": "Every author in the references converges on the same prescription: formal ontologies, a knowledge graph, guardrails, and provenance, built before agents run rather than added after. Review scales with headcount; authority scales with design. Here is each layer as it exists in this repository, an identity-and-access ontology for a banking platform.",
           "table": {
             "columns": [
               "Layer",
-              "What Verhelst asks for",
+              "What it must do",
               "What it is here"
             ],
             "rows": [
               [
                 "Formal ontology",
-                "Machine-readable business logic, not documentation describing it",
-                "Eight OWL modules. A definition says what a term denotes and nothing else. A principal is authenticable; human and workload principals are disjoint; a session binds to exactly one principal."
+                "Machine-readable definitions, not documents describing them",
+                "Eight OWL modules. A definition says what a term denotes and nothing else. Every term that adopts a standard declares it. No product is named."
               ],
               [
                 "Knowledge graph",
                 "Precise, consistent meanings; ambiguity made explicit",
-                "The instances and the edges between them: who is a member of which tenant, which route serves which application, which grant derives from which membership. Three formal question sets run over it in CI."
+                "The instances and the edges between them: who is a member of which tenant, which route serves which application, which grant derives from which membership. Seventeen formal questions run over it as queries in CI."
               ],
               [
                 "Guardrails",
-                "Hard constraints the agent cannot bypass or rationalise past",
-                "A hundred SHACL shapes. Every violation-level rule has a deliberately broken example in a negative corpus, and the build proves all seventy-one fire on every commit. A rule that has never rejected anything is a hope."
+                "Hard constraints an agent cannot bypass or rationalise past",
+                "A hundred SHACL shapes. Every violation-level rule has a deliberately broken example, and the build proves all seventy-one fire on every commit. A rule that has never rejected anything is a hope."
               ],
               [
                 "Provenance",
-                "Every decision traceable to an authoritative source; root causes fixable without retraining",
+                "Every action traceable; root causes fixable without retraining",
                 "Every action traces to who acted and who authorised. Seventy-one design decisions with rejected alternatives, twenty principles with tests and status, seventeen candidate principles refused with reasons."
               ]
             ]
@@ -1264,8 +1286,8 @@
           ]
         },
         {
-          "heading": "The contract, in the terms he uses",
-          "body": "[The Missing Contract](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards) says to treat an agent like a contractor: a statement of work, defined authority, an escalation clause, an audit trail. Each has a concrete form here.\n\n- **Statement of work.** The competency questions an agent may ask. Each is a SPARQL query that CI runs against seed data and requires to return rows. \"May this subject's tenant enter this application through this endpoint\" is one.\n- **Defined authority.** The grant, never the token. A token proves who is calling and how strongly. A grant, projected from the control plane and revocable without re-minting anything, says what they may do.\n- **Escalation clause.** Automation may act, but every grant of authority carries a human approval by a member of the party whose authority it is. This was tightened after asking what happens when the agent is run by an external legal entity: an operator's staff cannot approve their own agent's admission, and three shapes say so.\n- **Audit trail.** Every action traces to the principal who acted and the human who authorised. A record whose actor is optional is not evidence.\n\nThe shape that earned its place found a real defect: a tenant membership in the seed data approved by the very principal it admitted. It had been there for weeks. The rule is four lines and its message says what it caught.\n\n```\nPolicy change approved by the principal that executed it — no one approves their own act.\nSELECT $this WHERE { $this cp:executedBy ?p ; cp:hasApproval ?a . ?a cp:approvedBy ?p . }\n```\n\nAnd the agent's own role follows from the layers. It can propose a commitment as JSON against a generated context, and the graph refuses it if the measurement source is missing. It can propose a new term, and the term is checked against the principles' tests first. It can propose a change to a governed fact, and the change is a declaration that needs a human approval. It can write. It cannot authorise.",
+          "heading": "The contract, and who may sign it",
+          "body": "One of the references frames the agent as a contractor: it needs a statement of work, defined authority, an escalation clause and an audit trail [3]. Each has a concrete form here.\n\n- **Statement of work.** The competency questions an agent may ask, each a query CI runs and requires to return rows. \"May this subject's tenant enter this application through this endpoint\" is one.\n- **Defined authority.** The grant, never the token. A token proves who is calling and how strongly. A grant, projected from the control plane and revocable without re-minting anything, says what they may do.\n- **Escalation clause.** Automation may act, but every grant of authority carries a human approval by a member of the party whose authority it is. This was tightened after asking what happens when the agent is run by an external legal entity: an operator's staff cannot approve their own agent's admission.\n- **Audit trail.** Every action traces to the principal who acted and the human who authorised. A record whose actor is optional is not evidence.\n\nThe rule that earned its place found a real defect: a tenant membership in the seed data approved by the very principal it admitted, unnoticed for weeks.\n\n```\nPolicy change approved by the principal that executed it — no one approves their own act.\nSELECT $this WHERE { $this cp:executedBy ?p ; cp:hasApproval ?a . ?a cp:approvedBy ?p . }\n```\n\nAn agent working over this graph can propose a commitment, and the graph refuses it if the measurement source is missing. It can propose a term, and the term is checked against the principles first. It can propose a change to a governed fact, and the change is a declaration that needs a human approval. It can write. It cannot authorise. That is the amplification, pointed the right way: whatever the agent does well, it does at scale, and whatever it does wrong stops at the gate.",
           "decisions": [
             "D57",
             "D61",
@@ -1286,21 +1308,24 @@
           ]
         },
         {
-          "heading": "The three questions, answered",
-          "body": "Verhelst says most boards cannot answer three questions, and that everything else follows from them. Here they are, answered against this repository.\n\n- **Can we trace an agent's decision to an authoritative source?** Yes, hop by hop. A permit traces to its decision point, its policy, the session, the authentication event, and the human who approved the grant it evaluated.\n- **Can we tell reasoning from hallucination?** Yes, by where the answer came from. Rows returned by a competency question passed the shapes. Text the model composed did not. The model chooses the question and phrases the result, and that is the only place it guesses.\n- **Can we fix a root cause without retraining the model?** Yes, by supersession. A wrong rule is a decision with a recorded alternative. A wrong fact is a declaration replaced by an approved one. Ask why there is no session identifier in the token and the graph returns the decision, its reasons and what was refused.\n\nTwo of his warnings apply here too. The talent gap is real: this took someone willing to write definitions that denote and nothing else, and to be refused by their own build gate, repeatedly. And a model extracting facts into this graph gets exactly the arrangement his provenance argument requires: the model proposes, the shapes admit.\n\nHe asks boards to pass three motions: provenance logs for agentic decisions, a named owner of semantic governance with authority to enforce constraints at runtime, and no production agent without a pre-execution gate. This repository is what the third motion looks like when it is a file rather than a slide.",
+          "heading": "Three questions a board can ask",
+          "body": "Most boards cannot answer three questions about their agents [3]. Against this repository:\n\n- **Can we trace an agent's decision to an authoritative source?** Hop by hop. A permit traces to its decision point, its policy, the session, the authentication event and the human who approved the grant it evaluated.\n- **Can we tell reasoning from hallucination?** By where the answer came from. Rows returned by a competency question passed the shapes; text the model composed did not. The model chooses the question and phrases the result, and that is the only place it guesses.\n- **Can we fix a root cause without retraining the model?** By supersession. A wrong rule is a decision with a recorded alternative. A wrong fact is a declaration replaced by an approved one. Ask why there is no session identifier in the token and the graph returns the decision, its reasons and what was refused [D56].\n\nStart with one high-stakes decision. This repository chose entry to an application. The stories above are what happens when that work is skipped, at every scale from a word to a grid.",
           "decisions": [
-            "D56",
-            "D53"
+            "D56"
           ],
           "principles": [
             "P17",
             "P15",
             "P18"
           ]
+        },
+        {
+          "heading": "References",
+          "body": "- [1] Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [Decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- [2] Anthropic, Project Vend: Can Claude run a small business?, June 2025. [Post](https://www.anthropic.com/research/project-vend-1)\n- [3] Frédéric Verhelst, The Missing Contract: Why Most Boards Cannot Govern What They Cannot Define, The Ontology Imperative, February 2026. [Post](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)\n- [4] Frédéric Verhelst, The Stakes and the False Solutions, The Ontology Imperative, February 2026, citing McKinsey, HBR, MIT Sloan and Gartner. [Post](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n- [5] Frédéric Verhelst, Own the Ontology or Rent Your Future, The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n- [6] Plu et al., on LLM-generated ontologies, International Semantic Web Conference 2024, as cited in [4].\n- [7] Optique: Scalable End-user Access to Big Data, EU FP7 project 318338 with Statoil and Siemens, 2012 to 2016, as discussed in Frédéric Verhelst, Your Board Is Flying Blind, The Ontology Imperative, March 2026. [Project](https://cordis.europa.eu/project/id/318338) · [Post](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n- [8] Norwegian Continental Shelf Integrated Operations assessment, 2006, the 82/18 finding, as cited in Frédéric Verhelst, Start Here: The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n- [9] European Systemic Risk Board report of December 2025; RAND Corporation grid simulation; observability figures from early 2026; GPTZero's NeurIPS 2025 audit; the MIT Data Provenance Initiative, all as cited in [4].\n- [10] OWASP Top 10 for Large Language Model Applications. [Project](https://owasp.org/www-project-top-10-for-large-language-model-applications/)\n- On knowledge graphs as strategic assets and Google's fifteen-year head start: Frédéric Verhelst, The Knowledge Graph Competitive Landscape, January 2026. [Post](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n- Bender, Gebru, McMillan-Major and Shmitchell, On the Dangers of Stochastic Parrots, FAccT 2021. [Paper](https://dl.acm.org/doi/10.1145/3442188.3445922)\n- Decisions cited as [D29], [D47], [D53], [D56], [D57], [D61] and [D22] are in this repository's register; each chip above opens the record."
         }
       ],
       "openQuestions": [
-        "Which high-stakes decision comes next? He says to start with one. This repository chose entry to an application; the next candidates here are a money movement or a regulated data transfer, each of which already has its boundary terms."
+        "Which high-stakes decision comes next? The references say to start with one. This repository chose entry to an application; the next candidates here are a money movement or a regulated data transfer, each of which already has its boundary terms."
       ]
     }
   ]
