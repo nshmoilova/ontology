@@ -349,6 +349,10 @@ table.data code { font-size: .82rem; }
   font-family: "IBM Plex Serif", Georgia, serif;
 }
 .stepbody { min-width: 0; }
+.step.story { display: block; margin-top: 2rem; }
+.step.story .stephead { font-size: 1.5rem; margin-top: 0; }
+.step.story .stepbody p { max-width: 66ch; font-size: 1.02rem; line-height: 1.65; }
+.step.story .mdlist li { max-width: 66ch; }
 .stephead { font-size: 1.35rem; font-weight: 600; margin: .1rem 0 .6rem; }
 .stepbody p { margin: 0 0 .75rem; color: var(--ink-2); max-width: 72ch; }
 .stepbody p:last-of-type { margin-bottom: 0; }

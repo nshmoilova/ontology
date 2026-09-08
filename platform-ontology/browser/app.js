@@ -545,7 +545,7 @@
     if (!e) return `<div class="card err"><b>Unknown explainer</b> <code>${esc(id)}</code>.
       <a href="#/explain">See all</a>.</div>`;
     const steps = e.steps.map((st, i) => `
-      <section class="step" id="step-${i + 1}">
+      <section class="step${e.style === "story" ? " story" : ""}" id="step-${i + 1}">
         ${e.style === "story" ? "" : `<div class="stepnum">${i + 1}</div>`}
         <div class="stepbody">
           <h2 class="stephead">${esc(st.heading)}</h2>
@@ -584,7 +584,7 @@
       </nav>`}
       ${steps}
       ${(e.openQuestions || []).length ? `
-        <section class="step">
+        <section class="step${e.style === "story" ? " story" : ""}">
           ${e.style === "story" ? "" : `<div class="stepnum" style="background:var(--m-authz);border-color:var(--m-authz)">?</div>`}
           <div class="stepbody">
             <h2 class="stephead">Open questions</h2>
