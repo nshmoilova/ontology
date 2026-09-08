@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "89a57b7c1357",
+ "sourceDigest": "907eaa6ecba9",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -21923,17 +21923,12 @@
     },
     {
      "heading": "The ontology: fixing what a word denotes",
-     "body": "Before any fact is written, the ontology fixes what kinds of things exist and which relations between them are legal. Loose usage could call several different things \"the client\": the kind of client software a session runs on, browser or mobile; the credentialed OAuth registration a session manager holds to obtain tokens, one per audience; and the business client, the customer relationship a principal acts for, which cannot itself authenticate. The model keeps the three apart on purpose, and the decision to do so is recorded rather than assumed: nothing can authenticate as a business client, and nothing can silently become an OAuth registration by being called a client in a sentence.\n\nThe same discipline applies to the boundary vocabulary a request travels through: a tenant owns exactly one of an application, an application is reached through a route, and a capability exists in a scope only where an offering says so. None of that says which tenant owns which application. It says what \"owns\" is allowed to mean, and no downstream layer can supply that for itself.",
+     "body": "Before any fact is written, the ontology fixes what kinds of things exist and which relations between them are legal. Loose usage could call several different things \"the client\": the kind of client software a session runs on, browser or mobile; the credentialed OAuth registration a session manager holds to obtain tokens, one per audience; and the business client, the customer relationship a principal acts for, which cannot itself authenticate. The model keeps the three apart on purpose.",
      "terms": [
       "session:DeviceClass",
       "authn:OAuthClientRegistration",
       "core:BusinessClient",
-      "core:actsForClient",
-      "core:Tenant",
-      "core:Application",
-      "core:ownedBy",
-      "ingress:Route",
-      "cp:CapabilityOffering"
+      "core:actsForClient"
      ],
      "principles": [
       "P5"
