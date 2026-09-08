@@ -628,11 +628,24 @@
             "cmt:metric",
             "cp:CapabilityOffering",
             "cp:DesiredStateDeclaration",
-            "cmt:CommitmentBaseline"
+            "cmt:CommitmentBaseline",
+            "cmt:measuredBy",
+            "cmt:validatedBy"
           ],
           "principles": [
             "P18",
             "P3"
+          ],
+          "shapes": [
+            "CommitmentShape",
+            "CommitmentScopeShape"
+          ],
+          "decisions": [
+            "D58",
+            "D59"
+          ],
+          "questions": [
+            "CQ-9"
           ]
         },
         {
@@ -666,6 +679,14 @@
             "P18",
             "P15",
             "P17"
+          ],
+          "decisions": [
+            "D58",
+            "D59"
+          ],
+          "questions": [
+            "CQ-14",
+            "CQ-9"
           ]
         },
         {
@@ -673,7 +694,8 @@
           "body": "A commitment with no measurement source or no validation reference is a violation at ingestion. A latency promise for the notifications capability with no feed behind it is refused before anyone can cite it. Evidence is an observation: one windowed aggregate per metric per commitment — August, 99.97 percent — never a per-request measurement. An observation of the wrong metric is a violation too.",
           "terms": [
             "cmt:Observation",
-            "cmt:MeasurementSource"
+            "cmt:MeasurementSource",
+            "cmt:Metric"
           ],
           "shapes": [
             "CommitmentShape",
@@ -682,6 +704,13 @@
           "principles": [
             "P15",
             "P10"
+          ],
+          "decisions": [
+            "D58"
+          ],
+          "questions": [
+            "CQ-16",
+            "CQ-9"
           ]
         },
         {
@@ -719,6 +748,26 @@
           "principles": [
             "P18",
             "P15"
+          ],
+          "terms": [
+            "cmt:CommitmentBaseline",
+            "cmt:satisfiesBaseline",
+            "cmt:referenceSource",
+            "cmt:Comparator"
+          ],
+          "shapes": [
+            "CommitmentBaselineShape",
+            "NoWeakerThanFloorShape",
+            "FloorCoverageShape",
+            "FloorUnitShape"
+          ],
+          "decisions": [
+            "D66",
+            "D69"
+          ],
+          "questions": [
+            "CQ-15",
+            "CQ-17"
           ]
         },
         {
@@ -763,11 +812,30 @@
           "terms": [
             "cmt:CommitmentBaseline",
             "cmt:Commitment",
-            "cp:supersedes"
+            "cp:supersedes",
+            "cp:CapabilityOffering",
+            "cp:OfferingState",
+            "core:Capability"
           ],
           "principles": [
             "P18",
             "P17"
+          ],
+          "shapes": [
+            "OfferingReadinessShape",
+            "OfferingStateShape"
+          ],
+          "decisions": [
+            "D65",
+            "D67",
+            "D68",
+            "D70",
+            "D71"
+          ],
+          "questions": [
+            "CQ-14",
+            "CQ-16",
+            "CQ-17"
           ]
         },
         {
@@ -805,6 +873,16 @@
           "principles": [
             "P9",
             "P16"
+          ],
+          "decisions": [
+            "D64",
+            "D67"
+          ],
+          "questions": [
+            "CQ-10",
+            "CQ-11",
+            "CQ-13",
+            "CQ-9"
           ]
         },
         {
@@ -812,6 +890,13 @@
           "body": "In order: the production floors themselves — the targets are the platform's to decide; a committed commitment per offering per floor, with a real measurement source, which is also the availability review of every production offering; the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
             "P9"
+          ],
+          "decisions": [
+            "D65",
+            "D67"
+          ],
+          "questions": [
+            "CQ-16"
           ]
         }
       ],

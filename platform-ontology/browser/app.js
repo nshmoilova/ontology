@@ -535,6 +535,12 @@
           ${(st.principles || []).length ? `<div class="steprefs">
             <div class="reflabel">Principles</div>
             <div class="chips">${st.principles.map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
+          ${(st.decisions || []).length ? `<div class="steprefs">
+            <div class="reflabel">Decisions</div>
+            <div class="chips">${st.decisions.map((x) => `<a class="pill" href="#/decisions#${esc(x)}" title="Decision ${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
+          ${(st.questions || []).length ? `<div class="steprefs">
+            <div class="reflabel">Questions</div>
+            <div class="chips">${st.questions.map((x) => `<a class="pill" href="#/questions?q=${encodeURIComponent(x)}" title="Competency question ${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
           ${(st.terms || []).length ? `<div class="steprefs">
             <div class="refslabel">Terms</div>
             <div class="chips">${st.terms.map((t) => link(t)).join("")}</div></div>` : ""}

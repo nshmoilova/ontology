@@ -477,6 +477,10 @@ def load_explainers(terms, shapes):
     known_shapes = {s["name"] for s in shapes}
     pfile = ROOT / "docs" / "principles.json"
     known_principles = {p["id"] for p in json.loads(pfile.read_text()).get("principles", [])} if pfile.exists() else set()
+    dfile = ROOT / "docs" / "decisions.json"
+    known_decision_ids = {d["id"] for d in json.loads(dfile.read_text()).get("decisions", [])} if dfile.exists() else set()
+    qfile = ROOT / "docs" / "competency-questions.md"
+    known_question_ids = set(re.findall(r"^\|\s*(CQ-\d+)\s*\|", qfile.read_text(), re.M)) if qfile.exists() else set()
     for ex in explainers:
         for step in ex.get("steps", []):
             diagram = step.get("diagram")
@@ -489,7 +493,9 @@ def load_explainers(terms, shapes):
                     step["svg"] = None
             for key, known, kind in (("terms", known_terms, "term"),
                                      ("shapes", known_shapes, "shape"),
-                                     ("principles", known_principles, "principle")):
+                                     ("principles", known_principles, "principle"),
+                                     ("decisions", known_decision_ids, "decision"),
+                                     ("questions", known_question_ids, "question")):
                 missing = [x for x in step.get(key, []) if x not in known]
                 if missing:
                     problem(f"{ex['id']} references unknown {kind}s: "
