@@ -1304,6 +1304,31 @@
         "Contract",
         "ContractVersion"
       ]
+    },
+    {
+      "id": "D71",
+      "title": "The request-path targets: set by the platform, superseding the placeholders",
+      "area": "Tenancy & subscriptions",
+      "invariant": false,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P3",
+        "P17",
+        "P10"
+      ],
+      "reasoning": "The platform set the request-path commitments. Six placeholders change and are superseded rather than edited (D05): ingress latency p99 at most 50 ms and availability at least 99.99 %, decision latency p99 at most 25 ms, and recovery time at the floor of 60 minutes for all three. Six placeholders stand: decision and session availability at 99.95 %, session latency at 30 ms, recovery point at 0 for ingress and decision and 5 minutes for session. The single platform observability feed stays the measurement source for all three. Each superseding commitment is a new declaration approved by a platform member, pointing at the one it replaces; the replaced one is withdrawn, so the floor and readiness invariants read only the current promise while the history stays in the graph (P17).",
+      "rejected": [
+        "Editing the placeholder targets in place: a declaration is immutable; an edited promise has no history and no approver for the change.",
+        "Recovery time below the floor for the request path: the platform chose the floor itself — headroom there is a design decision about active-active deployment it has not yet taken."
+      ],
+      "terms": [
+        "Commitment",
+        "supersedes",
+        "hasCommitmentState"
+      ]
     }
   ]
 }
