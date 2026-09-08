@@ -685,6 +685,92 @@
           ]
         },
         {
+          "heading": "Floors and targets",
+          "body": "A floor is a baseline declared at a scope: the least the platform will promise for any offering beneath it. A target is what one offering actually promises, in its commitment. The rule between them is simple: on the floor's metric, a commitment may not be weaker than the floor, judged by the floor's comparator and in the floor's unit, and an available offering must carry a commitment on every floor's metric. The margin is the distance from the floor in the direction that is good: for an at-least floor, target minus floor; for an at-most floor, floor minus target. Zero is on the floor, negative is a violation, unbound means no promise at all. CQ-17 lists every pair, worst first.",
+          "table": {
+            "columns": [
+              "Production floor",
+              "Judged over",
+              "Why this number"
+            ],
+            "rows": [
+              [
+                "Availability at least 99.9 %",
+                "30 days",
+                "About 43 minutes of downtime a month. Loose enough that every shared capability can meet it; anything tighter is a promise an individual offering makes on top."
+              ],
+              [
+                "Latency p99 at most 300 ms",
+                "7 days",
+                "A budget consumers can reserve against. The three request-path capabilities together promise 105 ms, leaving roughly two thirds of the budget to applications."
+              ],
+              [
+                "Recovery time at most 60 minutes",
+                "per quarter",
+                "A standby target in another region taken into service by a routing change. Tighter than this needs active-active deployment, a design decision not yet taken."
+              ],
+              [
+                "Recovery point at most 15 minutes",
+                "per quarter",
+                "Asynchronous cross-region replication at a short interval. Stateless capabilities promise zero on top of it."
+              ]
+            ]
+          },
+          "principles": [
+            "P18",
+            "P15"
+          ]
+        },
+        {
+          "heading": "The request-path targets",
+          "body": "Ingress, the decision point and session management are on every request, so their promises cap what any application can promise. Each carries four committed commitments on the platform observability feed and is available against all four floors. The targets were set by the platform (D71); a changed target is a new declaration superseding the old one, so the history of every promise stays in the graph.",
+          "table": {
+            "columns": [
+              "Capability",
+              "Availability",
+              "Latency p99",
+              "Recovery time",
+              "Recovery point",
+              "Why"
+            ],
+            "rows": [
+              [
+                "Ingress",
+                "99.99 %",
+                "50 ms",
+                "60 min",
+                "0",
+                "On every request, so its availability caps everyone's; the latency covers TLS, tenant resolution and the decision call; stateless, so nothing is lost"
+              ],
+              [
+                "Authorization decision",
+                "99.95 %",
+                "25 ms",
+                "60 min",
+                "0",
+                "Fails with ingress in practice; the latency allows a membership and grant lookup that is not fully local; grants are re-projected, not lost"
+              ],
+              [
+                "Session management",
+                "99.95 %",
+                "30 ms",
+                "60 min",
+                "5 min",
+                "Handle lookup plus proof-of-possession check in-region; sessions created in the last five minutes before a region loss may need re-authentication"
+              ]
+            ]
+          },
+          "terms": [
+            "cmt:CommitmentBaseline",
+            "cmt:Commitment",
+            "cp:supersedes"
+          ],
+          "principles": [
+            "P18",
+            "P17"
+          ]
+        },
+        {
           "heading": "How it answers the platform questions",
           "body": "The module answers what was promised, where, and with what evidence. The identity and control-plane modules answer who is affected and where things exist. Neither answers whether anything is up right now — that is a dashboard.",
           "table": {
