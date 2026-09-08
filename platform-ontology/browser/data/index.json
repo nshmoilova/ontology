@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "956d003a4033",
+ "sourceDigest": "66297b436cff",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -21970,11 +21970,15 @@
      "terms": []
     },
     {
+     "heading": "What to do now",
+     "body": "Identify the decision that would create the most value if an AI agent could execute it reliably at scale. That decision is your starting point. Name the entities, relationships, and rules that govern it. This is your first ontology scope.\n\nBuild a pilot for that decision that stands on its own as a foundation you will extend. Connect it to GenAI for fluency and keep the knowledge graph in the loop for grounding and traceability.\n\nMeasure three things:\n\n- Accuracy against authoritative sources.\n- Provenance completeness: can you trace every answer to its origin?\n- Cycle time improvement.\n\nEngagement metrics tell you people are using the system. These metrics tell you whether they should trust it.\n\nDesign the pilot so the semantic foundation compounds. Every entity you encode creates relationship opportunities. Every rule you formalize becomes a constraint an agent can consult at runtime."
+    },
+    {
      "heading": "Further reading",
      "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- Fr\u00e9d\u00e9ric Verhelst, The Ontology Imperative, Substack essays (accuracy progression from [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)):\n  - [Start here: The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n  - [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n  - [Knowledge graph competitive landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n  - [The hidden governance crisis](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n  - [The stakes and the false solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n  - [The missing contract: Why most boards cannot govern what they cannot define](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)"
     }
    ],
-   "stepCount": 9
+   "stepCount": 10
   }
  ],
  "competencyQuestions": {
