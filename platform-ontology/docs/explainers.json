@@ -1051,7 +1051,7 @@
       "title": "The shape of institutional memory",
       "subtitle": "An ontology, a knowledge graph, a per-question context, and a language model each do one job. Here is what each looks like in our own model, and what is still aspirational.",
       "audience": "Architects and engineers designing AI or agent tooling that has to reason over the platform's documented facts and rules, not just retrieve text about them.",
-      "summary": "A model that can quote your documents is not the same as a system with memory. This walkthrough separates four layers, the ontology fixing what terms and relations mean, the graph of facts written in that grammar, the slice of the graph one question needs, and the model that plans and explains, and shows each one against our own request-path model rather than a generic example, marking plainly what is built and what is still aspirational.",
+      "summary": "A model that can quote your documents is not the same as a system with memory. This walkthrough separates four layers, the ontology fixing what terms and relations mean, the graph of facts written in that grammar, the slice of the graph one question needs, and the model that plans and explains.",
       "openQuestions": [
         "Does an agent layer belong here as a way to assemble a decision's context on demand from what is already modelled, or as a pipeline that extracts new facts from documents we have not yet turned into graph data, and can either be built before the other exists?"
       ],
