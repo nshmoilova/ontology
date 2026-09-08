@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "588be8c38a14",
+ "sourceDigest": "b0394fd79bf0",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -22176,11 +22176,16 @@
      ]
     },
     {
+     "heading": "Accuracy at each level",
+     "body": "Concrete research on accuracy gains as you move through the maturity levels: Text-to-SQL with a language model alone achieves 16 percent baseline accuracy on complex database questions. Adding knowledge graph retrieval jumps to 54 percent. Adding ontology-governed reasoning \u2014 where the system validates answers against fixed semantic constraints \u2014 reaches 80 percent.\n\nThat progression is not about having a better model. At each level, the same underlying LLM is constrained differently. The model is more useful when it operates inside a semantic cage.",
+     "terms": []
+    },
+    {
      "heading": "Further reading",
-     "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- Fr\u00e9d\u00e9ric Verhelst, The Ontology Imperative, Substack essays:\n  - [Start here: The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n  - [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n  - [Knowledge graph competitive landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n  - [The hidden governance crisis](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n  - [The stakes and the false solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n  - [The missing contract: Why most boards cannot govern what they cannot define](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)"
+     "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- Fr\u00e9d\u00e9ric Verhelst, The Ontology Imperative, Substack essays (accuracy progression from [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)):\n  - [Start here: The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n  - [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n  - [Knowledge graph competitive landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n  - [The hidden governance crisis](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n  - [The stakes and the false solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n  - [The missing contract: Why most boards cannot govern what they cannot define](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)"
     }
    ],
-   "stepCount": 8
+   "stepCount": 9
   }
  ],
  "competencyQuestions": {
