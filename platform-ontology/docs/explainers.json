@@ -1098,6 +1098,260 @@
           "body": "- Thomas R. Gruber, A Translation Approach to Portable Ontology Specifications, Knowledge Acquisition, 1993. [Paper](https://tomgruber.org/writing/ontolingua-kaj-1993.pdf)\n- Stevan Harnad, The Symbol Grounding Problem, Physica D, 1990. [Paper](https://arxiv.org/abs/cs/9906002)\n- Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [The decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- W3C, OWL 2 Web Ontology Language Profiles, the QL profile. [Specification](https://www.w3.org/TR/owl2-profiles/#OWL_2_QL)\n- W3C, Shapes Constraint Language (SHACL). [Specification](https://www.w3.org/TR/shacl/)\n- NIST, SP 800-63 Digital Identity Guidelines. [Guidelines](https://pages.nist.gov/800-63-3/)\n- IETF, RFC 9493, Subject Identifiers for Security Event Tokens. [RFC](https://www.rfc-editor.org/rfc/rfc9493)\n- This ontology: [Request path boundaries](#/explain/evaluation-layers), [Principles at a glance](#/explain/principles), [Competency questions](#/questions)."
         }
       ]
+    },
+    {
+      "id": "institutional-memory",
+      "title": "The shape of institutional memory",
+      "subtitle": "An ontology, a knowledge graph, a per-question context, and a language model each do one job. Here is what each looks like in our own model, and what is still aspirational.",
+      "audience": "Architects and engineers designing AI or agent tooling that has to reason over the platform's documented facts and rules, not just retrieve text about them.",
+      "summary": "A model that can quote your documents is not the same as a system with memory. This walkthrough separates four layers, the ontology fixing what terms and relations mean, the graph of facts written in that grammar, the slice of the graph one question needs, and the model that plans and explains, and shows each one against our own request-path model rather than a generic example, marking plainly what is built and what is still aspirational.",
+      "openQuestions": [
+        "Does an agent layer belong here as a way to assemble a decision's context on demand from what is already modelled, or as a pipeline that extracts new facts from documents we have not yet turned into graph data, and can either be built before the other exists?"
+      ],
+      "steps": [
+        {
+          "heading": "Four layers, one job each",
+          "body": "A model that can quote your documents back to you is not the same as a system with memory. Four layers do different jobs, and the usual failure is running all four together as one blur:\n\n```\nOntology            Knowledge graph        Context               Model\nwhat terms and      what we have on       what this one         language,\nrelations are        file, in that          question needs        planning,\nlegal to assert       grammar                                     explanation\n```\n\nThe case for why the first layer cannot be skipped is made at length in [What only a definition can do](#/explain/own-the-meaning). This walkthrough instead takes each layer against our own request-path model, one at a time, and says plainly which parts exist today and which are still aspirational."
+        },
+        {
+          "heading": "The ontology: fixing what a word denotes",
+          "body": "Before any fact is written, the ontology fixes what kinds of things exist and which relations between them are legal. Loose usage could call several different things \"the client\": the kind of client software a session runs on, browser or mobile; the credentialed OAuth registration a session manager holds to obtain tokens, one per audience; and the business client, the customer relationship a principal acts for, which cannot itself authenticate. The model keeps the three apart on purpose, and the decision to do so is recorded rather than assumed: nothing can authenticate as a business client, and nothing can silently become an OAuth registration by being called a client in a sentence.\n\nThe same discipline applies to the boundary vocabulary a request travels through: a tenant owns exactly one of an application, an application is reached through a route, and a capability exists in a scope only where an offering says so. None of that says which tenant owns which application. It says what \"owns\" is allowed to mean, and no downstream layer can supply that for itself.",
+          "terms": [
+            "session:DeviceClass",
+            "authn:OAuthClientRegistration",
+            "core:BusinessClient",
+            "core:actsForClient",
+            "core:Tenant",
+            "core:Application",
+            "core:ownedBy",
+            "ingress:Route",
+            "cp:CapabilityOffering"
+          ],
+          "principles": [
+            "P5"
+          ],
+          "decisions": [
+            "D47"
+          ]
+        },
+        {
+          "heading": "The knowledge graph: facts written in that grammar",
+          "body": "Once the grammar exists, facts about a specific tenant are typed nodes and named edges rather than paragraphs. Ours holds one such tenant, T123, and its digital bank application, and every fact below is what our own test data actually asserts, not an illustration.\n\nA subject reaches that application through a chain, each link a governed record with its own approval:",
+          "table": {
+            "columns": [
+              "Link",
+              "Fact for T123",
+              "Ontology term"
+            ],
+            "rows": [
+              [
+                "Membership",
+                "Alice is an active member of T123",
+                "cp:TenantMembership"
+              ],
+              [
+                "Route",
+                "t123.apps.examplebank.com/digital-bank is bound to T123 and serves the app",
+                "ingress:Route"
+              ],
+              [
+                "Ownership",
+                "T123 owns the digital bank application",
+                "core:ownedBy"
+              ],
+              [
+                "Enablement",
+                "A current enablement covers the production scope",
+                "cp:ApplicationEnablement"
+              ],
+              [
+                "Requirement",
+                "The application has one confirmed capability requirement",
+                "cp:CapabilityRequirement"
+              ],
+              [
+                "Subscription",
+                "T123 holds an active subscription for that capability",
+                "cp:Subscription"
+              ],
+              [
+                "Offering",
+                "That capability is offered and available in the production scope",
+                "cp:CapabilityOffering"
+              ]
+            ]
+          },
+          "terms": [
+            "cp:TenantMembership",
+            "cp:memberPrincipal",
+            "cp:memberOfTenant",
+            "cp:hasMembershipState",
+            "ingress:boundToTenant",
+            "ingress:servesApplication"
+          ],
+          "questions": [
+            "CQ-7"
+          ]
+        },
+        {
+          "heading": "The context: what one question needs, not everything on file",
+          "body": "The graph can hold far more than any single question needs. Answering one means walking outward from it to exactly the neighbourhood that bears on the answer, and no further.\n\nT123 also holds an entitlement grant on the region dimension, valued US, and nothing else. Suppose, hypothetically, a request for T123 resolved today in a different region — eu-central-1. Nothing about the chain in the previous step changes; one more fact joins it:\n\n```\nmembership     Alice active in T123          yes\nroute          bound to T123, serves app     yes\nenablement     covers the scope              yes\nsubscription   capability active             yes\nregion grant   T123 holds US only            no\n               request resolved elsewhere\n```\n\nThe context for this question is exactly those six facts, not the millions of other facts the graph might hold about other tenants. Assembling that neighbourhood by hand, one competency question at a time, is what we do today; assembling it on demand for a question nobody wrote in advance is not yet built, and is the open question this walkthrough ends on.",
+          "terms": [
+            "authz:EntitlementGrant",
+            "authz:onDimension",
+            "authz:entitlementValue",
+            "authz:grantedTo",
+            "authz:resolvedRegion"
+          ],
+          "decisions": [
+            "D24"
+          ],
+          "questions": [
+            "CQ-7"
+          ]
+        },
+        {
+          "heading": "From token claims to typed facts, correctly",
+          "body": "A tempting shortcut is to map a token's claims directly onto entitlements: if a claim says a region or a capability, treat that as authority and reason over it. We deliberately do not do this, because a token's claims freeze at the moment it is issued and an entitlement minted into one stays true until it expires, which is exactly the window in which offboarding or a compromise needs to take effect. Authority is a grant the control plane projects to the enforcement point, revoked without reissuing anything; a token is evidence of who is asking and how strongly they authenticated, nothing more.",
+          "table": {
+            "columns": [
+              "A claims-mapping approach would treat this as authority",
+              "What actually resolves it here",
+              "Term"
+            ],
+            "rows": [
+              [
+                "A tenant or capability claim in the token",
+                "The request's host and path, resolved by the route",
+                "ingress:Route"
+              ],
+              [
+                "An environment or region claim in the token",
+                "Which ingress deployment received the request",
+                "authz:resolvedRegion"
+              ],
+              [
+                "A channel claim in the token",
+                "The session's device class",
+                "session:hasDeviceClass"
+              ],
+              [
+                "Everything else",
+                "Identity and assurance only — who is asking, how strongly authenticated",
+                "authn:achievedAssuranceLevel"
+              ]
+            ]
+          },
+          "principles": [
+            "P4"
+          ],
+          "decisions": [
+            "D24"
+          ]
+        },
+        {
+          "heading": "Contradictions become a query, not an opinion",
+          "body": "Once categories and relations are fixed, checking two facts against each other stops being a paragraph a model writes and becomes a query with a yes or no answer. [What only a definition can do](#/explain/own-the-meaning) walks five of these in detail; a different five, just as real and just as checked in continuous integration against a deliberately broken instance in our negative test data:\n\n- A capability that depends on itself through a chain of other capabilities — dependencies must form a DAG, never a cycle.\n- A route reachable at a scope its application's enablement does not cover.\n- An offering marked available with no published contract behind the capability it offers.\n- Two active memberships for one principal in one tenant, where exactly one is expected.\n- An application verb like \"approve payment\" reaching a platform decision, which is Level-3 and out of scope by definition.\n\nNone of these are patterns a model learned to recognize. Each is a structural violation of a relationship the ontology defined in advance.",
+          "shapes": [
+            "AcyclicDependencyShape",
+            "RouteEnablementScopeShape",
+            "OfferingWithoutContractShape",
+            "DuplicateMembershipShape",
+            "ActionVocabularyShape"
+          ],
+          "principles": [
+            "P6",
+            "P10"
+          ]
+        },
+        {
+          "heading": "Answering a question today is a written query, not yet an agent's plan",
+          "body": "Every competency question we answer is a SPARQL query someone wrote once, checked into the repository, and re-run in continuous integration against the live data, expecting a specific shape of result. That is deliberate and it is also the honest limit of where automation currently stops: nothing today takes an arbitrary question in plain language, decomposes it, and picks or assembles the right query on its own.",
+          "table": {
+            "columns": [
+              "Question",
+              "Answers",
+              "File"
+            ],
+            "rows": [
+              [
+                "CQ-5",
+                "For each permit, the full assurance chain from decision to authentication method",
+                "cq5-permits-with-assurance-chain.rq"
+              ],
+              [
+                "CQ-7",
+                "Does this subject's tenant have the right to enter this application at this endpoint",
+                "cq7-application-entry-rights.rq"
+              ],
+              [
+                "CQ-8",
+                "Which tenants' data planes are reachable from a given desired-state declaration",
+                "cq8-blast-radius.rq"
+              ],
+              [
+                "CQ-9",
+                "Which commitments exist for a capability, and what evidence backs each one",
+                "cq9-commitments-and-evidence.rq"
+              ],
+              [
+                "CQ-13",
+                "Which jurisdictions a tenant's data must, may, or may not sit in, and under what transfer basis",
+                "cq13-residency-and-transfers.rq"
+              ]
+            ]
+          },
+          "questions": [
+            "CQ-5",
+            "CQ-7",
+            "CQ-8",
+            "CQ-9",
+            "CQ-13"
+          ]
+        },
+        {
+          "heading": "Where this sits today, without rounding up",
+          "body": "It is worth being precise about what exists against what a fuller version of this architecture would need.",
+          "table": {
+            "columns": [
+              "Layer",
+              "What it needs",
+              "Here today"
+            ],
+            "rows": [
+              [
+                "Ontology",
+                "Fixed classes, relations, and constraints, checked in CI",
+                "Yes — eight modules, a hundred shapes"
+              ],
+              [
+                "Knowledge graph",
+                "Facts written in that grammar",
+                "Yes, for the test tenants in our seed data"
+              ],
+              [
+                "Per-question context",
+                "The neighbourhood one question needs, assembled and answered",
+                "Yes, for seventeen named questions, each a hand-written query"
+              ],
+              [
+                "Context on demand",
+                "The same assembly for a question nobody wrote in advance",
+                "No — every answer today comes from a pre-authored query"
+              ],
+              [
+                "Agent layer",
+                "A planner that decomposes a question, resolves entities, and picks or builds the query",
+                "No — not yet built"
+              ]
+            ]
+          }
+        },
+        {
+          "heading": "Further reading",
+          "body": "- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- On this site: [What only a definition can do](#/explain/own-the-meaning), [Request path boundaries](#/explain/evaluation-layers), [Promises the platform can prove](#/explain/commitments), [Competency questions](#/questions)."
+        }
+      ]
     }
   ]
 }
