@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "b6be6e607841",
+ "sourceDigest": "87115a3975b9",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -22053,101 +22053,33 @@
    "steps": [
     {
      "heading": "One word, three meanings, one afternoon",
-     "body": "In our own platform documents the word \"client\" meant three things. Product documents meant the browser or mobile app calling the platform. Architecture documents meant the OAuth registration that obtains tokens. Design documents meant the business client, the customer on whose behalf a person acts. In a bank the word carries more weight than in most places, and we had three definitions of it.\n\nFor years this cost a question in a meeting. Someone new asked, someone experienced answered, work continued. Then the documents became input to a model. Asked which client a token belongs to, it returned all three meanings and blended them. A class was added to the model on a wrong reading of the `client_id` claim and had to be taken out again [D29].\n\nNothing new went wrong. The ambiguity had always been there. What changed is that a person pays for it slowly, one question at a time, and a system pays for it all at once. Today there are three terms, one per meaning, a rule that keeps two of them apart, and a record of the mistake so it is not repeated.",
-     "decisions": [
-      "D29",
-      "D47"
-     ],
-     "terms": [
-      "core:BusinessClient",
-      "authn:OAuthClientRegistration",
-      "authn:clientId"
-     ],
-     "principles": [
-      "P5"
-     ]
+     "body": "In our own platform documents the word \"client\" meant three things. The product documents meant the browser or the mobile app calling the platform. The architecture documents meant the OAuth registration that obtains tokens on the platform's behalf. The design documents meant the business client, the customer for whom a person acts. In a bank that word carries more weight than almost any other, and we had three definitions of it.\n\nFor years this cost a question in a meeting. Someone new asked which client was meant, someone experienced answered, and work continued. Then the documents became input to a system that reads them all at once. Asked which client a token belongs to, it returned all three meanings and blended them into a confident answer. A class was added to our model on a wrong reading of the claim, and it had to be taken out again. The mistake is recorded, with the reasoning that produced it, so that nobody makes it twice.\n\nNothing new had gone wrong. The ambiguity had always been there. What changed is that a person pays for it slowly, one question at a time, and a system pays for it all at once. Today there are three terms, one for each meaning, a rule that keeps two of them apart, and a definition a machine can check."
     },
     {
      "heading": "A fare that never existed",
-     "body": "In February 2024 a Canadian tribunal held Air Canada liable for a bereavement fare its chatbot had invented [1]. The airline argued the chatbot was responsible for its own statements. The tribunal disagreed: the company answers for what its system says, as it answers for what an employee says.\n\nRead that as a regulated institution. A support agent working from loose fare documentation would have made the mistake once. The chatbot made it for every customer, in the company's voice, with the company's liability. The fix was never a better chatbot. It was a definition of which fares exist, in a form a person and a program read identically, so that the answer \"no such fare\" is a fact and not a judgement call.\n\nWe have hundreds of terms with the same exposure: what an account is, who may act for a corporate client, which jurisdiction a record belongs to. Each one is a fare that never existed, waiting to be quoted.",
-     "principles": [
-      "P15",
-      "P21"
-     ]
+     "body": "In February 2024 a Canadian tribunal held Air Canada liable for a bereavement fare its chatbot had invented. The airline argued that the chatbot was responsible for its own statements. The tribunal disagreed. A company answers for what its system says, as it answers for what an employee says.\n\nRead that as a regulated institution. A support agent working from loose fare documentation would have made the same mistake once, and a colleague would have caught it. The chatbot made it for every customer, in the company's voice, with the company's liability attached. The fix was never a better chatbot. It was a definition of which fares exist, in a form that a person and a program read identically, so that \"there is no such fare\" is a fact and not a judgement call.\n\nWe hold hundreds of terms with the same exposure. What an account is. Who may act for a corporate client. Which jurisdiction a record belongs to and where it may be moved. Each of them is a fare that never existed, waiting to be quoted by something that speaks in our name."
     },
     {
      "heading": "Pay once, or pay twice",
-     "body": "An aerospace manufacturer spent eighteen months and about three million euros on a supply-chain ontology and abandoned it, because the terms had never been formally defined: the project built structure and skipped meaning [5]. A financial firm generated a compliance ontology automatically; it passed every syntactic check and failed in production on contradictory inferences [5]. Both paid for the tools first and the definitions never.\n\nThe counter-example is older. The Optique project gave Statoil and Siemens ontologies and mappings beneath a query interface; turnaround on engineering questions fell from weeks to hours, with projected savings in the tens of millions a year, and the people who ran it are explicit that the value sat in the definitions, not the interface [7]. The users were engineers. Automation inherited their speed later, for free.\n\nThat is the amplification, stated plainly. AI does not add understanding to an organisation. It multiplies whatever the organisation already has: clarity, or confusion, faster every year. Build the definitions first and the multiplier works for you. Skip them and it works for the other side, at the same speed.",
-     "principles": [
-      "P8",
-      "P9"
-     ]
+     "body": "An aerospace manufacturer spent eighteen months and about three million euros on a supply-chain ontology and abandoned it. The terms had never been formally defined; the project built structure and skipped meaning, and nothing built on it could be trusted with a decision. A financial firm generated a compliance ontology automatically. It passed every syntactic check and failed in production on inferences that contradicted each other. Both paid for the tools first and for the definitions never.\n\nThe counter-example is older. A European project gave two industrial companies ontologies and mappings beneath a plain query interface. Turnaround on engineering questions fell from weeks to hours, and the projected savings ran to tens of millions a year. The people who ran it are explicit that the value sat in the definitions and not in the interface. The users were engineers. The automation that came later inherited their speed for nothing.\n\nThis is the whole argument, stated plainly. AI does not add understanding to an organisation. It multiplies whatever the organisation already has, clarity or confusion, and it does so faster every year. Build the definitions first and the multiplier works for us. Skip them and it works for the other side, at the same speed, in our voice."
     },
     {
-     "heading": "What building first means here",
-     "body": "This repository is what \"first\" looks like for one decision: whether a subject may enter an application on the platform. Four layers, each with the person who needs it before any automation does.",
-     "table": {
-      "columns": [
-       "Layer",
-       "Who needs it",
-       "What it is here"
-      ],
-      "rows": [
-       [
-        "Definitions",
-        "The engineer joining on Monday; the architect proposing a change",
-        "Eight modules. A definition says what a term denotes and nothing else. Every term that adopts a standard declares it; no product is named."
-       ],
-       [
-        "The facts",
-        "The operator asking what is where; the reviewer checking a proposal",
-        "Instances and the edges between them. Seventeen questions people actually ask, each a query run on every change."
-       ],
-       [
-        "The rules",
-        "The auditor; the automation",
-        "A hundred constraints. Every rule has a deliberately broken example, and the build proves all seventy-one fire. One of them found a membership in our own seed data approved by the person it admitted; it had sat there for weeks."
-       ],
-       [
-        "The record",
-        "The regulator; the successor; anyone proposing a change",
-        "Seventy-one decisions with the alternatives rejected, twenty principles with the test a reviewer asks, seventeen candidates refused with reasons. Ask why there is no session id in the token and the answer is the decision, not a recollection [D56]."
-       ]
-      ]
-     },
-     "decisions": [
-      "D57",
-      "D56"
-     ],
-     "principles": [
-      "P6",
-      "P10",
-      "P17"
-     ]
+     "heading": "What building first looks like",
+     "body": "We have done it once, for one decision: whether a subject may enter an application on the platform. It is small enough to describe in a paragraph.\n\nThere are definitions. Eight modules, and every term in them says what it denotes and nothing more. A term that adopts a standard says which one. No product is named anywhere, because a vocabulary that encodes today's implementation ages badly. The engineer who joins on Monday and the architect proposing a change read the same definitions.\n\nThere are facts. The instances and the connections between them: who is a member of which tenant, which route serves which application, which grant follows from which membership. The questions people actually ask of the platform, seventeen of them so far, are written down, and each one runs as a query on every change.\n\nThere are rules. A hundred of them, and every rule has a deliberately broken example beside it, so the build can prove that each one fires before anything ships. A rule that has never rejected anything is a hope. One of these rules found, in our own seed data, a membership approved by the very person it admitted. It had been there for weeks and nobody had seen it, because nobody reads seed data looking for that.\n\nAnd there is a record. Seventy-one decisions, each with the alternatives that were rejected and why. Twenty principles, each with the question a reviewer asks of a new proposal. Seventeen candidate principles that were evaluated and refused, with the reasons, so the argument is not had twice. Ask why there is no session identifier in the token, and the answer is the decision that was taken, not somebody's recollection of it.\n\nThe auditor, the regulator, the successor and the automation all read the same four things. That is what \"first\" buys: one set of meanings for every reader, before any of them acts."
     },
     {
      "heading": "The ask",
-     "body": "Three questions we should be able to answer about any system that acts on our behalf, human or automated [3]:\n\n- **Can we trace a decision to its source?** Here, hop by hop: the decision, its policy, the session, the authentication, the human who approved the grant.\n- **Can we tell a fact from a guess?** Rows a question returns passed the rules. Text anyone composed did not.\n- **Can we fix a root cause without rebuilding?** Supersede the declaration. Nothing is retrained.\n\nThe proposal is not to build an ontology of everything. It is to pick one high-stakes decision, define its terms, write its rules, prove they fire, and let people and systems read the result the same way. This repository did that for entry to an application. The next candidates are a money movement and a cross-border data transfer, and both already have their boundary terms defined here. Every month those definitions do not exist is a month in which the multiplier runs against us.",
-     "decisions": [
-      "D61"
-     ],
-     "principles": [
-      "P3",
-      "P18"
-     ],
-     "questions": [
-      "CQ-7",
-      "CQ-13"
-     ]
+     "body": "Three questions we should be able to answer about anything that acts in our name, whether it is a person following a runbook or a system following a prompt. Can we trace a decision to its source? Can we tell a fact from a guess? Can we fix a root cause without rebuilding the thing that made the mistake?\n\nFor the one decision we have built, the answers are yes. A permit traces to the policy, the session, the authentication, and the human who approved the grant. A fact is a row a question returned, which passed every rule; a guess is anything composed in prose. A wrong fact is superseded by an approved one, and nothing is retrained.\n\nThe proposal is not an ontology of everything. It is the next high-stakes decision: define its terms, write its rules, prove they fire, and let people and systems read the result the same way. A money movement and a cross-border data transfer are the two candidates, and the boundary terms for both already exist. Every month those definitions are not in place is a month in which the multiplier runs against us, in our own voice, faster than any review can follow."
     },
     {
-     "heading": "References",
-     "body": "- [1] Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [Decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- [3] Fr\u00e9d\u00e9ric Verhelst, The Missing Contract: Why Most Boards Cannot Govern What They Cannot Define, The Ontology Imperative, February 2026. [Post](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)\n- [5] Fr\u00e9d\u00e9ric Verhelst, Own the Ontology or Rent Your Future, The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n- [7] Optique: Scalable End-user Access to Big Data, EU FP7 project 318338 with Statoil and Siemens, 2012 to 2016; discussed in Fr\u00e9d\u00e9ric Verhelst, Your Board Is Flying Blind, March 2026. [Project](https://cordis.europa.eu/project/id/318338) \u00b7 [Post](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n- Further reading from the same series: [Start Here](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative) \u00b7 [The Stakes and the False Solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions) \u00b7 [The Knowledge Graph Competitive Landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n- Decisions cited as [D29], [D47], [D56], [D57] and [D61] are in this repository's register; each chip above opens the record."
+     "heading": "Sources",
+     "body": "- Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [The decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- Fr\u00e9d\u00e9ric Verhelst, The Missing Contract: Why Most Boards Cannot Govern What They Cannot Define, The Ontology Imperative, February 2026. [Post](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)\n- Fr\u00e9d\u00e9ric Verhelst, Own the Ontology or Rent Your Future, The Ontology Imperative, January 2026, for the aerospace and compliance cases. [Post](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n- Optique: Scalable End-user Access to Big Data, EU project with Statoil and Siemens, 2012 to 2016; discussed in Fr\u00e9d\u00e9ric Verhelst, Your Board Is Flying Blind, March 2026. [Project](https://cordis.europa.eu/project/id/318338) \u00b7 [Post](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n- Further reading from the same series: [Start Here](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative) \u00b7 [The Stakes and the False Solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions) \u00b7 [The Knowledge Graph Competitive Landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n- The decisions, principles and rules mentioned are all in this repository's register, one click from the Decisions and Principles tabs."
     }
    ],
    "openQuestions": [
-    "Which decision is second? A money movement or a cross-border data transfer. Both have their boundary terms in this repository already; what each needs is its questions written down and its rules proven to fire."
+    "Which decision is second: a money movement, or a cross-border data transfer?"
    ],
+   "style": "story",
    "stepCount": 6
   }
  ],

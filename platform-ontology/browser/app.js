@@ -546,7 +546,7 @@
       <a href="#/explain">See all</a>.</div>`;
     const steps = e.steps.map((st, i) => `
       <section class="step" id="step-${i + 1}">
-        <div class="stepnum">${i + 1}</div>
+        ${e.style === "story" ? "" : `<div class="stepnum">${i + 1}</div>`}
         <div class="stepbody">
           <h2 class="stephead">${esc(st.heading)}</h2>
           ${st.svg ? `<figure class="stepfig">${st.svg}</figure>` : ""}
@@ -556,19 +556,19 @@
             ${st.table.rows.map((r) => `<tr>${r.map((cell, ci) =>
               `<td>${ci === 0 ? firstCell(cell) : esc(cell)}</td>`).join("")}</tr>`).join("")}
           </table></div>` : ""}
-          ${(st.principles || []).length ? `<div class="steprefs">
+          ${e.style !== "story" && (st.principles || []).length ? `<div class="steprefs">
             <div class="reflabel">Principles</div>
             <div class="chips">${st.principles.map((x) => `<a class="pill prin" href="#/principles#${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
-          ${(st.decisions || []).length ? `<div class="steprefs">
+          ${e.style !== "story" && (st.decisions || []).length ? `<div class="steprefs">
             <div class="reflabel">Decisions</div>
             <div class="chips">${st.decisions.map((x) => `<a class="pill" href="#/decisions#${esc(x)}" title="Decision ${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
-          ${(st.questions || []).length ? `<div class="steprefs">
+          ${e.style !== "story" && (st.questions || []).length ? `<div class="steprefs">
             <div class="reflabel">Questions</div>
             <div class="chips">${st.questions.map((x) => `<a class="pill" href="#/questions?q=${encodeURIComponent(x)}" title="Competency question ${esc(x)}">${esc(x)}</a>`).join("")}</div></div>` : ""}
-          ${(st.terms || []).length ? `<div class="steprefs">
+          ${e.style !== "story" && (st.terms || []).length ? `<div class="steprefs">
             <div class="refslabel">Terms</div>
             <div class="chips">${st.terms.map((t) => link(t)).join("")}</div></div>` : ""}
-          ${(st.shapes || []).length ? `<div class="steprefs">
+          ${e.style !== "story" && (st.shapes || []).length ? `<div class="steprefs">
             <div class="refslabel">Enforced by</div>
             ${st.shapes.map((s) => shapeCard(s)).join("")}</div>` : ""}
         </div>
@@ -580,7 +580,7 @@
       <p class="lede" style="font-style:italic;color:var(--ink-3);margin-top:.2rem">${esc(e.subtitle)}</p>
       <p class="lede">${esc(e.summary)}</p>
       <nav class="stepnav" aria-label="Steps">
-        ${e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
+        ${e.style === "story" ? "" : e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
       </nav>
       ${steps}
       ${(e.openQuestions || []).length ? `
