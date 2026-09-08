@@ -1272,10 +1272,7 @@
         },
         {
           "heading": "Shallow RAG: proximity without meaning",
-          "body": "Traditional retrieval-augmented generation works by proximity: embed a question, search for nearby text chunks, hand those chunks to a language model. The fundamental unit is text, and text chunks sit near each other because of keyword overlap, not because they describe related semantic entities.",
-          "principles": [
-            "P6"
-          ]
+          "body": "Traditional retrieval-augmented generation works by proximity: embed a question, search for nearby text chunks, hand those chunks to a language model. The fundamental unit is text, and text chunks sit near each other because of keyword overlap, not because they describe related semantic entities."
         },
         {
           "heading": "Three layers: ontology, graph, context",
