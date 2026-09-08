@@ -169,6 +169,8 @@ def main() -> int:
         "cq13-residency-and-transfers.rq",
         "cq14-offering-readiness.rq",
         "cq15-floors-and-coverage.rq",
+        "cq16-commitment-status.rq",
+        "cq17-floor-margins.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

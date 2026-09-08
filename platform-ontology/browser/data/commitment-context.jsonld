@@ -1,0 +1,434 @@
+{
+ "@context": {
+  "@version": 1.1,
+  "core": "https://w3id.org/examplebank/platform/core#",
+  "cp": "https://w3id.org/examplebank/platform/control-plane#",
+  "cmt": "https://w3id.org/examplebank/platform/commitment#",
+  "ctr": "https://w3id.org/examplebank/platform/contract#",
+  "skos": "http://www.w3.org/2004/02/skos/core#",
+  "sosa": "http://www.w3.org/ns/sosa/",
+  "unit": {
+   "@id": "cmt:unit",
+   "@type": "@id"
+  },
+  "xsd": "http://www.w3.org/2001/XMLSchema#",
+  "Commitment": "cmt:Commitment",
+  "CommitmentBaseline": "cmt:CommitmentBaseline",
+  "CommitmentState": "cmt:CommitmentState",
+  "Comparator": "cmt:Comparator",
+  "MeasurementSource": "cmt:MeasurementSource",
+  "Metric": "cmt:Metric",
+  "Observation": "cmt:Observation",
+  "commitsTo": {
+   "@id": "cmt:commitsTo",
+   "@type": "@id"
+  },
+  "comparator": {
+   "@id": "cmt:comparator",
+   "@type": "@id"
+  },
+  "hasCommitmentState": {
+   "@id": "cmt:hasCommitmentState",
+   "@type": "@id"
+  },
+  "measuredBy": {
+   "@id": "cmt:measuredBy",
+   "@type": "@id"
+  },
+  "metric": {
+   "@id": "cmt:metric",
+   "@type": "@id"
+  },
+  "observationOf": {
+   "@id": "cmt:observationOf",
+   "@type": "@id"
+  },
+  "referenceSource": {
+   "@id": "cmt:referenceSource"
+  },
+  "satisfiesBaseline": {
+   "@id": "cmt:satisfiesBaseline",
+   "@type": "@id"
+  },
+  "target": {
+   "@id": "cmt:target"
+  },
+  "validatedBy": {
+   "@id": "cmt:validatedBy"
+  },
+  "window": {
+   "@id": "cmt:window"
+  },
+  "Application": "core:Application",
+  "BusinessClient": "core:BusinessClient",
+  "Capability": "core:Capability",
+  "DataCategory": "core:DataCategory",
+  "DeliveryChannel": "core:DeliveryChannel",
+  "HumanPrincipal": "core:HumanPrincipal",
+  "Jurisdiction": "core:Jurisdiction",
+  "LegalEntity": "core:LegalEntity",
+  "PlatformEvent": "core:PlatformEvent",
+  "PlatformTenant": "core:PlatformTenant",
+  "PolicyAdministrationPoint": "core:PolicyAdministrationPoint",
+  "PolicyDecisionPoint": "core:PolicyDecisionPoint",
+  "PolicyEnforcementPoint": "core:PolicyEnforcementPoint",
+  "PolicyInformationPoint": "core:PolicyInformationPoint",
+  "Principal": "core:Principal",
+  "Region": "core:Region",
+  "Resource": "core:Resource",
+  "Tenant": "core:Tenant",
+  "WorkloadPrincipal": "core:WorkloadPrincipal",
+  "actsForClient": {
+   "@id": "core:actsForClient",
+   "@type": "@id"
+  },
+  "displayName": {
+   "@id": "core:displayName"
+  },
+  "enforcedBy": {
+   "@id": "core:enforcedBy",
+   "@type": "@id"
+  },
+  "governedBy": {
+   "@id": "core:governedBy",
+   "@type": "@id"
+  },
+  "hasActingIdentity": {
+   "@id": "core:hasActingIdentity",
+   "@type": "@id"
+  },
+  "identifier": {
+   "@id": "core:identifier"
+  },
+  "inJurisdiction": {
+   "@id": "core:inJurisdiction",
+   "@type": "@id"
+  },
+  "occurredAtTime": {
+   "@id": "core:occurredAtTime"
+  },
+  "operatedBy": {
+   "@id": "core:operatedBy",
+   "@type": "@id"
+  },
+  "ownedBy": {
+   "@id": "core:ownedBy",
+   "@type": "@id"
+  },
+  "performedBy": {
+   "@id": "core:performedBy",
+   "@type": "@id"
+  },
+  "targetsResource": {
+   "@id": "core:targetsResource",
+   "@type": "@id"
+  },
+  "underJurisdiction": {
+   "@id": "core:underJurisdiction",
+   "@type": "@id"
+  },
+  "validFrom": {
+   "@id": "core:validFrom"
+  },
+  "validUntil": {
+   "@id": "core:validUntil"
+  },
+  "AdministrativeScope": "cp:AdministrativeScope",
+  "ApplicationEnablement": "cp:ApplicationEnablement",
+  "CapabilityBundle": "cp:CapabilityBundle",
+  "CapabilityControlPlane": "cp:CapabilityControlPlane",
+  "CapabilityOffering": "cp:CapabilityOffering",
+  "CapabilityRequirement": "cp:CapabilityRequirement",
+  "CapabilityUseObservation": "cp:CapabilityUseObservation",
+  "ChangeApproval": "cp:ChangeApproval",
+  "ConcurrentSessionPolicy": "cp:ConcurrentSessionPolicy",
+  "ControlPlaneComponent": "cp:ControlPlaneComponent",
+  "DataPlane": "cp:DataPlane",
+  "DataPlaneMutation": "cp:DataPlaneMutation",
+  "DesiredStateDeclaration": "cp:DesiredStateDeclaration",
+  "JourneyDefinitionChange": "cp:JourneyDefinitionChange",
+  "ManagementControlPlane": "cp:ManagementControlPlane",
+  "MembershipState": "cp:MembershipState",
+  "OfferingState": "cp:OfferingState",
+  "PolicyChangeEvent": "cp:PolicyChangeEvent",
+  "Portal": "cp:Portal",
+  "ResidencyRequirement": "cp:ResidencyRequirement",
+  "RouteBindingChange": "cp:RouteBindingChange",
+  "Subscription": "cp:Subscription",
+  "SubscriptionState": "cp:SubscriptionState",
+  "TenantMembership": "cp:TenantMembership",
+  "TransferBasis": "cp:TransferBasis",
+  "TransferPermission": "cp:TransferPermission",
+  "actuates": {
+   "@id": "cp:actuates",
+   "@type": "@id"
+  },
+  "administers": {
+   "@id": "cp:administers",
+   "@type": "@id"
+  },
+  "appliesToDeviceClass": {
+   "@id": "cp:appliesToDeviceClass",
+   "@type": "@id"
+  },
+  "approvedAtTime": {
+   "@id": "cp:approvedAtTime"
+  },
+  "approvedBy": {
+   "@id": "cp:approvedBy",
+   "@type": "@id"
+  },
+  "bundlesCapability": {
+   "@id": "cp:bundlesCapability",
+   "@type": "@id"
+  },
+  "changeTicket": {
+   "@id": "cp:changeTicket"
+  },
+  "changedPolicy": {
+   "@id": "cp:changedPolicy",
+   "@type": "@id"
+  },
+  "declarationScope": {
+   "@id": "cp:declarationScope",
+   "@type": "@id"
+  },
+  "declaredThrough": {
+   "@id": "cp:declaredThrough",
+   "@type": "@id"
+  },
+  "declaresDefinition": {
+   "@id": "cp:declaresDefinition",
+   "@type": "@id"
+  },
+  "declaresRouteBinding": {
+   "@id": "cp:declaresRouteBinding",
+   "@type": "@id"
+  },
+  "declaresStateOf": {
+   "@id": "cp:declaresStateOf",
+   "@type": "@id"
+  },
+  "dependsOn": {
+   "@id": "cp:dependsOn",
+   "@type": "@id"
+  },
+  "executedBy": {
+   "@id": "cp:executedBy",
+   "@type": "@id"
+  },
+  "forApplication": {
+   "@id": "cp:forApplication",
+   "@type": "@id"
+  },
+  "forDataCategory": {
+   "@id": "cp:forDataCategory",
+   "@type": "@id"
+  },
+  "forTenant": {
+   "@id": "cp:forTenant",
+   "@type": "@id"
+  },
+  "governsCapability": {
+   "@id": "cp:governsCapability",
+   "@type": "@id"
+  },
+  "groupsApplication": {
+   "@id": "cp:groupsApplication",
+   "@type": "@id"
+  },
+  "hasApproval": {
+   "@id": "cp:hasApproval",
+   "@type": "@id"
+  },
+  "hasMembershipState": {
+   "@id": "cp:hasMembershipState",
+   "@type": "@id"
+  },
+  "hasOfferingState": {
+   "@id": "cp:hasOfferingState",
+   "@type": "@id"
+  },
+  "hasRegion": {
+   "@id": "cp:hasRegion",
+   "@type": "@id"
+  },
+  "hasSubscriptionState": {
+   "@id": "cp:hasSubscriptionState",
+   "@type": "@id"
+  },
+  "holdsDataCategory": {
+   "@id": "cp:holdsDataCategory",
+   "@type": "@id"
+  },
+  "inEnvironment": {
+   "@id": "cp:inEnvironment"
+  },
+  "inRegion": {
+   "@id": "cp:inRegion"
+  },
+  "isolationModel": {
+   "@id": "cp:isolationModel"
+  },
+  "justifiedBy": {
+   "@id": "cp:justifiedBy",
+   "@type": "@id"
+  },
+  "maxConcurrentSessions": {
+   "@id": "cp:maxConcurrentSessions"
+  },
+  "memberCapacity": {
+   "@id": "cp:memberCapacity"
+  },
+  "memberOfTenant": {
+   "@id": "cp:memberOfTenant",
+   "@type": "@id"
+  },
+  "memberPrincipal": {
+   "@id": "cp:memberPrincipal",
+   "@type": "@id"
+  },
+  "mutatedDataPlane": {
+   "@id": "cp:mutatedDataPlane",
+   "@type": "@id"
+  },
+  "observedApplication": {
+   "@id": "cp:observedApplication",
+   "@type": "@id"
+  },
+  "observedCapability": {
+   "@id": "cp:observedCapability",
+   "@type": "@id"
+  },
+  "ofApplication": {
+   "@id": "cp:ofApplication",
+   "@type": "@id"
+  },
+  "offeredInScope": {
+   "@id": "cp:offeredInScope",
+   "@type": "@id"
+  },
+  "offersCapability": {
+   "@id": "cp:offersCapability",
+   "@type": "@id"
+  },
+  "permittedIn": {
+   "@id": "cp:permittedIn",
+   "@type": "@id"
+  },
+  "policyForTenant": {
+   "@id": "cp:policyForTenant",
+   "@type": "@id"
+  },
+  "realizesCapability": {
+   "@id": "cp:realizesCapability",
+   "@type": "@id"
+  },
+  "realizesIntent": {
+   "@id": "cp:realizesIntent",
+   "@type": "@id"
+  },
+  "requestCount": {
+   "@id": "cp:requestCount"
+  },
+  "requiredCapability": {
+   "@id": "cp:requiredCapability",
+   "@type": "@id"
+  },
+  "requiredIn": {
+   "@id": "cp:requiredIn",
+   "@type": "@id"
+  },
+  "requiresHumanApproval": {
+   "@id": "cp:requiresHumanApproval"
+  },
+  "scopeIncludes": {
+   "@id": "cp:scopeIncludes",
+   "@type": "@id"
+  },
+  "servesTenant": {
+   "@id": "cp:servesTenant",
+   "@type": "@id"
+  },
+  "subScopeOf": {
+   "@id": "cp:subScopeOf",
+   "@type": "@id"
+  },
+  "subscribedCapability": {
+   "@id": "cp:subscribedCapability",
+   "@type": "@id"
+  },
+  "subscriber": {
+   "@id": "cp:subscriber",
+   "@type": "@id"
+  },
+  "supersedes": {
+   "@id": "cp:supersedes",
+   "@type": "@id"
+  },
+  "toJurisdiction": {
+   "@id": "cp:toJurisdiction",
+   "@type": "@id"
+  },
+  "transferBasis": {
+   "@id": "cp:transferBasis",
+   "@type": "@id"
+  },
+  "windowEnd": {
+   "@id": "cp:windowEnd"
+  },
+  "windowStart": {
+   "@id": "cp:windowStart"
+  },
+  "Compatibility": "ctr:Compatibility",
+  "Contract": "ctr:Contract",
+  "ContractChange": "ctr:ContractChange",
+  "ContractVersion": "ctr:ContractVersion",
+  "ContractVersionState": "ctr:ContractVersionState",
+  "artifact": {
+   "@id": "ctr:artifact"
+  },
+  "compatibility": {
+   "@id": "ctr:compatibility",
+   "@type": "@id"
+  },
+  "contractOf": {
+   "@id": "ctr:contractOf",
+   "@type": "@id"
+  },
+  "dependsOnContractVersion": {
+   "@id": "ctr:dependsOnContractVersion",
+   "@type": "@id"
+  },
+  "deprecatesVersion": {
+   "@id": "ctr:deprecatesVersion",
+   "@type": "@id"
+  },
+  "hasVersionState": {
+   "@id": "ctr:hasVersionState",
+   "@type": "@id"
+  },
+  "publishesVersion": {
+   "@id": "ctr:publishesVersion",
+   "@type": "@id"
+  },
+  "retiresVersion": {
+   "@id": "ctr:retiresVersion",
+   "@type": "@id"
+  },
+  "supersedesVersion": {
+   "@id": "ctr:supersedesVersion",
+   "@type": "@id"
+  },
+  "toleranceUntil": {
+   "@id": "ctr:toleranceUntil"
+  },
+  "versionOf": {
+   "@id": "ctr:versionOf",
+   "@type": "@id"
+  },
+  "versionString": {
+   "@id": "ctr:versionString"
+  }
+ }
+}

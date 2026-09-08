@@ -723,15 +723,14 @@
         },
         {
           "heading": "What comes next",
-          "body": "In order: offerings for the platform's own request-path capabilities — ingress, decision point, session manager — so they can carry commitments; a breach query by comparator, and the margin against a floor; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
+          "body": "In order: the production floors themselves — the targets are the platform's to decide; a committed commitment per offering per floor, with a real measurement source, which is also the availability review of every production offering; the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors.",
           "principles": [
             "P9"
           ]
         }
       ],
       "openQuestions": [
-        "Which metrics enter the closed scheme next? The platform questions asked for three: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added by a decision, never as a free string (P7).",
-        "Which platform capabilities need an offering? Ingress, the decision point and the session manager are platform capabilities, but a commitment attaches to an offering — the declaration that a capability is offered in a scope. Until each has an offering per scope, governed by its capability control plane, no availability or latency commitment can be made for it, and the performance questions stay unanswerable."
+        "What are the production floors? The mechanism exists — floors declared at the production scope, one per metric, with a reference source — and the seed holds a placeholder of 99.9 % availability. The targets are the platform's to decide, and every offering must then meet them before it can be available."
       ]
     }
   ]

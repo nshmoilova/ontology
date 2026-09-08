@@ -47,6 +47,5 @@ names in terms; instances may name the real monitoring system.
 
 - An offering readiness state gated on validated commitments.
 - The service catalogue (contracts, versions, consumers).
-- A JSON-LD projection for agents beyond the browser index.
 
 Each is in the competency backlog under *Non-functional commitments*.

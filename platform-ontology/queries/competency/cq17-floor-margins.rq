@@ -1,0 +1,16 @@
+# CQ-17 — For each floor and each offering it covers, the margin between the
+# offering's committed target and the floor: positive is headroom, negative is
+# a shortfall, unbound is no commitment on the metric. Sorted worst first —
+# the 'focused improvement' list.
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?floor ?metric ?floorTarget ?offering ?target
+       (IF(BOUND(?target), IF(?c = cmt:at-least, ?target - ?floorTarget, ?floorTarget - ?target), ?undefined) AS ?margin) WHERE {
+  ?floor a cmt:CommitmentBaseline ; cp:declarationScope ?fs ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?floorTarget .
+  ?m skos:notation ?metric .
+  ?offering a cp:CapabilityOffering ; cp:offeredInScope ?os . ?os cp:subScopeOf* ?fs .
+  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?target }
+}
+ORDER BY ?margin ?offering

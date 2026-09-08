@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "e440df6e1ceb",
+ "sourceDigest": "ae9843cc8f1b",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -11,13 +11,13 @@
   "warnings": 9,
   "vocabularies": 21,
   "relationships": 77,
-  "decisions": 62,
+  "decisions": 64,
   "principles": 20,
   "standards": 15,
   "realisedBacklog": 46,
   "provisionalPrinciples": 9,
   "explainers": 3,
-  "formalCQs": 15,
+  "formalCQs": 17,
   "backlogCQs": 139
  },
  "modules": [
@@ -98,8 +98,8 @@
    "iri": "https://w3id.org/examplebank/platform/commitment",
    "prefix": "cmt",
    "title": "Commitment Module",
-   "version": "0.3.0",
-   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66).",
+   "version": "0.4.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for \u2014 failover success ratio, change-failure rate, time to restore redundancy (D67).",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
@@ -345,7 +345,8 @@
    "vocabulary": [],
    "decisions": [
     "D09",
-    "D60"
+    "D60",
+    "D68"
    ],
    "principles": []
   },
@@ -7148,7 +7149,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D02"
+    "D02",
+    "D68"
    ],
    "principles": [
     "P2"
@@ -7251,7 +7253,8 @@
     "D16",
     "D35",
     "D65",
-    "D66"
+    "D66",
+    "D68"
    ],
    "principles": [
     "P2",
@@ -8510,7 +8513,8 @@
    "vocabulary": [],
    "decisions": [
     "D11",
-    "D12"
+    "D12",
+    "D68"
    ],
    "principles": [
     "P18",
@@ -10447,7 +10451,9 @@
     }
    ],
    "vocabulary": [],
-   "decisions": [],
+   "decisions": [
+    "D68"
+   ],
    "principles": []
   },
   {
@@ -11409,6 +11415,18 @@
      ]
     },
     {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-change-failure-rate",
+     "curie": "cmt:metric-change-failure-rate",
+     "label": "Change-failure rate",
+     "notation": "change.failure-rate",
+     "definition": "Share of changes taking effect in a scope that are followed by a commitment breach in the next window \u2014 the 'evolve without disrupting users' question (D67).",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
      "iri": "https://w3id.org/examplebank/platform/commitment#metric-latency-p99",
      "curie": "cmt:metric-latency-p99",
      "label": "Latency, 99th percentile",
@@ -11443,10 +11461,35 @@
      "types": [
       "cmt:Metric"
      ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-failover-success-ratio",
+     "curie": "cmt:metric-failover-success-ratio",
+     "label": "Successful-request ratio during failover",
+     "notation": "failover.success-ratio",
+     "definition": "Share of requests that succeed while a failover is in progress \u2014 the 'will users lose requests' question (D67).",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-time-to-restore-redundancy",
+     "curie": "cmt:metric-time-to-restore-redundancy",
+     "label": "Time to restore redundancy",
+     "notation": "redundancy.restore-time",
+     "definition": "Time from losing a region until the offering again has a failover target \u2014 the 'operational safety margin' question (D67).",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
     }
    ],
    "decisions": [
-    "D58"
+    "D58",
+    "D67"
    ],
    "principles": []
   },
@@ -13736,6 +13779,18 @@
      ]
     },
     {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-change-failure-rate",
+     "curie": "cmt:metric-change-failure-rate",
+     "label": "Change-failure rate",
+     "notation": "change.failure-rate",
+     "definition": "Share of changes taking effect in a scope that are followed by a commitment breach in the next window \u2014 the 'evolve without disrupting users' question (D67).",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
      "iri": "https://w3id.org/examplebank/platform/commitment#metric-latency-p99",
      "curie": "cmt:metric-latency-p99",
      "label": "Latency, 99th percentile",
@@ -13765,6 +13820,30 @@
      "label": "Recovery time objective",
      "notation": "rto",
      "definition": null,
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-failover-success-ratio",
+     "curie": "cmt:metric-failover-success-ratio",
+     "label": "Successful-request ratio during failover",
+     "notation": "failover.success-ratio",
+     "definition": "Share of requests that succeed while a failover is in progress \u2014 the 'will users lose requests' question (D67).",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Metric"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#metric-time-to-restore-redundancy",
+     "curie": "cmt:metric-time-to-restore-redundancy",
+     "label": "Time to restore redundancy",
+     "notation": "redundancy.restore-time",
+     "definition": "Time from losing a region until the offering again has a failover target \u2014 the 'operational safety margin' question (D67).",
      "note": null,
      "rank": null,
      "types": [
@@ -19391,6 +19470,58 @@
     "cmt:satisfiesBaseline",
     "cp:CapabilityOffering"
    ]
+  },
+  {
+   "id": "D67",
+   "title": "Three metrics join the closed scheme",
+   "area": "Planes & scoped governance",
+   "invariant": false,
+   "principles": [
+    "P7",
+    "P9"
+   ],
+   "reasoning": "The platform questions asked for three commitments the scheme could not name: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added as a decision, never as a string (P7), with its definition tied to the question it answers. Change-failure rate is defined against the graph \u2014 the share of changes taking effect in a scope followed by a commitment breach in the next window \u2014 so the first cross-module question (control-plane changes joined to commitment observations) has a metric to land on.",
+   "rejected": [
+    "Adding them as free strings on commitments: the closure is the point (D21).",
+    "Adding every metric the platform might ever want: each waits for a question."
+   ],
+   "terms": [
+    "Metric"
+   ],
+   "termCuries": [
+    "cmt:Metric"
+   ]
+  },
+  {
+   "id": "D68",
+   "title": "The request path is offered: ingress, decision and session capabilities, platform-owned",
+   "area": "Tenancy & subscriptions",
+   "invariant": false,
+   "principles": [
+    "P9",
+    "P18",
+    "P1",
+    "P14"
+   ],
+   "reasoning": "Ingress, the authorization decision point and the session manager were platform components that no floor could reach and no commitment could be made for, because a commitment attaches to an offering and they had none. They are now capabilities: each governed by its own capability control plane with a workload acting identity, offered in production as a declaration with approval, in the planned state until their commitments exist, and subscribed to by the platform tenant \u2014 the platform consumes its own capabilities like any tenant (D10). The enforcement point and the decision point state which capability they realise. This answers the performance questions' prerequisite and closes the commitments explainer's open question; the session manager's component is not yet an individual in the graph, so only its capability and offering exist.",
+   "rejected": [
+    "Attaching commitments directly to components: a commitment is a promise about a capability in a scope, and components have neither scope nor offering.",
+    "Marking the new offerings available: the readiness gate would reject them until a committed commitment and, under the production floor, an availability commitment exist \u2014 which is the gate working."
+   ],
+   "terms": [
+    "Capability",
+    "CapabilityOffering",
+    "CapabilityControlPlane",
+    "Subscription",
+    "realizesCapability"
+   ],
+   "termCuries": [
+    "core:Capability",
+    "cp:CapabilityControlPlane",
+    "cp:CapabilityOffering",
+    "cp:Subscription",
+    "cp:realizesCapability"
+   ]
   }
  ],
  "principles": [
@@ -21314,15 +21445,14 @@
     },
     {
      "heading": "What comes next",
-     "body": "In order: offerings for the platform's own request-path capabilities \u2014 ingress, decision point, session manager \u2014 so they can carry commitments; a breach query by comparator, and the margin against a floor; the metrics the platform questions asked for. Out by decision: raw measurements, capacity, vendors.",
+     "body": "In order: the production floors themselves \u2014 the targets are the platform's to decide; a committed commitment per offering per floor, with a real measurement source, which is also the availability review of every production offering; the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors.",
      "principles": [
       "P9"
      ]
     }
    ],
    "openQuestions": [
-    "Which metrics enter the closed scheme next? The platform questions asked for three: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added by a decision, never as a free string (P7).",
-    "Which platform capabilities need an offering? Ingress, the decision point and the session manager are platform capabilities, but a commitment attaches to an offering \u2014 the declaration that a capability is offered in a scope. Until each has an offering per scope, governed by its capability control plane, no availability or latency commitment can be made for it, and the performance questions stay unanswerable."
+    "What are the production floors? The mechanism exists \u2014 floors declared at the production scope, one per metric, with a reference source \u2014 and the seed holds a placeholder of 99.9 % availability. The targets are the platform's to decide, and every offering must then meet them before it can be available."
    ],
    "stepCount": 5
   }
@@ -21475,6 +21605,25 @@
     "question": "Which floors apply to which offerings, and does each carry a committed commitment on the floor's metric at least as strong?",
     "query": "cq15-floors-and-coverage.rq",
     "sparql": "# CQ-15 \u2014 Which floors apply to which offerings, and does each offering carry a\n# committed commitment on the floor's metric at least as strong?\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?floor ?floorScope ?metric ?comparator ?floorTarget ?offering ?commitment ?target WHERE {\n  ?floor a cmt:CommitmentBaseline ; cp:declarationScope ?floorScope ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?floorTarget .\n  ?m skos:notation ?metric . ?c skos:notation ?comparator .\n  ?offering a cp:CapabilityOffering ; cp:offeredInScope ?os . ?os cp:subScopeOf* ?floorScope .\n  OPTIONAL { ?commitment cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?target }\n}\nORDER BY ?floor ?offering",
+    "modules": [
+     "commitment",
+     "control-plane"
+    ]
+   },
+   {
+    "id": "CQ-16",
+    "question": "For each committed commitment, its latest observation and whether the target is met, by comparator?",
+    "query": "cq16-commitment-status.rq",
+    "sparql": "# CQ-16 \u2014 For each committed commitment, its latest observation and whether the\n# target is met, judged by the commitment's comparator. Breached rows are the\n# 'is it being met' answer; met rows are the evidence.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?commitment ?offering ?metric ?comparator ?target ?latest ?windowEnd\n       (IF(BOUND(?latest), IF((?c = cmt:at-least && ?latest >= ?target) || (?c = cmt:at-most && ?latest <= ?target), \"met\", \"breached\"), \"no observation\") AS ?status) WHERE {\n  ?commitment a cmt:Commitment ; cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?target ;\n              cmt:hasCommitmentState cmt:state-committed .\n  ?m skos:notation ?metric . ?c skos:notation ?comparator .\n  OPTIONAL {\n    ?obs cmt:observationOf ?commitment ; sosa:hasSimpleResult ?latest ; cp:windowEnd ?windowEnd .\n    FILTER NOT EXISTS { ?o2 cmt:observationOf ?commitment ; cp:windowEnd ?e2 . FILTER(?e2 > ?windowEnd) }\n  }\n}\nORDER BY ?offering ?commitment",
+    "modules": [
+     "commitment"
+    ]
+   },
+   {
+    "id": "CQ-17",
+    "question": "For each floor and each offering it covers, the margin between the committed target and the floor, worst first?",
+    "query": "cq17-floor-margins.rq",
+    "sparql": "# CQ-17 \u2014 For each floor and each offering it covers, the margin between the\n# offering's committed target and the floor: positive is headroom, negative is\n# a shortfall, unbound is no commitment on the metric. Sorted worst first \u2014\n# the 'focused improvement' list.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?floor ?metric ?floorTarget ?offering ?target\n       (IF(BOUND(?target), IF(?c = cmt:at-least, ?target - ?floorTarget, ?floorTarget - ?target), ?undefined) AS ?margin) WHERE {\n  ?floor a cmt:CommitmentBaseline ; cp:declarationScope ?fs ; cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?floorTarget .\n  ?m skos:notation ?metric .\n  ?offering a cp:CapabilityOffering ; cp:offeredInScope ?os . ?os cp:subScopeOf* ?fs .\n  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?target }\n}\nORDER BY ?margin ?offering",
     "modules": [
      "commitment",
      "control-plane"
@@ -22249,7 +22398,7 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Which observations fall outside their commitment's target, by comparator? (needs a comparator-aware query; the data is there)",
+    "question": "Which observations fall outside their commitment's target, by comparator? (formal \u2014 CQ-16)",
     "expectedEmpty": false,
     "realizedBy": []
    },
@@ -22267,7 +22416,7 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Which offerings fall short of an industry-benchmark floor by the widest margin? (baselines exist \u2014 D66 \u2014 with a reference source; a floor with an external source is the benchmark; the margin query is the remaining step)",
+    "question": "Which offerings fall short of an industry-benchmark floor by the widest margin? (formal \u2014 CQ-17; a floor with an external reference source is the benchmark)",
     "expectedEmpty": false,
     "realizedBy": []
    },

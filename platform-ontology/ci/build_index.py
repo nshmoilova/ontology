@@ -677,6 +677,16 @@ def main() -> int:
         print(f"\nBUILD FAILED ({len(PROBLEMS)} unresolved reference(s)); index not written")
         return 1
     OUT.write_text(json.dumps(index, indent=1, sort_keys=False))
+    # JSON-LD context for agents: every term of the commitment, contract and control-plane modules plus core
+    ctx = {"@version": 1.1, "core": BASE + "core#", "cp": BASE + "control-plane#", "cmt": BASE + "commitment#", "ctr": BASE + "contract#",
+           "skos": "http://www.w3.org/2004/02/skos/core#", "sosa": "http://www.w3.org/ns/sosa/", "unit": "http://qudt.org/vocab/unit/", "xsd": "http://www.w3.org/2001/XMLSchema#"}
+    for t in sorted(terms.values(), key=lambda x: x["curie"]):
+        if t["module"] in ("commitment", "contract", "control-plane", "core"):
+            entry = {"@id": t["curie"]}
+            if t["kind"] == "objectProperty":
+                entry["@type"] = "@id"
+            ctx[t["name"]] = entry if t["kind"] != "class" else t["curie"]
+    (OUT.parent / "commitment-context.jsonld").write_text(json.dumps({"@context": ctx}, indent=1))
     stamp = stamp_asset_versions()
     if stamp:
         print(f"  stamped app.js / styles.css with content hashes ({stamp})")

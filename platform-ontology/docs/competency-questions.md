@@ -22,6 +22,8 @@ scope creep.
 | CQ-13 | Which jurisdictions must each tenant's data of each category stay in, which may it additionally sit in, and which transfers are permitted under what basis? | `cq13-residency-and-transfers.rq` | control-plane, core |
 | CQ-14 | Which offerings are in which state in each scope, and does each available one carry a published contract and a committed commitment? | `cq14-offering-readiness.rq` | control-plane, contract, commitment |
 | CQ-15 | Which floors apply to which offerings, and does each carry a committed commitment on the floor's metric at least as strong? | `cq15-floors-and-coverage.rq` | commitment, control-plane |
+| CQ-16 | For each committed commitment, its latest observation and whether the target is met, by comparator? | `cq16-commitment-status.rq` | commitment |
+| CQ-17 | For each floor and each offering it covers, the margin between the committed target and the floor, worst first? | `cq17-floor-margins.rq` | commitment, control-plane |
 
 ## Backlog and realised invariants
 
@@ -461,7 +463,7 @@ with no measurement source or no validation mechanism is a violation — the
 - Which committed commitments have no observation inside their current
   window? *(a promise nobody is watching — expected empty)*
 - Which observations fall outside their commitment's target, by comparator?
-  *(needs a comparator-aware query; the data is there)*
+  *(formal — CQ-16)*
 - Which tenants are subscribed in a scope whose offering carries a weaker
   commitment than the tenant's contract requires? *(needs the contract
   side — see the published-contracts scoping decision)*
@@ -469,8 +471,8 @@ with no measurement source or no validation mechanism is a violation — the
   production observation? *(needs a closed scheme for the kind of evidence
   behind a measurement source — isolated benchmark or production telemetry)*
 - Which offerings fall short of an industry-benchmark floor by the widest
-  margin? *(baselines exist — D66 — with a reference source; a floor with an
-  external source is the benchmark; the margin query is the remaining step)*
+  margin? *(formal — CQ-17; a floor with an external reference source is the
+  benchmark)*
 - Which committed commitments are weaker than the floor for their scope, and
   which available offerings carry no commitment on a floor's metric?
   *(expected empty)* [realised: NoWeakerThanFloorShape, FloorCoverageShape]
@@ -487,11 +489,14 @@ Verdicts: **now** — answerable with existing terms and data; **sibling** — t
 commitment module, needing seeds or one metric; **terms** — valid, needs a
 modelling decision first; **invalid** — recorded so it is not re-asked.
 
-Two term decisions recur across the themes and are the next modelling steps:
-the platform's own request-path components (ingress, decision point, session
-manager, authentication) as platform-owned offerings, so they can carry
-commitments; and plane placement with an operational role (active, standby,
-draining) for data planes and control planes alike.
+Two term decisions recurred across the themes. The first is taken (D68): the
+request-path capabilities — ingress, authorization decision, session
+management — are platform-owned capabilities with planned offerings in
+production and platform subscriptions, so floors reach them and commitments
+can be made for them; the enforcement and decision points state which
+capability they realise. The second remains: plane placement with an
+operational role (active, standby, draining) for data planes and control
+planes alike.
 
 ### Availability
 

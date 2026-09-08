@@ -148,9 +148,11 @@ ex:token-at-1 a session:AccessToken ;
 
 ### Ingress — the XACML pair: the platform's decision point and its enforcer
 ex:platform-pdp a core:PolicyDecisionPoint ;
+    cp:realizesCapability ex:cap-decision ;
     core:displayName "Platform policy decision point" .
 
 ex:pep-edge-east a core:PolicyEnforcementPoint ;
+    cp:realizesCapability ex:cap-ingress ;
     core:displayName "Edge enforcement point (east)" .
 
 ex:edge-gateway a ingress:Gateway ;
@@ -542,3 +544,103 @@ ex:approval-floor-1 a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-08-05T10:00:00Z"^^xsd:dateTime .
 
+### The request path is offered (D68): ingress, decision and session capabilities, platform-owned, planned until their commitments exist
+
+ex:cap-ingress a core:Capability ;
+    core:displayName "Ingress capability" ;
+    cp:isolationModel "shared" .
+ex:ingress-controller a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank/platform/ingress-controller" ;
+    core:displayName "Ingress capability controller" .
+ex:ingress-control-plane a cp:CapabilityControlPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Ingress capability control plane" ;
+    cp:governsCapability ex:cap-ingress ;
+    core:hasActingIdentity ex:ingress-controller .
+ex:offering-cap-ingress-prod a cp:CapabilityOffering ;
+    core:displayName "Ingress capability offered in production — planned until its commitments exist" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-offering-cap-ingress ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:cap-ingress ;
+    cp:offeredInScope ex:scope-prod .
+ex:approval-offering-cap-ingress a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-01T09:00:00Z"^^xsd:dateTime .
+ex:sub-platform-cap-ingress a cp:Subscription ;
+    core:displayName "The platform subscribes to its own ingress capability (D10)" ;
+    cp:subscriber ex:platform-tenant ;
+    cp:subscribedCapability ex:cap-ingress ;
+    cp:hasSubscriptionState cp:substate-active ;
+    core:validFrom "2026-09-01T00:00:00Z"^^xsd:dateTime ;
+    cp:hasApproval ex:approval-sub-cap-ingress .
+ex:approval-sub-cap-ingress a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-01T09:10:00Z"^^xsd:dateTime .
+
+ex:cap-decision a core:Capability ;
+    core:displayName "Authorization decision capability" ;
+    cp:isolationModel "shared" .
+ex:decision-controller a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank/platform/decision-controller" ;
+    core:displayName "Authorization decision capability controller" .
+ex:decision-control-plane a cp:CapabilityControlPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Authorization decision capability control plane" ;
+    cp:governsCapability ex:cap-decision ;
+    core:hasActingIdentity ex:decision-controller .
+ex:offering-cap-decision-prod a cp:CapabilityOffering ;
+    core:displayName "Authorization decision capability offered in production — planned until its commitments exist" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-offering-cap-decision ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:cap-decision ;
+    cp:offeredInScope ex:scope-prod .
+ex:approval-offering-cap-decision a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-01T09:00:00Z"^^xsd:dateTime .
+ex:sub-platform-cap-decision a cp:Subscription ;
+    core:displayName "The platform subscribes to its own authorization decision capability (D10)" ;
+    cp:subscriber ex:platform-tenant ;
+    cp:subscribedCapability ex:cap-decision ;
+    cp:hasSubscriptionState cp:substate-active ;
+    core:validFrom "2026-09-01T00:00:00Z"^^xsd:dateTime ;
+    cp:hasApproval ex:approval-sub-cap-decision .
+ex:approval-sub-cap-decision a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-01T09:10:00Z"^^xsd:dateTime .
+
+ex:cap-session a core:Capability ;
+    core:displayName "Session management capability" ;
+    cp:isolationModel "shared" .
+ex:session-controller a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank/platform/session-controller" ;
+    core:displayName "Session management capability controller" .
+ex:session-control-plane a cp:CapabilityControlPlane ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Session management capability control plane" ;
+    cp:governsCapability ex:cap-session ;
+    core:hasActingIdentity ex:session-controller .
+ex:offering-cap-session-prod a cp:CapabilityOffering ;
+    core:displayName "Session management capability offered in production — planned until its commitments exist" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-offering-cap-session ;
+    cp:hasOfferingState cp:offering-planned ;
+    cp:offersCapability ex:cap-session ;
+    cp:offeredInScope ex:scope-prod .
+ex:approval-offering-cap-session a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-01T09:00:00Z"^^xsd:dateTime .
+ex:sub-platform-cap-session a cp:Subscription ;
+    core:displayName "The platform subscribes to its own session management capability (D10)" ;
+    cp:subscriber ex:platform-tenant ;
+    cp:subscribedCapability ex:cap-session ;
+    cp:hasSubscriptionState cp:substate-active ;
+    core:validFrom "2026-09-01T00:00:00Z"^^xsd:dateTime ;
+    cp:hasApproval ex:approval-sub-cap-session .
+ex:approval-sub-cap-session a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-01T09:10:00Z"^^xsd:dateTime .

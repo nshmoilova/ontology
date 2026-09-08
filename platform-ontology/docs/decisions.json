@@ -1208,6 +1208,48 @@
         "Commitment",
         "CapabilityOffering"
       ]
+    },
+    {
+      "id": "D67",
+      "title": "Three metrics join the closed scheme",
+      "area": "Planes & scoped governance",
+      "invariant": false,
+      "principles": [
+        "P7",
+        "P9"
+      ],
+      "reasoning": "The platform questions asked for three commitments the scheme could not name: successful-request ratio during failover, change-failure rate, and time to restore redundancy. Each is added as a decision, never as a string (P7), with its definition tied to the question it answers. Change-failure rate is defined against the graph — the share of changes taking effect in a scope followed by a commitment breach in the next window — so the first cross-module question (control-plane changes joined to commitment observations) has a metric to land on.",
+      "rejected": [
+        "Adding them as free strings on commitments: the closure is the point (D21).",
+        "Adding every metric the platform might ever want: each waits for a question."
+      ],
+      "terms": [
+        "Metric"
+      ]
+    },
+    {
+      "id": "D68",
+      "title": "The request path is offered: ingress, decision and session capabilities, platform-owned",
+      "area": "Tenancy & subscriptions",
+      "invariant": false,
+      "principles": [
+        "P9",
+        "P18",
+        "P1",
+        "P14"
+      ],
+      "reasoning": "Ingress, the authorization decision point and the session manager were platform components that no floor could reach and no commitment could be made for, because a commitment attaches to an offering and they had none. They are now capabilities: each governed by its own capability control plane with a workload acting identity, offered in production as a declaration with approval, in the planned state until their commitments exist, and subscribed to by the platform tenant — the platform consumes its own capabilities like any tenant (D10). The enforcement point and the decision point state which capability they realise. This answers the performance questions' prerequisite and closes the commitments explainer's open question; the session manager's component is not yet an individual in the graph, so only its capability and offering exist.",
+      "rejected": [
+        "Attaching commitments directly to components: a commitment is a promise about a capability in a scope, and components have neither scope nor offering.",
+        "Marking the new offerings available: the readiness gate would reject them until a committed commitment and, under the production floor, an availability commitment exist — which is the gate working."
+      ],
+      "terms": [
+        "Capability",
+        "CapabilityOffering",
+        "CapabilityControlPlane",
+        "Subscription",
+        "realizesCapability"
+      ]
     }
   ]
 }
