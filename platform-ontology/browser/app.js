@@ -510,7 +510,9 @@
   function md(text) {
     const inline = (t) => esc(t)
       .replace(/`([^`]+)`/g, "<code>$1</code>")
-      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+      .replace(/\[([^\]]+)\]\(((?:https?:\/\/|#\/)[^)\s]+)\)/g, (m, text, href) =>
+        `<a href="${href}"${href.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}>${text}</a>`);
     const out = [];
     const parts = text.split(/```/);
     parts.forEach((part, i) => {
