@@ -746,3 +746,25 @@ ex:commit-below-floor a cmt:Commitment ;
     cmt:hasCommitmentState cmt:state-committed .
 # ex:offering-unready (available in lax-scope, no commitments) now also fails FloorCoverageShape against this floor.
 
+### 62. Commitment in seconds under a floor in milliseconds (FloorUnitShape)
+ex:floor-lax-latency a cmt:CommitmentBaseline ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 300.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration .
+ex:commit-wrong-unit a cmt:Commitment ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cmt:commitsTo ex:offering-lax ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 0.25 ;
+    cmt:unit unit:SEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+

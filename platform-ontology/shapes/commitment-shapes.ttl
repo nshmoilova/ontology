@@ -113,3 +113,20 @@ scm:FloorCoverageShape a sh:NodeShape ;
         """ ;
     ] .
 
+# D69 — a commitment is compared to its floor in the floor's unit; a mismatch is not a comparison.
+scm:FloorUnitShape a sh:NodeShape ;
+    sh:targetClass cmt:Commitment ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Committed commitment states a different unit than the floor for its offering's scope on the same metric — targets in different units cannot be compared." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?u ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .
+                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .
+                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?fu .
+                FILTER(?u != ?fu)
+            }
+        """ ;
+    ] .
+

@@ -1250,6 +1250,60 @@
         "Subscription",
         "realizesCapability"
       ]
+    },
+    {
+      "id": "D69",
+      "title": "The production floors: availability, latency, recovery time, recovery point",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P7",
+        "P15",
+        "P10"
+      ],
+      "reasoning": "Four floors are declared at the production scope, each approved by a platform member and citing the internal platform standard as its reference source: availability at least 99.9 % over 30 days; latency at the 99th percentile at most 300 ms over 7 days; recovery time at most 60 minutes and recovery point at most 15 minutes, both judged per quarter. Every production offering must meet each before it can be available, which the readiness gate and the floor-coverage invariant enforce; the managed-database offering meets them, and the three request-path offerings stay planned until their commitments exist. One rule came with the floors: a commitment is compared to its floor in the floor's unit — targets in different units are not a comparison, and a mismatch is a violation rather than a silent false pass (P15). Failover success ratio and change-failure rate carry no floor yet: their measurement feeds are not established.",
+      "rejected": [
+        "Floors per capability rather than per scope: 'everything in production' is the requirement, and the scope tree already carries it.",
+        "Converting units in the comparison: a conversion table is a second source of truth; the floor's unit is the unit.",
+        "Floors on the two operational metrics now: a floor nobody can measure is aspirational (P15), and the feeds do not exist."
+      ],
+      "terms": [
+        "CommitmentBaseline",
+        "Commitment",
+        "referenceSource",
+        "unit"
+      ]
+    },
+    {
+      "id": "D70",
+      "title": "The request-path offerings are available: one platform feed, a commitment per floor, a contract each",
+      "area": "Tenancy & subscriptions",
+      "invariant": false,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P20",
+        "P15",
+        "P10"
+      ],
+      "reasoning": "With the production floors declared (D69), the three request-path offerings (D68) could not be available: the gate requires a published contract and a committed commitment on every floor metric. Each capability now has a published contract version behind a contract change, and four committed commitments — availability, latency p99, recovery time, recovery point — backed by one measurement source, the platform observability feed, as decided; the feed can be split per capability later without touching the commitments' shape. The seed targets are illustrative and meet the floors with headroom (availability 99.95 %; latency p99 20, 10 and 30 ms for ingress, decision and session; recovery time 30 minutes; recovery point 0 for the stateless two and 5 minutes for session); the platform's real targets replace them by supersession. The three offerings are available, and CQ-14 and CQ-17 show them meeting every floor.",
+      "rejected": [
+        "Keeping the offerings planned until real targets exist: the mechanism is proven only by an offering passing the gate, and supersession makes replacing a placeholder target cheap.",
+        "A feed per capability now: decided against for the seed; one source, split later, is the honest state."
+      ],
+      "terms": [
+        "CapabilityOffering",
+        "Commitment",
+        "MeasurementSource",
+        "Contract",
+        "ContractVersion"
+      ]
     }
   ]
 }

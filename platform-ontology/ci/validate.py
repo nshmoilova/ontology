@@ -143,6 +143,7 @@ def main() -> int:
             "does not contain the scope it offers in",
             "a promise below the baseline",
             "not ready against the baseline",
+            "different units cannot be compared",
         ]
         for frag in expected_fragments:
             if frag in text:

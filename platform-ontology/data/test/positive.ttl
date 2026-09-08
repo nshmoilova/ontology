@@ -539,7 +539,7 @@ ex:floor-prod-availability a cmt:CommitmentBaseline ;
     cmt:target 99.9 ;
     cmt:unit unit:PERCENT ;
     cmt:window "P30D"^^xsd:duration ;
-    cmt:referenceSource "https://standards.example/platform/production-floors/2026"^^xsd:anyURI .
+    cmt:referenceSource "https://standards.example/platform/production-floors/2026#availability"^^xsd:anyURI .
 ex:approval-floor-1 a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-08-05T10:00:00Z"^^xsd:dateTime .
@@ -558,11 +558,11 @@ ex:ingress-control-plane a cp:CapabilityControlPlane ;
     cp:governsCapability ex:cap-ingress ;
     core:hasActingIdentity ex:ingress-controller .
 ex:offering-cap-ingress-prod a cp:CapabilityOffering ;
-    core:displayName "Ingress capability offered in production — planned until its commitments exist" ;
+    core:displayName "Ingress capability offered in production" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-offering-cap-ingress ;
-    cp:hasOfferingState cp:offering-planned ;
+    cp:hasOfferingState cp:offering-available ;
     cp:offersCapability ex:cap-ingress ;
     cp:offeredInScope ex:scope-prod .
 ex:approval-offering-cap-ingress a cp:ChangeApproval ;
@@ -591,11 +591,11 @@ ex:decision-control-plane a cp:CapabilityControlPlane ;
     cp:governsCapability ex:cap-decision ;
     core:hasActingIdentity ex:decision-controller .
 ex:offering-cap-decision-prod a cp:CapabilityOffering ;
-    core:displayName "Authorization decision capability offered in production — planned until its commitments exist" ;
+    core:displayName "Authorization decision capability offered in production" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-offering-cap-decision ;
-    cp:hasOfferingState cp:offering-planned ;
+    cp:hasOfferingState cp:offering-available ;
     cp:offersCapability ex:cap-decision ;
     cp:offeredInScope ex:scope-prod .
 ex:approval-offering-cap-decision a cp:ChangeApproval ;
@@ -624,11 +624,11 @@ ex:session-control-plane a cp:CapabilityControlPlane ;
     cp:governsCapability ex:cap-session ;
     core:hasActingIdentity ex:session-controller .
 ex:offering-cap-session-prod a cp:CapabilityOffering ;
-    core:displayName "Session management capability offered in production — planned until its commitments exist" ;
+    core:displayName "Session management capability offered in production" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-offering-cap-session ;
-    cp:hasOfferingState cp:offering-planned ;
+    cp:hasOfferingState cp:offering-available ;
     cp:offersCapability ex:cap-session ;
     cp:offeredInScope ex:scope-prod .
 ex:approval-offering-cap-session a cp:ChangeApproval ;
@@ -644,3 +644,379 @@ ex:sub-platform-cap-session a cp:Subscription ;
 ex:approval-sub-cap-session a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-01T09:10:00Z"^^xsd:dateTime .
+
+### Production floors (D69): latency p99, recovery time, recovery point — availability above
+
+ex:floor-prod-latency a cmt:CommitmentBaseline ;
+    core:displayName "Production floor: latency p99 at most 300 ms over 7 days" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-floor-prod-latency ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 300.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:referenceSource "https://standards.example/platform/production-floors/2026#latency"^^xsd:anyURI .
+ex:approval-floor-prod-latency a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T10:00:00Z"^^xsd:dateTime .
+ex:floor-prod-rto a cmt:CommitmentBaseline ;
+    core:displayName "Production floor: recovery time at most 60 minutes, judged per quarter" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-floor-prod-rto ;
+    cmt:metric cmt:metric-recovery-time ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 60.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:referenceSource "https://standards.example/platform/production-floors/2026#rto"^^xsd:anyURI .
+ex:approval-floor-prod-rto a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T10:00:00Z"^^xsd:dateTime .
+ex:floor-prod-rpo a cmt:CommitmentBaseline ;
+    core:displayName "Production floor: recovery point at most 15 minutes, judged per quarter" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-floor-prod-rpo ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 15.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:referenceSource "https://standards.example/platform/production-floors/2026#rpo"^^xsd:anyURI .
+ex:approval-floor-prod-rpo a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T10:00:00Z"^^xsd:dateTime .
+
+### The managed-database offering meets the new floors (it is available, so the gate requires it)
+
+ex:commit-db-latency a cmt:Commitment ;
+    core:displayName "Managed database latency p99 at most 250 ms" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-db-latency ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 250.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:measuredBy ex:source-db-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-latency ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-db-latency a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
+ex:commit-db-rto a cmt:Commitment ;
+    core:displayName "Managed database recovery time at most 45 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-db-rto ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-recovery-time ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 45.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-db-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rto ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-db-rto a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
+ex:commit-db-rpo a cmt:Commitment ;
+    core:displayName "Managed database recovery point at most 5 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-db-rpo ;
+    cmt:commitsTo ex:offering-db-prod ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 5.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-db-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rpo ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-db-rpo a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
+
+### The request-path offerings are available (D70): one platform metrics feed, a commitment per floor, a published contract each
+ex:source-platform-metrics a cmt:MeasurementSource ;
+    core:displayName "Platform observability feed" .
+ex:contract-cap-ingress a ctr:Contract ;
+    core:displayName "Ingress contract" ;
+    ctr:contractOf ex:cap-ingress .
+ex:contract-cap-ingress-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-cap-ingress ;
+    ctr:versionString "1.0.0" ;
+    ctr:hasVersionState ctr:state-published ;
+    ctr:compatibility ctr:compatible ;
+    ctr:artifact "https://contracts.example/platform/cap-ingress/1.0.0/openapi.yaml"^^xsd:anyURI .
+ex:contract-change-cap-ingress a ctr:ContractChange ;
+    core:displayName "Publish ingress contract 1.0.0" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-contract-cap-ingress ;
+    ctr:publishesVersion ex:contract-cap-ingress-v1 .
+ex:approval-contract-cap-ingress a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-02T10:00:00Z"^^xsd:dateTime .
+ex:commit-cap-ingress-availability a cmt:Commitment ;
+    core:displayName "Ingress: availability at least 99.95 %" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-ingress-availability ;
+    cmt:commitsTo ex:offering-cap-ingress-prod ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.95 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-availability ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-ingress-availability a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-ingress-latency a cmt:Commitment ;
+    core:displayName "Ingress: latency p99 at most 20.0 ms" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-ingress-latency ;
+    cmt:commitsTo ex:offering-cap-ingress-prod ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 20.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-latency ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-ingress-latency a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-ingress-rto a cmt:Commitment ;
+    core:displayName "Ingress: recovery time at most 30.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-ingress-rto ;
+    cmt:commitsTo ex:offering-cap-ingress-prod ;
+    cmt:metric cmt:metric-recovery-time ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 30.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rto ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-ingress-rto a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-ingress-rpo a cmt:Commitment ;
+    core:displayName "Ingress: recovery point at most 0.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-ingress-rpo ;
+    cmt:commitsTo ex:offering-cap-ingress-prod ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 0.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rpo ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-ingress-rpo a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:contract-cap-decision a ctr:Contract ;
+    core:displayName "Authorization decision contract" ;
+    ctr:contractOf ex:cap-decision .
+ex:contract-cap-decision-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-cap-decision ;
+    ctr:versionString "1.0.0" ;
+    ctr:hasVersionState ctr:state-published ;
+    ctr:compatibility ctr:compatible ;
+    ctr:artifact "https://contracts.example/platform/cap-decision/1.0.0/openapi.yaml"^^xsd:anyURI .
+ex:contract-change-cap-decision a ctr:ContractChange ;
+    core:displayName "Publish authorization decision contract 1.0.0" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-contract-cap-decision ;
+    ctr:publishesVersion ex:contract-cap-decision-v1 .
+ex:approval-contract-cap-decision a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-02T10:00:00Z"^^xsd:dateTime .
+ex:commit-cap-decision-availability a cmt:Commitment ;
+    core:displayName "Authorization decision: availability at least 99.95 %" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-decision-availability ;
+    cmt:commitsTo ex:offering-cap-decision-prod ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.95 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-availability ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-decision-availability a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-decision-latency a cmt:Commitment ;
+    core:displayName "Authorization decision: latency p99 at most 10.0 ms" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-decision-latency ;
+    cmt:commitsTo ex:offering-cap-decision-prod ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 10.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-latency ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-decision-latency a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-decision-rto a cmt:Commitment ;
+    core:displayName "Authorization decision: recovery time at most 30.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-decision-rto ;
+    cmt:commitsTo ex:offering-cap-decision-prod ;
+    cmt:metric cmt:metric-recovery-time ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 30.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rto ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-decision-rto a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-decision-rpo a cmt:Commitment ;
+    core:displayName "Authorization decision: recovery point at most 0.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-decision-rpo ;
+    cmt:commitsTo ex:offering-cap-decision-prod ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 0.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rpo ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-decision-rpo a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:contract-cap-session a ctr:Contract ;
+    core:displayName "Session management contract" ;
+    ctr:contractOf ex:cap-session .
+ex:contract-cap-session-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-cap-session ;
+    ctr:versionString "1.0.0" ;
+    ctr:hasVersionState ctr:state-published ;
+    ctr:compatibility ctr:compatible ;
+    ctr:artifact "https://contracts.example/platform/cap-session/1.0.0/openapi.yaml"^^xsd:anyURI .
+ex:contract-change-cap-session a ctr:ContractChange ;
+    core:displayName "Publish session management contract 1.0.0" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-contract-cap-session ;
+    ctr:publishesVersion ex:contract-cap-session-v1 .
+ex:approval-contract-cap-session a cp:ChangeApproval ;
+    cp:approvedBy ex:alice ;
+    cp:approvedAtTime "2026-09-02T10:00:00Z"^^xsd:dateTime .
+ex:commit-cap-session-availability a cmt:Commitment ;
+    core:displayName "Session management: availability at least 99.95 %" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-session-availability ;
+    cmt:commitsTo ex:offering-cap-session-prod ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.95 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-availability ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-session-availability a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-session-latency a cmt:Commitment ;
+    core:displayName "Session management: latency p99 at most 30.0 ms" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-session-latency ;
+    cmt:commitsTo ex:offering-cap-session-prod ;
+    cmt:metric cmt:metric-latency-p99 ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 30.0 ;
+    cmt:unit unit:MilliSEC ;
+    cmt:window "P7D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-latency ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-session-latency a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-session-rto a cmt:Commitment ;
+    core:displayName "Session management: recovery time at most 30.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-session-rto ;
+    cmt:commitsTo ex:offering-cap-session-prod ;
+    cmt:metric cmt:metric-recovery-time ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 30.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rto ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-session-rto a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
+ex:commit-cap-session-rpo a cmt:Commitment ;
+    core:displayName "Session management: recovery point at most 5.0 minutes" ;
+    cp:declaredThrough ex:mgmt-plane ;
+    cp:declarationScope ex:scope-prod ;
+    cp:hasApproval ex:approval-commit-cap-session-rpo ;
+    cmt:commitsTo ex:offering-cap-session-prod ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 5.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-platform-metrics ;
+    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
+    cmt:satisfiesBaseline ex:floor-prod-rpo ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:approval-commit-cap-session-rpo a cp:ChangeApproval ;
+    cp:approvedBy ex:dana ;
+    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .

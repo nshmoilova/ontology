@@ -730,7 +730,7 @@
         }
       ],
       "openQuestions": [
-        "What are the production floors? The mechanism exists — floors declared at the production scope, one per metric, with a reference source — and the seed holds a placeholder of 99.9 % availability. The targets are the platform's to decide, and every offering must then meet them before it can be available."
+        "What are the request-path offerings' real targets? Ingress, decision and session are available against the production floors on the platform observability feed (D70), with illustrative targets; the platform's own targets replace them by supersession, and the single feed can be split per capability."
       ]
     }
   ]
