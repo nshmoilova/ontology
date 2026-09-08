@@ -1255,6 +1255,72 @@
           "body": "- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- On this site: [Request path boundaries](#/explain/evaluation-layers), [Promises the platform can prove](#/explain/commitments), [Competency questions](#/questions)."
         }
       ]
+    },
+    {
+      "id": "retrieval-to-reasoning",
+      "title": "Retrieval is not reasoning",
+      "subtitle": "Why RAG hits a wall, and how ontologies, knowledge graphs, and context graphs let AI operate over meaning instead of text.",
+      "audience": "Anyone building or governing systems that must reason reliably over enterprise documents, not just retrieve them.",
+      "summary": "A retrieval system gives an LLM relevant passages. A reasoning system gives it the enterprise's meaning. The gap between the two is where architecture becomes load-bearing: an ontology that fixes what terms denote, a knowledge graph that records facts in that grammar, and a context graph that assembles the neighborhood one question needs. This explainer walks the problem, the three-layer solution, and how the pieces work together.",
+      "openQuestions": [
+        "At what scale does hand-authored vocabulary become unmaintainable, and how do you know when to switch to learned embeddings over fixed types?"
+      ],
+      "steps": [
+        {
+          "heading": "Retrieval sounds like reasoning, and isn't",
+          "body": "A language model can quote documents back faithfully. It can retrieve passages from thousands of files and cite them. Yet it can still draw a fundamentally wrong conclusion because the documents disagree on what their own terms mean, and nothing in the retrieval path resolves that ambiguity.\n\nA simple case: suppose an LLM reads four sentences about \"client\", each true:\n\n```\nThe client sends requests through the web application.\nClient configuration belongs to the customer tenant.\nThe OAuth client is registered with the identity provider.\nClient access is restricted by region.\n```\n\nRetrieval returns all four, correctly — they all discuss \"client\". But which client is meant in each sentence? Is access restricted by region for the web client, the OAuth client, or the business client? A retrieval system returns text chunks; it does not resolve what \"client\" denotes. The LLM has to guess, using statistical association from training data. Where the enterprise's documentation is internally inconsistent — and it usually is — that guess can be confidently wrong."
+        },
+        {
+          "heading": "Shallow RAG: proximity without meaning",
+          "body": "Traditional retrieval-augmented generation works by proximity: embed a question, search for nearby text chunks, hand those chunks to a language model. The fundamental unit is text, and text chunks sit near each other because of keyword overlap, not because they describe related semantic entities.\n\nA semantic system knows the difference between:\n\n```\nApplication A  ──uses──>  OAuth Client X\nBusiness Customer A  ──owns──>  Tenant X\nBrowser Client  ──invokes──>  Application A\n```\n\nThese three relationships are structurally different: different entity types, different edge types, different domains. A text-based system retrieves all three sentences for a question about \"clients\". A semantic system knows they are not about the same thing, and can be reasoned about separately. That distinction is the foundation for enterprise-grade AI.",
+          "principles": [
+            "P6"
+          ]
+        },
+        {
+          "heading": "Three layers: ontology, graph, context",
+          "body": "An ontology is not a glossary. It defines which kinds of things exist, which relations between them are legal, and which combinations are structurally impossible. Before any fact is written into a knowledge graph, the ontology closes off the interpretations that would lead to silent contradictions.\n\nA knowledge graph is not a document store. It records facts as typed nodes and named edges: if the ontology says an Application can be owned by a Tenant, the graph records that specific applications own specific tenants, and the ontology prevents anything else from being asserted under the name \"owns\".\n\nA context graph is neither of those. It is the slice of the graph one question needs, assembled on demand or in advance. It answers: which facts matter for this particular decision?"
+        },
+        {
+          "heading": "The example: typed concepts stop silent errors",
+          "body": "Suppose an enterprise calls three unrelated things \"client\". The ontology names them separately: a device class (web, mobile, api); an OAuth client registration (the credentialed identity a session manager uses); and a business client (the customer a principal acts for, which cannot itself authenticate).\n\nA graph built on those definitions cannot silently collapse them into one. An LLM reasoning over the graph cannot infer \"a business client authenticated\" because the ontology forbids it — not as a warning, but as a type error. A statement like \"Client X obtained a token\" resolves unambiguously: Client X must be an OAuth registration, because business clients cannot authenticate. That certainty is not an opinion; it is a structural fact of the ontology.",
+          "terms": [
+            "core:BusinessClient",
+            "authn:OAuthClientRegistration",
+            "session:DeviceClass"
+          ],
+          "principles": [
+            "P5",
+            "P6"
+          ]
+        },
+        {
+          "heading": "Contradictions become a query, not an opinion",
+          "body": "Once an ontology is fixed, checking whether two facts contradict each other stops being something an LLM reasons about in prose and becomes a yes-or-no query over the graph.\n\nFor example: \"A capability depends on itself through a chain of other capabilities\" is not a style issue or a code smell. It is a structural violation of a constraint the ontology defined in advance — a capability's dependencies must form a directed acyclic graph. The same applies to hundreds of other rules: a principal approving their own action, a data plane in a jurisdiction the residency permits nowhere, an entitlement dimension evaluated at the platform layer that the ontology reserved for applications alone.\n\nNone of these are patterns an LLM learned to recognize. Each is a violation of the grammar itself.",
+          "principles": [
+            "P6",
+            "P10"
+          ]
+        },
+        {
+          "heading": "Hybrid: vector search + graph search",
+          "body": "This does not mean abandoning retrieval. Vector search answers one question well: \"What documents discuss this topic?\" Graph search answers a different question: \"What entities and relationships are involved?\" The two complement each other.\n\nA complete reasoning system retrieves both evidence (via vector search) and structure (via graph traversal), assembles the context the question needs, and hands it to the language model for interpretation, planning, and explanation. The LLM is not the knowledge base — it is the reasoning and communication layer over a knowledge base that already enforces consistency.",
+          "principles": [
+            "P13"
+          ]
+        },
+        {
+          "heading": "From one question to a reasoning platform",
+          "body": "Enterprise AI maturity progresses through five levels:\n\n**Level 1: LLM alone** — Powerful but probabilistic, with no grounding in organizational truth.\n\n**Level 2: RAG** — Documents retrieved by proximity, giving some context but no semantic structure.\n\n**Level 3: Graph RAG** — Entities and relationships are known, but the vocabulary is fluid or learned from data.\n\n**Level 4: Ontology-driven Graph RAG** — Fixed vocabulary, fixed rules, deterministic validation at the semantic layer. The LLM reasons inside a constrained world.\n\n**Level 5: Agentic reasoning** — The system plans queries, discovers entities, validates constraints, acts on decisions, and updates institutional memory continuously.\n\nMoving through these levels is not about building a bigger model or retrieving more documents. It is about making the enterprise's meaning explicit and machine-checkable.",
+          "questions": [
+            "CQ-7"
+          ]
+        },
+        {
+          "heading": "Further reading",
+          "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)"
+        }
+      ]
     }
   ]
 }
