@@ -268,7 +268,7 @@
         <div class="mh"><b style="font-family:'IBM Plex Serif',Georgia,serif;font-size:1.05rem">${esc(e.title)}</b></div>
         <p style="font-style:italic;color:var(--ink-3);margin:-.2rem 0 .1rem">${esc(e.subtitle)}</p>
         <p>${esc(e.summary)}</p>
-        <div><a href="#/explain/${esc(e.id)}">Open walkthrough →</a></div>
+        <div class="cardlinks"><a href="#/explain/${esc(e.id)}">Open walkthrough →</a>${e.download ? `<a class="dlink" href="${esc(e.download)}" download>Download .md</a>` : ""}</div>
       </div>`).join("")}</div>` : ""}
       <h2 class="sec">Modules</h2>
       <div class="grid">${mods}</div>
@@ -501,7 +501,7 @@
           <p style="font-style:italic;color:var(--ink-3);margin:-.2rem 0 .1rem">${esc(e.subtitle)}</p>
           <p>${esc(e.summary)}</p>
           <div class="counts">${e.stepCount} steps · ${(e.openQuestions || []).length} open questions · ${esc(e.audience)}</div>
-          <div><a href="#/explain/${esc(e.id)}">Open walkthrough →</a></div>
+          <div class="cardlinks"><a href="#/explain/${esc(e.id)}">Open walkthrough →</a>${e.download ? `<a class="dlink" href="${esc(e.download)}" download>Download .md</a>` : ""}</div>
         </div>`).join("")}
       </div>`;
   }
@@ -579,6 +579,7 @@
       <h1 class="title">${esc(e.title)}</h1>
       <p class="lede" style="font-style:italic;color:var(--ink-3);margin-top:.2rem">${esc(e.subtitle)}</p>
       <p class="lede">${esc(e.summary)}</p>
+      ${e.download ? `<p class="dlrow"><a class="dlink" href="${esc(e.download)}" download title="A Markdown copy of this explainer with its references and constraint messages">Download as Markdown ↓</a></p>` : ""}
       ${e.style === "story" ? "" : `<nav class="stepnav" aria-label="Steps">
         ${e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
       </nav>`}

@@ -238,6 +238,10 @@ h2.sec:first-of-type { margin-top: 1.6rem; }
 .pill.inv { color: var(--m-authn); background: color-mix(in srgb, var(--m-authn) 13%, transparent); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cardlinks { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.dlrow { margin: .6rem 0 0; }
+.dlink { display: inline-block; font-size: .78rem; font-weight: 600; padding: 3px 10px 4px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel-2); color: var(--ink-2); text-decoration: none; }
+.dlink:hover { border-color: var(--accent); color: var(--accent-ink); }
 .chips a, .chips span.static {
   font-family: "IBM Plex Mono", monospace; font-size: .8rem;
   background: var(--code-bg); border: 1px solid var(--rule); border-radius: 5px;

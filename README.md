@@ -30,7 +30,8 @@ shapes/            SHACL shapes graphs, mirroring the module structure
 data/test/         positive.ttl (must conform) / negative.ttl (must fail)
 queries/competency/  formalized competency questions (CQ-1..6) as SPARQL
 browser/           the ontology browser app (GitHub Pages); data/index.json
-                   is generated, never hand-edited
+                   and downloads/*.md (Markdown copies of the explainers)
+                   are generated, never hand-edited
 ci/                validate.py — parse, SHACL, negative-case, CQ gates
                    build_index.py — Turtle → the browser's search index
 docs/              competency register (6 formal + large graded backlog),

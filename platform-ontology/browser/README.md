@@ -10,7 +10,8 @@ Published to GitHub Pages by `.github/workflows/pages.yml` on every push to
 ## The point of it
 
 Everything here is **generated from the Turtle sources** by
-`ci/build_index.py`, which writes `browser/data/index.json`. Nothing in the
+`ci/build_index.py`, which writes `browser/data/index.json` and a Markdown
+copy of every explainer under `browser/downloads/`. Nothing in the
 app is hand-maintained, so the browser cannot drift from the ontology CI
 validates. The `ontology-ci` workflow rebuilds the index and fails if the
 committed copy is stale.

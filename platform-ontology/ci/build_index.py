@@ -7,20 +7,28 @@ design decisions behind each term. Nothing in the app is hand-maintained,
 so the browser cannot drift from the ontology.
 
 Run from the repository root:  python3 ci/build_index.py
-Writes: browser/data/index.json
+Writes: browser/data/index.json, and one Markdown copy of each explainer
+under browser/downloads/ (with the diagrams they embed) for download.
 """
 import hashlib
 import json
+import os
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+from urllib.parse import quote
 
 from rdflib import Graph, RDF, RDFS, OWL, Literal, URIRef
 from rdflib.namespace import SKOS, DCTERMS
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "browser" / "data" / "index.json"
+DOWNLOADS = ROOT / "browser" / "downloads"
+# Absolute base of the published browser. Links inside a downloaded Markdown
+# file must resolve outside the app, so internal routes are made absolute
+# against it. Override with SITE_URL when publishing elsewhere.
+SITE_URL = os.environ.get("SITE_URL", "https://nshmoilova.github.io/ontology/")
 
 BASE = "https://w3id.org/examplebank/platform/"
 SH = "http://www.w3.org/ns/shacl#"
@@ -596,6 +604,105 @@ def stamp_asset_versions() -> str:
     return hashlib.sha256("".join(digests).encode()).hexdigest()[:10]
 
 
+def _md_cell(text) -> str:
+    return str(text).replace("|", "\\|").replace("\n", " ").strip()
+
+
+def _md_absolutize(text: str) -> str:
+    """Internal app routes written as ](#/...) become absolute links to the published site."""
+    return re.sub(r"\]\(#/", "](" + SITE_URL + "#/", text)
+
+
+def render_explainer_markdown(ex, shapes_by_name, principles_by_id, decisions_by_id, questions_by_id) -> str:
+    """A self-contained Markdown copy of one explainer: prose, tables, the
+    references each step carries (as links into the site), the constraint
+    messages of the shapes it cites, and the open questions."""
+    site = SITE_URL
+    story = ex.get("style") == "story"
+    out = [f"# {ex['title']}", ""]
+    if ex.get("subtitle"):
+        out += [f"*{ex['subtitle']}*", ""]
+    if ex.get("audience"):
+        out += [f"**Audience.** {ex['audience']}", ""]
+    if ex.get("summary"):
+        out += [ex["summary"], ""]
+    for i, st in enumerate(ex.get("steps", []), 1):
+        out += [f"## {st['heading']}" if story else f"## {i}. {st['heading']}", ""]
+        if st.get("diagram"):
+            out += [f"![{st['heading']}]({site}downloads/diagrams/{st['diagram']})", ""]
+        if st.get("body"):
+            out += [_md_absolutize(st["body"].strip()), ""]
+        tb = st.get("table")
+        if tb:
+            cols = [_md_cell(c) for c in tb["columns"]]
+            out += ["| " + " | ".join(cols) + " |", "| " + " | ".join("---" for _ in cols) + " |"]
+            out += ["| " + " | ".join(_md_cell(c) for c in row) + " |" for row in tb["rows"]]
+            out.append("")
+        refs = []
+        if st.get("principles"):
+            refs.append("**Principles:** " + ", ".join(
+                f"[{p}{' — ' + principles_by_id[p]['title'] if p in principles_by_id else ''}]({site}#/principles#{p})"
+                for p in st["principles"]))
+        if st.get("decisions"):
+            refs.append("**Decisions:** " + ", ".join(
+                f"[{d}{' — ' + decisions_by_id[d]['title'] if d in decisions_by_id else ''}]({site}#/decisions#{d})"
+                for d in st["decisions"]))
+        if st.get("questions"):
+            refs.append("**Questions:** " + ", ".join(
+                f"[{q}{' — ' + questions_by_id[q]['question'] if q in questions_by_id else ''}]({site}#/questions?q={quote(q)})"
+                for q in st["questions"]))
+        if st.get("terms"):
+            refs.append("**Terms:** " + ", ".join(
+                f"[`{t}`]({site}#/term/{quote(t, safe='')})" for t in st["terms"]))
+        if refs:
+            out += ["  \n".join(refs), ""]
+        if st.get("shapes"):
+            out += ["**Enforced by:**", ""]
+            for name in st["shapes"]:
+                sh = shapes_by_name.get(name)
+                if not sh:
+                    continue
+                out.append(f"- `{name}`" + (f" on `{sh['targetClass']}`" if sh.get("targetClass") else ""))
+                out += [f"  - {c['severity']}: {c['message']}" for c in sh["constraints"] if c.get("message")]
+            out.append("")
+    if ex.get("openQuestions"):
+        out += ["## Open questions", ""]
+        out += [f"{n}. {q}" for n, q in enumerate(ex["openQuestions"], 1)]
+        out.append("")
+    out += ["---", "",
+            f"Generated from `docs/explainers.json` by `ci/build_index.py`. "
+            f"Web version: {site}#/explain/{ex['id']}", ""]
+    return "\n".join(out)
+
+
+def write_explainer_downloads(explainers, shapes, principles, decisions, formal):
+    """One Markdown file per explainer under browser/downloads, plus the diagrams
+    they embed. Reproducible (no timestamps), and files left behind by removed
+    explainers are deleted so CI's staleness check stays meaningful."""
+    DOWNLOADS.mkdir(parents=True, exist_ok=True)
+    (DOWNLOADS / "diagrams").mkdir(exist_ok=True)
+    shapes_by_name = {s["name"]: s for s in shapes}
+    principles_by_id = {p["id"]: p for p in principles}
+    decisions_by_id = {d["id"]: d for d in decisions}
+    questions_by_id = {q["id"]: q for q in formal}
+    written = set()
+    for ex in explainers:
+        path = DOWNLOADS / f"{ex['id']}.md"
+        path.write_text(render_explainer_markdown(ex, shapes_by_name, principles_by_id, decisions_by_id, questions_by_id))
+        written.add(path)
+        for st in ex.get("steps", []):
+            if st.get("diagram"):
+                src = ROOT / "docs" / "diagrams" / st["diagram"]
+                if src.exists():
+                    dst = DOWNLOADS / "diagrams" / st["diagram"]
+                    dst.write_text(src.read_text())
+                    written.add(dst)
+    for stale in list(DOWNLOADS.glob("*.md")) + list((DOWNLOADS / "diagrams").glob("*.svg")):
+        if stale not in written:
+            stale.unlink()
+    return sorted(written)
+
+
 def main() -> int:
     print("== Building ontology browser index ==")
     g = load_ontology()
@@ -624,6 +731,8 @@ def main() -> int:
         print(f"  note: {len(unclassified)} stored classes carry no data category: {', '.join(unclassified[:8])}{' …' if len(unclassified) > 8 else ''}")
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
+    for ex in explainers:
+        ex["download"] = f"downloads/{ex['id']}.md"
     formal, backlog = load_competency_questions()
     shape_names = {s["name"] for s in shapes}
     for bq in backlog:
@@ -683,6 +792,8 @@ def main() -> int:
         print(f"\nBUILD FAILED ({len(PROBLEMS)} unresolved reference(s)); index not written")
         return 1
     OUT.write_text(json.dumps(index, indent=1, sort_keys=False))
+    files = write_explainer_downloads(explainers, shapes, principles, decisions, formal)
+    print(f"  wrote {len(files)} explainer download file(s) under browser/downloads/")
     # JSON-LD context for agents: every term of the commitment, contract and control-plane modules plus core
     ctx = {"@version": 1.1, "core": BASE + "core#", "cp": BASE + "control-plane#", "cmt": BASE + "commitment#", "ctr": BASE + "contract#",
            "skos": "http://www.w3.org/2004/02/skos/core#", "sosa": "http://www.w3.org/ns/sosa/", "unit": "http://qudt.org/vocab/unit/", "xsd": "http://www.w3.org/2001/XMLSchema#"}

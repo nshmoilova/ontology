@@ -21180,7 +21180,8 @@
     "The agent channel is a dimension today, but delegation is deliberately unmodelled. For an agent acting on a human's behalf, is channel.access on the tenant sufficient, or does admission need the delegation chain before we can allow it in production?",
     "Which side of the line does step-up assurance sit on? The AAL guard runs at the platform layer today, but the trigger for step-up is nearly always an application-level action."
    ],
-   "stepCount": 9
+   "stepCount": 9,
+   "download": "downloads/evaluation-layers.md"
   },
   {
    "id": "principles",
@@ -21576,7 +21577,8 @@
     "Deny by default: whether the absence of any grant is itself a deny remains undecided. P15 settles the absence-of-decision case and P18 the justification case; this is the one left.",
     "Several principles are provisional: they were promoted on decisions made before they were stated. Each is confirmed by the first decision made because of it, and the rows above show which."
    ],
-   "stepCount": 7
+   "stepCount": 7,
+   "download": "downloads/principles.md"
   },
   {
    "id": "commitments",
@@ -21905,7 +21907,8 @@
    "openQuestions": [
     "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each \u2014 a promise made and not yet evidenced."
    ],
-   "stepCount": 7
+   "stepCount": 7,
+   "download": "downloads/commitments.md"
   },
   {
    "id": "retrieval-to-reasoning",
@@ -21978,7 +21981,8 @@
      "body": "- On this site: [The shape of institutional memory](#/explain/institutional-memory), [Request path boundaries](#/explain/evaluation-layers), [Competency questions](#/questions).\n- Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, 2020. [Paper](https://arxiv.org/abs/2005.11401)\n- Darren Edge et al., From Local to Global: A Graph RAG Approach to Query-Focused Summarization, Microsoft Research, 2024. [Paper](https://arxiv.org/abs/2404.16130)\n- Fr\u00e9d\u00e9ric Verhelst, The Ontology Imperative, Substack essays (accuracy progression from [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)):\n  - [Start here: The Ontology Imperative](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n  - [Own the ontology, or rent your future](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n  - [Knowledge graph competitive landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n  - [The hidden governance crisis](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n  - [The stakes and the false solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n  - [The missing contract: Why most boards cannot govern what they cannot define](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)"
     }
    ],
-   "stepCount": 10
+   "stepCount": 10,
+   "download": "downloads/retrieval-to-reasoning.md"
   }
  ],
  "competencyQuestions": {
