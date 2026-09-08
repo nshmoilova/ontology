@@ -19,6 +19,14 @@
           ],
           "principles": [
             "P1"
+          ],
+          "decisions": [
+            "D21",
+            "D25",
+            "D48"
+          ],
+          "questions": [
+            "CQ-7"
           ]
         },
         {
@@ -88,6 +96,17 @@
           "shapes": [
             "RouteApplicationOwnershipShape",
             "RouteEnablementScopeShape"
+          ],
+          "decisions": [
+            "D24",
+            "D43",
+            "D44",
+            "D46",
+            "D51"
+          ],
+          "questions": [
+            "CQ-2",
+            "CQ-7"
           ]
         },
         {
@@ -129,6 +148,17 @@
             "AdmissionRequiresMembershipShape",
             "PermitMeetsRequiredAssuranceShape",
             "ActionVocabularyShape"
+          ],
+          "decisions": [
+            "D32",
+            "D49",
+            "D52",
+            "D55"
+          ],
+          "questions": [
+            "CQ-2",
+            "CQ-5",
+            "CQ-7"
           ]
         },
         {
@@ -143,6 +173,14 @@
           "shapes": [
             "AdmissionRequiresMembershipShape",
             "MembershipApprovalShape"
+          ],
+          "decisions": [
+            "D19",
+            "D45",
+            "D48"
+          ],
+          "questions": [
+            "CQ-7"
           ]
         },
         {
@@ -186,7 +224,17 @@
                 "The session's device class — the session manager knows what it authenticated"
               ]
             ]
-          }
+          },
+          "decisions": [
+            "D21",
+            "D22",
+            "D24",
+            "D36"
+          ],
+          "questions": [
+            "CQ-4",
+            "CQ-10"
+          ]
         },
         {
           "heading": "Level 2 — application admission",
@@ -204,6 +252,17 @@
             "EnablementGateShape",
             "EnablementOfferingCoverageShape",
             "GovernedRouteBindingShape"
+          ],
+          "decisions": [
+            "D17",
+            "D18",
+            "D19",
+            "D35",
+            "D65"
+          ],
+          "questions": [
+            "CQ-7",
+            "CQ-14"
           ]
         },
         {
@@ -211,6 +270,10 @@
           "body": "Roles, scopes, record-level rules, transactional limits, four-eyes checks on a payment — none of it is modelled here, and that is a decision rather than an omission.\n\nThe moment ingress starts interpreting an application's verbs, the small-vocabulary property is gone and every application team acquires a lever on the shared enforcement stack. So the ontology refuses the question: `core:Application` says explicitly that what a subject may do inside is application-owned and out of scope.",
           "terms": [
             "core:Application"
+          ],
+          "decisions": [
+            "D31",
+            "D60"
           ]
         },
         {
@@ -224,6 +287,14 @@
           "principles": [
             "P1",
             "P7"
+          ],
+          "decisions": [
+            "D21",
+            "D31",
+            "D48"
+          ],
+          "questions": [
+            "CQ-7"
           ]
         },
         {
@@ -232,6 +303,13 @@
           "principles": [
             "P1",
             "P9"
+          ],
+          "decisions": [
+            "D25"
+          ],
+          "questions": [
+            "CQ-7",
+            "CQ-8"
           ]
         }
       ],
@@ -257,6 +335,11 @@
           "body": "Three kinds of statement live in this repository and they are kept apart. A definition says what a term denotes. A decision records one choice among alternatives at one point in time, with what was rejected and why. A principle is a rule the ontology obeys: it constrains every future decision, it can be phrased as a test, and something enforces it. The layer exists because one rule, 'the token is evidence, the grant is authority', had been restated in five places and was drifting into five versions. Now each rule is stated once, in principles.json, and referenced everywhere else.",
           "principles": [
             "P4"
+          ],
+          "decisions": [
+            "D22",
+            "D24",
+            "D44"
           ]
         },
         {
@@ -289,6 +372,13 @@
           "principles": [
             "P9",
             "P10"
+          ],
+          "decisions": [
+            "D52",
+            "D53",
+            "D54",
+            "D55",
+            "D57"
           ]
         },
         {
@@ -396,6 +486,27 @@
             "P19",
             "P20",
             "P21"
+          ],
+          "decisions": [
+            "D07",
+            "D12",
+            "D13",
+            "D22",
+            "D43",
+            "D48",
+            "D49",
+            "D53",
+            "D54",
+            "D55",
+            "D57",
+            "D62",
+            "D64"
+          ],
+          "questions": [
+            "CQ-3",
+            "CQ-7",
+            "CQ-8",
+            "CQ-13"
           ]
         },
         {
@@ -447,6 +558,16 @@
             "P7",
             "P8",
             "P14"
+          ],
+          "decisions": [
+            "D21",
+            "D30",
+            "D33",
+            "D43",
+            "D56"
+          ],
+          "questions": [
+            "CQ-6"
           ]
         },
         {
@@ -477,6 +598,14 @@
           "principles": [
             "P9",
             "P10"
+          ],
+          "decisions": [
+            "D48",
+            "D53",
+            "D54"
+          ],
+          "questions": [
+            "CQ-8"
           ]
         },
         {
@@ -564,11 +693,24 @@
           "principles": [
             "P9",
             "P10"
+          ],
+          "decisions": [
+            "D01",
+            "D16",
+            "D41",
+            "D47",
+            "D49",
+            "D60",
+            "D62",
+            "D64"
           ]
         },
         {
           "heading": "Reading a principle card",
-          "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things beyond the statement: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice."
+          "body": "Each card shows the statement and its test, the shapes that enforce it, the decisions that apply it, and three things beyond the statement: a status — confirmed once a decision was made because of the principle, provisional until then; a scope — which of contract, CI, runtime-asserted and review-time actually hold; and any open exception, with the backlog section that owns the work. Below the cards sits the list of candidates evaluated and not promoted, each with its reason, so that the same argument is not had twice.",
+          "decisions": [
+            "D53"
+          ]
         }
       ],
       "openQuestions": [
