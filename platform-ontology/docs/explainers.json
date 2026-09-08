@@ -1185,13 +1185,13 @@
     {
       "id": "own-the-meaning",
       "title": "Own the meaning",
-      "subtitle": "Six stories about what AI amplifies inside an enterprise, and why one owned set of meanings is needed by everyone who has to be right about the platform",
-      "audience": "Leaders and architects deciding whether to invest in semantic infrastructure before deploying agents, and engineers who want to see the argument grounded in a real ontology.",
-      "summary": "An enterprise runs on people being right about what its words mean: the engineer joining on Monday, the auditor asking who approved this, the regulator asking where the data lives, the architect proposing a change. AI does not add understanding to that. It amplifies what is there, clarity or confusion, faster every year. The answer is one owned set of meanings, with rules that refuse what does not fit, that people and agents read the same way.",
+      "subtitle": "Three stories from inside and outside the bank, and the case for defining what our words mean before we let anything, human or automated, act on them",
+      "audience": "People in a large financial institution who decide what gets built first: architecture, risk, compliance, data and technology leadership.",
+      "summary": "We are about to let systems act on our documents at a speed no review can match. Those documents disagree with each other about what our own words mean. The three stories below show what that costs at three scales, and why the ontology, the owned set of definitions and rules, has to come before the automation, not after.",
       "steps": [
         {
-          "heading": "A word with three meanings",
-          "body": "In this platform's documents \"client\" meant three things: the browser calling the platform, the OAuth registration that obtains tokens, and the business client on whose behalf a person acts. For years that cost a question in a meeting. A new engineer asked, someone answered, work continued.\n\nThen the documents became context for a model. Asked which client a token belongs to, it returned all three meanings and blended them. A class was added on a wrong reading of the `client_id` claim and had to be removed [D29]. The confusion had been a human cost, paid slowly. The model paid it all at once.\n\nEvery story below is this one at a larger scale. AI finds every ambiguity an organisation has and acts on all of them.",
+          "heading": "One word, three meanings, one afternoon",
+          "body": "In our own platform documents the word \"client\" meant three things. Product documents meant the browser or mobile app calling the platform. Architecture documents meant the OAuth registration that obtains tokens. Design documents meant the business client, the customer on whose behalf a person acts. In a bank the word carries more weight than in most places, and we had three definitions of it.\n\nFor years this cost a question in a meeting. Someone new asked, someone experienced answered, work continued. Then the documents became input to a model. Asked which client a token belongs to, it returned all three meanings and blended them. A class was added to the model on a wrong reading of the `client_id` claim and had to be taken out again [D29].\n\nNothing new went wrong. The ambiguity had always been there. What changed is that a person pays for it slowly, one question at a time, and a system pays for it all at once. Today there are three terms, one per meaning, a rule that keeps two of them apart, and a record of the mistake so it is not repeated.",
           "decisions": [
             "D29",
             "D47"
@@ -1207,49 +1207,23 @@
         },
         {
           "heading": "A fare that never existed",
-          "body": "In February 2024 a tribunal held Air Canada liable for a bereavement fare its chatbot invented [1]. The airline argued the chatbot answered for itself. The tribunal disagreed.\n\nA support agent working from the same loose fare documentation would have made the same mistake once. The chatbot made it for every customer, in the company's voice. The fix was never \"a better chatbot\". It was a definition of which fares exist that a person and a program read identically.",
+          "body": "In February 2024 a Canadian tribunal held Air Canada liable for a bereavement fare its chatbot had invented [1]. The airline argued the chatbot was responsible for its own statements. The tribunal disagreed: the company answers for what its system says, as it answers for what an employee says.\n\nRead that as a regulated institution. A support agent working from loose fare documentation would have made the mistake once. The chatbot made it for every customer, in the company's voice, with the company's liability. The fix was never a better chatbot. It was a definition of which fares exist, in a form a person and a program read identically, so that the answer \"no such fare\" is a fact and not a judgement call.\n\nWe have hundreds of terms with the same exposure: what an account is, who may act for a corporate client, which jurisdiction a record belongs to. Each one is a fare that never existed, waiting to be quoted.",
           "principles": [
-            "P15"
+            "P15",
+            "P21"
           ]
         },
         {
-          "heading": "A thousand dollars and a vending machine",
-          "body": "Anthropic gave a model a thousand dollars and a vending business [2]. It lost two hundred, was talked into discounts, invented a colleague, and tried to call the FBI over a two-dollar charge.\n\nA chatbot returns text a person checks. An agent acts and returns nothing until it is done. Surveys put the authority handed to agents on course to grow two and a half times in three years, while six percent of executives trust one with a core process [4]. The humans who would have caught the vending machine's mistakes are the same humans who need to know, in advance, what the agent is allowed to do. That is a definition of authority, written once, for both.",
-          "principles": [
-            "P3",
-            "P4"
-          ]
-        },
-        {
-          "heading": "Eighteen months and three million euros",
-          "body": "An aerospace manufacturer spent eighteen months and three million euros on a supply-chain ontology and abandoned it: the terms had never been formally defined [5]. A financial firm's auto-generated compliance ontology passed its syntax checks and failed in production on contradictory inferences [5]. A 2024 study measured a model's ability to model ontology properties at an F1 of 0.27 [6].\n\nThe same author names the gap: data engineers model structure, data scientists model patterns, nobody models meaning [5]. That gap hurt human teams before any model arrived; it is why architecture reviews take a week and audits take a quarter.\n\nThe amplification runs both ways. The Optique project put ontologies and mappings under a query interface for Statoil and Siemens; turnaround fell from weeks to hours and the projected savings were tens of millions a year [7]. The people using it were engineers, not agents. Defined meaning made humans faster first. Agents inherited the speed.",
+          "heading": "Pay once, or pay twice",
+          "body": "An aerospace manufacturer spent eighteen months and about three million euros on a supply-chain ontology and abandoned it, because the terms had never been formally defined: the project built structure and skipped meaning [5]. A financial firm generated a compliance ontology automatically; it passed every syntactic check and failed in production on contradictory inferences [5]. Both paid for the tools first and the definitions never.\n\nThe counter-example is older. The Optique project gave Statoil and Siemens ontologies and mappings beneath a query interface; turnaround on engineering questions fell from weeks to hours, with projected savings in the tens of millions a year, and the people who ran it are explicit that the value sat in the definitions, not the interface [7]. The users were engineers. Automation inherited their speed later, for free.\n\nThat is the amplification, stated plainly. AI does not add understanding to an organisation. It multiplies whatever the organisation already has: clarity, or confusion, faster every year. Build the definitions first and the multiplier works for you. Skip them and it works for the other side, at the same speed.",
           "principles": [
             "P8",
             "P9"
           ]
         },
         {
-          "heading": "When the grid tips",
-          "body": "In December 2025 the European Systemic Risk Board listed eleven AI risks to the financial system; the ones about scale are that shared models fail together, that decisions outrun intervention, and that opaque reasoning cannot be explained afterwards [9]. A power-grid simulation improved with AI adoption until it crossed a threshold and the remaining human operators could no longer follow the automated ones [9].\n\nThe operators are the point. A system is governable only while the people accountable for it can read what it is doing. A monitoring service logging twenty-eight thousand flagged threats in a week is a record for the inquiry, not a control [9].",
-          "principles": [
-            "P15",
-            "P12"
-          ]
-        },
-        {
-          "heading": "The source of truth rewrites itself",
-          "body": "A team overloads a field or two a year. A model writes thousands of lines or millions of rows in minutes, all built on a slightly wrong understanding, all looking fine. When those outputs become the documents the next reader uses, human or model, the source of truth is being rewritten by something that prefers coherent language to correct concepts. The black box stops being one component and becomes the whole knowledge base.\n\nPublicly this is already visible: over a hundred fabricated citations in accepted conference papers, seventy percent of training datasets without usable provenance [9]. Inside an enterprise the loop is tighter, because the model's outputs are the enterprise's documents, and the next person to read them cannot tell.\n\nThe remedy is the same for both readers: a definition per term that a machine can check, and a gate that refuses what does not fit.",
-          "principles": [
-            "P10",
-            "P17"
-          ],
-          "decisions": [
-            "D53"
-          ]
-        },
-        {
-          "heading": "One set of meanings, every reader",
-          "body": "The prescription the references converge on is four layers built before the agents run: ontology, knowledge graph, guardrails, provenance. What is easy to miss is who they are for. Here they are as built in this repository, an identity-and-access ontology for a banking platform, with the human who needs each one.",
+          "heading": "What building first means here",
+          "body": "This repository is what \"first\" looks like for one decision: whether a subject may enter an application on the platform. Four layers, each with the person who needs it before any automation does.",
           "table": {
             "columns": [
               "Layer",
@@ -1260,22 +1234,22 @@
               [
                 "Definitions",
                 "The engineer joining on Monday; the architect proposing a change",
-                "Eight OWL modules. A definition denotes and nothing else. Every term that adopts a standard declares it; no product is named."
+                "Eight modules. A definition says what a term denotes and nothing else. Every term that adopts a standard declares it; no product is named."
               ],
               [
                 "The facts",
                 "The operator asking what is where; the reviewer checking a proposal",
-                "Instances and the edges between them. Seventeen questions people actually ask, each a query CI runs on every commit."
+                "Instances and the edges between them. Seventeen questions people actually ask, each a query run on every change."
               ],
               [
                 "The rules",
-                "The auditor; the agent",
-                "A hundred SHACL shapes. Every rule has a deliberately broken example and the build proves all seventy-one fire. The one that caught a self-approved membership in the seed data had been needed for weeks."
+                "The auditor; the automation",
+                "A hundred constraints. Every rule has a deliberately broken example, and the build proves all seventy-one fire. One of them found a membership in our own seed data approved by the person it admitted; it had sat there for weeks."
               ],
               [
                 "The record",
-                "The regulator; the successor; the agent proposing a change",
-                "Seventy-one decisions with rejected alternatives, twenty principles with tests and status, seventeen candidates refused with reasons. Why is there no session id in the token? The graph answers with the decision [D56]."
+                "The regulator; the successor; anyone proposing a change",
+                "Seventy-one decisions with the alternatives rejected, twenty principles with the test a reviewer asks, seventeen candidates refused with reasons. Ask why there is no session id in the token and the answer is the decision, not a recollection [D56]."
               ]
             ]
           },
@@ -1290,46 +1264,27 @@
           ]
         },
         {
-          "heading": "The contract, and who may sign it",
-          "body": "One reference frames the agent as a contractor needing a statement of work, defined authority, an escalation clause and an audit trail [3]. The human analogue is a role description, an approval matrix, an escalation path and a change log, and this repository holds one of each, read by both.\n\n- **Statement of work.** The competency questions, each a query. \"May this subject's tenant enter this application through this endpoint\" is one.\n- **Authority.** The grant, never the token. A token proves who is calling; a grant, projected from the control plane and revocable, says what they may do.\n- **Escalation.** Every grant of authority carries a human approval by a member of the party whose authority it is. An external operator's staff cannot approve their own agent's admission [D61].\n- **Audit trail.** Every action traces to who acted and who authorised. A record whose actor is optional is not evidence.\n\n```\nPolicy change approved by the principal that executed it — no one approves their own act.\nSELECT $this WHERE { $this cp:executedBy ?p ; cp:hasApproval ?a . ?a cp:approvedBy ?p . }\n```\n\nA person or an agent can propose a commitment, a term or a change to a governed fact. The graph refuses a commitment with no measurement source, checks a term against the principles, and requires a human approval for a change. Both can write. Neither can authorise alone.",
+          "heading": "The ask",
+          "body": "Three questions we should be able to answer about any system that acts on our behalf, human or automated [3]:\n\n- **Can we trace a decision to its source?** Here, hop by hop: the decision, its policy, the session, the authentication, the human who approved the grant.\n- **Can we tell a fact from a guess?** Rows a question returns passed the rules. Text anyone composed did not.\n- **Can we fix a root cause without rebuilding?** Supersede the declaration. Nothing is retrained.\n\nThe proposal is not to build an ontology of everything. It is to pick one high-stakes decision, define its terms, write its rules, prove they fire, and let people and systems read the result the same way. This repository did that for entry to an application. The next candidates are a money movement and a cross-border data transfer, and both already have their boundary terms defined here. Every month those definitions do not exist is a month in which the multiplier runs against us.",
           "decisions": [
-            "D57",
-            "D61",
-            "D22"
+            "D61"
           ],
           "principles": [
             "P3",
-            "P4",
-            "P17"
+            "P18"
           ],
           "questions": [
             "CQ-7",
-            "CQ-16"
-          ],
-          "shapes": [
-            "ApprovalNotSelfShape",
-            "CommitmentShape"
-          ]
-        },
-        {
-          "heading": "Three questions anyone can ask",
-          "body": "Three questions most boards cannot answer [3], answered here for a person or an agent alike:\n\n- **Trace a decision to its source?** A permit traces to its decision point, its policy, the session, the authentication event and the human who approved the grant.\n- **Tell reasoning from hallucination?** Rows a question returns passed the rules; text anyone composed did not.\n- **Fix a root cause without retraining?** Supersede the declaration. No model involved.\n\nStart with one high-stakes decision. This repository chose entry to an application. The stories above are what skipping that costs, for the humans first and the agents at scale.",
-          "decisions": [
-            "D56"
-          ],
-          "principles": [
-            "P17",
-            "P15",
-            "P18"
+            "CQ-13"
           ]
         },
         {
           "heading": "References",
-          "body": "- [1] Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [Decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- [2] Anthropic, Project Vend: Can Claude run a small business?, June 2025. [Post](https://www.anthropic.com/research/project-vend-1)\n- [3] Frédéric Verhelst, The Missing Contract: Why Most Boards Cannot Govern What They Cannot Define, The Ontology Imperative, February 2026. [Post](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)\n- [4] Frédéric Verhelst, The Stakes and the False Solutions, The Ontology Imperative, February 2026, citing McKinsey, HBR, MIT Sloan and Gartner. [Post](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions)\n- [5] Frédéric Verhelst, Own the Ontology or Rent Your Future, The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n- [6] Plu et al., on LLM-generated ontologies, International Semantic Web Conference 2024, as cited in [4].\n- [7] Optique: Scalable End-user Access to Big Data, EU FP7 project 318338 with Statoil and Siemens, 2012 to 2016, as discussed in Frédéric Verhelst, Your Board Is Flying Blind, The Ontology Imperative, March 2026. [Project](https://cordis.europa.eu/project/id/318338) · [Post](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n- [8] Norwegian Continental Shelf Integrated Operations assessment, 2006, the 82/18 finding, as cited in Frédéric Verhelst, Start Here: The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative)\n- [9] European Systemic Risk Board report of December 2025; RAND Corporation grid simulation; observability figures from early 2026; GPTZero's NeurIPS 2025 audit; the MIT Data Provenance Initiative, all as cited in [4].\n- [10] OWASP Top 10 for Large Language Model Applications. [Project](https://owasp.org/www-project-top-10-for-large-language-model-applications/)\n- On knowledge graphs as strategic assets and Google's fifteen-year head start: Frédéric Verhelst, The Knowledge Graph Competitive Landscape, January 2026. [Post](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n- Bender, Gebru, McMillan-Major and Shmitchell, On the Dangers of Stochastic Parrots, FAccT 2021. [Paper](https://dl.acm.org/doi/10.1145/3442188.3445922)\n- Decisions cited as [D29], [D47], [D53], [D56], [D57], [D61] and [D22] are in this repository's register; each chip above opens the record."
+          "body": "- [1] Moffatt v. Air Canada, 2024 BCCRT 149, British Columbia Civil Resolution Tribunal, February 2024. [Decision](https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do)\n- [3] Frédéric Verhelst, The Missing Contract: Why Most Boards Cannot Govern What They Cannot Define, The Ontology Imperative, February 2026. [Post](https://theontologyimperative.substack.com/p/the-missing-contract-why-most-boards)\n- [5] Frédéric Verhelst, Own the Ontology or Rent Your Future, The Ontology Imperative, January 2026. [Post](https://theontologyimperative.substack.com/p/own-the-ontology-or-rent-your-future)\n- [7] Optique: Scalable End-user Access to Big Data, EU FP7 project 318338 with Statoil and Siemens, 2012 to 2016; discussed in Frédéric Verhelst, Your Board Is Flying Blind, March 2026. [Project](https://cordis.europa.eu/project/id/318338) · [Post](https://theontologyimperative.substack.com/p/the-hidden-governance-crisis-what)\n- Further reading from the same series: [Start Here](https://theontologyimperative.substack.com/p/start-here-the-ontology-imperative) · [The Stakes and the False Solutions](https://theontologyimperative.substack.com/p/the-stakes-and-the-false-solutions) · [The Knowledge Graph Competitive Landscape](https://theontologyimperative.substack.com/p/1a-knowledge-graph-competitive-landscape-ontology-imperative)\n- Decisions cited as [D29], [D47], [D56], [D57] and [D61] are in this repository's register; each chip above opens the record."
         }
       ],
       "openQuestions": [
-        "Which high-stakes decision comes next? This repository chose entry to an application; a money movement or a regulated data transfer are the next candidates, and each already has its boundary terms."
+        "Which decision is second? A money movement or a cross-border data transfer. Both have their boundary terms in this repository already; what each needs is its questions written down and its rules proven to fire."
       ]
     }
   ]
