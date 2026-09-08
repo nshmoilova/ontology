@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "536f13e25889",
+ "sourceDigest": "4a0d97879e80",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -22134,7 +22134,7 @@
     },
     {
      "heading": "Shallow RAG: proximity without meaning",
-     "body": "Traditional retrieval-augmented generation works by proximity: embed a question, search for nearby text chunks, hand those chunks to a language model. The fundamental unit is text, and text chunks sit near each other because of keyword overlap, not because they describe related semantic entities.\n\nA semantic system knows the difference between:\n\n```\nApplication A  \u2500\u2500uses\u2500\u2500>  OAuth Client X\nBusiness Customer A  \u2500\u2500owns\u2500\u2500>  Tenant X\nBrowser Client  \u2500\u2500invokes\u2500\u2500>  Application A\n```\n\nThese three relationships are structurally different: different entity types, different edge types, different domains. A text-based system retrieves all three sentences for a question about \"clients\". A semantic system knows they are not about the same thing, and can be reasoned about separately. That distinction is the foundation for enterprise-grade AI.",
+     "body": "Traditional retrieval-augmented generation works by proximity: embed a question, search for nearby text chunks, hand those chunks to a language model. The fundamental unit is text, and text chunks sit near each other because of keyword overlap, not because they describe related semantic entities.",
      "principles": [
       "P6"
      ]
