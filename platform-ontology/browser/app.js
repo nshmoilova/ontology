@@ -579,16 +579,16 @@
       <h1 class="title">${esc(e.title)}</h1>
       <p class="lede" style="font-style:italic;color:var(--ink-3);margin-top:.2rem">${esc(e.subtitle)}</p>
       <p class="lede">${esc(e.summary)}</p>
-      <nav class="stepnav" aria-label="Steps">
-        ${e.style === "story" ? "" : e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
-      </nav>
+      ${e.style === "story" ? "" : `<nav class="stepnav" aria-label="Steps">
+        ${e.steps.map((st, i) => `<a href="#step-${i + 1}"><b>${i + 1}</b> ${esc(st.heading)}</a>`).join("")}
+      </nav>`}
       ${steps}
       ${(e.openQuestions || []).length ? `
         <section class="step">
-          <div class="stepnum" style="background:var(--m-authz);border-color:var(--m-authz)">?</div>
+          ${e.style === "story" ? "" : `<div class="stepnum" style="background:var(--m-authz);border-color:var(--m-authz)">?</div>`}
           <div class="stepbody">
             <h2 class="stephead">Open questions</h2>
-            <p>Deliberately unsettled — these are the arguments worth having, not gaps to apologise for.</p>
+            ${e.style === "story" ? "" : `<p>Deliberately unsettled — these are the arguments worth having, not gaps to apologise for.</p>`}
             <ol class="openq">${e.openQuestions.map((q) => `<li>${esc(q)}</li>`).join("")}</ol>
           </div>
         </section>` : ""}
