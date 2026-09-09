@@ -1329,6 +1329,52 @@
         "supersedes",
         "hasCommitmentState"
       ]
+    },
+    {
+      "id": "D72",
+      "title": "Every committed promise and every floor records its reason",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P18"
+      ],
+      "principles": [
+        "P18",
+        "P9",
+        "P10",
+        "P17"
+      ],
+      "reasoning": "The floors (D69) and the request-path targets (D71) were set for reasons that lived only in the decision register and an explainer table; the graph held the numbers and not the why, so a reviewer reading a commitment could not tell a considered target from an arbitrary one, and a browser over commitments could show what was promised but not why. A commitment or baseline now carries cmt:rationale: the reason for its target as text, citing the decisions it rests on by identifier, which the build resolves and rejects when unknown. A committed commitment or a floor without one is a warning routed to stewardship rather than a violation: the promise still binds and is still measured; what is missing is reviewability, and the placeholders a supersession withdraws need no reason of their own. CQ-18 lists every current promise with its reason, and the rows with none are the stewardship list.",
+      "rejected": [
+        "Keeping the reasons in the decision register only: a reader of the graph, human or agent, has to know which decision to open; the number and its reason belong together.",
+        "A link from a commitment to a decision instead of text: the register is JSON outside the graph, and a link carries no reason of its own when one decision covers twelve targets at once. Text that cites the decision keeps both.",
+        "A violation: a promise without a reason is still a measured promise; failing ingestion for a missing sentence would have rejected every existing declaration on the day the rule arrived."
+      ],
+      "terms": [
+        "rationale",
+        "Commitment",
+        "CommitmentBaseline"
+      ]
+    },
+    {
+      "id": "D73",
+      "title": "Composition of promises along a request path is advisory",
+      "area": "Tenancy & subscriptions",
+      "invariant": false,
+      "principles": [
+        "P9",
+        "P20"
+      ],
+      "reasoning": "A consumer depends on several capabilities at once, and the question it asks is what it may promise its own consumers given theirs. The model answers per offering: floors bind an offering, not a path. Composing promises needs conventions the ontology cannot assert as fact: availability of capabilities in series is taken as the product of their committed availabilities; a latency budget as the sum of their p99 targets, which overstates the true p99 and is therefore conservative; recovery time and recovery point as the weakest, the maximum, among them. The browser's composition view applies these and labels the result advisory. The convention exposed something the per-offering rules do not: the three request-path capabilities in series compose to about 99.89 percent against the 99.9 percent production floor, and no invariant fires because none applies to a path. Whether a floor should also bind the composed request path is left open as a question rather than settled by a shape.",
+      "rejected": [
+        "A shape that enforces composed floors: the conventions are assumptions about failure independence and percentile arithmetic; encoding them as violations would reject data on the strength of a model nobody has approved.",
+        "Ignoring composition until real observations exist: consumers plan against targets, not observations, and the 99.89 percent finding is available now from committed targets alone."
+      ],
+      "terms": [
+        "Commitment",
+        "CapabilityOffering",
+        "dependsOn"
+      ]
     }
   ]
 }

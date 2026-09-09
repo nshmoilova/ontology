@@ -17,6 +17,20 @@ A commitment missing its source or its validation is a **violation**: an
 unmeasured claim is aspirational, not a guarantee. That sentence was
 evaluated as a principle and not promoted; here it is a shape.
 
+A committed commitment also records its **rationale** (D72): the reason for
+its target, as text citing the decisions it rests on by identifier. A
+committed commitment without one is a warning routed to stewardship — the
+promise still binds; what is missing is reviewability.
+
+## What a floor is
+
+A baseline (D66) is a floor declared at a scope: one metric, comparator,
+target, unit and window that every offering beneath the scope must meet with
+a committed commitment at least as strong, in the floor's unit (D69). It is a
+requirement, not a promise, so it needs no measurement source — but it
+records its rationale like a commitment does. The production floors are D69;
+CQ-15 and CQ-17 show coverage and margins.
+
 ## What an observation is
 
 A windowed aggregate of one metric for one commitment — a SOSA observation
@@ -34,8 +48,9 @@ they belong to the observability platform.
    approval if the scope requires one.
 5. Name the measurement source and the validation reference — a query in
    `queries/competency/` or an external check, as an `xsd:anyURI`.
-6. Run `ci/validate.py`. CQ-9 lists every commitment with its latest
-   observation.
+6. State why: `cmt:rationale`, citing the decision that set the target.
+7. Run `ci/validate.py`. CQ-9 lists every commitment with its latest
+   observation; CQ-18 lists every current promise with its reason.
 
 ## Vocabulary
 
@@ -45,7 +60,12 @@ names in terms; instances may name the real monitoring system.
 
 ## What is deliberately not here yet
 
-- An offering readiness state gated on validated commitments.
-- The service catalogue (contracts, versions, consumers).
+- The kind of evidence behind a measurement source (production telemetry or
+  isolated benchmark).
+- Demand-side needs: a capability requirement stating the minimum it needs,
+  so an offering's promise can be checked against its consumers.
+- Enforced composition along a request path. The browser composes promises
+  for a consumer, but the conventions are advisory (D73).
+- Tiers, only if asked for.
 
 Each is in the competency backlog under *Non-functional commitments*.

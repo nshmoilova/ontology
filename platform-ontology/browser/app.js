@@ -40,6 +40,14 @@
   /* ---------- search ---------- */
   function buildSearchDocs() {
     const docs = [];
+    for (const c of (DB.commitments ? DB.commitments.capabilities : [])) {
+      docs.push({
+        type: "capability", kind: "Commitments", module: null,
+        title: c.label, sub: `${c.counts.commitments} promises · ${c.counts.offerings} offerings · ${c.counts.gaps} gaps`,
+        href: `#/commitments/${encodeURIComponent(c.id)}`,
+        hay: [c.id, c.label, ...c.offerings.map((o) => o.label), ...c.offerings.flatMap((o) => o.commitments.map((x) => x.label + " " + (x.rationale || "")))].join(" ").toLowerCase(), boost: 1.5,
+      });
+    }
     for (const t of DB.terms) {
       docs.push({
         type: "term", kind: kindLabel[t.kind] || t.kind, module: t.module,
@@ -156,11 +164,11 @@
       box.innerHTML = `<div class="empty">No matches for <b>${esc(query)}</b></div>`;
       box.hidden = false; return;
     }
-    const groups = { explainer: [], principle: [], term: [], shape: [], decision: [], question: [] };
+    const groups = { explainer: [], capability: [], principle: [], term: [], shape: [], decision: [], question: [] };
     hits.forEach((h) => groups[h.type].push(h));
-    const labels = { explainer: "Explainers", principle: "Principles", term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
+    const labels = { explainer: "Explainers", capability: "Commitments", principle: "Principles", term: "Terms", shape: "Constraints", decision: "Decisions", question: "Questions" };
     let html = "";
-    for (const key of ["explainer", "principle", "term", "shape", "decision", "question"]) {
+    for (const key of ["explainer", "capability", "principle", "term", "shape", "decision", "question"]) {
       if (!groups[key].length) continue;
       html += `<div class="rgroup">${labels[key]}</div>`;
       for (const d of groups[key]) {
@@ -260,6 +268,7 @@
         <div><div class="n">${s.shapes}</div><div class="l">Shapes</div></div>
         <div><div class="n">${s.relationships}</div><div class="l">Relationships</div></div>
         <div><div class="n">${s.decisions}</div><div class="l">Decisions</div></div>
+        <div><div class="n"><a href="#/commitments" style="text-decoration:none">${s.commitments || 0}</a></div><div class="l"><a href="#/commitments">Promises</a></div></div>
         <div><div class="n">${s.principles || 0}</div><div class="l">Principles</div></div>
         <div><div class="n">${s.formalCQs}+${s.backlogCQs}</div><div class="l">Questions</div></div>
       </div>
@@ -801,6 +810,170 @@
         </ul></div>`).join("")}`;
   }
 
+  /* ---------- commitments ---------- */
+  const CM = () => DB.commitments || { source: "", metrics: [], scopes: [], capabilities: [], floors: [] };
+  const fmtNum = (x) => (x == null ? "—" : String(+(+x).toFixed(4)));
+  const WINDOWS = { P1D: "1 day", P7D: "7 days", P30D: "30 days", P90D: "per quarter", P365D: "per year" };
+  const fmtWindow = (w) => WINDOWS[w] || w || "—";
+  const cmpWord = (c) => (c === ">=" ? "at least" : c === "<=" ? "at most" : c || "");
+  const promiseText = (k) => `${cmpWord(k.comparator)} ${fmtNum(k.target)} ${esc(k.unit || "")}`;
+  const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const statePill = (s) => `<span class="pill ${s === "available" || s === "published" || s === "committed" ? "met" : "draft"}">${esc(s || "")}</span>`;
+  const marginPill = (m) => m == null ? `<span class="pill draft">no promise</span>`
+    : m > 0 ? `<span class="pill met">+${fmtNum(m)} headroom</span>`
+    : m === 0 ? `<span class="pill warning">at the floor</span>`
+    : `<span class="pill violation">${fmtNum(m)} shortfall</span>`;
+  const evidencePill = (ev) => !ev ? "" : ev.status === "met" ? `<span class="pill met">met · ${fmtNum(ev.latest.value)}</span>`
+    : ev.status === "breached" ? `<span class="pill violation">breached · ${fmtNum(ev.latest.value)}</span>`
+    : `<span class="pill warning">no observation</span>`;
+  const decisionChips = (ids) => (ids || []).map((d) => `<a class="pill" href="#/decisions#${esc(d)}" title="Decision ${esc(d)}">${esc(d)}</a>`).join(" ");
+  const whyCell = (x) => x.rationale ? `${esc(x.rationale)} ${decisionChips(x.decisions)}`
+    : `<span class="pill warning">no rationale</span> <span class="muted">a target without its reason cannot be reviewed (D72)</span>`;
+  const capHref = (id) => `#/commitments/${encodeURIComponent(id)}`;
+  const cmCrumb = (extra) => `<div class="crumb"><a href="#/">Ontology</a> › <a href="#/commitments">Commitments</a>${extra ? " › " + esc(extra) : ""}</div>`;
+  const cmSubnav = (active) => `<nav class="subnav" aria-label="Commitments views">${[["", "Capabilities"], ["floors", "Floors"], ["gaps", "Gaps"], ["compose", "Compose"]]
+    .map(([k, l]) => `<a href="#/commitments${k ? "/" + k : ""}" class="${active === k ? "active" : ""}">${l}</a>`).join("")}</nav>`;
+  const cmSource = () => `<p class="muted small">Read at build time from the declarations in <code>${esc(CM().source)}</code>: the platform's promises as declared, approved and superseded — not a measurement feed.</p>`;
+
+  function viewCommitments() {
+    const cm = CM();
+    return `${cmCrumb()}
+      <h1 class="title">Commitments</h1>
+      <p class="lede">What each capability promises, where, against which floor, with what evidence, and why. A promise is a declaration: made through the management plane, approved where the scope requires it, superseded rather than edited. For the people who own a capability and the people who build on one.</p>
+      ${cmSource()}
+      ${cmSubnav("")}
+      <div class="grid wide">${cm.capabilities.map((c) => `<div class="card modcard">
+        <div class="mh"><b style="font-family:'IBM Plex Serif',Georgia,serif;font-size:1.1rem"><a href="${capHref(c.id)}">${esc(c.label)}</a></b></div>
+        <div class="counts">${plural(c.counts.offerings, "offering")} · ${plural(c.counts.commitments, "promise")} · ${c.counts.met} evidenced · ${c.counts.noObservation} awaiting evidence · ${plural(c.counts.gaps, "gap")}</div>
+        ${c.offerings.map((o) => `<div class="small" style="margin-top:.4rem">${esc(o.label)} ${statePill(o.state)}
+          ${o.commitments.map((x) => `<span class="pill draft" title="${promiseText(x)}">${esc(x.metric.notation)}</span>`).join(" ")}</div>`).join("")}
+        <div class="cardlinks" style="margin-top:.6rem"><a href="${capHref(c.id)}">Open →</a><a class="dlink" href="${esc(c.download)}" download>Download .json</a></div>
+      </div>`).join("")}</div>
+      <footer class="pagefoot">Answers <a href="#/questions?q=CQ-9">CQ-9</a>, <a href="#/questions?q=CQ-14">CQ-14</a> to <a href="#/questions?q=CQ-18">CQ-18</a>; see the explainer <a href="#/explain/commitments">Promises the platform can prove</a>.</footer>`;
+  }
+
+  function viewCapability(id) {
+    const c = CM().capabilities.find((x) => x.id === id);
+    if (!c) return `<div class="card err"><b>Unknown capability</b> <code>${esc(id)}</code>. <a href="#/commitments">See all</a>.</div>`;
+    const facts = `
+      <div><b>Depends on</b> ${c.dependsOn.length ? c.dependsOn.map((d) => `<a href="${capHref(d.id)}">${esc(d.label)}</a>`).join(", ") : "no other capability"}</div>
+      <div style="margin-top:.35rem"><b>Contract</b> ${c.contracts.length ? c.contracts.map((k) => `${esc(k.label)} ${k.versions.map((v) => `<span class="pill ${v.state === "published" ? "met" : "draft"}">${esc(v.version)} · ${esc(v.state)}</span>`).join(" ")}`).join("; ") : `<span class="pill warning">none published</span>`}</div>
+      <div style="margin-top:.35rem"><b>Data held</b> ${c.dataCategories.length ? c.dataCategories.map(esc).join(", ") : "none recorded — a recovery point of zero costs nothing"}</div>`;
+    const offerings = c.offerings.map((o) => `
+      <section class="card" id="${esc(o.id)}" style="margin-top:1rem">
+        <div class="mh"><b>${esc(o.label)}</b> ${statePill(o.state)} <span class="muted small">${o.scope ? esc([o.scope.environment, o.scope.region].filter(Boolean).join(" · ")) + " · scope " + esc(o.scope.label) : ""}</span></div>
+        ${o.commitments.length ? `<div class="tablewrap"><table class="data cmtable">
+          <tr><th>Metric</th><th>Promise</th><th>Floor</th><th>Evidence</th><th>Measured by</th><th>Why</th></tr>
+          ${o.commitments.map((x) => `<tr id="${esc(x.id)}">
+            <td><b>${esc(x.metric.label)}</b><div class="muted small">${fmtWindow(x.window)}</div></td>
+            <td>${promiseText(x)}${x.supersedes ? `<div class="muted small">supersedes ${esc(x.supersedes)}</div>` : ""}</td>
+            <td>${x.floor ? `${fmtNum(x.floor.target)} ${esc(x.unit)}<div>${marginPill(x.floor.margin)}</div>` : `<span class="muted">no floor</span>`}</td>
+            <td>${evidencePill(x.evidence)}${x.evidence.latest ? `<div class="muted small">window to ${esc((x.evidence.latest.windowEnd || "").slice(0, 10))}</div>` : ""}</td>
+            <td class="small">${x.measuredBy.map(esc).join(", ")}${x.approval && x.approval.by ? `<div class="muted">approved by ${esc(x.approval.by)}</div>` : ""}</td>
+            <td class="small">${whyCell(x)}</td>
+          </tr>`).join("")}
+        </table></div>` : `<p class="muted">No committed promise yet.</p>`}
+        ${o.floors.some((f) => !f.commitment) ? `<p class="small"><span class="pill warning">floor uncovered</span> ${o.floors.filter((f) => !f.commitment).map((f) => `${esc(f.metric.label)} (${cmpWord(f.comparator)} ${fmtNum(f.floorTarget)} ${esc(f.unit)})`).join(", ")}</p>` : ""}
+        ${o.history.length ? `<details class="small" style="margin-top:.5rem"><summary>${plural(o.history.length, "superseded or draft promise")}</summary>
+          <ul class="mdlist">${o.history.map((x) => `<li>${esc(x.label)} — ${promiseText(x)} ${statePill(x.state)}</li>`).join("")}</ul></details>` : ""}
+      </section>`).join("");
+    return `${cmCrumb(c.label)}
+      <h1 class="title">${esc(c.label)}</h1>
+      <p class="lede">${plural(c.counts.commitments, "committed promise")} across ${plural(c.counts.offerings, "offering")}${c.counts.noObservation ? `; ${c.counts.noObservation} awaiting evidence` : ""}.</p>
+      ${cmSubnav("")}
+      <div class="card">${facts}</div>
+      ${offerings}
+      <p style="margin-top:1rem"><a class="dlink" href="${esc(c.download)}" download>Download this view as JSON</a> ${c.gaps.length ? `<a class="dlink" href="#/commitments/gaps#${esc(c.id)}">${plural(c.gaps.length, "gap")} for this capability</a>` : ""}</p>
+      <footer class="pagefoot">Rules: ${["CommitmentShape", "NoWeakerThanFloorShape", "FloorCoverageShape", "FloorUnitShape", "CommitmentRationaleShape"].map((s) => `<a href="#/shapes?q=${s}">${s}</a>`).join(", ")}.
+      Questions: ${["CQ-9", "CQ-14", "CQ-15", "CQ-16", "CQ-17", "CQ-18"].map((q) => `<a href="#/questions?q=${q}">${q}</a>`).join(", ")}.</footer>`;
+  }
+
+  function viewFloors() {
+    const cm = CM();
+    return `${cmCrumb("Floors")}
+      <h1 class="title">Floors</h1>
+      <p class="lede">The least any offering in a scope will promise, declared once at the scope and inherited by everything beneath it. An available offering must carry a committed promise on every floor's metric, no weaker than the floor and in the floor's unit (D66, D69). A floor is a requirement, not a promise: it needs no measurement, but it records its reason.</p>
+      ${cmSource()}
+      ${cmSubnav("floors")}
+      ${cm.floors.map((f) => `<section class="card" id="${esc(f.id)}" style="margin-top:1rem">
+        <div class="mh"><b>${esc(f.metric.label)}</b> · ${cmpWord(f.comparator)} ${fmtNum(f.target)} ${esc(f.unit)} · ${fmtWindow(f.window)} <span class="pill draft">${esc(f.scope ? f.scope.label : "")}</span></div>
+        <p class="small">${whyCell(f)}</p>
+        <p class="muted small">${f.referenceSource ? `Reference <code>${esc(f.referenceSource)}</code>` : ""}${f.approval && f.approval.by ? ` · approved by ${esc(f.approval.by)}` : ""}</p>
+        <div class="tablewrap"><table class="data"><tr><th>Offering</th><th>Promise</th><th>Margin</th></tr>
+          ${f.coverage.map((r) => `<tr><td><a href="${capHref(r.capability)}">${esc(r.capabilityLabel)}</a> <span class="muted small">${esc(r.offeringLabel)}</span> ${statePill(r.offeringState)}</td>
+            <td>${r.target == null ? "—" : fmtNum(r.target) + " " + esc(f.unit)}</td><td>${marginPill(r.margin)}</td></tr>`).join("")}
+        </table></div>
+      </section>`).join("")}`;
+  }
+
+  function viewGaps() {
+    const cm = CM();
+    const caps = cm.capabilities.filter((c) => c.gaps.length);
+    const floorGaps = cm.floors.filter((f) => !f.rationale);
+    return `${cmCrumb("Gaps")}
+      <h1 class="title">Gaps, by owner</h1>
+      <p class="lede">What each capability's owner would want to know first. Each list is that owner's alone; nothing here ranks one capability against another. A gap is a promise without evidence yet, a breached observation, a missing reason, a floor an offering does not yet cover, or an offering not yet available.</p>
+      ${cmSubnav("gaps")}
+      ${caps.length ? caps.map((c) => `<section class="card" id="${esc(c.id)}" style="margin-top:1rem">
+        <div class="mh"><b><a href="${capHref(c.id)}">${esc(c.label)}</a></b> <span class="pill draft">${plural(c.gaps.length, "gap")}</span></div>
+        <ul class="mdlist">${c.gaps.map((gp) => `<li><span class="pill ${gp.kind === "breached" ? "violation" : "warning"}">${esc(gp.kind)}</span> ${esc(gp.offering)}${gp.commitment ? " · " + esc(gp.commitment) : ""} <span class="muted">— ${esc(gp.detail)}</span></li>`).join("")}</ul>
+      </section>`).join("") : `<p style="margin-top:1rem">No gaps in the current declarations.</p>`}
+      ${floorGaps.length ? `<section class="card" style="margin-top:1rem"><div class="mh"><b>Floors</b></div>
+        <ul class="mdlist">${floorGaps.map((f) => `<li><span class="pill warning">no rationale</span> ${esc(f.label)}</li>`).join("")}</ul></section>` : ""}`;
+  }
+
+  function viewCompose(params) {
+    const cm = CM();
+    const scopeId = params.get("scope") || (cm.scopes[0] ? cm.scopes[0].id : "");
+    const selected = new Set((params.get("caps") || "").split(",").filter(Boolean));
+    const candidates = cm.capabilities
+      .map((c) => ({ cap: c, off: c.offerings.find((o) => o.state === "available" && o.scope && o.scope.id === scopeId) }))
+      .filter((x) => x.off);
+    const chosen = candidates.filter((x) => selected.has(x.cap.id));
+    const mk = (caps, scope) => `#/commitments/compose?scope=${encodeURIComponent(scope)}&caps=${encodeURIComponent([...caps].join(","))}`;
+    const byMetric = (x, n) => x.off.commitments.find((k) => k.metric.notation === n) || null;
+    const toMs = (k) => (k.unit === "s" ? k.target * 1000 : k.unit === "min" ? k.target * 60000 : k.target);
+    const toMin = (k) => (k.unit === "ms" ? k.target / 60000 : k.unit === "s" ? k.target / 60 : k.unit === "h" ? k.target * 60 : k.target);
+    const cols = { availability: chosen.map((x) => byMetric(x, "availability")), latency: chosen.map((x) => byMetric(x, "latency.p99")),
+                   rto: chosen.map((x) => byMetric(x, "rto")), rpo: chosen.map((x) => byMetric(x, "rpo")) };
+    const all = (arr) => chosen.length > 0 && arr.every(Boolean);
+    const availV = all(cols.availability) ? cols.availability.reduce((p, k) => p * (k.target / 100), 1) * 100 : null;
+    const latV = all(cols.latency) ? cols.latency.reduce((s, k) => s + toMs(k), 0) : null;
+    const rtoV = all(cols.rto) ? Math.max(...cols.rto.map(toMin)) : null;
+    const rpoV = all(cols.rpo) ? Math.max(...cols.rpo.map(toMin)) : null;
+    const floorRows = chosen.length ? chosen[0].off.floors : [];
+    const verdict = (v, notation) => {
+      const f = floorRows.find((r) => r.metric.notation === notation);
+      if (v == null || !f) return "";
+      const ok = f.comparator === ">=" ? v >= f.floorTarget : v <= f.floorTarget;
+      return `<span class="pill ${ok ? "met" : "violation"}">${ok ? "within" : "outside"} the floor of ${fmtNum(f.floorTarget)} ${esc(f.unit)}</span>`;
+    };
+    const missing = [["availability", "availability"], ["latency", "latency p99"], ["rto", "recovery time"], ["rpo", "recovery point"]]
+      .flatMap(([k, w]) => chosen.filter((x, i) => !cols[k][i]).map((x) => `${esc(x.cap.label)} has no committed ${w}`));
+    return `${cmCrumb("Compose")}
+      <h1 class="title">Compose a request path</h1>
+      <p class="lede">Pick the capabilities a request passes through and see what a consumer of all of them can honestly promise in turn. Advisory, not enforced: availability in series is taken as the product of the committed availabilities, the latency budget as the sum of the p99 targets, recovery as the weakest among them (D73). No invariant applies to a path.</p>
+      ${cmSubnav("compose")}
+      <div class="card compose">
+        <div><b>Scope</b> ${cm.scopes.map((s) => `<a class="pill ${s.id === scopeId ? "prin" : "draft"}" href="${mk(selected, s.id)}">${esc(s.label)}</a>`).join(" ")}</div>
+        <div style="margin-top:.6rem"><b>Capabilities</b> ${candidates.length ? candidates.map((x) => {
+          const on = selected.has(x.cap.id); const next = new Set(selected); if (on) next.delete(x.cap.id); else next.add(x.cap.id);
+          return `<a class="pill ${on ? "prin" : "draft"}" href="${mk(next, scopeId)}" aria-pressed="${on}">${on ? "✓ " : ""}${esc(x.cap.label)}</a>`;
+        }).join(" ") : `<span class="muted">no available offering in this scope</span>`}</div>
+      </div>
+      ${chosen.length ? `<div class="stats" style="margin-top:1rem">
+        <div><div class="n">${availV == null ? "—" : fmtNum(availV) + " %"}</div><div class="l">Availability in series</div>${verdict(availV, "availability")}</div>
+        <div><div class="n">${latV == null ? "—" : fmtNum(latV) + " ms"}</div><div class="l">Latency budget, p99 summed</div>${verdict(latV, "latency.p99")}</div>
+        <div><div class="n">${rtoV == null ? "—" : fmtNum(rtoV) + " min"}</div><div class="l">Recovery time, weakest</div>${verdict(rtoV, "rto")}</div>
+        <div><div class="n">${rpoV == null ? "—" : fmtNum(rpoV) + " min"}</div><div class="l">Recovery point, weakest</div>${verdict(rpoV, "rpo")}</div>
+      </div>
+      ${missing.map((m) => `<p class="small"><span class="pill warning">no promise</span> ${m}</p>`).join("")}
+      <div class="tablewrap" style="margin-top:1rem"><table class="data"><tr><th>Capability</th><th>Availability</th><th>Latency p99</th><th>Recovery time</th><th>Recovery point</th></tr>
+        ${chosen.map((x, i) => `<tr><td><a href="${capHref(x.cap.id)}">${esc(x.cap.label)}</a></td>${[cols.availability[i], cols.latency[i], cols.rto[i], cols.rpo[i]].map((k) => `<td>${k ? promiseText(k) : "—"}</td>`).join("")}</tr>`).join("")}
+      </table></div>
+      <p class="muted small">A summed p99 overstates the true p99 and is therefore conservative; series availability assumes independent failure. Whether a floor should bind the composed path is an open question, recorded in <a href="#/decisions#D73">D73</a>.</p>` : `<p class="muted" style="margin-top:1rem">Choose one or more capabilities.</p>`}`;
+  }
+
   /* ---------- router ---------- */
   function route() {
     const full = location.hash.replace(/^#/, "") || "/";
@@ -816,6 +989,9 @@
     else if (parts[0] === "module") html = viewModule(decodeURIComponent(parts[1] || ""));
     else if (parts[0] === "explain") {
       html = parts[1] ? viewExplainer(decodeURIComponent(parts[1])) : viewExplainList();
+    } else if (parts[0] === "commitments") {
+      const sub = parts[1] ? decodeURIComponent(parts[1]) : "";
+      html = !sub ? viewCommitments() : sub === "floors" ? viewFloors() : sub === "gaps" ? viewGaps() : sub === "compose" ? viewCompose(params) : viewCapability(sub);
     } else if (parts[0] === "shapes") html = viewShapes(q);
     else if (parts[0] === "relationships") html = viewRelationships();
     else if (parts[0] === "principles") html = viewPrinciples();

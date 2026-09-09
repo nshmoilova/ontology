@@ -130,3 +130,25 @@ scm:FloorUnitShape a sh:NodeShape ;
         """ ;
     ] .
 
+# D72 — a number without its reason cannot be reviewed. A committed commitment
+# and a floor each record why their target is what it is; a missing reason is a
+# stewardship warning, not a violation: the promise still binds and is measured.
+scm:CommitmentRationaleShape a sh:NodeShape ;
+    sh:targetClass cmt:Commitment ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Committed commitment records no rationale — a target without its reason cannot be reviewed; route to stewardship review." ;
+        sh:severity sh:Warning ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .
+                FILTER NOT EXISTS { $this <https://w3id.org/examplebank/platform/commitment#rationale> ?r . }
+            }
+        """ ;
+    ] .
+
+scm:BaselineRationaleShape a sh:NodeShape ;
+    sh:targetClass cmt:CommitmentBaseline ;
+    sh:property [ sh:path cmt:rationale ; sh:minCount 1 ; sh:datatype xsd:string ; sh:severity sh:Warning ;
+        sh:message "Floor records no rationale — a baseline without its reason cannot be reviewed; route to stewardship review." ] .
+

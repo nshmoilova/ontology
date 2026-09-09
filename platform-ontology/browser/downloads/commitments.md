@@ -155,15 +155,18 @@ The module answers what was promised, where, and with what evidence. The identit
 
 ## 7. What comes next
 
-In order: the production floors themselves — the targets are the platform's to decide; a committed commitment per offering per floor, with a real measurement source, which is also the availability review of every production offering; the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors.
+Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); and a reason on every current promise and floor, so a number can be reviewed and not only measured (D72, CQ-18). All of it is browsable under [Commitments](https://nshmoilova.github.io/ontology/#/commitments): each capability's promises by scope with floor, margin, evidence and reason; the floors by scope; each owner's own gaps; and an advisory composition of promises along a request path (D73).
+
+Still ahead: the kind of evidence behind a measurement source; demand-side needs on capability requirements, so an offering's promise can be checked against what its consumers require; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.
 
 **Principles:** [P9 — Questions before terms](https://nshmoilova.github.io/ontology/#/principles#P9)  
-**Decisions:** [D65 — An offering is a declaration with a lifecycle state; only an available offering covers enablement](https://nshmoilova.github.io/ontology/#/decisions#D65), [D67 — Three metrics join the closed scheme](https://nshmoilova.github.io/ontology/#/decisions#D67)  
-**Questions:** [CQ-16 — For each committed commitment, its latest observation and whether the target is met, by comparator?](https://nshmoilova.github.io/ontology/#/questions?q=CQ-16)
+**Decisions:** [D69 — The production floors: availability, latency, recovery time, recovery point](https://nshmoilova.github.io/ontology/#/decisions#D69), [D70 — The request-path offerings are available: one platform feed, a commitment per floor, a contract each](https://nshmoilova.github.io/ontology/#/decisions#D70), [D71 — The request-path targets: set by the platform, superseding the placeholders](https://nshmoilova.github.io/ontology/#/decisions#D71), [D72 — Every committed promise and every floor records its reason](https://nshmoilova.github.io/ontology/#/decisions#D72), [D73 — Composition of promises along a request path is advisory](https://nshmoilova.github.io/ontology/#/decisions#D73)  
+**Questions:** [CQ-16 — For each committed commitment, its latest observation and whether the target is met, by comparator?](https://nshmoilova.github.io/ontology/#/questions?q=CQ-16), [CQ-18 — Why does each committed commitment and each floor carry the target it does, and which decision set it?](https://nshmoilova.github.io/ontology/#/questions?q=CQ-18)
 
 ## Open questions
 
 1. Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each — a promise made and not yet evidenced.
+2. Should a floor bind the composed request path as well as each offering? Ingress, the decision point and session management in series compose to about 99.89 percent availability against the 99.9 percent floor. The composition view shows it; no invariant applies to a path (D73).
 
 ---
 

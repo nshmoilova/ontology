@@ -1,0 +1,370 @@
+{
+ "generatedFrom": "data/test/positive.ttl",
+ "vocabulary": "https://nshmoilova.github.io/ontology/data/commitment-context.jsonld",
+ "webVersion": "https://nshmoilova.github.io/ontology/#/commitments/cap-decision",
+ "id": "cap-decision",
+ "iri": "https://data.examplebank.com/platform/cap-decision",
+ "label": "Authorization decision capability",
+ "dependsOn": [],
+ "contracts": [
+  {
+   "id": "contract-cap-decision",
+   "label": "Authorization decision contract",
+   "versions": [
+    {
+     "id": "contract-cap-decision-v1",
+     "version": "1.0.0",
+     "state": "published",
+     "artifact": "https://contracts.example/platform/cap-decision/1.0.0/openapi.yaml"
+    }
+   ]
+  }
+ ],
+ "dataCategories": [],
+ "offerings": [
+  {
+   "id": "offering-cap-decision-prod",
+   "label": "Authorization decision capability offered in production",
+   "state": "available",
+   "scope": {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   },
+   "commitments": [
+    {
+     "id": "commit-cap-decision-availability",
+     "label": "Authorization decision: availability at least 99.95 %",
+     "metric": {
+      "id": "metric-availability",
+      "label": "Availability",
+      "notation": "availability"
+     },
+     "comparator": ">=",
+     "target": 99.95,
+     "unit": "%",
+     "window": "P30D",
+     "state": "committed",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": "D70, confirmed by D71: fails with ingress in practice; 99.95 percent keeps headroom above the floor.",
+     "decisions": [
+      "D70",
+      "D71"
+     ],
+     "supersedes": null,
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T12:00:00+00:00"
+     },
+     "floor": {
+      "id": "floor-prod-availability",
+      "target": 99.9,
+      "margin": 0.05
+     },
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    },
+    {
+     "id": "commit-cap-decision-latency-v2",
+     "label": "Authorization decision: latency p99 at most 25.0 ms",
+     "metric": {
+      "id": "metric-latency-p99",
+      "label": "Latency, 99th percentile",
+      "notation": "latency.p99"
+     },
+     "comparator": "<=",
+     "target": 25.0,
+     "unit": "ms",
+     "window": "P7D",
+     "state": "committed",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": "D71: allows a membership and grant lookup that is not fully local; 25 ms of the 300 ms floor.",
+     "decisions": [
+      "D71"
+     ],
+     "supersedes": "commit-cap-decision-latency",
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T15:00:00+00:00"
+     },
+     "floor": {
+      "id": "floor-prod-latency",
+      "target": 300.0,
+      "margin": 275.0
+     },
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    },
+    {
+     "id": "commit-cap-decision-rpo",
+     "label": "Authorization decision: recovery point at most 0.0 minutes",
+     "metric": {
+      "id": "metric-recovery-point",
+      "label": "Recovery point objective",
+      "notation": "rpo"
+     },
+     "comparator": "<=",
+     "target": 0.0,
+     "unit": "min",
+     "window": "P90D",
+     "state": "committed",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": "D70, confirmed by D71: grants are re-projected, not lost; nothing to recover.",
+     "decisions": [
+      "D70",
+      "D71"
+     ],
+     "supersedes": null,
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T12:00:00+00:00"
+     },
+     "floor": {
+      "id": "floor-prod-rpo",
+      "target": 15.0,
+      "margin": 15.0
+     },
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    },
+    {
+     "id": "commit-cap-decision-rto-v2",
+     "label": "Authorization decision: recovery time at most 60.0 minutes",
+     "metric": {
+      "id": "metric-recovery-time",
+      "label": "Recovery time objective",
+      "notation": "rto"
+     },
+     "comparator": "<=",
+     "target": 60.0,
+     "unit": "min",
+     "window": "P90D",
+     "state": "committed",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": "D71: at the floor; grants are re-projected from governance, so recovery is a routing change.",
+     "decisions": [
+      "D71"
+     ],
+     "supersedes": "commit-cap-decision-rto",
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T15:00:00+00:00"
+     },
+     "floor": {
+      "id": "floor-prod-rto",
+      "target": 60.0,
+      "margin": 0.0
+     },
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    }
+   ],
+   "history": [
+    {
+     "id": "commit-cap-decision-latency",
+     "label": "Authorization decision: latency p99 at most 10.0 ms",
+     "metric": {
+      "id": "metric-latency-p99",
+      "label": "Latency, 99th percentile",
+      "notation": "latency.p99"
+     },
+     "comparator": "<=",
+     "target": 10.0,
+     "unit": "ms",
+     "window": "P7D",
+     "state": "withdrawn",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": null,
+     "decisions": [],
+     "supersedes": null,
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T12:00:00+00:00"
+     },
+     "floor": null,
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    },
+    {
+     "id": "commit-cap-decision-rto",
+     "label": "Authorization decision: recovery time at most 30.0 minutes",
+     "metric": {
+      "id": "metric-recovery-time",
+      "label": "Recovery time objective",
+      "notation": "rto"
+     },
+     "comparator": "<=",
+     "target": 30.0,
+     "unit": "min",
+     "window": "P90D",
+     "state": "withdrawn",
+     "measuredBy": [
+      "Platform observability feed"
+     ],
+     "validatedBy": [
+      "queries/competency/cq16-commitment-status.rq"
+     ],
+     "rationale": null,
+     "decisions": [],
+     "supersedes": null,
+     "declarationScope": "Production, US",
+     "approval": {
+      "by": "Dana Okafor",
+      "at": "2026-09-03T12:00:00+00:00"
+     },
+     "floor": null,
+     "evidence": {
+      "status": "no observation",
+      "latest": null,
+      "observations": 0
+     }
+    }
+   ],
+   "floors": [
+    {
+     "floor": "floor-prod-availability",
+     "metric": {
+      "id": "metric-availability",
+      "label": "Availability",
+      "notation": "availability"
+     },
+     "comparator": ">=",
+     "floorTarget": 99.9,
+     "unit": "%",
+     "commitment": "commit-cap-decision-availability",
+     "target": 99.95,
+     "margin": 0.05
+    },
+    {
+     "floor": "floor-prod-latency",
+     "metric": {
+      "id": "metric-latency-p99",
+      "label": "Latency, 99th percentile",
+      "notation": "latency.p99"
+     },
+     "comparator": "<=",
+     "floorTarget": 300.0,
+     "unit": "ms",
+     "commitment": "commit-cap-decision-latency-v2",
+     "target": 25.0,
+     "margin": 275.0
+    },
+    {
+     "floor": "floor-prod-rpo",
+     "metric": {
+      "id": "metric-recovery-point",
+      "label": "Recovery point objective",
+      "notation": "rpo"
+     },
+     "comparator": "<=",
+     "floorTarget": 15.0,
+     "unit": "min",
+     "commitment": "commit-cap-decision-rpo",
+     "target": 0.0,
+     "margin": 15.0
+    },
+    {
+     "floor": "floor-prod-rto",
+     "metric": {
+      "id": "metric-recovery-time",
+      "label": "Recovery time objective",
+      "notation": "rto"
+     },
+     "comparator": "<=",
+     "floorTarget": 60.0,
+     "unit": "min",
+     "commitment": "commit-cap-decision-rto-v2",
+     "target": 60.0,
+     "margin": 0.0
+    }
+   ]
+  }
+ ],
+ "gaps": [
+  {
+   "kind": "no observation",
+   "offering": "Authorization decision capability offered in production",
+   "commitment": "Authorization decision: availability at least 99.95 %",
+   "commitmentId": "commit-cap-decision-availability",
+   "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+  },
+  {
+   "kind": "no observation",
+   "offering": "Authorization decision capability offered in production",
+   "commitment": "Authorization decision: latency p99 at most 25.0 ms",
+   "commitmentId": "commit-cap-decision-latency-v2",
+   "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+  },
+  {
+   "kind": "no observation",
+   "offering": "Authorization decision capability offered in production",
+   "commitment": "Authorization decision: recovery point at most 0.0 minutes",
+   "commitmentId": "commit-cap-decision-rpo",
+   "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+  },
+  {
+   "kind": "no observation",
+   "offering": "Authorization decision capability offered in production",
+   "commitment": "Authorization decision: recovery time at most 60.0 minutes",
+   "commitmentId": "commit-cap-decision-rto-v2",
+   "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+  }
+ ],
+ "counts": {
+  "offerings": 1,
+  "commitments": 4,
+  "met": 0,
+  "noObservation": 4,
+  "gaps": 4
+ }
+}

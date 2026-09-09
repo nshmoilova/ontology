@@ -1,0 +1,303 @@
+{
+ "generatedFrom": "data/test/positive.ttl",
+ "vocabulary": "https://nshmoilova.github.io/ontology/data/commitment-context.jsonld",
+ "webVersion": "https://nshmoilova.github.io/ontology/#/commitments/floors",
+ "floors": [
+  {
+   "id": "floor-prod-availability",
+   "label": "Production floor: availability at least 99.9 % over 30 days",
+   "scope": {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   },
+   "metric": {
+    "id": "metric-availability",
+    "label": "Availability",
+    "notation": "availability"
+   },
+   "comparator": ">=",
+   "target": 99.9,
+   "unit": "%",
+   "window": "P30D",
+   "referenceSource": "https://standards.example/platform/production-floors/2026#availability",
+   "rationale": "D69: the internal platform standard. About 43 minutes of downtime a month, loose enough that every shared capability can meet it; anything tighter is a promise an individual offering makes on top.",
+   "decisions": [
+    "D69"
+   ],
+   "approval": {
+    "by": "Dana Okafor",
+    "at": "2026-08-05T10:00:00+00:00"
+   },
+   "coverage": [
+    {
+     "capability": "cap-decision",
+     "capabilityLabel": "Authorization decision capability",
+     "offering": "offering-cap-decision-prod",
+     "offeringLabel": "Authorization decision capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-decision-availability",
+     "target": 99.95,
+     "margin": 0.05
+    },
+    {
+     "capability": "cap-ingress",
+     "capabilityLabel": "Ingress capability",
+     "offering": "offering-cap-ingress-prod",
+     "offeringLabel": "Ingress capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-ingress-availability-v2",
+     "target": 99.99,
+     "margin": 0.09
+    },
+    {
+     "capability": "cap-session",
+     "capabilityLabel": "Session management capability",
+     "offering": "offering-cap-session-prod",
+     "offeringLabel": "Session management capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-session-availability",
+     "target": 99.95,
+     "margin": 0.05
+    },
+    {
+     "capability": "db-capability",
+     "capabilityLabel": "Managed database capability",
+     "offering": "offering-db-prod",
+     "offeringLabel": "Managed database offered in prod/US",
+     "offeringState": "available",
+     "commitment": "commit-db-availability",
+     "target": 99.95,
+     "margin": 0.05
+    }
+   ]
+  },
+  {
+   "id": "floor-prod-latency",
+   "label": "Production floor: latency p99 at most 300 ms over 7 days",
+   "scope": {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   },
+   "metric": {
+    "id": "metric-latency-p99",
+    "label": "Latency, 99th percentile",
+    "notation": "latency.p99"
+   },
+   "comparator": "<=",
+   "target": 300.0,
+   "unit": "ms",
+   "window": "P7D",
+   "referenceSource": "https://standards.example/platform/production-floors/2026#latency",
+   "rationale": "D69: a budget consumers can reserve against. The three request-path capabilities together promise 105 ms, leaving roughly two thirds of the budget to applications.",
+   "decisions": [
+    "D69"
+   ],
+   "approval": {
+    "by": "Dana Okafor",
+    "at": "2026-09-03T10:00:00+00:00"
+   },
+   "coverage": [
+    {
+     "capability": "cap-decision",
+     "capabilityLabel": "Authorization decision capability",
+     "offering": "offering-cap-decision-prod",
+     "offeringLabel": "Authorization decision capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-decision-latency-v2",
+     "target": 25.0,
+     "margin": 275.0
+    },
+    {
+     "capability": "cap-ingress",
+     "capabilityLabel": "Ingress capability",
+     "offering": "offering-cap-ingress-prod",
+     "offeringLabel": "Ingress capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-ingress-latency-v2",
+     "target": 50.0,
+     "margin": 250.0
+    },
+    {
+     "capability": "cap-session",
+     "capabilityLabel": "Session management capability",
+     "offering": "offering-cap-session-prod",
+     "offeringLabel": "Session management capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-session-latency",
+     "target": 30.0,
+     "margin": 270.0
+    },
+    {
+     "capability": "db-capability",
+     "capabilityLabel": "Managed database capability",
+     "offering": "offering-db-prod",
+     "offeringLabel": "Managed database offered in prod/US",
+     "offeringState": "available",
+     "commitment": "commit-db-latency",
+     "target": 250.0,
+     "margin": 50.0
+    }
+   ]
+  },
+  {
+   "id": "floor-prod-rpo",
+   "label": "Production floor: recovery point at most 15 minutes, judged per quarter",
+   "scope": {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   },
+   "metric": {
+    "id": "metric-recovery-point",
+    "label": "Recovery point objective",
+    "notation": "rpo"
+   },
+   "comparator": "<=",
+   "target": 15.0,
+   "unit": "min",
+   "window": "P90D",
+   "referenceSource": "https://standards.example/platform/production-floors/2026#rpo",
+   "rationale": "D69: asynchronous cross-region replication at a short interval. Stateless capabilities promise zero on top of it.",
+   "decisions": [
+    "D69"
+   ],
+   "approval": {
+    "by": "Dana Okafor",
+    "at": "2026-09-03T10:00:00+00:00"
+   },
+   "coverage": [
+    {
+     "capability": "cap-decision",
+     "capabilityLabel": "Authorization decision capability",
+     "offering": "offering-cap-decision-prod",
+     "offeringLabel": "Authorization decision capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-decision-rpo",
+     "target": 0.0,
+     "margin": 15.0
+    },
+    {
+     "capability": "cap-ingress",
+     "capabilityLabel": "Ingress capability",
+     "offering": "offering-cap-ingress-prod",
+     "offeringLabel": "Ingress capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-ingress-rpo",
+     "target": 0.0,
+     "margin": 15.0
+    },
+    {
+     "capability": "cap-session",
+     "capabilityLabel": "Session management capability",
+     "offering": "offering-cap-session-prod",
+     "offeringLabel": "Session management capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-session-rpo",
+     "target": 5.0,
+     "margin": 10.0
+    },
+    {
+     "capability": "db-capability",
+     "capabilityLabel": "Managed database capability",
+     "offering": "offering-db-prod",
+     "offeringLabel": "Managed database offered in prod/US",
+     "offeringState": "available",
+     "commitment": "commit-db-rpo",
+     "target": 5.0,
+     "margin": 10.0
+    }
+   ]
+  },
+  {
+   "id": "floor-prod-rto",
+   "label": "Production floor: recovery time at most 60 minutes, judged per quarter",
+   "scope": {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   },
+   "metric": {
+    "id": "metric-recovery-time",
+    "label": "Recovery time objective",
+    "notation": "rto"
+   },
+   "comparator": "<=",
+   "target": 60.0,
+   "unit": "min",
+   "window": "P90D",
+   "referenceSource": "https://standards.example/platform/production-floors/2026#rto",
+   "rationale": "D69: a standby target in another region taken into service by a routing change. Tighter than this needs active-active deployment, a design decision not yet taken.",
+   "decisions": [
+    "D69"
+   ],
+   "approval": {
+    "by": "Dana Okafor",
+    "at": "2026-09-03T10:00:00+00:00"
+   },
+   "coverage": [
+    {
+     "capability": "cap-decision",
+     "capabilityLabel": "Authorization decision capability",
+     "offering": "offering-cap-decision-prod",
+     "offeringLabel": "Authorization decision capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-decision-rto-v2",
+     "target": 60.0,
+     "margin": 0.0
+    },
+    {
+     "capability": "cap-ingress",
+     "capabilityLabel": "Ingress capability",
+     "offering": "offering-cap-ingress-prod",
+     "offeringLabel": "Ingress capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-ingress-rto-v2",
+     "target": 60.0,
+     "margin": 0.0
+    },
+    {
+     "capability": "cap-session",
+     "capabilityLabel": "Session management capability",
+     "offering": "offering-cap-session-prod",
+     "offeringLabel": "Session management capability offered in production",
+     "offeringState": "available",
+     "commitment": "commit-cap-session-rto-v2",
+     "target": 60.0,
+     "margin": 0.0
+    },
+    {
+     "capability": "db-capability",
+     "capabilityLabel": "Managed database capability",
+     "offering": "offering-db-prod",
+     "offeringLabel": "Managed database offered in prod/US",
+     "offeringState": "available",
+     "commitment": "commit-db-rto",
+     "target": 45.0,
+     "margin": 15.0
+    }
+   ]
+  }
+ ]
+}

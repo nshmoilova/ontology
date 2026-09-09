@@ -24,6 +24,7 @@ scope creep.
 | CQ-15 | Which floors apply to which offerings, and does each carry a committed commitment on the floor's metric at least as strong? | `cq15-floors-and-coverage.rq` | commitment, control-plane |
 | CQ-16 | For each committed commitment, its latest observation and whether the target is met, by comparator? | `cq16-commitment-status.rq` | commitment |
 | CQ-17 | For each floor and each offering it covers, the margin between the committed target and the floor, worst first? | `cq17-floor-margins.rq` | commitment, control-plane |
+| CQ-18 | Why does each committed commitment and each floor carry the target it does, and which decision set it? | `cq18-commitment-rationale.rq` | commitment |
 
 ## Backlog and realised invariants
 
@@ -479,6 +480,13 @@ with no measurement source or no validation mechanism is a violation — the
 - Who is accountable for each commitment, and was its change approved?
   *(commitments are declarations — D59; CQ-9 lists scope and approver, and
   a commitment declared where rigor requires approval must carry one)* [realised: ScopeRigorShape, CommitmentScopeShape]
+- Why does each committed commitment or floor carry the target it does, and
+  which decision set it? *(formal — CQ-18; the rows with no rationale are the
+  stewardship list — D72)* [realised: CommitmentRationaleShape, BaselineRationaleShape]
+- Should a floor bind the composed request path as well as each offering? In
+  series, the three request-path availability targets compose to about 99.89
+  percent against the 99.9 percent floor; composition is advisory and no
+  invariant applies to a path *(open — D73)*
 
 ## The four platform questions
 

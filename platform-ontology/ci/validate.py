@@ -144,6 +144,8 @@ def main() -> int:
             "a promise below the baseline",
             "not ready against the baseline",
             "different units cannot be compared",
+            "a target without its reason cannot be reviewed",
+            "a baseline without its reason cannot be reviewed",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -172,6 +174,7 @@ def main() -> int:
         "cq15-floors-and-coverage.rq",
         "cq16-commitment-status.rq",
         "cq17-floor-margins.rq",
+        "cq18-commitment-rationale.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:

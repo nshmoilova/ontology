@@ -768,3 +768,18 @@ ex:commit-wrong-unit a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:hasCommitmentState cmt:state-committed .
 
+
+### 63. Committed commitment with no recorded rationale (CommitmentRationaleShape — warning)
+ex:commit-no-rationale a cmt:Commitment ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:lax-scope ;
+    cmt:commitsTo ex:offering-lax ;
+    cmt:metric cmt:metric-recovery-point ;
+    cmt:comparator cmt:at-most ;
+    cmt:target 15.0 ;
+    cmt:unit unit:MIN ;
+    cmt:window "P90D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq18-commitment-rationale.rq"^^xsd:anyURI ;
+    cmt:hasCommitmentState cmt:state-committed .
+# ex:floor-lax-latency (62) records no rationale either, so BaselineRationaleShape fires there — a floor without its reason.

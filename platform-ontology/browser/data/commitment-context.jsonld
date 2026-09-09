@@ -43,6 +43,9 @@
    "@id": "cmt:observationOf",
    "@type": "@id"
   },
+  "rationale": {
+   "@id": "cmt:rationale"
+  },
   "referenceSource": {
    "@id": "cmt:referenceSource"
   },

@@ -19,7 +19,7 @@ from collections import defaultdict
 from pathlib import Path
 from urllib.parse import quote
 
-from rdflib import Graph, RDF, RDFS, OWL, Literal, URIRef
+from rdflib import Graph, Namespace, RDF, RDFS, OWL, Literal, URIRef
 from rdflib.namespace import SKOS, DCTERMS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -29,6 +29,11 @@ DOWNLOADS = ROOT / "browser" / "downloads"
 # file must resolve outside the app, so internal routes are made absolute
 # against it. Override with SITE_URL when publishing elsewhere.
 SITE_URL = os.environ.get("SITE_URL", "https://nshmoilova.github.io/ontology/")
+# The declarations graph the Commitments view is built from: the platform's own
+# promises, floors, offerings and contracts as declared. The seed by default;
+# point DECLARATIONS at a real export to browse real promises.
+DECLARATIONS = Path(os.environ.get("DECLARATIONS", str(ROOT / "data" / "test" / "positive.ttl"))).resolve()
+UNIT_LABEL = {"PERCENT": "%", "MilliSEC": "ms", "SEC": "s", "MIN": "min", "HR": "h", "DAY": "d", "NUM": ""}
 
 BASE = "https://w3id.org/examplebank/platform/"
 SH = "http://www.w3.org/ns/shacl#"
@@ -703,6 +708,208 @@ def write_explainer_downloads(explainers, shapes, principles, decisions, formal)
     return sorted(written)
 
 
+def collect_commitments(g_ont, decisions):
+    """The Commitments view: every capability with its offerings by scope, each
+    offering's committed promises with floor, margin, evidence and reason, the
+    floors by scope with their coverage, and each owner's gaps. Read from the
+    declarations graph, never from a measurement feed."""
+    if not DECLARATIONS.exists():
+        return None
+    CMT, CP, CORE, CTR = (Namespace(BASE + "commitment#"), Namespace(BASE + "control-plane#"),
+                          Namespace(BASE + "core#"), Namespace(BASE + "contract#"))
+    SOSA = Namespace("http://www.w3.org/ns/sosa/")
+    g = Graph()
+    g.parse(DECLARATIONS, format="turtle")
+    for t in g_ont:
+        g.add(t)
+    known = {d["id"] for d in decisions}
+    ln = lambda n: local_name(str(n))
+
+    def label(n):
+        if n is None:
+            return None
+        return lit(g, n, CORE.displayName) or lit(g, n, SKOS.prefLabel) or ln(n)
+
+    def concept(n):
+        return None if n is None else {"id": ln(n), "label": lit(g, n, SKOS.prefLabel) or ln(n), "notation": lit(g, n, SKOS.notation)}
+
+    def num(v):
+        try:
+            return None if v is None else float(v)
+        except (TypeError, ValueError):
+            return None
+
+    def unit_label(u):
+        return None if u is None else UNIT_LABEL.get(ln(u), ln(u))
+
+    def cited(text):
+        ids = sorted(set(re.findall(r"\bD\d+\b", text or "")), key=lambda i: int(i[1:]))
+        for i in ids:
+            if i not in known:
+                problem(f"commitment rationale cites unknown decision {i}: {(text or '')[:60]}")
+        return ids
+
+    def approval(n):
+        a = g.value(n, CP.hasApproval)
+        if a is None:
+            return None
+        by = g.value(a, CP.approvedBy)
+        return {"by": label(by), "at": lit(g, a, CP.approvedAtTime)}
+
+    def ancestors(s):  # self first, then containing scopes
+        out, seen = [], set()
+        while s is not None and s not in seen:
+            seen.add(s); out.append(s); s = g.value(s, CP.subScopeOf)
+        return out
+
+    def scope_info(s):
+        if s is None:
+            return None
+        chain = ancestors(s)
+        region = env = None
+        for x in chain:  # facets are inherited down the tree
+            if region is None and g.value(x, CP.hasRegion) is not None:
+                r = g.value(x, CP.hasRegion); region = lit(g, r, SKOS.prefLabel) or ln(r)
+            if env is None:
+                env = lit(g, x, CP.inEnvironment)
+        return {"id": ln(s), "label": label(s), "environment": env, "region": region, "path": [label(x) for x in reversed(chain)]}
+
+    def margin(cmp, target, floor_target):
+        if target is None or floor_target is None:
+            return None
+        return round(target - floor_target if cmp == ">=" else floor_target - target, 6)
+
+    floors = []
+    for f in sorted(g.subjects(RDF.type, CMT.CommitmentBaseline), key=str):
+        fs, m, c = g.value(f, CP.declarationScope), g.value(f, CMT.metric), g.value(f, CMT.comparator)
+        why = lit(g, f, CMT.rationale)
+        floors.append({"id": ln(f), "label": label(f), "scope": scope_info(fs), "_scope": fs, "metric": concept(m), "_metric": m,
+                       "comparator": lit(g, c, SKOS.notation) if c is not None else None, "target": num(g.value(f, CMT.target)),
+                       "unit": unit_label(g.value(f, CMT.unit)), "window": lit(g, f, CMT.window),
+                       "referenceSource": lit(g, f, CMT.referenceSource), "rationale": why, "decisions": cited(why),
+                       "approval": approval(f), "coverage": []})
+
+    def commitment_info(cm):
+        m, c, st = g.value(cm, CMT.metric), g.value(cm, CMT.comparator), g.value(cm, CMT.hasCommitmentState)
+        why = lit(g, cm, CMT.rationale)
+        obs = sorted(({"value": num(g.value(o, SOSA.hasSimpleResult)), "windowStart": lit(g, o, CP.windowStart), "windowEnd": lit(g, o, CP.windowEnd)}
+                      for o in g.subjects(CMT.observationOf, cm)), key=lambda x: x["windowEnd"] or "")
+        latest = obs[-1] if obs else None
+        target = num(g.value(cm, CMT.target))
+        cmpn = lit(g, c, SKOS.notation) if c is not None else None
+        if latest is None or latest["value"] is None or target is None:
+            status = "no observation"
+        elif (cmpn == ">=" and latest["value"] >= target) or (cmpn == "<=" and latest["value"] <= target):
+            status = "met"
+        else:
+            status = "breached"
+        sup, ds = g.value(cm, CP.supersedes), g.value(cm, CP.declarationScope)
+        return {"id": ln(cm), "label": label(cm), "metric": concept(m), "_metric": m, "comparator": cmpn, "target": target,
+                "unit": unit_label(g.value(cm, CMT.unit)), "window": lit(g, cm, CMT.window),
+                "state": ln(st).replace("state-", "") if st is not None else None,
+                "measuredBy": sorted(label(s) for s in g.objects(cm, CMT.measuredBy)),
+                "validatedBy": sorted(str(v) for v in g.objects(cm, CMT.validatedBy)),
+                "rationale": why, "decisions": cited(why), "supersedes": ln(sup) if sup is not None else None,
+                "declarationScope": label(ds), "approval": approval(cm), "floor": None,
+                "evidence": {"status": status, "latest": latest, "observations": len(obs)}}
+
+    caps, scopes = [], {}
+    for cap in sorted(g.subjects(RDF.type, CORE.Capability), key=str):
+        offerings = []
+        for off in sorted(g.subjects(CP.offersCapability, cap), key=str):
+            s, st = g.value(off, CP.offeredInScope), g.value(off, CP.hasOfferingState)
+            state = ln(st).replace("offering-", "") if st is not None else None
+            cms = [commitment_info(cm) for cm in sorted(g.subjects(CMT.commitsTo, off), key=str)]
+            current = [c for c in cms if c["state"] == "committed"]
+            anc = set(ancestors(s)) if s is not None else set()
+            floor_rows = []
+            for f in floors:
+                if f["_scope"] not in anc:
+                    continue
+                match = next((c for c in current if c["_metric"] == f["_metric"]), None)
+                mg = margin(f["comparator"], match["target"], f["target"]) if match else None
+                floor_rows.append({"floor": f["id"], "metric": f["metric"], "comparator": f["comparator"], "floorTarget": f["target"], "unit": f["unit"],
+                                   "commitment": match["id"] if match else None, "target": match["target"] if match else None, "margin": mg})
+                f["coverage"].append({"capability": ln(cap), "capabilityLabel": label(cap), "offering": ln(off), "offeringLabel": label(off),
+                                      "offeringState": state, "commitment": match["id"] if match else None, "target": match["target"] if match else None, "margin": mg})
+                if match:
+                    match["floor"] = {"id": f["id"], "target": f["target"], "margin": mg}
+            sc = scope_info(s)
+            if sc:
+                scopes[sc["id"]] = sc
+            offerings.append({"id": ln(off), "label": label(off), "state": state, "scope": sc, "commitments": current,
+                              "history": [c for c in cms if c["state"] != "committed"], "floors": floor_rows})
+        contracts = []
+        for ct in sorted(g.subjects(CTR.contractOf, cap), key=str):
+            versions = []
+            for v in sorted(g.subjects(CTR.versionOf, ct), key=str):
+                vs = g.value(v, CTR.hasVersionState)
+                versions.append({"id": ln(v), "version": lit(g, v, CTR.versionString), "state": ln(vs).replace("state-", "") if vs is not None else None, "artifact": lit(g, v, CTR.artifact)})
+            contracts.append({"id": ln(ct), "label": label(ct), "versions": versions})
+        cats = sorted({lit(g, dc, SKOS.prefLabel) or ln(dc) for p in g.subjects(CP.realizesCapability, cap) for dc in g.objects(p, CP.holdsDataCategory)})
+        deps = sorted(({"id": ln(d), "label": label(d)} for d in g.objects(cap, CP.dependsOn)), key=lambda x: x["id"])
+        gaps = []
+        for off in offerings:
+            for c in off["commitments"]:
+                ev = c["evidence"]["status"]
+                if ev == "no observation":
+                    gaps.append({"kind": "no observation", "offering": off["label"], "commitment": c["label"], "commitmentId": c["id"],
+                                 "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"})
+                elif ev == "breached":
+                    gaps.append({"kind": "breached", "offering": off["label"], "commitment": c["label"], "commitmentId": c["id"],
+                                 "detail": f"latest observation {c['evidence']['latest']['value']} against a target of {c['target']} {c['unit']}"})
+                if not c["rationale"]:
+                    gaps.append({"kind": "no rationale", "offering": off["label"], "commitment": c["label"], "commitmentId": c["id"],
+                                 "detail": "a target without its reason cannot be reviewed (D72)"})
+            for fr in off["floors"]:
+                if fr["commitment"] is None:
+                    gaps.append({"kind": "floor uncovered", "offering": off["label"], "commitment": None, "commitmentId": None,
+                                 "detail": f"no committed promise on {fr['metric']['label']}; the floor asks {fr['comparator']} {fr['floorTarget']} {fr['unit']}"})
+            if off["state"] == "planned":
+                gaps.append({"kind": "planned", "offering": off["label"], "commitment": None, "commitmentId": None,
+                             "detail": "declared but not yet available; readiness needs a published contract and a promise on every floor metric"})
+        n_commit = sum(len(o["commitments"]) for o in offerings)
+        caps.append({"id": ln(cap), "iri": str(cap), "label": label(cap), "dependsOn": deps, "contracts": contracts, "dataCategories": cats,
+                     "offerings": offerings, "gaps": gaps, "download": f"downloads/commitments/{ln(cap)}.json",
+                     "counts": {"offerings": len(offerings), "commitments": n_commit,
+                                "met": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "met"),
+                                "noObservation": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "no observation"),
+                                "gaps": len(gaps)}})
+    for f in floors:
+        f.pop("_scope"); f.pop("_metric")
+    for cap in caps:
+        for off in cap["offerings"]:
+            for c in off["commitments"] + off["history"]:
+                c.pop("_metric", None)
+    metrics = sorted((concept(m) for m in g.subjects(SKOS.inScheme, CMT.MetricScheme)), key=lambda x: x["notation"] or "")
+    try:
+        source = str(DECLARATIONS.relative_to(ROOT))
+    except ValueError:
+        source = str(DECLARATIONS)
+    return {"source": source, "metrics": metrics, "scopes": sorted(scopes.values(), key=lambda x: x["id"]), "capabilities": caps, "floors": floors}
+
+
+def write_commitment_downloads(cm):
+    """One JSON file per capability plus the floors, under browser/downloads/commitments,
+    for agents that want a capability's promises in one fetch. Stale files are removed."""
+    out = DOWNLOADS / "commitments"
+    out.mkdir(parents=True, exist_ok=True)
+    written = set()
+    if cm:
+        head = {"generatedFrom": cm["source"], "vocabulary": SITE_URL + "data/commitment-context.jsonld"}
+        for cap in cm["capabilities"]:
+            p = out / f"{cap['id']}.json"
+            p.write_text(json.dumps({**head, "webVersion": f"{SITE_URL}#/commitments/{cap['id']}", **{k: v for k, v in cap.items() if k != "download"}}, indent=1, ensure_ascii=False) + "\n")
+            written.add(p)
+        p = out / "floors.json"
+        p.write_text(json.dumps({**head, "webVersion": f"{SITE_URL}#/commitments/floors", "floors": cm["floors"]}, indent=1, ensure_ascii=False) + "\n")
+        written.add(p)
+    for stale in out.glob("*.json"):
+        if stale not in written:
+            stale.unlink()
+    return sorted(written)
+
+
 def main() -> int:
     print("== Building ontology browser index ==")
     g = load_ontology()
@@ -731,6 +938,7 @@ def main() -> int:
         print(f"  note: {len(unclassified)} stored classes carry no data category: {', '.join(unclassified[:8])}{' …' if len(unclassified) > 8 else ''}")
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
+    commitments = collect_commitments(g, decisions)
     for ex in explainers:
         ex["download"] = f"downloads/{ex['id']}.md"
     formal, backlog = load_competency_questions()
@@ -773,6 +981,9 @@ def main() -> int:
             "explainers": len(explainers),
             "formalCQs": len(formal),
             "backlogCQs": len(backlog),
+            "capabilities": len(commitments["capabilities"]) if commitments else 0,
+            "commitments": sum(c["counts"]["commitments"] for c in commitments["capabilities"]) if commitments else 0,
+            "floors": len(commitments["floors"]) if commitments else 0,
         },
         "modules": modules,
         "terms": term_list,
@@ -785,6 +996,7 @@ def main() -> int:
         "evaluatedNotPrinciples": not_principles,
         "explainers": explainers,
         "competencyQuestions": {"formal": formal, "backlog": backlog},
+        "commitments": commitments,
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -794,6 +1006,8 @@ def main() -> int:
     OUT.write_text(json.dumps(index, indent=1, sort_keys=False))
     files = write_explainer_downloads(explainers, shapes, principles, decisions, formal)
     print(f"  wrote {len(files)} explainer download file(s) under browser/downloads/")
+    cfiles = write_commitment_downloads(commitments)
+    print(f"  wrote {len(cfiles)} commitment download file(s) under browser/downloads/commitments/")
     # JSON-LD context for agents: every term of the commitment, contract and control-plane modules plus core
     ctx = {"@version": 1.1, "core": BASE + "core#", "cp": BASE + "control-plane#", "cmt": BASE + "commitment#", "ctr": BASE + "contract#",
            "skos": "http://www.w3.org/2004/02/skos/core#", "sosa": "http://www.w3.org/ns/sosa/", "unit": "http://qudt.org/vocab/unit/", "xsd": "http://www.w3.org/2001/XMLSchema#"}

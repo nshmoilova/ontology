@@ -31,6 +31,7 @@ terms by local name, and the build joins the two.
 | the reasoning shown under "Why this exists" | `docs/decisions.json` |
 | a principle, its test, or what enforces it | `docs/principles.json` |
 | a guided explainer / walkthrough | `docs/explainers.json` |
+| a promise, a floor, or the reason behind one (the Commitments view) | `data/test/positive.ttl`, or the graph `DECLARATIONS` points at |
 | an explainer diagram | `docs/diagrams/*.svg` |
 | competency questions | `docs/competency-questions.md` |
 | the app itself | `browser/index.html`, `app.js`, `styles.css` |

@@ -1,24 +1,27 @@
 {
  "generated": true,
- "sourceDigest": "66297b436cff",
+ "sourceDigest": "6e9568c679fb",
  "stats": {
   "modules": 8,
   "classes": 93,
   "objectProperties": 122,
-  "datatypeProperties": 41,
-  "shapes": 100,
+  "datatypeProperties": 42,
+  "shapes": 102,
   "violations": 163,
-  "warnings": 9,
+  "warnings": 11,
   "vocabularies": 21,
   "relationships": 77,
-  "decisions": 67,
+  "decisions": 69,
   "principles": 20,
   "standards": 15,
-  "realisedBacklog": 46,
+  "realisedBacklog": 47,
   "provisionalPrinciples": 9,
   "explainers": 4,
-  "formalCQs": 17,
-  "backlogCQs": 139
+  "formalCQs": 18,
+  "backlogCQs": 141,
+  "capabilities": 4,
+  "commitments": 16,
+  "floors": 4
  },
  "modules": [
   {
@@ -98,8 +101,8 @@
    "iri": "https://w3id.org/examplebank/platform/commitment",
    "prefix": "cmt",
    "title": "Commitment Module",
-   "version": "0.4.0",
-   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for \u2014 failover success ratio, change-failure rate, time to restore redundancy (D67).",
+   "version": "0.5.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for \u2014 failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72).",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
@@ -7255,7 +7258,8 @@
     "D65",
     "D66",
     "D68",
-    "D70"
+    "D70",
+    "D73"
    ],
    "principles": [
     "P2",
@@ -9650,7 +9654,8 @@
    "vocabulary": [],
    "decisions": [
     "D14",
-    "D60"
+    "D60",
+    "D73"
    ],
    "principles": [
     "P18"
@@ -10846,7 +10851,8 @@
     "CommitmentShape",
     "CommitmentScopeShape",
     "NoWeakerThanFloorShape",
-    "FloorUnitShape"
+    "FloorUnitShape",
+    "CommitmentRationaleShape"
    ],
    "constraints": [
     {
@@ -11001,6 +11007,12 @@
      "severity": "Violation",
      "message": "Committed commitment states a different unit than the floor for its offering's scope on the same metric \u2014 targets in different units cannot be compared.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?u ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?fu .\n                FILTER(?u != ?fu)\n            }"
+    },
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Committed commitment records no rationale \u2014 a target without its reason cannot be reviewed; route to stewardship review.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                FILTER NOT EXISTS { $this <https://w3id.org/examplebank/platform/commitment#rationale> ?r . }\n            }"
     }
    ],
    "outgoing": [
@@ -11057,7 +11069,9 @@
     "D66",
     "D69",
     "D70",
-    "D71"
+    "D71",
+    "D72",
+    "D73"
    ],
    "principles": []
   },
@@ -11084,7 +11098,8 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
-    "CommitmentBaselineShape"
+    "CommitmentBaselineShape",
+    "BaselineRationaleShape"
    ],
    "constraints": [
     {
@@ -11161,6 +11176,21 @@
      "maxInclusive": null,
      "severity": "Violation",
      "message": "A baseline is judged over exactly one window."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:rationale",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#rationale",
+     "minCount": 1,
+     "maxCount": null,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Warning",
+     "message": "Floor records no rationale \u2014 a baseline without its reason cannot be reviewed; route to stewardship review."
     }
    ],
    "outgoing": [
@@ -11184,7 +11214,8 @@
    "vocabulary": [],
    "decisions": [
     "D66",
-    "D69"
+    "D69",
+    "D72"
    ],
    "principles": []
   },
@@ -11635,6 +11666,34 @@
    "vocabulary": [],
    "decisions": [
     "D58"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#rationale",
+   "name": "rationale",
+   "curie": "cmt:rationale",
+   "kind": "datatypeProperty",
+   "module": "commitment",
+   "label": "rationale",
+   "definition": "The recorded reason a commitment or baseline carries the target it does, as text that cites by identifier the decisions it rests on.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D72"
    ],
    "principles": []
   },
@@ -14790,6 +14849,32 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#BaselineRationaleShape",
+   "name": "BaselineRationaleShape",
+   "targetClass": "cmt:CommitmentBaseline",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#CommitmentBaseline",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:rationale",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#rationale",
+     "minCount": 1,
+     "maxCount": null,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:string",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Warning",
+     "message": "Floor records no rationale \u2014 a baseline without its reason cannot be reviewed; route to stewardship review."
+    }
+   ],
+   "violations": 0,
+   "warnings": 1
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentBaselineShape",
    "name": "CommitmentBaselineShape",
    "targetClass": "cmt:CommitmentBaseline",
@@ -14874,6 +14959,23 @@
    ],
    "violations": 5,
    "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentRationaleShape",
+   "name": "CommitmentRationaleShape",
+   "targetClass": "cmt:Commitment",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Commitment",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Warning",
+     "message": "Committed commitment records no rationale \u2014 a target without its reason cannot be reviewed; route to stewardship review.",
+     "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                FILTER NOT EXISTS { $this <https://w3id.org/examplebank/platform/commitment#rationale> ?r . }\n            }"
+    }
+   ],
+   "violations": 0,
+   "warnings": 1
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentScopeShape",
@@ -19657,6 +19759,62 @@
     "cmt:hasCommitmentState",
     "cp:supersedes"
    ]
+  },
+  {
+   "id": "D72",
+   "title": "Every committed promise and every floor records its reason",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "motivatedBy": [
+    "P18"
+   ],
+   "principles": [
+    "P18",
+    "P9",
+    "P10",
+    "P17"
+   ],
+   "reasoning": "The floors (D69) and the request-path targets (D71) were set for reasons that lived only in the decision register and an explainer table; the graph held the numbers and not the why, so a reviewer reading a commitment could not tell a considered target from an arbitrary one, and a browser over commitments could show what was promised but not why. A commitment or baseline now carries cmt:rationale: the reason for its target as text, citing the decisions it rests on by identifier, which the build resolves and rejects when unknown. A committed commitment or a floor without one is a warning routed to stewardship rather than a violation: the promise still binds and is still measured; what is missing is reviewability, and the placeholders a supersession withdraws need no reason of their own. CQ-18 lists every current promise with its reason, and the rows with none are the stewardship list.",
+   "rejected": [
+    "Keeping the reasons in the decision register only: a reader of the graph, human or agent, has to know which decision to open; the number and its reason belong together.",
+    "A link from a commitment to a decision instead of text: the register is JSON outside the graph, and a link carries no reason of its own when one decision covers twelve targets at once. Text that cites the decision keeps both.",
+    "A violation: a promise without a reason is still a measured promise; failing ingestion for a missing sentence would have rejected every existing declaration on the day the rule arrived."
+   ],
+   "terms": [
+    "rationale",
+    "Commitment",
+    "CommitmentBaseline"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:CommitmentBaseline",
+    "cmt:rationale"
+   ]
+  },
+  {
+   "id": "D73",
+   "title": "Composition of promises along a request path is advisory",
+   "area": "Tenancy & subscriptions",
+   "invariant": false,
+   "principles": [
+    "P9",
+    "P20"
+   ],
+   "reasoning": "A consumer depends on several capabilities at once, and the question it asks is what it may promise its own consumers given theirs. The model answers per offering: floors bind an offering, not a path. Composing promises needs conventions the ontology cannot assert as fact: availability of capabilities in series is taken as the product of their committed availabilities; a latency budget as the sum of their p99 targets, which overstates the true p99 and is therefore conservative; recovery time and recovery point as the weakest, the maximum, among them. The browser's composition view applies these and labels the result advisory. The convention exposed something the per-offering rules do not: the three request-path capabilities in series compose to about 99.89 percent against the 99.9 percent production floor, and no invariant fires because none applies to a path. Whether a floor should also bind the composed request path is left open as a question rather than settled by a shape.",
+   "rejected": [
+    "A shape that enforces composed floors: the conventions are assumptions about failure independence and percentile arithmetic; encoding them as violations would reject data on the strength of a model nobody has approved.",
+    "Ignoring composition until real observations exist: consumers plan against targets, not observations, and the 99.89 percent finding is available now from committed targets alone."
+   ],
+   "terms": [
+    "Commitment",
+    "CapabilityOffering",
+    "dependsOn"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cp:CapabilityOffering",
+    "cp:dependsOn"
+   ]
   }
  ],
  "principles": [
@@ -20491,7 +20649,8 @@
     "D66",
     "D69",
     "D70",
-    "D71"
+    "D71",
+    "D72"
    ],
    "status": "confirmed"
   },
@@ -21891,21 +22050,26 @@
     },
     {
      "heading": "What comes next",
-     "body": "In order: the production floors themselves \u2014 the targets are the platform's to decide; a committed commitment per offering per floor, with a real measurement source, which is also the availability review of every production offering; the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors.",
+     "body": "Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); and a reason on every current promise and floor, so a number can be reviewed and not only measured (D72, CQ-18). All of it is browsable under [Commitments](#/commitments): each capability's promises by scope with floor, margin, evidence and reason; the floors by scope; each owner's own gaps; and an advisory composition of promises along a request path (D73).\n\nStill ahead: the kind of evidence behind a measurement source; demand-side needs on capability requirements, so an offering's promise can be checked against what its consumers require; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.",
      "principles": [
       "P9"
      ],
      "decisions": [
-      "D65",
-      "D67"
+      "D69",
+      "D70",
+      "D71",
+      "D72",
+      "D73"
      ],
      "questions": [
-      "CQ-16"
+      "CQ-16",
+      "CQ-18"
      ]
     }
    ],
    "openQuestions": [
-    "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each \u2014 a promise made and not yet evidenced."
+    "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each \u2014 a promise made and not yet evidenced.",
+    "Should a floor bind the composed request path as well as each offering? Ingress, the decision point and session management in series compose to about 99.89 percent availability against the 99.9 percent floor. The composition view shows it; no invariant applies to a path (D73)."
    ],
    "stepCount": 7,
    "download": "downloads/commitments.md"
@@ -22155,6 +22319,15 @@
     "modules": [
      "commitment",
      "control-plane"
+    ]
+   },
+   {
+    "id": "CQ-18",
+    "question": "Why does each committed commitment and each floor carry the target it does, and which decision set it?",
+    "query": "cq18-commitment-rationale.rq",
+    "sparql": "# CQ-18 \u2014 Why does each committed commitment and each floor carry the target it\n# does, and which decision set it? The rationale is text that cites decisions by\n# identifier (D72). Rows with no rationale are the stewardship list.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?subject ?kind ?metric ?target ?rationale WHERE {\n  { ?subject a cmt:Commitment ; cmt:hasCommitmentState cmt:state-committed . BIND(\"commitment\" AS ?kind) }\n  UNION\n  { ?subject a cmt:CommitmentBaseline . BIND(\"floor\" AS ?kind) }\n  ?subject cmt:metric ?m ; cmt:target ?target .\n  ?m skos:notation ?metric .\n  OPTIONAL { ?subject cmt:rationale ?rationale }\n}\nORDER BY ?kind ?subject",
+    "modules": [
+     "commitment"
     ]
    }
   ],
@@ -22967,6 +23140,21 @@
     ]
    },
    {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Why does each committed commitment or floor carry the target it does, and which decision set it? (formal \u2014 CQ-18; the rows with no rationale are the stewardship list \u2014 D72)",
+    "expectedEmpty": false,
+    "realizedBy": [
+     "CommitmentRationaleShape",
+     "BaselineRationaleShape"
+    ]
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Should a floor bind the composed request path as well as each offering? In series, the three request-path availability targets compose to about 99.89 percent against the 99.9 percent floor; composition is advisory and no invariant applies to a path (open \u2014 D73)",
+    "expectedEmpty": false,
+    "realizedBy": []
+   },
+   {
     "section": "Availability",
     "question": "Will users lose requests when failure occurs? \u2192 which offerings carry a commitment on request loss during failover? (sibling; new metric by decision \u2014 successful-request ratio during failover. On control-plane failure ingress refuses by design, P15: refused, not dropped)",
     "expectedEmpty": false,
@@ -23091,6 +23279,1759 @@
     "question": "What is the 99th-percentile latency now? / Is the platform up right now? (invalid \u2014 dashboard questions)",
     "expectedEmpty": false,
     "realizedBy": []
+   }
+  ]
+ },
+ "commitments": {
+  "source": "data/test/positive.ttl",
+  "metrics": [
+   {
+    "id": "metric-availability",
+    "label": "Availability",
+    "notation": "availability"
+   },
+   {
+    "id": "metric-change-failure-rate",
+    "label": "Change-failure rate",
+    "notation": "change.failure-rate"
+   },
+   {
+    "id": "metric-failover-success-ratio",
+    "label": "Successful-request ratio during failover",
+    "notation": "failover.success-ratio"
+   },
+   {
+    "id": "metric-latency-p99",
+    "label": "Latency, 99th percentile",
+    "notation": "latency.p99"
+   },
+   {
+    "id": "metric-time-to-restore-redundancy",
+    "label": "Time to restore redundancy",
+    "notation": "redundancy.restore-time"
+   },
+   {
+    "id": "metric-recovery-point",
+    "label": "Recovery point objective",
+    "notation": "rpo"
+   },
+   {
+    "id": "metric-recovery-time",
+    "label": "Recovery time objective",
+    "notation": "rto"
+   }
+  ],
+  "scopes": [
+   {
+    "id": "scope-prod",
+    "label": "Production, US",
+    "environment": "prod",
+    "region": "us-west-2",
+    "path": [
+     "Platform root scope",
+     "Production, US"
+    ]
+   }
+  ],
+  "capabilities": [
+   {
+    "id": "cap-decision",
+    "iri": "https://data.examplebank.com/platform/cap-decision",
+    "label": "Authorization decision capability",
+    "dependsOn": [],
+    "contracts": [
+     {
+      "id": "contract-cap-decision",
+      "label": "Authorization decision contract",
+      "versions": [
+       {
+        "id": "contract-cap-decision-v1",
+        "version": "1.0.0",
+        "state": "published",
+        "artifact": "https://contracts.example/platform/cap-decision/1.0.0/openapi.yaml"
+       }
+      ]
+     }
+    ],
+    "dataCategories": [],
+    "offerings": [
+     {
+      "id": "offering-cap-decision-prod",
+      "label": "Authorization decision capability offered in production",
+      "state": "available",
+      "scope": {
+       "id": "scope-prod",
+       "label": "Production, US",
+       "environment": "prod",
+       "region": "us-west-2",
+       "path": [
+        "Platform root scope",
+        "Production, US"
+       ]
+      },
+      "commitments": [
+       {
+        "id": "commit-cap-decision-availability",
+        "label": "Authorization decision: availability at least 99.95 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.95,
+        "unit": "%",
+        "window": "P30D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: fails with ingress in practice; 99.95 percent keeps headroom above the floor.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-availability",
+         "target": 99.9,
+         "margin": 0.05
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-decision-latency-v2",
+        "label": "Authorization decision: latency p99 at most 25.0 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 25.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: allows a membership and grant lookup that is not fully local; 25 ms of the 300 ms floor.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-decision-latency",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-latency",
+         "target": 300.0,
+         "margin": 275.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-decision-rpo",
+        "label": "Authorization decision: recovery point at most 0.0 minutes",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "target": 0.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: grants are re-projected, not lost; nothing to recover.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rpo",
+         "target": 15.0,
+         "margin": 15.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-decision-rto-v2",
+        "label": "Authorization decision: recovery time at most 60.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 60.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: at the floor; grants are re-projected from governance, so recovery is a routing change.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-decision-rto",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rto",
+         "target": 60.0,
+         "margin": 0.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "history": [
+       {
+        "id": "commit-cap-decision-latency",
+        "label": "Authorization decision: latency p99 at most 10.0 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 10.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-decision-rto",
+        "label": "Authorization decision: recovery time at most 30.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 30.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "floors": [
+       {
+        "floor": "floor-prod-availability",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "floorTarget": 99.9,
+        "unit": "%",
+        "commitment": "commit-cap-decision-availability",
+        "target": 99.95,
+        "margin": 0.05
+       },
+       {
+        "floor": "floor-prod-latency",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "floorTarget": 300.0,
+        "unit": "ms",
+        "commitment": "commit-cap-decision-latency-v2",
+        "target": 25.0,
+        "margin": 275.0
+       },
+       {
+        "floor": "floor-prod-rpo",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "floorTarget": 15.0,
+        "unit": "min",
+        "commitment": "commit-cap-decision-rpo",
+        "target": 0.0,
+        "margin": 15.0
+       },
+       {
+        "floor": "floor-prod-rto",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "floorTarget": 60.0,
+        "unit": "min",
+        "commitment": "commit-cap-decision-rto-v2",
+        "target": 60.0,
+        "margin": 0.0
+       }
+      ]
+     }
+    ],
+    "gaps": [
+     {
+      "kind": "no observation",
+      "offering": "Authorization decision capability offered in production",
+      "commitment": "Authorization decision: availability at least 99.95 %",
+      "commitmentId": "commit-cap-decision-availability",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Authorization decision capability offered in production",
+      "commitment": "Authorization decision: latency p99 at most 25.0 ms",
+      "commitmentId": "commit-cap-decision-latency-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Authorization decision capability offered in production",
+      "commitment": "Authorization decision: recovery point at most 0.0 minutes",
+      "commitmentId": "commit-cap-decision-rpo",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Authorization decision capability offered in production",
+      "commitment": "Authorization decision: recovery time at most 60.0 minutes",
+      "commitmentId": "commit-cap-decision-rto-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     }
+    ],
+    "download": "downloads/commitments/cap-decision.json",
+    "counts": {
+     "offerings": 1,
+     "commitments": 4,
+     "met": 0,
+     "noObservation": 4,
+     "gaps": 4
+    }
+   },
+   {
+    "id": "cap-ingress",
+    "iri": "https://data.examplebank.com/platform/cap-ingress",
+    "label": "Ingress capability",
+    "dependsOn": [],
+    "contracts": [
+     {
+      "id": "contract-cap-ingress",
+      "label": "Ingress contract",
+      "versions": [
+       {
+        "id": "contract-cap-ingress-v1",
+        "version": "1.0.0",
+        "state": "published",
+        "artifact": "https://contracts.example/platform/cap-ingress/1.0.0/openapi.yaml"
+       }
+      ]
+     }
+    ],
+    "dataCategories": [],
+    "offerings": [
+     {
+      "id": "offering-cap-ingress-prod",
+      "label": "Ingress capability offered in production",
+      "state": "available",
+      "scope": {
+       "id": "scope-prod",
+       "label": "Production, US",
+       "environment": "prod",
+       "region": "us-west-2",
+       "path": [
+        "Platform root scope",
+        "Production, US"
+       ]
+      },
+      "commitments": [
+       {
+        "id": "commit-cap-ingress-availability-v2",
+        "label": "Ingress: availability at least 99.99 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.99,
+        "unit": "%",
+        "window": "P30D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: on every request, so its availability caps everyone's; set above the floor so the capabilities behind it have headroom.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-ingress-availability",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-availability",
+         "target": 99.9,
+         "margin": 0.09
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-ingress-latency-v2",
+        "label": "Ingress: latency p99 at most 50.0 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 50.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: covers TLS termination, tenant resolution and the decision call; 50 ms of the 300 ms floor.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-ingress-latency",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-latency",
+         "target": 300.0,
+         "margin": 250.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-ingress-rpo",
+        "label": "Ingress: recovery point at most 0.0 minutes",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "target": 0.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: ingress holds no state, so nothing is lost on failover.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rpo",
+         "target": 15.0,
+         "margin": 15.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-ingress-rto-v2",
+        "label": "Ingress: recovery time at most 60.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 60.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: at the floor. Headroom below it is a decision about active-active deployment the platform has not yet taken.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-ingress-rto",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rto",
+         "target": 60.0,
+         "margin": 0.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "history": [
+       {
+        "id": "commit-cap-ingress-availability",
+        "label": "Ingress: availability at least 99.95 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.95,
+        "unit": "%",
+        "window": "P30D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-ingress-latency",
+        "label": "Ingress: latency p99 at most 20.0 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 20.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-ingress-rto",
+        "label": "Ingress: recovery time at most 30.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 30.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "floors": [
+       {
+        "floor": "floor-prod-availability",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "floorTarget": 99.9,
+        "unit": "%",
+        "commitment": "commit-cap-ingress-availability-v2",
+        "target": 99.99,
+        "margin": 0.09
+       },
+       {
+        "floor": "floor-prod-latency",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "floorTarget": 300.0,
+        "unit": "ms",
+        "commitment": "commit-cap-ingress-latency-v2",
+        "target": 50.0,
+        "margin": 250.0
+       },
+       {
+        "floor": "floor-prod-rpo",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "floorTarget": 15.0,
+        "unit": "min",
+        "commitment": "commit-cap-ingress-rpo",
+        "target": 0.0,
+        "margin": 15.0
+       },
+       {
+        "floor": "floor-prod-rto",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "floorTarget": 60.0,
+        "unit": "min",
+        "commitment": "commit-cap-ingress-rto-v2",
+        "target": 60.0,
+        "margin": 0.0
+       }
+      ]
+     }
+    ],
+    "gaps": [
+     {
+      "kind": "no observation",
+      "offering": "Ingress capability offered in production",
+      "commitment": "Ingress: availability at least 99.99 %",
+      "commitmentId": "commit-cap-ingress-availability-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Ingress capability offered in production",
+      "commitment": "Ingress: latency p99 at most 50.0 ms",
+      "commitmentId": "commit-cap-ingress-latency-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Ingress capability offered in production",
+      "commitment": "Ingress: recovery point at most 0.0 minutes",
+      "commitmentId": "commit-cap-ingress-rpo",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Ingress capability offered in production",
+      "commitment": "Ingress: recovery time at most 60.0 minutes",
+      "commitmentId": "commit-cap-ingress-rto-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     }
+    ],
+    "download": "downloads/commitments/cap-ingress.json",
+    "counts": {
+     "offerings": 1,
+     "commitments": 4,
+     "met": 0,
+     "noObservation": 4,
+     "gaps": 4
+    }
+   },
+   {
+    "id": "cap-session",
+    "iri": "https://data.examplebank.com/platform/cap-session",
+    "label": "Session management capability",
+    "dependsOn": [],
+    "contracts": [
+     {
+      "id": "contract-cap-session",
+      "label": "Session management contract",
+      "versions": [
+       {
+        "id": "contract-cap-session-v1",
+        "version": "1.0.0",
+        "state": "published",
+        "artifact": "https://contracts.example/platform/cap-session/1.0.0/openapi.yaml"
+       }
+      ]
+     }
+    ],
+    "dataCategories": [],
+    "offerings": [
+     {
+      "id": "offering-cap-session-prod",
+      "label": "Session management capability offered in production",
+      "state": "available",
+      "scope": {
+       "id": "scope-prod",
+       "label": "Production, US",
+       "environment": "prod",
+       "region": "us-west-2",
+       "path": [
+        "Platform root scope",
+        "Production, US"
+       ]
+      },
+      "commitments": [
+       {
+        "id": "commit-cap-session-availability",
+        "label": "Session management: availability at least 99.95 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.95,
+        "unit": "%",
+        "window": "P30D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: in-region handle lookup, with the same headroom above the floor as the decision point.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-availability",
+         "target": 99.9,
+         "margin": 0.05
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-session-latency",
+        "label": "Session management: latency p99 at most 30.0 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 30.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: handle lookup plus a proof-of-possession check in-region; 30 ms of the 300 ms floor.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-latency",
+         "target": 300.0,
+         "margin": 270.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-session-rpo",
+        "label": "Session management: recovery point at most 5.0 minutes",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "target": 5.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D70, confirmed by D71: sessions created in the five minutes before a region loss may need re-authentication; asynchronous replication bounds the loss.",
+        "decisions": [
+         "D70",
+         "D71"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rpo",
+         "target": 15.0,
+         "margin": 10.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-cap-session-rto-v2",
+        "label": "Session management: recovery time at most 60.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 60.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D71: at the floor; a standby region takes over session validation by a routing change.",
+        "decisions": [
+         "D71"
+        ],
+        "supersedes": "commit-cap-session-rto",
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T15:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rto",
+         "target": 60.0,
+         "margin": 0.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "history": [
+       {
+        "id": "commit-cap-session-rto",
+        "label": "Session management: recovery time at most 30.0 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 30.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "withdrawn",
+        "measuredBy": [
+         "Platform observability feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": null,
+        "decisions": [],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T12:00:00+00:00"
+        },
+        "floor": null,
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "floors": [
+       {
+        "floor": "floor-prod-availability",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "floorTarget": 99.9,
+        "unit": "%",
+        "commitment": "commit-cap-session-availability",
+        "target": 99.95,
+        "margin": 0.05
+       },
+       {
+        "floor": "floor-prod-latency",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "floorTarget": 300.0,
+        "unit": "ms",
+        "commitment": "commit-cap-session-latency",
+        "target": 30.0,
+        "margin": 270.0
+       },
+       {
+        "floor": "floor-prod-rpo",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "floorTarget": 15.0,
+        "unit": "min",
+        "commitment": "commit-cap-session-rpo",
+        "target": 5.0,
+        "margin": 10.0
+       },
+       {
+        "floor": "floor-prod-rto",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "floorTarget": 60.0,
+        "unit": "min",
+        "commitment": "commit-cap-session-rto-v2",
+        "target": 60.0,
+        "margin": 0.0
+       }
+      ]
+     }
+    ],
+    "gaps": [
+     {
+      "kind": "no observation",
+      "offering": "Session management capability offered in production",
+      "commitment": "Session management: availability at least 99.95 %",
+      "commitmentId": "commit-cap-session-availability",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Session management capability offered in production",
+      "commitment": "Session management: latency p99 at most 30.0 ms",
+      "commitmentId": "commit-cap-session-latency",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Session management capability offered in production",
+      "commitment": "Session management: recovery point at most 5.0 minutes",
+      "commitmentId": "commit-cap-session-rpo",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Session management capability offered in production",
+      "commitment": "Session management: recovery time at most 60.0 minutes",
+      "commitmentId": "commit-cap-session-rto-v2",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     }
+    ],
+    "download": "downloads/commitments/cap-session.json",
+    "counts": {
+     "offerings": 1,
+     "commitments": 4,
+     "met": 0,
+     "noObservation": 4,
+     "gaps": 4
+    }
+   },
+   {
+    "id": "db-capability",
+    "iri": "https://data.examplebank.com/platform/db-capability",
+    "label": "Managed database capability",
+    "dependsOn": [],
+    "contracts": [
+     {
+      "id": "contract-db",
+      "label": "Managed database capability contract",
+      "versions": [
+       {
+        "id": "contract-db-v1",
+        "version": "1.2.0",
+        "state": "published",
+        "artifact": "https://contracts.example/platform/db/1.2.0/openapi.yaml"
+       }
+      ]
+     }
+    ],
+    "dataCategories": [
+     "Customer personal data",
+     "Tenant workload data"
+    ],
+    "offerings": [
+     {
+      "id": "offering-db-prod",
+      "label": "Managed database offered in prod/US",
+      "state": "available",
+      "scope": {
+       "id": "scope-prod",
+       "label": "Production, US",
+       "environment": "prod",
+       "region": "us-west-2",
+       "path": [
+        "Platform root scope",
+        "Production, US"
+       ]
+      },
+      "commitments": [
+       {
+        "id": "commit-db-availability",
+        "label": "Managed database availability, production",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.95,
+        "unit": "%",
+        "window": "P30D",
+        "state": "committed",
+        "measuredBy": [
+         "Database platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq9-commitments-and-evidence.rq"
+        ],
+        "rationale": "D69: meets the production floor with headroom. An illustrative seed target for a tenant-facing offering, not a platform target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-01T10:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-availability",
+         "target": 99.9,
+         "margin": 0.05
+        },
+        "evidence": {
+         "status": "met",
+         "latest": {
+          "value": 99.97,
+          "windowStart": "2026-08-01T00:00:00+00:00",
+          "windowEnd": "2026-08-31T23:59:59+00:00"
+         },
+         "observations": 1
+        }
+       },
+       {
+        "id": "commit-db-latency",
+        "label": "Managed database latency p99 at most 250 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 250.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "committed",
+        "measuredBy": [
+         "Database platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 250 ms inside the 300 ms floor. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-latency",
+         "target": 300.0,
+         "margin": 50.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-db-rpo",
+        "label": "Managed database recovery point at most 5 minutes",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "target": 5.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Database platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 5 minutes inside the 15 minute floor, asynchronous replication. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rpo",
+         "target": 15.0,
+         "margin": 10.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       },
+       {
+        "id": "commit-db-rto",
+        "label": "Managed database recovery time at most 45 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 45.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Database platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 45 minutes inside the 60 minute floor. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rto",
+         "target": 60.0,
+         "margin": 15.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        }
+       }
+      ],
+      "history": [],
+      "floors": [
+       {
+        "floor": "floor-prod-availability",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "floorTarget": 99.9,
+        "unit": "%",
+        "commitment": "commit-db-availability",
+        "target": 99.95,
+        "margin": 0.05
+       },
+       {
+        "floor": "floor-prod-latency",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "floorTarget": 300.0,
+        "unit": "ms",
+        "commitment": "commit-db-latency",
+        "target": 250.0,
+        "margin": 50.0
+       },
+       {
+        "floor": "floor-prod-rpo",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "floorTarget": 15.0,
+        "unit": "min",
+        "commitment": "commit-db-rpo",
+        "target": 5.0,
+        "margin": 10.0
+       },
+       {
+        "floor": "floor-prod-rto",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "floorTarget": 60.0,
+        "unit": "min",
+        "commitment": "commit-db-rto",
+        "target": 45.0,
+        "margin": 15.0
+       }
+      ]
+     }
+    ],
+    "gaps": [
+     {
+      "kind": "no observation",
+      "offering": "Managed database offered in prod/US",
+      "commitment": "Managed database latency p99 at most 250 ms",
+      "commitmentId": "commit-db-latency",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Managed database offered in prod/US",
+      "commitment": "Managed database recovery point at most 5 minutes",
+      "commitmentId": "commit-db-rpo",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Managed database offered in prod/US",
+      "commitment": "Managed database recovery time at most 45 minutes",
+      "commitmentId": "commit-db-rto",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     }
+    ],
+    "download": "downloads/commitments/db-capability.json",
+    "counts": {
+     "offerings": 1,
+     "commitments": 4,
+     "met": 1,
+     "noObservation": 3,
+     "gaps": 3
+    }
+   }
+  ],
+  "floors": [
+   {
+    "id": "floor-prod-availability",
+    "label": "Production floor: availability at least 99.9 % over 30 days",
+    "scope": {
+     "id": "scope-prod",
+     "label": "Production, US",
+     "environment": "prod",
+     "region": "us-west-2",
+     "path": [
+      "Platform root scope",
+      "Production, US"
+     ]
+    },
+    "metric": {
+     "id": "metric-availability",
+     "label": "Availability",
+     "notation": "availability"
+    },
+    "comparator": ">=",
+    "target": 99.9,
+    "unit": "%",
+    "window": "P30D",
+    "referenceSource": "https://standards.example/platform/production-floors/2026#availability",
+    "rationale": "D69: the internal platform standard. About 43 minutes of downtime a month, loose enough that every shared capability can meet it; anything tighter is a promise an individual offering makes on top.",
+    "decisions": [
+     "D69"
+    ],
+    "approval": {
+     "by": "Dana Okafor",
+     "at": "2026-08-05T10:00:00+00:00"
+    },
+    "coverage": [
+     {
+      "capability": "cap-decision",
+      "capabilityLabel": "Authorization decision capability",
+      "offering": "offering-cap-decision-prod",
+      "offeringLabel": "Authorization decision capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-decision-availability",
+      "target": 99.95,
+      "margin": 0.05
+     },
+     {
+      "capability": "cap-ingress",
+      "capabilityLabel": "Ingress capability",
+      "offering": "offering-cap-ingress-prod",
+      "offeringLabel": "Ingress capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-ingress-availability-v2",
+      "target": 99.99,
+      "margin": 0.09
+     },
+     {
+      "capability": "cap-session",
+      "capabilityLabel": "Session management capability",
+      "offering": "offering-cap-session-prod",
+      "offeringLabel": "Session management capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-session-availability",
+      "target": 99.95,
+      "margin": 0.05
+     },
+     {
+      "capability": "db-capability",
+      "capabilityLabel": "Managed database capability",
+      "offering": "offering-db-prod",
+      "offeringLabel": "Managed database offered in prod/US",
+      "offeringState": "available",
+      "commitment": "commit-db-availability",
+      "target": 99.95,
+      "margin": 0.05
+     }
+    ]
+   },
+   {
+    "id": "floor-prod-latency",
+    "label": "Production floor: latency p99 at most 300 ms over 7 days",
+    "scope": {
+     "id": "scope-prod",
+     "label": "Production, US",
+     "environment": "prod",
+     "region": "us-west-2",
+     "path": [
+      "Platform root scope",
+      "Production, US"
+     ]
+    },
+    "metric": {
+     "id": "metric-latency-p99",
+     "label": "Latency, 99th percentile",
+     "notation": "latency.p99"
+    },
+    "comparator": "<=",
+    "target": 300.0,
+    "unit": "ms",
+    "window": "P7D",
+    "referenceSource": "https://standards.example/platform/production-floors/2026#latency",
+    "rationale": "D69: a budget consumers can reserve against. The three request-path capabilities together promise 105 ms, leaving roughly two thirds of the budget to applications.",
+    "decisions": [
+     "D69"
+    ],
+    "approval": {
+     "by": "Dana Okafor",
+     "at": "2026-09-03T10:00:00+00:00"
+    },
+    "coverage": [
+     {
+      "capability": "cap-decision",
+      "capabilityLabel": "Authorization decision capability",
+      "offering": "offering-cap-decision-prod",
+      "offeringLabel": "Authorization decision capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-decision-latency-v2",
+      "target": 25.0,
+      "margin": 275.0
+     },
+     {
+      "capability": "cap-ingress",
+      "capabilityLabel": "Ingress capability",
+      "offering": "offering-cap-ingress-prod",
+      "offeringLabel": "Ingress capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-ingress-latency-v2",
+      "target": 50.0,
+      "margin": 250.0
+     },
+     {
+      "capability": "cap-session",
+      "capabilityLabel": "Session management capability",
+      "offering": "offering-cap-session-prod",
+      "offeringLabel": "Session management capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-session-latency",
+      "target": 30.0,
+      "margin": 270.0
+     },
+     {
+      "capability": "db-capability",
+      "capabilityLabel": "Managed database capability",
+      "offering": "offering-db-prod",
+      "offeringLabel": "Managed database offered in prod/US",
+      "offeringState": "available",
+      "commitment": "commit-db-latency",
+      "target": 250.0,
+      "margin": 50.0
+     }
+    ]
+   },
+   {
+    "id": "floor-prod-rpo",
+    "label": "Production floor: recovery point at most 15 minutes, judged per quarter",
+    "scope": {
+     "id": "scope-prod",
+     "label": "Production, US",
+     "environment": "prod",
+     "region": "us-west-2",
+     "path": [
+      "Platform root scope",
+      "Production, US"
+     ]
+    },
+    "metric": {
+     "id": "metric-recovery-point",
+     "label": "Recovery point objective",
+     "notation": "rpo"
+    },
+    "comparator": "<=",
+    "target": 15.0,
+    "unit": "min",
+    "window": "P90D",
+    "referenceSource": "https://standards.example/platform/production-floors/2026#rpo",
+    "rationale": "D69: asynchronous cross-region replication at a short interval. Stateless capabilities promise zero on top of it.",
+    "decisions": [
+     "D69"
+    ],
+    "approval": {
+     "by": "Dana Okafor",
+     "at": "2026-09-03T10:00:00+00:00"
+    },
+    "coverage": [
+     {
+      "capability": "cap-decision",
+      "capabilityLabel": "Authorization decision capability",
+      "offering": "offering-cap-decision-prod",
+      "offeringLabel": "Authorization decision capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-decision-rpo",
+      "target": 0.0,
+      "margin": 15.0
+     },
+     {
+      "capability": "cap-ingress",
+      "capabilityLabel": "Ingress capability",
+      "offering": "offering-cap-ingress-prod",
+      "offeringLabel": "Ingress capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-ingress-rpo",
+      "target": 0.0,
+      "margin": 15.0
+     },
+     {
+      "capability": "cap-session",
+      "capabilityLabel": "Session management capability",
+      "offering": "offering-cap-session-prod",
+      "offeringLabel": "Session management capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-session-rpo",
+      "target": 5.0,
+      "margin": 10.0
+     },
+     {
+      "capability": "db-capability",
+      "capabilityLabel": "Managed database capability",
+      "offering": "offering-db-prod",
+      "offeringLabel": "Managed database offered in prod/US",
+      "offeringState": "available",
+      "commitment": "commit-db-rpo",
+      "target": 5.0,
+      "margin": 10.0
+     }
+    ]
+   },
+   {
+    "id": "floor-prod-rto",
+    "label": "Production floor: recovery time at most 60 minutes, judged per quarter",
+    "scope": {
+     "id": "scope-prod",
+     "label": "Production, US",
+     "environment": "prod",
+     "region": "us-west-2",
+     "path": [
+      "Platform root scope",
+      "Production, US"
+     ]
+    },
+    "metric": {
+     "id": "metric-recovery-time",
+     "label": "Recovery time objective",
+     "notation": "rto"
+    },
+    "comparator": "<=",
+    "target": 60.0,
+    "unit": "min",
+    "window": "P90D",
+    "referenceSource": "https://standards.example/platform/production-floors/2026#rto",
+    "rationale": "D69: a standby target in another region taken into service by a routing change. Tighter than this needs active-active deployment, a design decision not yet taken.",
+    "decisions": [
+     "D69"
+    ],
+    "approval": {
+     "by": "Dana Okafor",
+     "at": "2026-09-03T10:00:00+00:00"
+    },
+    "coverage": [
+     {
+      "capability": "cap-decision",
+      "capabilityLabel": "Authorization decision capability",
+      "offering": "offering-cap-decision-prod",
+      "offeringLabel": "Authorization decision capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-decision-rto-v2",
+      "target": 60.0,
+      "margin": 0.0
+     },
+     {
+      "capability": "cap-ingress",
+      "capabilityLabel": "Ingress capability",
+      "offering": "offering-cap-ingress-prod",
+      "offeringLabel": "Ingress capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-ingress-rto-v2",
+      "target": 60.0,
+      "margin": 0.0
+     },
+     {
+      "capability": "cap-session",
+      "capabilityLabel": "Session management capability",
+      "offering": "offering-cap-session-prod",
+      "offeringLabel": "Session management capability offered in production",
+      "offeringState": "available",
+      "commitment": "commit-cap-session-rto-v2",
+      "target": 60.0,
+      "margin": 0.0
+     },
+     {
+      "capability": "db-capability",
+      "capabilityLabel": "Managed database capability",
+      "offering": "offering-db-prod",
+      "offeringLabel": "Managed database offered in prod/US",
+      "offeringState": "available",
+      "commitment": "commit-db-rto",
+      "target": 45.0,
+      "margin": 15.0
+     }
+    ]
    }
   ]
  }

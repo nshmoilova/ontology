@@ -1,0 +1,15 @@
+# CQ-18 — Why does each committed commitment and each floor carry the target it
+# does, and which decision set it? The rationale is text that cites decisions by
+# identifier (D72). Rows with no rationale are the stewardship list.
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?subject ?kind ?metric ?target ?rationale WHERE {
+  { ?subject a cmt:Commitment ; cmt:hasCommitmentState cmt:state-committed . BIND("commitment" AS ?kind) }
+  UNION
+  { ?subject a cmt:CommitmentBaseline . BIND("floor" AS ?kind) }
+  ?subject cmt:metric ?m ; cmt:target ?target .
+  ?m skos:notation ?metric .
+  OPTIONAL { ?subject cmt:rationale ?rationale }
+}
+ORDER BY ?kind ?subject

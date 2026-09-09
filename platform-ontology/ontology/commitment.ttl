@@ -12,12 +12,12 @@
 
 <https://w3id.org/examplebank/platform/commitment>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.4.0> ;
-    owl:versionInfo "0.4.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.5.0> ;
+    owl:versionInfo "0.5.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> , <https://www.w3.org/TR/vocab-ssn/> ;
     dct:title "Commitment Module"@en ;
-    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines — floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for — failover success ratio, change-failure rate, time to restore redundancy (D67)."@en ;
+    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines — floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for — failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72)."@en ;
     dct:created "2026-09-02"^^xsd:date .
 
 #################################################################
@@ -124,6 +124,12 @@ cmt:window a owl:DatatypeProperty ;
 cmt:validatedBy a owl:DatatypeProperty ;
     skos:prefLabel "validated by"@en ;
     skos:definition "Reference to the mechanism that validates observations against the target — a query in this repository, or an external check. At least one, or the commitment is aspirational."@en ;
+    vs:term_status "draft" .
+
+cmt:rationale a owl:DatatypeProperty ;
+    skos:prefLabel "rationale"@en ;
+    skos:definition "The recorded reason a commitment or baseline carries the target it does, as text that cites by identifier the decisions it rests on."@en ;
+    skos:example "D71: covers TLS termination, tenant resolution and the decision call; 50 ms of the 300 ms floor."@en ;
     vs:term_status "draft" .
 
 #################################################################
