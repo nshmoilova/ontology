@@ -313,8 +313,8 @@ pre.sparql {
 .tablewrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--rule); box-shadow: var(--shadow); }
 table.data { width: 100%; border-collapse: collapse; font-size: .88rem; background: var(--panel); }
 table.data th {
-  text-align: left; font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--ink-3); padding: 9px 13px; border-bottom: 1px solid var(--rule);
+  text-align: left; font-size: .76rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink); padding: 10px 13px; border-bottom: 2px solid var(--rule-2);
   font-weight: 600; white-space: nowrap; position: sticky; top: 52px; background: var(--panel);
 }
 table.data td { padding: 8px 13px; border-bottom: 1px solid var(--rule); vertical-align: top; }

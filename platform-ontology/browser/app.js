@@ -900,7 +900,7 @@
         <p class="small">${whyCell(f)}</p>
         <p class="muted small">${f.referenceSource ? `Reference <code>${esc(f.referenceSource)}</code>` : ""}${f.approval && f.approval.by ? ` · approved by ${esc(f.approval.by)}` : ""}</p>
         <div class="tablewrap"><table class="data"><tr><th>Offering</th><th>Promise</th><th>Margin</th></tr>
-          ${f.coverage.map((r) => `<tr><td><a href="${capHref(r.capability)}">${esc(r.capabilityLabel)}</a> <span class="muted small">${esc(r.offeringLabel)}</span> ${statePill(r.offeringState)}</td>
+          ${f.coverage.map((r) => `<tr><td><a href="${capHref(r.capability)}"><b>${esc(r.capabilityLabel)}</b></a><div class="small" style="margin-top:.2rem">${esc(r.offeringLabel)} ${statePill(r.offeringState)}</div></td>
             <td>${r.target == null ? "—" : fmtNum(r.target) + " " + esc(f.unit)}</td><td>${marginPill(r.margin)}</td></tr>`).join("")}
         </table></div>
       </section>`).join("")}`;
