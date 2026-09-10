@@ -913,7 +913,7 @@
       <div class="tablewrap"><table class="data cmtable">
         <tr><th>Capability</th><th>Metric</th><th>Promise</th><th>Status</th><th>History</th><th>Why</th></tr>
         ${rows.map(({ c, o, x }) => `<tr id="${esc(x.id)}">
-          <td><a href="${capHref(c.id)}"><b>${esc(c.label)}</b></a><div class="muted small">${esc(o.label)}</div></td>
+          <td><a href="${capHref(c.id)}"><b>${esc(c.label)}</b></a><div class="small" style="margin-top:.2rem">${o.scope ? esc([o.scope.environment, o.scope.region].filter(Boolean).join(" · ")) : ""} ${statePill(o.state)}</div></td>
           <td>${esc(x.metric.label)}<div class="muted small">${fmtWindow(x.window)}</div></td>
           <td>${promiseText(x)}</td>
           <td>${status(x)}</td>
@@ -936,7 +936,7 @@
         <p class="small">${whyCell(f)}</p>
         <p class="muted small">${f.referenceSource ? `Reference <code>${esc(f.referenceSource)}</code>` : ""}${f.approval && f.approval.by ? ` · approved by ${esc(f.approval.by)}` : ""}</p>
         <div class="tablewrap"><table class="data"><tr><th>Offering</th><th>Promise</th><th>Margin</th></tr>
-          ${f.coverage.map((r) => `<tr><td><a href="${capHref(r.capability)}"><b>${esc(r.capabilityLabel)}</b></a><div class="small" style="margin-top:.2rem">${esc(r.offeringLabel)} ${statePill(r.offeringState)}</div></td>
+          ${f.coverage.map((r) => `<tr><td><a href="${capHref(r.capability)}"><b>${esc(r.capabilityLabel)}</b></a><div class="small" style="margin-top:.2rem">${esc(r.offeringLabel)}</div><div class="small">${statePill(r.offeringState)}</div></td>
             <td>${r.target == null ? "—" : fmtNum(r.target) + " " + esc(f.unit)}</td><td>${marginPill(r.margin)}</td></tr>`).join("")}
         </table></div>
       </section>`).join("")}`;

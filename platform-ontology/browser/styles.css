@@ -422,6 +422,10 @@ footer.pagefoot {
 
 .anchored { outline: 2px solid var(--m-control-plane); outline-offset: 4px; transition: outline-color 1.5s ease 1s; scroll-margin-top: 1rem; }
 [id^="P"], [id^="D"] { scroll-margin-top: 1rem; }
+.cmtable tr[id] { scroll-margin-top: 108px; }
+.cmtable tr.anchored { outline: none; }
+.cmtable tr.anchored td { background: var(--accent-soft); }
+section.card[id] { scroll-margin-top: 64px; }
 
 .fence { background: var(--code-bg); border: 1px solid var(--rule); border-radius: 8px; padding: .7rem .9rem; overflow-x: auto; font-size: .82rem; line-height: 1.45; white-space: pre; margin: .6rem 0; }
 .mdlist { margin: .4rem 0 .6rem 1.1rem; padding: 0; }
