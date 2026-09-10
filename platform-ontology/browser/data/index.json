@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "6e9568c679fb",
+ "sourceDigest": "0d37b63a093a",
  "stats": {
   "modules": 8,
   "classes": 93,
@@ -21480,7 +21480,7 @@
        [
         "P20 Consumers depend on contracts, never on implementations",
         "A capability is consumed through its published contract; a consumer depends on a contract version, never on what realises the capability; a contract changes only through a published, approved version.",
-        "An application's requirement pins version 1.2.0 of the managed-database contract; a version published without a change declaration, or a consumer left on a retired version, is a violation.",
+        "An application's requirement pins version 1.2.0 of the notifications contract; a version published without a change declaration, or a consumer left on a retired version, is a violation.",
         "Consumers survive re-implementation; a change to an interface has an approver and a history."
        ],
        [
@@ -24117,6 +24117,307 @@
     }
    },
    {
+    "id": "cap-notifications",
+    "iri": "https://data.examplebank.com/platform/cap-notifications",
+    "label": "Notifications capability",
+    "dependsOn": [],
+    "contracts": [
+     {
+      "id": "contract-notifications",
+      "label": "Notifications capability contract",
+      "versions": [
+       {
+        "id": "contract-notifications-v1",
+        "version": "1.2.0",
+        "state": "published",
+        "artifact": "https://contracts.example/platform/notifications/1.2.0/openapi.yaml"
+       }
+      ]
+     }
+    ],
+    "dataCategories": [
+     "Customer personal data",
+     "Tenant workload data"
+    ],
+    "offerings": [
+     {
+      "id": "offering-notifications-prod",
+      "label": "Notifications capability offered in production, US",
+      "state": "available",
+      "scope": {
+       "id": "scope-prod",
+       "label": "Production, US",
+       "environment": "prod",
+       "region": "us-west-2",
+       "path": [
+        "Platform root scope",
+        "Production, US"
+       ]
+      },
+      "commitments": [
+       {
+        "id": "commit-notifications-availability",
+        "label": "Notifications: availability at least 99.95 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.95,
+        "unit": "%",
+        "window": "P30D",
+        "state": "committed",
+        "measuredBy": [
+         "Notifications platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq9-commitments-and-evidence.rq"
+        ],
+        "rationale": "D69: meets the production floor with headroom. An illustrative seed target for a tenant-facing offering, not a platform target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-01T10:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-availability",
+         "target": 99.9,
+         "margin": 0.05
+        },
+        "evidence": {
+         "status": "met",
+         "latest": {
+          "value": 99.97,
+          "windowStart": "2026-08-01T00:00:00+00:00",
+          "windowEnd": "2026-08-31T23:59:59+00:00"
+         },
+         "observations": 1
+        },
+        "supersededBy": null
+       },
+       {
+        "id": "commit-notifications-latency",
+        "label": "Notifications: latency p99 at most 250 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 250.0,
+        "unit": "ms",
+        "window": "P7D",
+        "state": "committed",
+        "measuredBy": [
+         "Notifications platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 250 ms inside the 300 ms floor. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-latency",
+         "target": 300.0,
+         "margin": 50.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        },
+        "supersededBy": null
+       },
+       {
+        "id": "commit-notifications-rpo",
+        "label": "Notifications: recovery point at most 5 minutes",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "target": 5.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Notifications platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 5 minutes inside the 15 minute floor, asynchronous replication. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rpo",
+         "target": 15.0,
+         "margin": 10.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        },
+        "supersededBy": null
+       },
+       {
+        "id": "commit-notifications-rto",
+        "label": "Notifications: recovery time at most 45 minutes",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "target": 45.0,
+        "unit": "min",
+        "window": "P90D",
+        "state": "committed",
+        "measuredBy": [
+         "Notifications platform metrics feed"
+        ],
+        "validatedBy": [
+         "queries/competency/cq16-commitment-status.rq"
+        ],
+        "rationale": "D69: 45 minutes inside the 60 minute floor. An illustrative seed target.",
+        "decisions": [
+         "D69"
+        ],
+        "supersedes": null,
+        "declarationScope": "Production, US",
+        "approval": {
+         "by": "Dana Okafor",
+         "at": "2026-09-03T11:00:00+00:00"
+        },
+        "floor": {
+         "id": "floor-prod-rto",
+         "target": 60.0,
+         "margin": 15.0
+        },
+        "evidence": {
+         "status": "no observation",
+         "latest": null,
+         "observations": 0
+        },
+        "supersededBy": null
+       }
+      ],
+      "history": [],
+      "floors": [
+       {
+        "floor": "floor-prod-availability",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "floorTarget": 99.9,
+        "unit": "%",
+        "commitment": "commit-notifications-availability",
+        "target": 99.95,
+        "margin": 0.05
+       },
+       {
+        "floor": "floor-prod-latency",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "floorTarget": 300.0,
+        "unit": "ms",
+        "commitment": "commit-notifications-latency",
+        "target": 250.0,
+        "margin": 50.0
+       },
+       {
+        "floor": "floor-prod-rpo",
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "comparator": "<=",
+        "floorTarget": 15.0,
+        "unit": "min",
+        "commitment": "commit-notifications-rpo",
+        "target": 5.0,
+        "margin": 10.0
+       },
+       {
+        "floor": "floor-prod-rto",
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "comparator": "<=",
+        "floorTarget": 60.0,
+        "unit": "min",
+        "commitment": "commit-notifications-rto",
+        "target": 45.0,
+        "margin": 15.0
+       }
+      ]
+     }
+    ],
+    "gaps": [
+     {
+      "kind": "no observation",
+      "offering": "Notifications capability offered in production, US",
+      "commitment": "Notifications: latency p99 at most 250 ms",
+      "commitmentId": "commit-notifications-latency",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Notifications capability offered in production, US",
+      "commitment": "Notifications: recovery point at most 5 minutes",
+      "commitmentId": "commit-notifications-rpo",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     },
+     {
+      "kind": "no observation",
+      "offering": "Notifications capability offered in production, US",
+      "commitment": "Notifications: recovery time at most 45 minutes",
+      "commitmentId": "commit-notifications-rto",
+      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
+     }
+    ],
+    "download": "downloads/commitments/cap-notifications.json",
+    "counts": {
+     "offerings": 1,
+     "commitments": 4,
+     "met": 1,
+     "noObservation": 3,
+     "gaps": 3
+    }
+   },
+   {
     "id": "cap-session",
     "iri": "https://data.examplebank.com/platform/cap-session",
     "label": "Session management capability",
@@ -24455,307 +24756,6 @@
      "noObservation": 4,
      "gaps": 4
     }
-   },
-   {
-    "id": "db-capability",
-    "iri": "https://data.examplebank.com/platform/db-capability",
-    "label": "Managed database capability",
-    "dependsOn": [],
-    "contracts": [
-     {
-      "id": "contract-db",
-      "label": "Managed database capability contract",
-      "versions": [
-       {
-        "id": "contract-db-v1",
-        "version": "1.2.0",
-        "state": "published",
-        "artifact": "https://contracts.example/platform/db/1.2.0/openapi.yaml"
-       }
-      ]
-     }
-    ],
-    "dataCategories": [
-     "Customer personal data",
-     "Tenant workload data"
-    ],
-    "offerings": [
-     {
-      "id": "offering-db-prod",
-      "label": "Managed database offered in prod/US",
-      "state": "available",
-      "scope": {
-       "id": "scope-prod",
-       "label": "Production, US",
-       "environment": "prod",
-       "region": "us-west-2",
-       "path": [
-        "Platform root scope",
-        "Production, US"
-       ]
-      },
-      "commitments": [
-       {
-        "id": "commit-db-availability",
-        "label": "Managed database availability, production",
-        "metric": {
-         "id": "metric-availability",
-         "label": "Availability",
-         "notation": "availability"
-        },
-        "comparator": ">=",
-        "target": 99.95,
-        "unit": "%",
-        "window": "P30D",
-        "state": "committed",
-        "measuredBy": [
-         "Database platform metrics feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq9-commitments-and-evidence.rq"
-        ],
-        "rationale": "D69: meets the production floor with headroom. An illustrative seed target for a tenant-facing offering, not a platform target.",
-        "decisions": [
-         "D69"
-        ],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-01T10:00:00+00:00"
-        },
-        "floor": {
-         "id": "floor-prod-availability",
-         "target": 99.9,
-         "margin": 0.05
-        },
-        "evidence": {
-         "status": "met",
-         "latest": {
-          "value": 99.97,
-          "windowStart": "2026-08-01T00:00:00+00:00",
-          "windowEnd": "2026-08-31T23:59:59+00:00"
-         },
-         "observations": 1
-        },
-        "supersededBy": null
-       },
-       {
-        "id": "commit-db-latency",
-        "label": "Managed database latency p99 at most 250 ms",
-        "metric": {
-         "id": "metric-latency-p99",
-         "label": "Latency, 99th percentile",
-         "notation": "latency.p99"
-        },
-        "comparator": "<=",
-        "target": 250.0,
-        "unit": "ms",
-        "window": "P7D",
-        "state": "committed",
-        "measuredBy": [
-         "Database platform metrics feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": "D69: 250 ms inside the 300 ms floor. An illustrative seed target.",
-        "decisions": [
-         "D69"
-        ],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T11:00:00+00:00"
-        },
-        "floor": {
-         "id": "floor-prod-latency",
-         "target": 300.0,
-         "margin": 50.0
-        },
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": null
-       },
-       {
-        "id": "commit-db-rpo",
-        "label": "Managed database recovery point at most 5 minutes",
-        "metric": {
-         "id": "metric-recovery-point",
-         "label": "Recovery point objective",
-         "notation": "rpo"
-        },
-        "comparator": "<=",
-        "target": 5.0,
-        "unit": "min",
-        "window": "P90D",
-        "state": "committed",
-        "measuredBy": [
-         "Database platform metrics feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": "D69: 5 minutes inside the 15 minute floor, asynchronous replication. An illustrative seed target.",
-        "decisions": [
-         "D69"
-        ],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T11:00:00+00:00"
-        },
-        "floor": {
-         "id": "floor-prod-rpo",
-         "target": 15.0,
-         "margin": 10.0
-        },
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": null
-       },
-       {
-        "id": "commit-db-rto",
-        "label": "Managed database recovery time at most 45 minutes",
-        "metric": {
-         "id": "metric-recovery-time",
-         "label": "Recovery time objective",
-         "notation": "rto"
-        },
-        "comparator": "<=",
-        "target": 45.0,
-        "unit": "min",
-        "window": "P90D",
-        "state": "committed",
-        "measuredBy": [
-         "Database platform metrics feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": "D69: 45 minutes inside the 60 minute floor. An illustrative seed target.",
-        "decisions": [
-         "D69"
-        ],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T11:00:00+00:00"
-        },
-        "floor": {
-         "id": "floor-prod-rto",
-         "target": 60.0,
-         "margin": 15.0
-        },
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": null
-       }
-      ],
-      "history": [],
-      "floors": [
-       {
-        "floor": "floor-prod-availability",
-        "metric": {
-         "id": "metric-availability",
-         "label": "Availability",
-         "notation": "availability"
-        },
-        "comparator": ">=",
-        "floorTarget": 99.9,
-        "unit": "%",
-        "commitment": "commit-db-availability",
-        "target": 99.95,
-        "margin": 0.05
-       },
-       {
-        "floor": "floor-prod-latency",
-        "metric": {
-         "id": "metric-latency-p99",
-         "label": "Latency, 99th percentile",
-         "notation": "latency.p99"
-        },
-        "comparator": "<=",
-        "floorTarget": 300.0,
-        "unit": "ms",
-        "commitment": "commit-db-latency",
-        "target": 250.0,
-        "margin": 50.0
-       },
-       {
-        "floor": "floor-prod-rpo",
-        "metric": {
-         "id": "metric-recovery-point",
-         "label": "Recovery point objective",
-         "notation": "rpo"
-        },
-        "comparator": "<=",
-        "floorTarget": 15.0,
-        "unit": "min",
-        "commitment": "commit-db-rpo",
-        "target": 5.0,
-        "margin": 10.0
-       },
-       {
-        "floor": "floor-prod-rto",
-        "metric": {
-         "id": "metric-recovery-time",
-         "label": "Recovery time objective",
-         "notation": "rto"
-        },
-        "comparator": "<=",
-        "floorTarget": 60.0,
-        "unit": "min",
-        "commitment": "commit-db-rto",
-        "target": 45.0,
-        "margin": 15.0
-       }
-      ]
-     }
-    ],
-    "gaps": [
-     {
-      "kind": "no observation",
-      "offering": "Managed database offered in prod/US",
-      "commitment": "Managed database latency p99 at most 250 ms",
-      "commitmentId": "commit-db-latency",
-      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
-     },
-     {
-      "kind": "no observation",
-      "offering": "Managed database offered in prod/US",
-      "commitment": "Managed database recovery point at most 5 minutes",
-      "commitmentId": "commit-db-rpo",
-      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
-     },
-     {
-      "kind": "no observation",
-      "offering": "Managed database offered in prod/US",
-      "commitment": "Managed database recovery time at most 45 minutes",
-      "commitmentId": "commit-db-rto",
-      "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
-     }
-    ],
-    "download": "downloads/commitments/db-capability.json",
-    "counts": {
-     "offerings": 1,
-     "commitments": 4,
-     "met": 1,
-     "noObservation": 3,
-     "gaps": 3
-    }
    }
   ],
   "floors": [
@@ -24812,22 +24812,22 @@
       "margin": 0.09
      },
      {
+      "capability": "cap-notifications",
+      "capabilityLabel": "Notifications capability",
+      "offering": "offering-notifications-prod",
+      "offeringLabel": "Notifications capability offered in production, US",
+      "offeringState": "available",
+      "commitment": "commit-notifications-availability",
+      "target": 99.95,
+      "margin": 0.05
+     },
+     {
       "capability": "cap-session",
       "capabilityLabel": "Session management capability",
       "offering": "offering-cap-session-prod",
       "offeringLabel": "Session management capability offered in production",
       "offeringState": "available",
       "commitment": "commit-cap-session-availability",
-      "target": 99.95,
-      "margin": 0.05
-     },
-     {
-      "capability": "db-capability",
-      "capabilityLabel": "Managed database capability",
-      "offering": "offering-db-prod",
-      "offeringLabel": "Managed database offered in prod/US",
-      "offeringState": "available",
-      "commitment": "commit-db-availability",
       "target": 99.95,
       "margin": 0.05
      }
@@ -24886,6 +24886,16 @@
       "margin": 250.0
      },
      {
+      "capability": "cap-notifications",
+      "capabilityLabel": "Notifications capability",
+      "offering": "offering-notifications-prod",
+      "offeringLabel": "Notifications capability offered in production, US",
+      "offeringState": "available",
+      "commitment": "commit-notifications-latency",
+      "target": 250.0,
+      "margin": 50.0
+     },
+     {
       "capability": "cap-session",
       "capabilityLabel": "Session management capability",
       "offering": "offering-cap-session-prod",
@@ -24894,16 +24904,6 @@
       "commitment": "commit-cap-session-latency",
       "target": 30.0,
       "margin": 270.0
-     },
-     {
-      "capability": "db-capability",
-      "capabilityLabel": "Managed database capability",
-      "offering": "offering-db-prod",
-      "offeringLabel": "Managed database offered in prod/US",
-      "offeringState": "available",
-      "commitment": "commit-db-latency",
-      "target": 250.0,
-      "margin": 50.0
      }
     ]
    },
@@ -24960,22 +24960,22 @@
       "margin": 15.0
      },
      {
+      "capability": "cap-notifications",
+      "capabilityLabel": "Notifications capability",
+      "offering": "offering-notifications-prod",
+      "offeringLabel": "Notifications capability offered in production, US",
+      "offeringState": "available",
+      "commitment": "commit-notifications-rpo",
+      "target": 5.0,
+      "margin": 10.0
+     },
+     {
       "capability": "cap-session",
       "capabilityLabel": "Session management capability",
       "offering": "offering-cap-session-prod",
       "offeringLabel": "Session management capability offered in production",
       "offeringState": "available",
       "commitment": "commit-cap-session-rpo",
-      "target": 5.0,
-      "margin": 10.0
-     },
-     {
-      "capability": "db-capability",
-      "capabilityLabel": "Managed database capability",
-      "offering": "offering-db-prod",
-      "offeringLabel": "Managed database offered in prod/US",
-      "offeringState": "available",
-      "commitment": "commit-db-rpo",
       "target": 5.0,
       "margin": 10.0
      }
@@ -25034,6 +25034,16 @@
       "margin": 0.0
      },
      {
+      "capability": "cap-notifications",
+      "capabilityLabel": "Notifications capability",
+      "offering": "offering-notifications-prod",
+      "offeringLabel": "Notifications capability offered in production, US",
+      "offeringState": "available",
+      "commitment": "commit-notifications-rto",
+      "target": 45.0,
+      "margin": 15.0
+     },
+     {
       "capability": "cap-session",
       "capabilityLabel": "Session management capability",
       "offering": "offering-cap-session-prod",
@@ -25042,16 +25052,6 @@
       "commitment": "commit-cap-session-rto-v2",
       "target": 60.0,
       "margin": 0.0
-     },
-     {
-      "capability": "db-capability",
-      "capabilityLabel": "Managed database capability",
-      "offering": "offering-db-prod",
-      "offeringLabel": "Managed database offered in prod/US",
-      "offeringState": "available",
-      "commitment": "commit-db-rto",
-      "target": 45.0,
-      "margin": 15.0
      }
     ]
    }

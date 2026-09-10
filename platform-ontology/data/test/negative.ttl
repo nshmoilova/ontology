@@ -530,7 +530,7 @@ ex:membership-self-approved a cp:TenantMembership ;
 
 ### 46. Commitment with no measurement source and no validation — aspirational (CommitmentShape)
 ex:commit-aspirational a cmt:Commitment ;
-    cmt:commitsTo ex:offering-db-prod ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:metric cmt:metric-latency-p99 ;
     cmt:target 250 ;
     cmt:unit unit:MilliSEC ;
@@ -539,8 +539,8 @@ ex:commit-aspirational a cmt:Commitment ;
     cmt:hasCommitmentState cmt:state-committed .
 
 ### 47. Observation measuring a different metric than its commitment (ObservationShape)
-ex:commit-db-availability-neg a cmt:Commitment ;
-    cmt:commitsTo ex:offering-db-prod ;
+ex:commit-notifications-availability-neg a cmt:Commitment ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:metric cmt:metric-availability ;
     cmt:target 99.9 ;
     cmt:unit unit:PERCENT ;
@@ -551,7 +551,7 @@ ex:commit-db-availability-neg a cmt:Commitment ;
     cmt:hasCommitmentState cmt:state-committed .
 ex:source-neg a cmt:MeasurementSource .
 ex:obs-wrong-metric a cmt:Observation ;
-    cmt:observationOf ex:commit-db-availability-neg ;
+    cmt:observationOf ex:commit-notifications-availability-neg ;
     sosa:observedProperty cmt:metric-latency-p99 ;
     sosa:hasSimpleResult 240 ;
     cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;

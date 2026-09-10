@@ -461,7 +461,7 @@
               [
                 "P20 Consumers depend on contracts, never on implementations",
                 "A capability is consumed through its published contract; a consumer depends on a contract version, never on what realises the capability; a contract changes only through a published, approved version.",
-                "An application's requirement pins version 1.2.0 of the managed-database contract; a version published without a change declaration, or a consumer left on a retired version, is a violation.",
+                "An application's requirement pins version 1.2.0 of the notifications contract; a version published without a change declaration, or a consumer left on a retired version, is a violation.",
                 "Consumers survive re-implementation; a change to an interface has an approver and a history."
               ],
               [

@@ -1,21 +1,21 @@
 {
  "generatedFrom": "data/test/positive.ttl",
  "vocabulary": "https://nshmoilova.github.io/ontology/data/commitment-context.jsonld",
- "webVersion": "https://nshmoilova.github.io/ontology/#/commitments/db-capability",
- "id": "db-capability",
- "iri": "https://data.examplebank.com/platform/db-capability",
- "label": "Managed database capability",
+ "webVersion": "https://nshmoilova.github.io/ontology/#/commitments/cap-notifications",
+ "id": "cap-notifications",
+ "iri": "https://data.examplebank.com/platform/cap-notifications",
+ "label": "Notifications capability",
  "dependsOn": [],
  "contracts": [
   {
-   "id": "contract-db",
-   "label": "Managed database capability contract",
+   "id": "contract-notifications",
+   "label": "Notifications capability contract",
    "versions": [
     {
-     "id": "contract-db-v1",
+     "id": "contract-notifications-v1",
      "version": "1.2.0",
      "state": "published",
-     "artifact": "https://contracts.example/platform/db/1.2.0/openapi.yaml"
+     "artifact": "https://contracts.example/platform/notifications/1.2.0/openapi.yaml"
     }
    ]
   }
@@ -26,8 +26,8 @@
  ],
  "offerings": [
   {
-   "id": "offering-db-prod",
-   "label": "Managed database offered in prod/US",
+   "id": "offering-notifications-prod",
+   "label": "Notifications capability offered in production, US",
    "state": "available",
    "scope": {
     "id": "scope-prod",
@@ -41,8 +41,8 @@
    },
    "commitments": [
     {
-     "id": "commit-db-availability",
-     "label": "Managed database availability, production",
+     "id": "commit-notifications-availability",
+     "label": "Notifications: availability at least 99.95 %",
      "metric": {
       "id": "metric-availability",
       "label": "Availability",
@@ -54,7 +54,7 @@
      "window": "P30D",
      "state": "committed",
      "measuredBy": [
-      "Database platform metrics feed"
+      "Notifications platform metrics feed"
      ],
      "validatedBy": [
       "queries/competency/cq9-commitments-and-evidence.rq"
@@ -86,8 +86,8 @@
      "supersededBy": null
     },
     {
-     "id": "commit-db-latency",
-     "label": "Managed database latency p99 at most 250 ms",
+     "id": "commit-notifications-latency",
+     "label": "Notifications: latency p99 at most 250 ms",
      "metric": {
       "id": "metric-latency-p99",
       "label": "Latency, 99th percentile",
@@ -99,7 +99,7 @@
      "window": "P7D",
      "state": "committed",
      "measuredBy": [
-      "Database platform metrics feed"
+      "Notifications platform metrics feed"
      ],
      "validatedBy": [
       "queries/competency/cq16-commitment-status.rq"
@@ -127,8 +127,8 @@
      "supersededBy": null
     },
     {
-     "id": "commit-db-rpo",
-     "label": "Managed database recovery point at most 5 minutes",
+     "id": "commit-notifications-rpo",
+     "label": "Notifications: recovery point at most 5 minutes",
      "metric": {
       "id": "metric-recovery-point",
       "label": "Recovery point objective",
@@ -140,7 +140,7 @@
      "window": "P90D",
      "state": "committed",
      "measuredBy": [
-      "Database platform metrics feed"
+      "Notifications platform metrics feed"
      ],
      "validatedBy": [
       "queries/competency/cq16-commitment-status.rq"
@@ -168,8 +168,8 @@
      "supersededBy": null
     },
     {
-     "id": "commit-db-rto",
-     "label": "Managed database recovery time at most 45 minutes",
+     "id": "commit-notifications-rto",
+     "label": "Notifications: recovery time at most 45 minutes",
      "metric": {
       "id": "metric-recovery-time",
       "label": "Recovery time objective",
@@ -181,7 +181,7 @@
      "window": "P90D",
      "state": "committed",
      "measuredBy": [
-      "Database platform metrics feed"
+      "Notifications platform metrics feed"
      ],
      "validatedBy": [
       "queries/competency/cq16-commitment-status.rq"
@@ -221,7 +221,7 @@
      "comparator": ">=",
      "floorTarget": 99.9,
      "unit": "%",
-     "commitment": "commit-db-availability",
+     "commitment": "commit-notifications-availability",
      "target": 99.95,
      "margin": 0.05
     },
@@ -235,7 +235,7 @@
      "comparator": "<=",
      "floorTarget": 300.0,
      "unit": "ms",
-     "commitment": "commit-db-latency",
+     "commitment": "commit-notifications-latency",
      "target": 250.0,
      "margin": 50.0
     },
@@ -249,7 +249,7 @@
      "comparator": "<=",
      "floorTarget": 15.0,
      "unit": "min",
-     "commitment": "commit-db-rpo",
+     "commitment": "commit-notifications-rpo",
      "target": 5.0,
      "margin": 10.0
     },
@@ -263,7 +263,7 @@
      "comparator": "<=",
      "floorTarget": 60.0,
      "unit": "min",
-     "commitment": "commit-db-rto",
+     "commitment": "commit-notifications-rto",
      "target": 45.0,
      "margin": 15.0
     }
@@ -273,23 +273,23 @@
  "gaps": [
   {
    "kind": "no observation",
-   "offering": "Managed database offered in prod/US",
-   "commitment": "Managed database latency p99 at most 250 ms",
-   "commitmentId": "commit-db-latency",
+   "offering": "Notifications capability offered in production, US",
+   "commitment": "Notifications: latency p99 at most 250 ms",
+   "commitmentId": "commit-notifications-latency",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   },
   {
    "kind": "no observation",
-   "offering": "Managed database offered in prod/US",
-   "commitment": "Managed database recovery point at most 5 minutes",
-   "commitmentId": "commit-db-rpo",
+   "offering": "Notifications capability offered in production, US",
+   "commitment": "Notifications: recovery point at most 5 minutes",
+   "commitmentId": "commit-notifications-rpo",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   },
   {
    "kind": "no observation",
-   "offering": "Managed database offered in prod/US",
-   "commitment": "Managed database recovery time at most 45 minutes",
-   "commitmentId": "commit-db-rto",
+   "offering": "Notifications capability offered in production, US",
+   "commitment": "Notifications: recovery time at most 45 minutes",
+   "commitmentId": "commit-notifications-rto",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   }
  ],

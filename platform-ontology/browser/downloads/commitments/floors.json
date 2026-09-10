@@ -56,22 +56,22 @@
      "margin": 0.09
     },
     {
+     "capability": "cap-notifications",
+     "capabilityLabel": "Notifications capability",
+     "offering": "offering-notifications-prod",
+     "offeringLabel": "Notifications capability offered in production, US",
+     "offeringState": "available",
+     "commitment": "commit-notifications-availability",
+     "target": 99.95,
+     "margin": 0.05
+    },
+    {
      "capability": "cap-session",
      "capabilityLabel": "Session management capability",
      "offering": "offering-cap-session-prod",
      "offeringLabel": "Session management capability offered in production",
      "offeringState": "available",
      "commitment": "commit-cap-session-availability",
-     "target": 99.95,
-     "margin": 0.05
-    },
-    {
-     "capability": "db-capability",
-     "capabilityLabel": "Managed database capability",
-     "offering": "offering-db-prod",
-     "offeringLabel": "Managed database offered in prod/US",
-     "offeringState": "available",
-     "commitment": "commit-db-availability",
      "target": 99.95,
      "margin": 0.05
     }
@@ -130,6 +130,16 @@
      "margin": 250.0
     },
     {
+     "capability": "cap-notifications",
+     "capabilityLabel": "Notifications capability",
+     "offering": "offering-notifications-prod",
+     "offeringLabel": "Notifications capability offered in production, US",
+     "offeringState": "available",
+     "commitment": "commit-notifications-latency",
+     "target": 250.0,
+     "margin": 50.0
+    },
+    {
      "capability": "cap-session",
      "capabilityLabel": "Session management capability",
      "offering": "offering-cap-session-prod",
@@ -138,16 +148,6 @@
      "commitment": "commit-cap-session-latency",
      "target": 30.0,
      "margin": 270.0
-    },
-    {
-     "capability": "db-capability",
-     "capabilityLabel": "Managed database capability",
-     "offering": "offering-db-prod",
-     "offeringLabel": "Managed database offered in prod/US",
-     "offeringState": "available",
-     "commitment": "commit-db-latency",
-     "target": 250.0,
-     "margin": 50.0
     }
    ]
   },
@@ -204,22 +204,22 @@
      "margin": 15.0
     },
     {
+     "capability": "cap-notifications",
+     "capabilityLabel": "Notifications capability",
+     "offering": "offering-notifications-prod",
+     "offeringLabel": "Notifications capability offered in production, US",
+     "offeringState": "available",
+     "commitment": "commit-notifications-rpo",
+     "target": 5.0,
+     "margin": 10.0
+    },
+    {
      "capability": "cap-session",
      "capabilityLabel": "Session management capability",
      "offering": "offering-cap-session-prod",
      "offeringLabel": "Session management capability offered in production",
      "offeringState": "available",
      "commitment": "commit-cap-session-rpo",
-     "target": 5.0,
-     "margin": 10.0
-    },
-    {
-     "capability": "db-capability",
-     "capabilityLabel": "Managed database capability",
-     "offering": "offering-db-prod",
-     "offeringLabel": "Managed database offered in prod/US",
-     "offeringState": "available",
-     "commitment": "commit-db-rpo",
      "target": 5.0,
      "margin": 10.0
     }
@@ -278,6 +278,16 @@
      "margin": 0.0
     },
     {
+     "capability": "cap-notifications",
+     "capabilityLabel": "Notifications capability",
+     "offering": "offering-notifications-prod",
+     "offeringLabel": "Notifications capability offered in production, US",
+     "offeringState": "available",
+     "commitment": "commit-notifications-rto",
+     "target": 45.0,
+     "margin": 15.0
+    },
+    {
      "capability": "cap-session",
      "capabilityLabel": "Session management capability",
      "offering": "offering-cap-session-prod",
@@ -286,16 +296,6 @@
      "commitment": "commit-cap-session-rto-v2",
      "target": 60.0,
      "margin": 0.0
-    },
-    {
-     "capability": "db-capability",
-     "capabilityLabel": "Managed database capability",
-     "offering": "offering-db-prod",
-     "offeringLabel": "Managed database offered in prod/US",
-     "offeringState": "available",
-     "commitment": "commit-db-rto",
-     "target": 45.0,
-     "margin": 15.0
     }
    ]
   }

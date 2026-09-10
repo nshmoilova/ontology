@@ -264,8 +264,8 @@ ex:mgmt-plane a cp:ManagementControlPlane ;
 ex:tenant-t123 a core:Tenant ;
     core:displayName "Tenant T123" .
 
-ex:db-capability a core:Capability ;
-    core:displayName "Managed database capability" ;
+ex:cap-notifications a core:Capability ;
+    core:displayName "Notifications capability" ;
     cp:isolationModel "cell-per-tenant" .
 
 ### Scope tree (single-parent; facets carry dimensions)
@@ -279,7 +279,7 @@ ex:scope-prod a cp:AdministrativeScope ;
     cp:inRegion "US" ;
     cp:hasRegion core:region-us-west-2 ;
     cp:requiresHumanApproval true ;
-    cp:scopeIncludes ex:t123-db-plane .
+    cp:scopeIncludes ex:t123-notifications-plane .
 
 ### Concurrent session policy — configured per device class
 ex:policy-sessions-browser a cp:ConcurrentSessionPolicy ;
@@ -310,9 +310,9 @@ ex:approval-mem-1 a cp:ChangeApproval ;
 
 ### Subscription and offering
 ex:sub-9001 a cp:Subscription ;
-    core:displayName "T123 subscription: managed database" ;
+    core:displayName "T123 subscription: notifications" ;
     cp:subscriber ex:tenant-t123 ;
-    cp:subscribedCapability ex:db-capability ;
+    cp:subscribedCapability ex:cap-notifications ;
     cp:hasSubscriptionState cp:substate-active ;
     core:validFrom "2026-06-01T00:00:00Z"^^xsd:dateTime ;
     core:validUntil "2027-05-31T23:59:59Z"^^xsd:dateTime ;
@@ -322,13 +322,13 @@ ex:approval-9001 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-05-28T10:00:00Z"^^xsd:dateTime .
 
-ex:offering-db-prod a cp:CapabilityOffering ;
-    core:displayName "Managed database offered in prod/US" ;
+ex:offering-notifications-prod a cp:CapabilityOffering ;
+    core:displayName "Notifications capability offered in production, US" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-offering-1 ;
     cp:hasOfferingState cp:offering-available ;
-    cp:offersCapability ex:db-capability ;
+    cp:offersCapability ex:cap-notifications ;
     cp:offeredInScope ex:scope-prod .
 ex:approval-offering-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
@@ -340,19 +340,19 @@ ex:app-digital-bank a core:Application ;
     core:ownedBy ex:tenant-t123 ;
     core:governedBy ex:policy-ledger-read .
 
-ex:req-digital-bank-db a cp:CapabilityRequirement ;
+ex:req-digital-bank-notifications a cp:CapabilityRequirement ;
     cp:ofApplication ex:app-digital-bank ;
-    cp:requiredCapability ex:db-capability ;
+    cp:requiredCapability ex:cap-notifications ;
     cp:hasApproval ex:approval-req-1 .
 
 ex:approval-req-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-20T09:00:00Z"^^xsd:dateTime .
 
-ex:obs-digital-bank-db a cp:CapabilityUseObservation ;
+ex:obs-digital-bank-notifications a cp:CapabilityUseObservation ;
     core:occurredAtTime "2026-08-25T00:00:00Z"^^xsd:dateTime ;
     cp:observedApplication ex:app-digital-bank ;
-    cp:observedCapability ex:db-capability ;
+    cp:observedCapability ex:cap-notifications ;
     cp:windowStart "2026-08-18T00:00:00Z"^^xsd:dateTime ;
     cp:windowEnd "2026-08-25T00:00:00Z"^^xsd:dateTime ;
     cp:requestCount 48211 .
@@ -381,30 +381,30 @@ ex:grant-t123-channel-web a authz:EntitlementGrant ;
     authz:derivedFrom ex:route-binding-8003 ;
     authz:distributedAt "2026-08-30T06:00:00Z"^^xsd:dateTime .
 
-ex:db-controller-agent a core:WorkloadPrincipal ;
-    core:identifier "spiffe://examplebank.com/ns/dbaas/sa/controller" ;
-    core:displayName "Database capability controller" .
+ex:notifications-controller-agent a core:WorkloadPrincipal ;
+    core:identifier "spiffe://examplebank.com/ns/notifications/sa/controller" ;
+    core:displayName "Notifications capability controller" .
 
-ex:db-control-plane a cp:CapabilityControlPlane ;
+ex:notifications-control-plane a cp:CapabilityControlPlane ;
     core:governedBy ex:policy-ledger-read ;
-    core:displayName "Database capability control plane" ;
-    cp:governsCapability ex:db-capability ;
-    core:hasActingIdentity ex:db-controller-agent ;
-    cp:actuates ex:t123-db-plane .
+    core:displayName "Notifications capability control plane" ;
+    cp:governsCapability ex:cap-notifications ;
+    core:hasActingIdentity ex:notifications-controller-agent ;
+    cp:actuates ex:t123-notifications-plane .
 
-ex:t123-db-plane a cp:DataPlane ;
+ex:t123-notifications-plane a cp:DataPlane ;
     core:operatedBy ex:examplebank ;
     cp:holdsDataCategory core:data-customer-personal , core:data-tenant-workload ;
     core:governedBy ex:policy-ledger-read ;
-    core:displayName "Tenant T123 database data plane" ;
-    cp:realizesCapability ex:db-capability ;
+    core:displayName "Tenant T123 notifications data plane" ;
+    cp:realizesCapability ex:cap-notifications ;
     cp:servesTenant ex:tenant-t123 .
 
 ex:decl-8001 a cp:DesiredStateDeclaration ;
-    core:displayName "T123 database: provision prod instance" ;
+    core:displayName "T123 notifications: provision prod instance" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:declaresStateOf ex:t123-db-plane ;
+    cp:declaresStateOf ex:t123-notifications-plane ;
     cp:justifiedBy ex:sub-9001 ;
     cp:forApplication ex:app-digital-bank ;
     cp:hasApproval ex:approval-8001 .
@@ -415,33 +415,33 @@ ex:approval-8001 a cp:ChangeApproval ;
 
 ex:mutation-8101 a cp:DataPlaneMutation ;
     core:occurredAtTime "2026-08-31T14:10:00Z"^^xsd:dateTime ;
-    cp:executedBy ex:db-controller-agent ;
-    cp:mutatedDataPlane ex:t123-db-plane ;
+    cp:executedBy ex:notifications-controller-agent ;
+    cp:mutatedDataPlane ex:t123-notifications-plane ;
     cp:realizesIntent ex:decl-8001 .
 
-### Commitment module — a measured guarantee on the managed-database offering
-ex:source-db-metrics a cmt:MeasurementSource ;
-    core:displayName "Database platform metrics feed" .
+### Commitment module — a measured guarantee on the notifications offering
+ex:source-notifications-metrics a cmt:MeasurementSource ;
+    core:displayName "Notifications platform metrics feed" .
 
-ex:commit-db-availability a cmt:Commitment ;
-    core:displayName "Managed database availability, production" ;
+ex:commit-notifications-availability a cmt:Commitment ;
+    core:displayName "Notifications: availability at least 99.95 %" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-commit-1 ;
-    cmt:commitsTo ex:offering-db-prod ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:rationale "D69: meets the production floor with headroom. An illustrative seed target for a tenant-facing offering, not a platform target." ;
     cmt:metric cmt:metric-availability ;
     cmt:target 99.95 ;
     cmt:unit unit:PERCENT ;
     cmt:comparator cmt:at-least ;
     cmt:window "P30D"^^xsd:duration ;
-    cmt:measuredBy ex:source-db-metrics ;
+    cmt:measuredBy ex:source-notifications-metrics ;
     cmt:validatedBy "queries/competency/cq9-commitments-and-evidence.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-availability ;
     cmt:hasCommitmentState cmt:state-committed .
 
-ex:obs-db-availability-2026-08 a cmt:Observation ;
-    cmt:observationOf ex:commit-db-availability ;
+ex:obs-notifications-availability-2026-08 a cmt:Observation ;
+    cmt:observationOf ex:commit-notifications-availability ;
     sosa:observedProperty cmt:metric-availability ;
     sosa:hasSimpleResult 99.97 ;
     cp:windowStart "2026-08-01T00:00:00Z"^^xsd:dateTime ;
@@ -480,26 +480,26 @@ ex:approval-plat-dana a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-01T09:05:00Z"^^xsd:dateTime .
 
-### Contract module — the managed-database capability's published contract (D62)
-ex:contract-db a ctr:Contract ;
-    core:displayName "Managed database capability contract" ;
-    ctr:contractOf ex:db-capability .
-ex:contract-db-v1 a ctr:ContractVersion ;
-    ctr:versionOf ex:contract-db ;
+### Contract module — the notifications capability's published contract (D62)
+ex:contract-notifications a ctr:Contract ;
+    core:displayName "Notifications capability contract" ;
+    ctr:contractOf ex:cap-notifications .
+ex:contract-notifications-v1 a ctr:ContractVersion ;
+    ctr:versionOf ex:contract-notifications ;
     ctr:versionString "1.2.0" ;
     ctr:hasVersionState ctr:state-published ;
     ctr:compatibility ctr:compatible ;
-    ctr:artifact "https://contracts.example/platform/db/1.2.0/openapi.yaml"^^xsd:anyURI .
+    ctr:artifact "https://contracts.example/platform/notifications/1.2.0/openapi.yaml"^^xsd:anyURI .
 ex:contract-change-1 a ctr:ContractChange ;
-    core:displayName "Publish managed database contract 1.2.0" ;
+    core:displayName "Publish notifications contract 1.2.0" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
     cp:hasApproval ex:approval-contract-1 ;
-    ctr:publishesVersion ex:contract-db-v1 .
+    ctr:publishesVersion ex:contract-notifications-v1 .
 ex:approval-contract-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-08-15T10:00:00Z"^^xsd:dateTime .
-ex:req-digital-bank-db ctr:dependsOnContractVersion ex:contract-db-v1 .
+ex:req-digital-bank-notifications ctr:dependsOnContractVersion ex:contract-notifications-v1 .
 
 ### Jurisdiction (D64): the platform's operating entity, T123's residency, and a permitted transfer
 ex:examplebank a core:LegalEntity ;
@@ -695,63 +695,63 @@ ex:approval-floor-prod-rpo a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T10:00:00Z"^^xsd:dateTime .
 
-### The managed-database offering meets the new floors (it is available, so the gate requires it)
+### The notifications offering meets the new floors (it is available, so the gate requires it)
 
-ex:commit-db-latency a cmt:Commitment ;
-    core:displayName "Managed database latency p99 at most 250 ms" ;
+ex:commit-notifications-latency a cmt:Commitment ;
+    core:displayName "Notifications: latency p99 at most 250 ms" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-db-latency ;
-    cmt:commitsTo ex:offering-db-prod ;
+    cp:hasApproval ex:approval-commit-notifications-latency ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:rationale "D69: 250 ms inside the 300 ms floor. An illustrative seed target." ;
     cmt:metric cmt:metric-latency-p99 ;
     cmt:comparator cmt:at-most ;
     cmt:target 250.0 ;
     cmt:unit unit:MilliSEC ;
     cmt:window "P7D"^^xsd:duration ;
-    cmt:measuredBy ex:source-db-metrics ;
+    cmt:measuredBy ex:source-notifications-metrics ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-latency ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-db-latency a cp:ChangeApproval ;
+ex:approval-commit-notifications-latency a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
-ex:commit-db-rto a cmt:Commitment ;
-    core:displayName "Managed database recovery time at most 45 minutes" ;
+ex:commit-notifications-rto a cmt:Commitment ;
+    core:displayName "Notifications: recovery time at most 45 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-db-rto ;
-    cmt:commitsTo ex:offering-db-prod ;
+    cp:hasApproval ex:approval-commit-notifications-rto ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:rationale "D69: 45 minutes inside the 60 minute floor. An illustrative seed target." ;
     cmt:metric cmt:metric-recovery-time ;
     cmt:comparator cmt:at-most ;
     cmt:target 45.0 ;
     cmt:unit unit:MIN ;
     cmt:window "P90D"^^xsd:duration ;
-    cmt:measuredBy ex:source-db-metrics ;
+    cmt:measuredBy ex:source-notifications-metrics ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-rto ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-db-rto a cp:ChangeApproval ;
+ex:approval-commit-notifications-rto a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
-ex:commit-db-rpo a cmt:Commitment ;
-    core:displayName "Managed database recovery point at most 5 minutes" ;
+ex:commit-notifications-rpo a cmt:Commitment ;
+    core:displayName "Notifications: recovery point at most 5 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-db-rpo ;
-    cmt:commitsTo ex:offering-db-prod ;
+    cp:hasApproval ex:approval-commit-notifications-rpo ;
+    cmt:commitsTo ex:offering-notifications-prod ;
     cmt:rationale "D69: 5 minutes inside the 15 minute floor, asynchronous replication. An illustrative seed target." ;
     cmt:metric cmt:metric-recovery-point ;
     cmt:comparator cmt:at-most ;
     cmt:target 5.0 ;
     cmt:unit unit:MIN ;
     cmt:window "P90D"^^xsd:duration ;
-    cmt:measuredBy ex:source-db-metrics ;
+    cmt:measuredBy ex:source-notifications-metrics ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-rpo ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-db-rpo a cp:ChangeApproval ;
+ex:approval-commit-notifications-rpo a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T11:00:00Z"^^xsd:dateTime .
 
