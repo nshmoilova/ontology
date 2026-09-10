@@ -133,7 +133,7 @@ a:hover { text-decoration-color: currentColor; }
 .results .empty { padding: 16px; color: var(--ink-2); font-size: .9rem; text-align: center; }
 mark { background: color-mix(in srgb, var(--accent) 26%, transparent); color: inherit; border-radius: 2px; }
 
-.topnav { display: flex; align-items: center; gap: 2px; flex: none; }
+.topnav { display: flex; align-items: center; gap: 2px; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
 .topnav a {
   padding: 6px 11px; border-radius: 999px; text-decoration: none;
   color: var(--ink-2); font-size: .87rem; font-weight: 500; white-space: nowrap;
@@ -249,7 +249,10 @@ h2.sec:first-of-type { margin-top: 1.6rem; }
 .muted { color: var(--ink-3); }
 .small { font-size: .85rem; }
 .cmtable td { vertical-align: top; }
-.cmtable td:last-child { max-width: 36ch; }
+.cmtable td:nth-child(1) { min-width: 24ch; }
+.cmtable td:nth-child(2) { min-width: 15ch; }
+.cmtable td:nth-child(3) { white-space: nowrap; }
+.cmtable td:last-child { max-width: 40ch; min-width: 26ch; }
 a.pill { text-decoration: none; }
 .stats .pill { display: inline-block; margin-top: .35rem; }
 .chips a, .chips span.static {
