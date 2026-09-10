@@ -21,6 +21,10 @@
   }
  ],
  "dataCategories": [],
+ "regions": [
+  "us-west-2"
+ ],
+ "consumers": [],
  "offerings": [
   {
    "id": "offering-cap-decision-prod",
@@ -262,10 +266,96 @@
      "target": 60.0,
      "margin": 0.0
     }
+   ],
+   "metrics": [
+    {
+     "metric": {
+      "id": "metric-availability",
+      "label": "Availability",
+      "notation": "availability"
+     },
+     "condition": "always",
+     "conditionLabel": "always",
+     "applies": true,
+     "commitment": "commit-cap-decision-availability"
+    },
+    {
+     "metric": {
+      "id": "metric-change-failure-rate",
+      "label": "Change-failure rate",
+      "notation": "change.failure-rate"
+     },
+     "condition": "always",
+     "conditionLabel": "always",
+     "applies": true,
+     "commitment": null
+    },
+    {
+     "metric": {
+      "id": "metric-failover-success-ratio",
+      "label": "Successful-request ratio during failover",
+      "notation": "failover.success-ratio"
+     },
+     "condition": "multi-region",
+     "conditionLabel": "when offered in more than one region",
+     "applies": false,
+     "commitment": null
+    },
+    {
+     "metric": {
+      "id": "metric-latency-p99",
+      "label": "Latency, 99th percentile",
+      "notation": "latency.p99"
+     },
+     "condition": "always",
+     "conditionLabel": "always",
+     "applies": true,
+     "commitment": "commit-cap-decision-latency"
+    },
+    {
+     "metric": {
+      "id": "metric-time-to-restore-redundancy",
+      "label": "Time to restore redundancy",
+      "notation": "redundancy.restore-time"
+     },
+     "condition": "multi-region",
+     "conditionLabel": "when offered in more than one region",
+     "applies": false,
+     "commitment": null
+    },
+    {
+     "metric": {
+      "id": "metric-recovery-point",
+      "label": "Recovery point objective",
+      "notation": "rpo"
+     },
+     "condition": "holds-data",
+     "conditionLabel": "when holding data",
+     "applies": false,
+     "commitment": "commit-cap-decision-rpo"
+    },
+    {
+     "metric": {
+      "id": "metric-recovery-time",
+      "label": "Recovery time objective",
+      "notation": "rto"
+     },
+     "condition": "always",
+     "conditionLabel": "always",
+     "applies": true,
+     "commitment": "commit-cap-decision-rto"
+    }
    ]
   }
  ],
  "gaps": [
+  {
+   "kind": "not promised",
+   "offering": "Authorization decision capability offered in production",
+   "commitment": null,
+   "commitmentId": null,
+   "detail": "Change-failure rate applies here (always) and carries no committed promise; advice, not an obligation (D74)"
+  },
   {
    "kind": "no observation",
    "offering": "Authorization decision capability offered in production",
@@ -300,6 +390,6 @@
   "commitments": 4,
   "met": 0,
   "noObservation": 4,
-  "gaps": 4
+  "gaps": 5
  }
 }

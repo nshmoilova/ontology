@@ -12,12 +12,12 @@
 
 <https://w3id.org/examplebank/platform/commitment>
     a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.5.0> ;
-    owl:versionInfo "0.5.0" ;
+    owl:versionIRI <https://w3id.org/examplebank/platform/commitment/0.6.0> ;
+    owl:versionInfo "0.6.0" ;
     owl:imports <https://w3id.org/examplebank/platform/core> , <https://w3id.org/examplebank/platform/control-plane> ;
     dct:conformsTo <https://www.w3.org/TR/owl2-profiles/#OWL_2_QL> , <https://www.w3.org/TR/vocab-ssn/> ;
     dct:title "Commitment Module"@en ;
-    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines — floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for — failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72)."@en ;
+    dct:description "Non-functional commitments a capability offering carries — one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism — and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) — it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines — floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for — failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72). Since 0.6.0: a metric states when it applies to a capability (D74), and a capability requirement states the minimum it needs on a metric, which an available offering covering the requirement's enablement must promise (D75)."@en ;
     dct:created "2026-09-02"^^xsd:date .
 
 #################################################################
@@ -138,15 +138,15 @@ cmt:rationale a owl:DatatypeProperty ;
 
 cmt:MetricScheme a skos:ConceptScheme ; skos:prefLabel "Commitment metrics"@en ;
     skos:definition "Closed scheme of metrics a commitment may target. Extend by decision, never by string."@en .
-cmt:metric-availability a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Availability"@en ; skos:notation "availability" .
-cmt:metric-latency-p99 a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Latency, 99th percentile"@en ; skos:notation "latency.p99" .
-cmt:metric-recovery-time a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery time objective"@en ; skos:notation "rto" .
-cmt:metric-recovery-point a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery point objective"@en ; skos:notation "rpo" .
-cmt:metric-failover-success-ratio a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Successful-request ratio during failover"@en ; skos:notation "failover.success-ratio" ;
+cmt:metric-availability a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Availability"@en ; skos:notation "availability" ; cmt:appliesWhen cmt:applies-always .
+cmt:metric-latency-p99 a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Latency, 99th percentile"@en ; skos:notation "latency.p99" ; cmt:appliesWhen cmt:applies-always .
+cmt:metric-recovery-time a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery time objective"@en ; skos:notation "rto" ; cmt:appliesWhen cmt:applies-always .
+cmt:metric-recovery-point a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Recovery point objective"@en ; skos:notation "rpo" ; cmt:appliesWhen cmt:applies-when-holding-data .
+cmt:metric-failover-success-ratio a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Successful-request ratio during failover"@en ; skos:notation "failover.success-ratio" ; cmt:appliesWhen cmt:applies-when-multi-region ;
     skos:definition "Share of requests that succeed while a failover is in progress — the 'will users lose requests' question (D67)."@en .
-cmt:metric-change-failure-rate a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Change-failure rate"@en ; skos:notation "change.failure-rate" ;
+cmt:metric-change-failure-rate a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Change-failure rate"@en ; skos:notation "change.failure-rate" ; cmt:appliesWhen cmt:applies-always ;
     skos:definition "Share of changes taking effect in a scope that are followed by a commitment breach in the next window — the 'evolve without disrupting users' question (D67)."@en .
-cmt:metric-time-to-restore-redundancy a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Time to restore redundancy"@en ; skos:notation "redundancy.restore-time" ;
+cmt:metric-time-to-restore-redundancy a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Time to restore redundancy"@en ; skos:notation "redundancy.restore-time" ; cmt:appliesWhen cmt:applies-when-multi-region ;
     skos:definition "Time from losing a region until the offering again has a failover target — the 'operational safety margin' question (D67)."@en .
 
 cmt:ComparatorScheme a skos:ConceptScheme ; skos:prefLabel "Comparators"@en .
@@ -157,6 +157,47 @@ cmt:CommitmentStateScheme a skos:ConceptScheme ; skos:prefLabel "Commitment stat
 cmt:state-draft a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "draft"@en .
 cmt:state-committed a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "committed"@en .
 cmt:state-withdrawn a cmt:CommitmentState ; skos:inScheme cmt:CommitmentStateScheme ; skos:prefLabel "withdrawn"@en .
+
+#################################################################
+# When a metric applies (D74) — advice to a capability owner, derived from what
+# the capability holds and where it is offered; never an obligation by itself.
+#################################################################
+
+cmt:Applicability a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    skos:prefLabel "Applicability"@en ;
+    skos:definition "A condition under which a metric carries information for a capability, drawn from the closed applicability scheme."@en ;
+    vs:term_status "draft" .
+
+cmt:appliesWhen a owl:ObjectProperty ;
+    skos:prefLabel "applies when"@en ;
+    skos:definition "Applicability condition of a metric — exactly one, from the closed scheme."@en ;
+    vs:term_status "draft" .
+
+cmt:ApplicabilityScheme a skos:ConceptScheme ; skos:prefLabel "Metric applicability"@en ;
+    skos:definition "Closed scheme of the conditions under which a metric applies to a capability. Extend by decision, never by string."@en .
+cmt:applies-always a cmt:Applicability ; skos:inScheme cmt:ApplicabilityScheme ; skos:prefLabel "always"@en ; skos:notation "always" ;
+    skos:definition "Applies to every capability, whatever it holds and wherever it is offered."@en .
+cmt:applies-when-holding-data a cmt:Applicability ; skos:inScheme cmt:ApplicabilityScheme ; skos:prefLabel "when holding data"@en ; skos:notation "holds-data" ;
+    skos:definition "Applies to a capability whose realising data planes hold a data category; a capability holding nothing meets a floor on the metric by promising zero."@en .
+cmt:applies-when-multi-region a cmt:Applicability ; skos:inScheme cmt:ApplicabilityScheme ; skos:prefLabel "when offered in more than one region"@en ; skos:notation "multi-region" ;
+    skos:definition "Applies to a capability offered in more than one region; a single-region offering has no failover to measure."@en .
+
+#################################################################
+# What a consumer needs (D75) — the demand side of a promise
+#################################################################
+
+cmt:CommitmentNeed a owl:Class ;
+    core:dataCategory core:data-governance ;
+    skos:prefLabel "Commitment need"@en ;
+    skos:altLabel "consumer requirement"@en ;
+    skos:definition "A minimum a capability requirement states for one metric of the capability it requires: metric, comparator, target and unit, stated in the unit the offering promises in."@en ;
+    vs:term_status "draft" .
+
+cmt:hasNeed a owl:ObjectProperty ;
+    skos:prefLabel "has need"@en ;
+    skos:definition "Need a capability requirement states — any number, at most one per metric; approved with the requirement, never on its own."@en ;
+    vs:term_status "draft" .
 
 #################################################################
 # Baselines — floors declared at a scope (D66)

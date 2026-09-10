@@ -1,0 +1,19 @@
+# CQ-20 — For each enabled application, what does each of its requirements need
+# from a capability, what does the covering available offering promise, and is the
+# need met? "no promise" is a need nothing answers; "unmet" is a promise too weak
+# (D75). Both are violations of NeedMetShape; the met rows are the evidence.
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?application ?capability ?metric ?comparator ?need ?offering ?promise
+       (IF(BOUND(?promise), IF((?c = cmt:at-least && ?promise >= ?need) || (?c = cmt:at-most && ?promise <= ?need), "met", "unmet"), "no promise") AS ?status) WHERE {
+  ?r cp:ofApplication ?application ; cp:requiredCapability ?capability ; cmt:hasNeed ?n .
+  ?n cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?need ; cmt:unit ?u .
+  ?m skos:notation ?metric . ?c skos:notation ?comparator .
+  ?e a cp:ApplicationEnablement ; cp:forApplication ?application ; cp:declarationScope ?s .
+  ?offering cp:offersCapability ?capability ; cp:offeredInScope ?os ; cp:hasOfferingState cp:offering-available .
+  ?s cp:subScopeOf* ?os .
+  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:unit ?u ; cmt:comparator ?c ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?promise }
+}
+ORDER BY ?application ?capability ?metric

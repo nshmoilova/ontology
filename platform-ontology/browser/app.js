@@ -873,6 +873,10 @@
             <td class="small">${whyCell(x)}</td>
           </tr>`).join("")}
         </table></div>` : `<p class="muted">No committed promise yet.</p>`}
+        ${o.metrics ? `<p class="small" style="margin-top:.6rem"><b>What applies here</b> ${o.metrics.map((mr) => mr.applies
+          ? (mr.commitment ? `<span class="pill met" title="applies (${esc(mr.conditionLabel)}) and is promised">${esc(mr.metric.label)}</span>`
+            : `<span class="pill warning" title="applies (${esc(mr.conditionLabel)}) and carries no promise — advice, not an obligation (D74)">${esc(mr.metric.label)} · not promised</span>`)
+          : `<span class="pill draft" title="does not apply: ${esc(mr.conditionLabel)}">${esc(mr.metric.label)} · n/a</span>`).join(" ")}</p>` : ""}
         ${o.floors.some((f) => !f.commitment) ? `<p class="small"><span class="pill warning">floor uncovered</span> ${o.floors.filter((f) => !f.commitment).map((f) => `${esc(f.metric.label)} (${cmpWord(f.comparator)} ${fmtNum(f.floorTarget)} ${esc(f.unit)})`).join(", ")}</p>` : ""}
         ${o.history.length ? `<details class="small" style="margin-top:.5rem"><summary>${plural(o.history.length, "superseded or draft promise")}</summary>
           <ul class="mdlist">${o.history.map((x) => `<li id="${esc(x.id)}">${esc(x.label)} — ${promiseText(x)} ${statePill(x.state)}${x.supersededBy ? ` <span class="muted">replaced by <a href="#${esc(x.supersededBy)}">${esc(x.supersededBy)}</a></span>` : ""}</li>`).join("")}</ul></details>` : ""}
@@ -882,10 +886,16 @@
       <p class="lede">${plural(c.counts.commitments, "committed promise")} across ${plural(c.counts.offerings, "offering")}${c.counts.noObservation ? `; ${c.counts.noObservation} awaiting evidence` : ""}.</p>
       ${cmSubnav("")}
       <div class="card">${facts}</div>
+      ${(c.consumers || []).length ? `<section class="card" style="margin-top:1rem"><div class="mh"><b>What consumers need</b> <span class="muted small">stated on the capability requirement and approved with it; an offering covering the application's enablement must promise at least this (D75)</span></div>
+        <div class="tablewrap"><table class="data"><tr><th>Application</th><th>Needs</th><th>Offering promises</th><th>Status</th></tr>
+        ${c.consumers.flatMap((k) => k.needs.flatMap((nd) => nd.offerings.length
+          ? nd.offerings.map((row) => `<tr><td>${esc(k.applicationLabel)}</td><td>${esc(nd.metric.label)} ${cmpWord(nd.comparator)} ${fmtNum(nd.target)} ${esc(nd.unit)}</td><td>${row.promise == null ? "—" : `${cmpWord(nd.comparator)} ${fmtNum(row.promise)} ${esc(nd.unit)}`}<div class="muted small">${esc(row.offeringLabel)}</div></td><td>${row.status === "met" ? `<span class="pill met">met</span>` : `<span class="pill violation">${esc(row.status)}</span>`}</td></tr>`)
+          : [`<tr><td>${esc(k.applicationLabel)}</td><td>${esc(nd.metric.label)} ${cmpWord(nd.comparator)} ${fmtNum(nd.target)} ${esc(nd.unit)}</td><td>—</td><td><span class="pill draft">no covering offering</span></td></tr>`])).join("")}
+        </table></div></section>` : ""}
       ${offerings}
       <p style="margin-top:1rem"><a class="dlink" href="${esc(c.download)}" download>Download this view as JSON</a> ${c.gaps.length ? `<a class="dlink" href="#/commitments/gaps#${esc(c.id)}">${plural(c.gaps.length, "gap")} for this capability</a>` : ""}</p>
-      <footer class="pagefoot">Rules: ${["CommitmentShape", "NoWeakerThanFloorShape", "FloorCoverageShape", "FloorUnitShape", "CommitmentRationaleShape"].map((s) => `<a href="#/shapes?q=${s}">${s}</a>`).join(", ")}.
-      Questions: ${["CQ-9", "CQ-14", "CQ-15", "CQ-16", "CQ-17", "CQ-18"].map((q) => `<a href="#/questions?q=${q}">${q}</a>`).join(", ")}.</footer>`;
+      <footer class="pagefoot">Rules: ${["CommitmentShape", "NoWeakerThanFloorShape", "FloorCoverageShape", "FloorUnitShape", "CommitmentRationaleShape", "MetricApplicabilityShape", "NeedMetShape"].map((s) => `<a href="#/shapes?q=${s}">${s}</a>`).join(", ")}.
+      Questions: ${["CQ-9", "CQ-14", "CQ-15", "CQ-16", "CQ-17", "CQ-18", "CQ-19", "CQ-20"].map((q) => `<a href="#/questions?q=${q}">${q}</a>`).join(", ")}.</footer>`;
   }
 
   function viewPromises() {
@@ -948,11 +958,11 @@
     const floorGaps = cm.floors.filter((f) => !f.rationale);
     return `${cmCrumb("Gaps")}
       <h1 class="title">Gaps, by owner</h1>
-      <p class="lede">What each capability's owner would want to know first. Each list is that owner's alone; nothing here ranks one capability against another. A gap is a promise without evidence yet, a breached observation, a missing reason, a floor an offering does not yet cover, or an offering not yet available.</p>
+      <p class="lede">What each capability's owner would want to know first. Each list is that owner's alone; nothing here ranks one capability against another. A gap is a promise without evidence yet, a breached observation, a missing reason, a floor an offering does not yet cover, a consumer's need the offering does not meet, or an offering not yet available. A metric that applies but is not promised is listed as advice.</p>
       ${cmSubnav("gaps")}
       ${caps.length ? caps.map((c) => `<section class="card" id="${esc(c.id)}" style="margin-top:1rem">
         <div class="mh"><b><a href="${capHref(c.id)}">${esc(c.label)}</a></b> <span class="pill draft">${plural(c.gaps.length, "gap")}</span></div>
-        <ul class="mdlist">${c.gaps.map((gp) => `<li><span class="pill ${gp.kind === "breached" ? "violation" : "warning"}">${esc(gp.kind)}</span> ${esc(gp.offering)}${gp.commitment ? " · " + esc(gp.commitment) : ""} <span class="muted">— ${esc(gp.detail)}</span></li>`).join("")}</ul>
+        <ul class="mdlist">${c.gaps.map((gp) => `<li><span class="pill ${gp.kind === "breached" || gp.kind === "need unmet" ? "violation" : gp.kind === "not promised" || gp.kind === "planned" ? "draft" : "warning"}">${esc(gp.kind)}</span> ${esc(gp.offering)}${gp.commitment ? " · " + esc(gp.commitment) : ""} <span class="muted">— ${esc(gp.detail)}</span></li>`).join("")}</ul>
       </section>`).join("") : `<p style="margin-top:1rem">No gaps in the current declarations.</p>`}
       ${floorGaps.length ? `<section class="card" style="margin-top:1rem"><div class="mh"><b>Floors</b></div>
         <ul class="mdlist">${floorGaps.map((f) => `<li><span class="pill warning">no rationale</span> ${esc(f.label)}</li>`).join("")}</ul></section>` : ""}`;

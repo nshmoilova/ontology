@@ -25,6 +25,8 @@ scope creep.
 | CQ-16 | For each committed commitment, its latest observation and whether the target is met, by comparator? | `cq16-commitment-status.rq` | commitment |
 | CQ-17 | For each floor and each offering it covers, the margin between the committed target and the floor, worst first? | `cq17-floor-margins.rq` | commitment, control-plane |
 | CQ-18 | Why does each committed commitment and each floor carry the target it does, and which decision set it? | `cq18-commitment-rationale.rq` | commitment |
+| CQ-19 | Which metrics apply to each offering by what its capability holds and where it is offered, and which of those carry no committed promise? | `cq19-applicable-metrics.rq` | commitment, control-plane |
+| CQ-20 | For each enabled application, what does each requirement need from a capability, what does the covering offering promise, and is the need met? | `cq20-needs-met.rq` | commitment, control-plane |
 
 ## Backlog and realised invariants
 
@@ -465,9 +467,12 @@ with no measurement source or no validation mechanism is a violation — the
   window? *(a promise nobody is watching — expected empty)*
 - Which observations fall outside their commitment's target, by comparator?
   *(formal — CQ-16)*
-- Which tenants are subscribed in a scope whose offering carries a weaker
-  commitment than the tenant's contract requires? *(needs the contract
-  side — see the published-contracts scoping decision)*
+- Which enabled applications need more from a capability than the offering
+  covering their scope promises? *(formal — CQ-20; the need is stated on the
+  capability requirement and approved with it — D75)* [realised: NeedMetShape, CommitmentNeedShape]
+- Which metrics apply to an offering by what its capability holds and where
+  it is offered, and which of those carry no promise? *(formal — CQ-19; advice
+  to the owner, never an obligation — D74)* [realised: MetricApplicabilityShape]
 - Which committed latency promises rest on an isolated benchmark with no
   production observation? *(needs a closed scheme for the kind of evidence
   behind a measurement source — isolated benchmark or production telemetry)*

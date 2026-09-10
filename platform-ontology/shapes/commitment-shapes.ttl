@@ -152,3 +152,69 @@ scm:BaselineRationaleShape a sh:NodeShape ;
     sh:property [ sh:path cmt:rationale ; sh:minCount 1 ; sh:datatype xsd:string ; sh:severity sh:Warning ;
         sh:message "Floor records no rationale — a baseline without its reason cannot be reviewed; route to stewardship review." ] .
 
+
+# D74 — every metric in the scheme states when it applies; the closure is what
+# makes "which metrics make sense for this capability" answerable (P7).
+scm:MetricApplicabilityShape a sh:NodeShape ;
+    sh:targetClass cmt:Metric ;
+    sh:property [ sh:path cmt:appliesWhen ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Applicability ; sh:severity sh:Violation ;
+        sh:message "A metric states exactly one applicability condition from the closed scheme — a metric with none cannot be offered to a capability owner as advice." ] .
+
+# D75 — a need is well-formed and belongs to a requirement; an enabled
+# application's needs are met by every available offering covering its scope.
+scm:CommitmentNeedShape a sh:NodeShape ;
+    sh:targetClass cmt:CommitmentNeed ;
+    sh:property [ sh:path cmt:metric ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Metric ; sh:severity sh:Violation ;
+        sh:message "A need targets exactly one metric from the closed scheme." ] ;
+    sh:property [ sh:path cmt:comparator ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cmt:Comparator ; sh:severity sh:Violation ;
+        sh:message "A need states exactly one comparator." ] ;
+    sh:property [ sh:path cmt:target ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:severity sh:Violation ;
+        sh:message "A need has exactly one decimal target." ] ;
+    sh:property [ sh:path cmt:unit ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ; sh:severity sh:Violation ;
+        sh:message "A need states exactly one unit (a QUDT unit IRI)." ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Need is stated by no capability requirement — a minimum nobody requires is not a need." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this WHERE {
+                FILTER NOT EXISTS { ?r <https://w3id.org/examplebank/platform/commitment#hasNeed> $this . }
+            }
+        """ ;
+    ] .
+
+scm:NeedMetShape a sh:NodeShape ;
+    sh:targetClass cp:CapabilityRequirement ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Enabled application requires more than the covering offering promises — a consumer's stated need on a metric is met by no committed promise, in the need's unit, of an available offering covering the enablement's scope." ;
+        sh:severity sh:Violation ;
+        sh:select """
+            SELECT $this ?need ?o WHERE {
+                $this <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;
+                      <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;
+                      <https://w3id.org/examplebank/platform/commitment#hasNeed> ?need .
+                ?need <https://w3id.org/examplebank/platform/commitment#metric> ?m ;
+                      <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;
+                      <https://w3id.org/examplebank/platform/commitment#target> ?t ;
+                      <https://w3id.org/examplebank/platform/commitment#unit> ?u .
+                ?e a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;
+                   <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;
+                   <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s .
+                ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;
+                   <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;
+                   <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .
+                ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .
+                FILTER NOT EXISTS {
+                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> ?o ;
+                        <https://w3id.org/examplebank/platform/commitment#metric> ?m ;
+                        <https://w3id.org/examplebank/platform/commitment#unit> ?u ;
+                        <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;
+                        <https://w3id.org/examplebank/platform/commitment#target> ?ct ;
+                        <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .
+                    FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?ct >= ?t)
+                         || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?ct <= ?t) )
+                }
+            }
+        """ ;
+    ] .

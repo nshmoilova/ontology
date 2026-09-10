@@ -58,12 +58,26 @@ SOSA/SSN for observable properties and observations; QUDT for units; the
 repository's own closed schemes for metric, comparator and state. No product
 names in terms; instances may name the real monitoring system.
 
+## When a metric applies
+
+Each metric in the scheme states one applicability condition (D74): always;
+when a realising data plane holds a data category; when the capability is
+offered in more than one region. CQ-19 derives, for every offering, the
+metrics that apply and which carry no committed promise. That is advice to
+the owner; only a floor obliges.
+
+## What a consumer needs
+
+A capability requirement may state needs (D75): one per metric, each a
+comparator, target and unit in the unit the offering promises in, approved
+with the requirement. `NeedMetShape` rejects an enablement whose covering
+available offering promises less than a need; CQ-20 lists needs against
+promises as met, unmet or no promise.
+
 ## What is deliberately not here yet
 
 - The kind of evidence behind a measurement source (production telemetry or
   isolated benchmark).
-- Demand-side needs: a capability requirement stating the minimum it needs,
-  so an offering's promise can be checked against its consumers.
 - Enforced composition along a request path. The browser composes promises
   for a consumer, but the conventions are advisory (D73).
 - Tiers, only if asked for.

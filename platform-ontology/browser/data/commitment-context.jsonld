@@ -12,13 +12,19 @@
    "@type": "@id"
   },
   "xsd": "http://www.w3.org/2001/XMLSchema#",
+  "Applicability": "cmt:Applicability",
   "Commitment": "cmt:Commitment",
   "CommitmentBaseline": "cmt:CommitmentBaseline",
+  "CommitmentNeed": "cmt:CommitmentNeed",
   "CommitmentState": "cmt:CommitmentState",
   "Comparator": "cmt:Comparator",
   "MeasurementSource": "cmt:MeasurementSource",
   "Metric": "cmt:Metric",
   "Observation": "cmt:Observation",
+  "appliesWhen": {
+   "@id": "cmt:appliesWhen",
+   "@type": "@id"
+  },
   "commitsTo": {
    "@id": "cmt:commitsTo",
    "@type": "@id"
@@ -29,6 +35,10 @@
   },
   "hasCommitmentState": {
    "@id": "cmt:hasCommitmentState",
+   "@type": "@id"
+  },
+  "hasNeed": {
+   "@id": "cmt:hasNeed",
    "@type": "@id"
   },
   "measuredBy": {

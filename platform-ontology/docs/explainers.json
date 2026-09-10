@@ -1029,7 +1029,7 @@
         },
         {
           "heading": "What comes next",
-          "body": "Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); and a reason on every current promise and floor, so a number can be reviewed and not only measured (D72, CQ-18). All of it is browsable under [Commitments](#/commitments): each capability's promises by scope with floor, margin, evidence and reason; the floors by scope; each owner's own gaps; and an advisory composition of promises along a request path (D73).\n\nStill ahead: the kind of evidence behind a measurement source; demand-side needs on capability requirements, so an offering's promise can be checked against what its consumers require; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.",
+          "body": "Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); a reason on every current promise and floor (D72, CQ-18); each metric saying when it applies, so an owner can see which promises make sense for a capability by what it holds and where it is offered (D74, CQ-19); and needs stated on a capability requirement, with an invariant that an offering covering an enabled application must promise at least what the application needs (D75, CQ-20). All of it is browsable under [Commitments](#/commitments): each capability's promises by scope with floor, margin, evidence and reason, what applies to it and what its consumers need, the floors by scope, each owner's own gaps, and an advisory composition of promises along a request path (D73).\n\nStill ahead: the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.",
           "principles": [
             "P9"
           ],
@@ -1038,11 +1038,15 @@
             "D70",
             "D71",
             "D72",
-            "D73"
+            "D73",
+            "D74",
+            "D75"
           ],
           "questions": [
             "CQ-16",
-            "CQ-18"
+            "CQ-18",
+            "CQ-19",
+            "CQ-20"
           ]
         }
       ],

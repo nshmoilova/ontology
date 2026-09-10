@@ -1375,6 +1375,64 @@
         "CapabilityOffering",
         "dependsOn"
       ]
+    },
+    {
+      "id": "D74",
+      "title": "A metric says when it applies",
+      "area": "Planes & scoped governance",
+      "invariant": true,
+      "motivatedBy": [
+        "P9"
+      ],
+      "principles": [
+        "P9",
+        "P7",
+        "P10",
+        "P18"
+      ],
+      "reasoning": "Which promises make sense for a capability was answered only by the floors: every metric with a floor at the scope, nothing else. The three metrics D67 added had no floor, so nothing said when a failover ratio or a redundancy-restore time was even meaningful, and nothing said that a stateless capability meets a recovery-point floor by promising zero. Each metric in the closed scheme now states one applicability condition from a closed scheme of three: always; when a realising data plane holds a data category; when the capability is offered in more than one region. The conditions are read off facts the model already holds, so CQ-19 derives for every offering the metrics that apply and which of them carry no committed promise. That list is advice to the owner and is shown as such: a floor is the only thing that obliges. The shape that gives the term teeth is closure — a metric without a condition is rejected — with a negative instance so it fires.",
+      "rejected": [
+        "A warning when an applicable metric has no promise: it would fire on every production offering today for the change-failure rate, which is honest but turns advice into a standing alarm; the question answers it without noise.",
+        "Conditional floors, a baseline that binds only under a condition: the condition would then need its own approval and supersession, and the two ideas, what applies and what is required, are clearer apart.",
+        "Deriving applicability from a capability kind: there is no kind vocabulary, and what a capability holds and where it is offered are already declared."
+      ],
+      "terms": [
+        "Applicability",
+        "appliesWhen",
+        "Metric",
+        "DataPlane",
+        "holdsDataCategory"
+      ]
+    },
+    {
+      "id": "D75",
+      "title": "A requirement states what it needs; a covering offering must promise it",
+      "area": "Tenancy & subscriptions",
+      "invariant": true,
+      "motivatedBy": [
+        "P20"
+      ],
+      "principles": [
+        "P20",
+        "P18",
+        "P15",
+        "P10",
+        "P3"
+      ],
+      "reasoning": "A consumer depended on a capability through a contract version (D62) and on its promises only implicitly: the model could say what the offering promised but not what the application needed, so a weaker promise could never be caught. A capability requirement now states needs, one per metric, each a comparator, target and unit stated in the unit the offering promises in; a need is part of the requirement, approved with it under 'agents observe, humans confirm', never a declaration of its own. One invariant closes the loop: for every enablement of the application, every available offering of the required capability that covers the enablement's scope must carry a committed promise on the need's metric, in its unit, at least as strong by the comparator; anything else is a violation, since an application enabled where its needs are not promised is enabled on hope. CQ-20 lists needs against promises with met, unmet or no promise. The composition view stays advisory (D73); needs are the consumer's side of a single capability, not of a path.",
+      "rejected": [
+        "Needs on the subscription: a subscription is a tenant holding a capability, not an application using it, and two applications of one tenant can need different things.",
+        "A warning instead of a violation: an enablement that proceeds against an unmet need is exactly the silent lowering of assurance P15 forbids.",
+        "Needs as commitments with the roles reversed: a need has no measurement source and no window, and making it a commitment would trip the unmeasured-is-aspirational rule."
+      ],
+      "terms": [
+        "CommitmentNeed",
+        "hasNeed",
+        "CapabilityRequirement",
+        "CapabilityOffering",
+        "Commitment",
+        "ApplicationEnablement"
+      ]
     }
   ]
 }

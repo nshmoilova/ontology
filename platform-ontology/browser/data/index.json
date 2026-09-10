@@ -1,24 +1,24 @@
 {
  "generated": true,
- "sourceDigest": "0d37b63a093a",
+ "sourceDigest": "31fce7dad955",
  "stats": {
   "modules": 8,
-  "classes": 93,
-  "objectProperties": 122,
+  "classes": 95,
+  "objectProperties": 124,
   "datatypeProperties": 42,
-  "shapes": 102,
-  "violations": 163,
+  "shapes": 105,
+  "violations": 170,
   "warnings": 11,
-  "vocabularies": 21,
-  "relationships": 77,
-  "decisions": 69,
+  "vocabularies": 22,
+  "relationships": 80,
+  "decisions": 71,
   "principles": 20,
   "standards": 15,
-  "realisedBacklog": 47,
-  "provisionalPrinciples": 9,
+  "realisedBacklog": 49,
+  "provisionalPrinciples": 8,
   "explainers": 4,
-  "formalCQs": 18,
-  "backlogCQs": 141,
+  "formalCQs": 20,
+  "backlogCQs": 142,
   "capabilities": 4,
   "commitments": 16,
   "floors": 4
@@ -101,8 +101,8 @@
    "iri": "https://w3id.org/examplebank/platform/commitment",
    "prefix": "cmt",
    "title": "Commitment Module",
-   "version": "0.5.0",
-   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for \u2014 failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72).",
+   "version": "0.6.0",
+   "description": "Non-functional commitments a capability offering carries \u2014 one metric, a target with unit and comparator over a window, a measurement source and a validation mechanism \u2014 and the windowed observations that evidence them. A sibling of the identity modules: it imports core and control-plane and nothing imports it. Vocabulary from specifications: SOSA/SSN for observable properties and observations, QUDT for units. Scaffolded at 0.1.0 (D58) with one competency question; measurements never enter per-request. Since 0.2.0: a commitment is a desired-state declaration (D59) \u2014 it is declared through the management plane, bound to a scope that contains its offering's scope, approved where the scope requires it, and superseded rather than edited. Since 0.3.0: baselines \u2014 floors declared at a scope that every offering beneath must meet with a commitment at least as strong (D66). Since 0.4.0: three metrics the platform questions asked for \u2014 failover success ratio, change-failure rate, time to restore redundancy (D67). Since 0.5.0: a commitment or baseline records the reason for its target, citing the decisions it rests on (D72). Since 0.6.0: a metric states when it applies to a capability (D74), and a capability requirement states the minimum it needs on a metric, which an available offering covering the requirement's enablement must promise (D75).",
    "blurb": "Non-functional commitments on offerings \u2014 metric, target, window, measurement source, validation \u2014 and the windowed observations that evidence them. A sibling module; nothing imports it.",
    "imports": [
     "control-plane",
@@ -7037,7 +7037,8 @@
    "decisions": [
     "D19",
     "D35",
-    "D65"
+    "D65",
+    "D75"
    ],
    "principles": [
     "P18"
@@ -7259,7 +7260,8 @@
     "D66",
     "D68",
     "D70",
-    "D73"
+    "D73",
+    "D75"
    ],
    "principles": [
     "P2",
@@ -7284,10 +7286,17 @@
    "disjointWith": [],
    "subClasses": [],
    "shapes": [
+    "NeedMetShape",
     "RequirementOnRetiredVersionShape",
     "RequirementTargetShape"
    ],
    "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Enabled application requires more than the covering offering promises \u2014 a consumer's stated need on a metric is met by no committed promise, in the need's unit, of an available offering covering the enablement's scope.",
+     "select": "SELECT $this ?need ?o WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                      <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                      <https://w3id.org/examplebank/platform/commitment#hasNeed> ?need .\n                ?need <https://w3id.org/examplebank/platform/commitment#metric> ?m ;\n                      <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;\n                      <https://w3id.org/examplebank/platform/commitment#target> ?t ;\n                      <https://w3id.org/examplebank/platform/commitment#unit> ?u .\n                ?e a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;\n                   <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s .\n                ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                FILTER NOT EXISTS {\n                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> ?o ;\n                        <https://w3id.org/examplebank/platform/commitment#metric> ?m ;\n                        <https://w3id.org/examplebank/platform/commitment#unit> ?u ;\n                        <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;\n                        <https://w3id.org/examplebank/platform/commitment#target> ?ct ;\n                        <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                    FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?ct >= ?t)\n                         || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?ct <= ?t) )\n                }\n            }"
+    },
     {
      "kind": "sparql",
      "severity": "Violation",
@@ -7323,7 +7332,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D18"
+    "D18",
+    "D75"
    ],
    "principles": [
     "P18",
@@ -7604,7 +7614,8 @@
    "decisions": [
     "D07",
     "D54",
-    "D63"
+    "D63",
+    "D74"
    ],
    "principles": [
     "P16"
@@ -10083,7 +10094,8 @@
    ],
    "vocabulary": [],
    "decisions": [
-    "D63"
+    "D63",
+    "D74"
    ],
    "principles": [
     "P21"
@@ -10824,6 +10836,81 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/commitment#Applicability",
+   "name": "Applicability",
+   "curie": "cmt:Applicability",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Applicability",
+   "definition": "A condition under which a metric carries information for a capability, drawn from the closed applicability scheme.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [
+    "skos:Concept"
+   ],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [
+    {
+     "from": "cmt:Metric",
+     "property": "cmt:appliesWhen",
+     "to": "cmt:Applicability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "usedBy": [],
+   "vocabulary": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-always",
+     "curie": "cmt:applies-always",
+     "label": "always",
+     "notation": "always",
+     "definition": "Applies to every capability, whatever it holds and wherever it is offered.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-when-holding-data",
+     "curie": "cmt:applies-when-holding-data",
+     "label": "when holding data",
+     "notation": "holds-data",
+     "definition": "Applies to a capability whose realising data planes hold a data category; a capability holding nothing meets a floor on the metric by promising zero.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-when-multi-region",
+     "curie": "cmt:applies-when-multi-region",
+     "label": "when offered in more than one region",
+     "notation": "multi-region",
+     "definition": "Applies to a capability offered in more than one region; a single-region offering has no failover to measure.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    }
+   ],
+   "decisions": [
+    "D74"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/commitment#Commitment",
    "name": "Commitment",
    "curie": "cmt:Commitment",
@@ -11071,7 +11158,8 @@
     "D70",
     "D71",
     "D72",
-    "D73"
+    "D73",
+    "D75"
    ],
    "principles": []
   },
@@ -11220,6 +11308,120 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentNeed",
+   "name": "CommitmentNeed",
+   "curie": "cmt:CommitmentNeed",
+   "kind": "class",
+   "module": "commitment",
+   "label": "Commitment need",
+   "definition": "A minimum a capability requirement states for one metric of the capability it requires: metric, comparator, target and unit, stated in the unit the offering promises in.",
+   "editorialNote": null,
+   "altLabels": [
+    "consumer requirement"
+   ],
+   "conformsTo": [],
+   "dataCategory": "core:data-governance",
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [
+    "CommitmentNeedShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need states exactly one unit (a QUDT unit IRI)."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Need is stated by no capability requirement \u2014 a minimum nobody requires is not a need.",
+     "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS { ?r <https://w3id.org/examplebank/platform/commitment#hasNeed> $this . }\n            }"
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cmt:CommitmentNeed",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:CommitmentNeed",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D75"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentState",
    "name": "CommitmentState",
    "curie": "cmt:CommitmentState",
@@ -11323,6 +11525,13 @@
      "severity": "Violation"
     },
     {
+     "from": "cmt:CommitmentNeed",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cmt:Commitment",
      "property": "cmt:comparator",
      "to": "cmt:Comparator",
@@ -11419,12 +11628,45 @@
    "subPropertyOf": [],
    "disjointWith": [],
    "subClasses": [],
-   "shapes": [],
-   "constraints": [],
-   "outgoing": [],
+   "shapes": [
+    "MetricApplicabilityShape"
+   ],
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:appliesWhen",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#appliesWhen",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Applicability",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Applicability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A metric states exactly one applicability condition from the closed scheme \u2014 a metric with none cannot be offered to a capability owner as advice."
+    }
+   ],
+   "outgoing": [
+    {
+     "from": "cmt:Metric",
+     "property": "cmt:appliesWhen",
+     "to": "cmt:Applicability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
    "incoming": [
     {
      "from": "cmt:CommitmentBaseline",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:CommitmentNeed",
      "property": "cmt:metric",
      "to": "cmt:Metric",
      "cardinality": "1..1",
@@ -11534,7 +11776,8 @@
    ],
    "decisions": [
     "D58",
-    "D67"
+    "D67",
+    "D74"
    ],
    "principles": []
   },
@@ -11807,6 +12050,42 @@
    "principles": []
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/commitment#appliesWhen",
+   "name": "appliesWhen",
+   "curie": "cmt:appliesWhen",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "applies when",
+   "definition": "Applicability condition of a metric \u2014 exactly one, from the closed scheme.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [
+    {
+     "from": "cmt:Metric",
+     "property": "cmt:appliesWhen",
+     "to": "cmt:Applicability",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    }
+   ],
+   "vocabulary": [],
+   "decisions": [
+    "D74"
+   ],
+   "principles": []
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/commitment#commitsTo",
    "name": "commitsTo",
    "curie": "cmt:commitsTo",
@@ -11873,6 +12152,13 @@
      "severity": "Violation"
     },
     {
+     "from": "cmt:CommitmentNeed",
+     "property": "cmt:comparator",
+     "to": "cmt:Comparator",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
      "from": "cmt:Commitment",
      "property": "cmt:comparator",
      "to": "cmt:Comparator",
@@ -11917,6 +12203,34 @@
    "vocabulary": [],
    "decisions": [
     "D71"
+   ],
+   "principles": []
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/commitment#hasNeed",
+   "name": "hasNeed",
+   "curie": "cmt:hasNeed",
+   "kind": "objectProperty",
+   "module": "commitment",
+   "label": "has need",
+   "definition": "Need a capability requirement states \u2014 any number, at most one per metric; approved with the requirement, never on its own.",
+   "editorialNote": null,
+   "altLabels": [],
+   "conformsTo": [],
+   "dataCategory": null,
+   "status": "draft",
+   "subClassOf": [],
+   "subPropertyOf": [],
+   "disjointWith": [],
+   "subClasses": [],
+   "shapes": [],
+   "constraints": [],
+   "outgoing": [],
+   "incoming": [],
+   "usedBy": [],
+   "vocabulary": [],
+   "decisions": [
+    "D75"
    ],
    "principles": []
   },
@@ -11980,6 +12294,13 @@
    "usedBy": [
     {
      "from": "cmt:CommitmentBaseline",
+     "property": "cmt:metric",
+     "to": "cmt:Metric",
+     "cardinality": "1..1",
+     "severity": "Violation"
+    },
+    {
+     "from": "cmt:CommitmentNeed",
      "property": "cmt:metric",
      "to": "cmt:Metric",
      "cardinality": "1..1",
@@ -13762,6 +14083,51 @@
    ]
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/commitment#ApplicabilityScheme",
+   "curie": "cmt:ApplicabilityScheme",
+   "title": "ApplicabilityScheme",
+   "note": null,
+   "module": "commitment",
+   "members": [
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-always",
+     "curie": "cmt:applies-always",
+     "label": "always",
+     "notation": "always",
+     "definition": "Applies to every capability, whatever it holds and wherever it is offered.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-when-holding-data",
+     "curie": "cmt:applies-when-holding-data",
+     "label": "when holding data",
+     "notation": "holds-data",
+     "definition": "Applies to a capability whose realising data planes hold a data category; a capability holding nothing meets a floor on the metric by promising zero.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    },
+    {
+     "iri": "https://w3id.org/examplebank/platform/commitment#applies-when-multi-region",
+     "curie": "cmt:applies-when-multi-region",
+     "label": "when offered in more than one region",
+     "notation": "multi-region",
+     "definition": "Applies to a capability offered in more than one region; a single-region offering has no failover to measure.",
+     "note": null,
+     "rank": null,
+     "types": [
+      "cmt:Applicability"
+     ]
+    }
+   ]
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/commitment#CommitmentStateScheme",
    "curie": "cmt:CommitmentStateScheme",
    "title": "CommitmentStateScheme",
@@ -14961,6 +15327,83 @@
    "warnings": 0
   },
   {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentNeedShape",
+   "name": "CommitmentNeedShape",
+   "targetClass": "cmt:CommitmentNeed",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#CommitmentNeed",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:metric",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#metric",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Metric",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need targets exactly one metric from the closed scheme."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:comparator",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#comparator",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Comparator",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Comparator",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need states exactly one comparator."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:target",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#target",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": "xsd:decimal",
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need has exactly one decimal target."
+    },
+    {
+     "kind": "property",
+     "path": "cmt:unit",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#unit",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": null,
+     "classIri": null,
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A need states exactly one unit (a QUDT unit IRI)."
+    },
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Need is stated by no capability requirement \u2014 a minimum nobody requires is not a need.",
+     "select": "SELECT $this WHERE {\n                FILTER NOT EXISTS { ?r <https://w3id.org/examplebank/platform/commitment#hasNeed> $this . }\n            }"
+    }
+   ],
+   "violations": 5,
+   "warnings": 0
+  },
+  {
    "iri": "https://w3id.org/examplebank/platform/shapes/commitment#CommitmentRationaleShape",
    "name": "CommitmentRationaleShape",
    "targetClass": "cmt:Commitment",
@@ -15152,6 +15595,32 @@
      "severity": "Violation",
      "message": "Committed commitment states a different unit than the floor for its offering's scope on the same metric \u2014 targets in different units cannot be compared.",
      "select": "SELECT $this WHERE {\n                $this <https://w3id.org/examplebank/platform/commitment#commitsTo> ?off ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?u ; <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                ?off <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os . ?os <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?fs .\n                ?fl a <https://w3id.org/examplebank/platform/commitment#CommitmentBaseline> ; <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?fs ; <https://w3id.org/examplebank/platform/commitment#metric> ?m ; <https://w3id.org/examplebank/platform/commitment#unit> ?fu .\n                FILTER(?u != ?fu)\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#MetricApplicabilityShape",
+   "name": "MetricApplicabilityShape",
+   "targetClass": "cmt:Metric",
+   "targetClassIri": "https://w3id.org/examplebank/platform/commitment#Metric",
+   "module": "commitment",
+   "constraints": [
+    {
+     "kind": "property",
+     "path": "cmt:appliesWhen",
+     "pathIri": "https://w3id.org/examplebank/platform/commitment#appliesWhen",
+     "minCount": 1,
+     "maxCount": 1,
+     "class": "cmt:Applicability",
+     "classIri": "https://w3id.org/examplebank/platform/commitment#Applicability",
+     "datatype": null,
+     "in": [],
+     "minInclusive": null,
+     "maxInclusive": null,
+     "severity": "Violation",
+     "message": "A metric states exactly one applicability condition from the closed scheme \u2014 a metric with none cannot be offered to a capability owner as advice."
     }
    ],
    "violations": 1,
@@ -15880,6 +16349,23 @@
    "principles": [
     "P19"
    ]
+  },
+  {
+   "iri": "https://w3id.org/examplebank/platform/shapes/commitment#NeedMetShape",
+   "name": "NeedMetShape",
+   "targetClass": "cp:CapabilityRequirement",
+   "targetClassIri": "https://w3id.org/examplebank/platform/control-plane#CapabilityRequirement",
+   "module": "control-plane",
+   "constraints": [
+    {
+     "kind": "sparql",
+     "severity": "Violation",
+     "message": "Enabled application requires more than the covering offering promises \u2014 a consumer's stated need on a metric is met by no committed promise, in the need's unit, of an available offering covering the enablement's scope.",
+     "select": "SELECT $this ?need ?o WHERE {\n                $this <https://w3id.org/examplebank/platform/control-plane#ofApplication> ?app ;\n                      <https://w3id.org/examplebank/platform/control-plane#requiredCapability> ?c ;\n                      <https://w3id.org/examplebank/platform/commitment#hasNeed> ?need .\n                ?need <https://w3id.org/examplebank/platform/commitment#metric> ?m ;\n                      <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;\n                      <https://w3id.org/examplebank/platform/commitment#target> ?t ;\n                      <https://w3id.org/examplebank/platform/commitment#unit> ?u .\n                ?e a <https://w3id.org/examplebank/platform/control-plane#ApplicationEnablement> ;\n                   <https://w3id.org/examplebank/platform/control-plane#forApplication> ?app ;\n                   <https://w3id.org/examplebank/platform/control-plane#declarationScope> ?s .\n                ?o <https://w3id.org/examplebank/platform/control-plane#offersCapability> ?c ;\n                   <https://w3id.org/examplebank/platform/control-plane#offeredInScope> ?os ;\n                   <https://w3id.org/examplebank/platform/control-plane#hasOfferingState> <https://w3id.org/examplebank/platform/control-plane#offering-available> .\n                ?s <https://w3id.org/examplebank/platform/control-plane#subScopeOf>* ?os .\n                FILTER NOT EXISTS {\n                    ?cm <https://w3id.org/examplebank/platform/commitment#commitsTo> ?o ;\n                        <https://w3id.org/examplebank/platform/commitment#metric> ?m ;\n                        <https://w3id.org/examplebank/platform/commitment#unit> ?u ;\n                        <https://w3id.org/examplebank/platform/commitment#comparator> ?cmp ;\n                        <https://w3id.org/examplebank/platform/commitment#target> ?ct ;\n                        <https://w3id.org/examplebank/platform/commitment#hasCommitmentState> <https://w3id.org/examplebank/platform/commitment#state-committed> .\n                    FILTER( (?cmp = <https://w3id.org/examplebank/platform/commitment#at-least> && ?ct >= ?t)\n                         || (?cmp = <https://w3id.org/examplebank/platform/commitment#at-most> && ?ct <= ?t) )\n                }\n            }"
+    }
+   ],
+   "violations": 1,
+   "warnings": 0
   },
   {
    "iri": "https://w3id.org/examplebank/platform/shapes/contract#OfferingReadinessShape",
@@ -17672,6 +18158,27 @@
    "from": "cmt:CommitmentBaseline",
    "property": "cmt:metric",
    "to": "cmt:Metric",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:CommitmentNeed",
+   "property": "cmt:comparator",
+   "to": "cmt:Comparator",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:CommitmentNeed",
+   "property": "cmt:metric",
+   "to": "cmt:Metric",
+   "cardinality": "1..1",
+   "severity": "Violation"
+  },
+  {
+   "from": "cmt:Metric",
+   "property": "cmt:appliesWhen",
+   "to": "cmt:Applicability",
    "cardinality": "1..1",
    "severity": "Violation"
   },
@@ -19815,6 +20322,79 @@
     "cp:CapabilityOffering",
     "cp:dependsOn"
    ]
+  },
+  {
+   "id": "D74",
+   "title": "A metric says when it applies",
+   "area": "Planes & scoped governance",
+   "invariant": true,
+   "motivatedBy": [
+    "P9"
+   ],
+   "principles": [
+    "P9",
+    "P7",
+    "P10",
+    "P18"
+   ],
+   "reasoning": "Which promises make sense for a capability was answered only by the floors: every metric with a floor at the scope, nothing else. The three metrics D67 added had no floor, so nothing said when a failover ratio or a redundancy-restore time was even meaningful, and nothing said that a stateless capability meets a recovery-point floor by promising zero. Each metric in the closed scheme now states one applicability condition from a closed scheme of three: always; when a realising data plane holds a data category; when the capability is offered in more than one region. The conditions are read off facts the model already holds, so CQ-19 derives for every offering the metrics that apply and which of them carry no committed promise. That list is advice to the owner and is shown as such: a floor is the only thing that obliges. The shape that gives the term teeth is closure \u2014 a metric without a condition is rejected \u2014 with a negative instance so it fires.",
+   "rejected": [
+    "A warning when an applicable metric has no promise: it would fire on every production offering today for the change-failure rate, which is honest but turns advice into a standing alarm; the question answers it without noise.",
+    "Conditional floors, a baseline that binds only under a condition: the condition would then need its own approval and supersession, and the two ideas, what applies and what is required, are clearer apart.",
+    "Deriving applicability from a capability kind: there is no kind vocabulary, and what a capability holds and where it is offered are already declared."
+   ],
+   "terms": [
+    "Applicability",
+    "appliesWhen",
+    "Metric",
+    "DataPlane",
+    "holdsDataCategory"
+   ],
+   "termCuries": [
+    "cmt:Applicability",
+    "cmt:Metric",
+    "cmt:appliesWhen",
+    "cp:DataPlane",
+    "cp:holdsDataCategory"
+   ]
+  },
+  {
+   "id": "D75",
+   "title": "A requirement states what it needs; a covering offering must promise it",
+   "area": "Tenancy & subscriptions",
+   "invariant": true,
+   "motivatedBy": [
+    "P20"
+   ],
+   "principles": [
+    "P20",
+    "P18",
+    "P15",
+    "P10",
+    "P3"
+   ],
+   "reasoning": "A consumer depended on a capability through a contract version (D62) and on its promises only implicitly: the model could say what the offering promised but not what the application needed, so a weaker promise could never be caught. A capability requirement now states needs, one per metric, each a comparator, target and unit stated in the unit the offering promises in; a need is part of the requirement, approved with it under 'agents observe, humans confirm', never a declaration of its own. One invariant closes the loop: for every enablement of the application, every available offering of the required capability that covers the enablement's scope must carry a committed promise on the need's metric, in its unit, at least as strong by the comparator; anything else is a violation, since an application enabled where its needs are not promised is enabled on hope. CQ-20 lists needs against promises with met, unmet or no promise. The composition view stays advisory (D73); needs are the consumer's side of a single capability, not of a path.",
+   "rejected": [
+    "Needs on the subscription: a subscription is a tenant holding a capability, not an application using it, and two applications of one tenant can need different things.",
+    "A warning instead of a violation: an enablement that proceeds against an unmet need is exactly the silent lowering of assurance P15 forbids.",
+    "Needs as commitments with the roles reversed: a need has no measurement source and no window, and making it a commitment would trip the unmeasured-is-aspirational rule."
+   ],
+   "terms": [
+    "CommitmentNeed",
+    "hasNeed",
+    "CapabilityRequirement",
+    "CapabilityOffering",
+    "Commitment",
+    "ApplicationEnablement"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:CommitmentNeed",
+    "cmt:hasNeed",
+    "cp:ApplicationEnablement",
+    "cp:CapabilityOffering",
+    "cp:CapabilityRequirement"
+   ]
   }
  ],
  "principles": [
@@ -20199,8 +20779,10 @@
    ],
    "termCuries": [],
    "weaklyHeld": true,
-   "motivatedBy": [],
-   "status": "provisional"
+   "motivatedBy": [
+    "D74"
+   ],
+   "status": "confirmed"
   },
   {
    "id": "P10",
@@ -20740,7 +21322,8 @@
     "ctr:versionOf"
    ],
    "motivatedBy": [
-    "D62"
+    "D62",
+    "D75"
    ],
    "status": "confirmed"
   },
@@ -22050,7 +22633,7 @@
     },
     {
      "heading": "What comes next",
-     "body": "Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); and a reason on every current promise and floor, so a number can be reviewed and not only measured (D72, CQ-18). All of it is browsable under [Commitments](#/commitments): each capability's promises by scope with floor, margin, evidence and reason; the floors by scope; each owner's own gaps; and an advisory composition of promises along a request path (D73).\n\nStill ahead: the kind of evidence behind a measurement source; demand-side needs on capability requirements, so an offering's promise can be checked against what its consumers require; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.",
+     "body": "Done since this explainer was first written: the production floors (D69); a committed commitment per request-path offering with real targets (D70, D71); a reason on every current promise and floor (D72, CQ-18); each metric saying when it applies, so an owner can see which promises make sense for a capability by what it holds and where it is offered (D74, CQ-19); and needs stated on a capability requirement, with an invariant that an offering covering an enabled application must promise at least what the application needs (D75, CQ-20). All of it is browsable under [Commitments](#/commitments): each capability's promises by scope with floor, margin, evidence and reason, what applies to it and what its consumers need, the floors by scope, each owner's own gaps, and an advisory composition of promises along a request path (D73).\n\nStill ahead: the kind of evidence behind a measurement source; tiers, only if asked for. Out by decision: raw measurements, capacity, vendors, and enforcing composed floors.",
      "principles": [
       "P9"
      ],
@@ -22059,11 +22642,15 @@
       "D70",
       "D71",
       "D72",
-      "D73"
+      "D73",
+      "D74",
+      "D75"
      ],
      "questions": [
       "CQ-16",
-      "CQ-18"
+      "CQ-18",
+      "CQ-19",
+      "CQ-20"
      ]
     }
    ],
@@ -22328,6 +22915,26 @@
     "sparql": "# CQ-18 \u2014 Why does each committed commitment and each floor carry the target it\n# does, and which decision set it? The rationale is text that cites decisions by\n# identifier (D72). Rows with no rationale are the stewardship list.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?subject ?kind ?metric ?target ?rationale WHERE {\n  { ?subject a cmt:Commitment ; cmt:hasCommitmentState cmt:state-committed . BIND(\"commitment\" AS ?kind) }\n  UNION\n  { ?subject a cmt:CommitmentBaseline . BIND(\"floor\" AS ?kind) }\n  ?subject cmt:metric ?m ; cmt:target ?target .\n  ?m skos:notation ?metric .\n  OPTIONAL { ?subject cmt:rationale ?rationale }\n}\nORDER BY ?kind ?subject",
     "modules": [
      "commitment"
+    ]
+   },
+   {
+    "id": "CQ-19",
+    "question": "Which metrics apply to each offering by what its capability holds and where it is offered, and which of those carry no committed promise?",
+    "query": "cq19-applicable-metrics.rq",
+    "sparql": "# CQ-19 \u2014 Which metrics apply to each offering by what its capability holds and\n# where it is offered, and which of those carry no committed promise? Advice for\n# a capability owner (D74): \"always\" metrics apply everywhere; \"holds-data\" when a\n# realising data plane holds a data category; \"multi-region\" when the capability\n# is offered in more than one region. Rows with no commitment are the advice.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?offering ?capability ?metric ?condition ?commitment WHERE {\n  ?offering a cp:CapabilityOffering ; cp:offersCapability ?capability ; cp:offeredInScope ?os .\n  ?m a cmt:Metric ; skos:inScheme cmt:MetricScheme ; cmt:appliesWhen ?cond ; skos:notation ?metric .\n  ?cond skos:notation ?condition .\n  FILTER(\n       ?cond = cmt:applies-always\n    || ( ?cond = cmt:applies-when-holding-data\n         && EXISTS { ?plane cp:realizesCapability ?capability ; cp:holdsDataCategory ?dc . } )\n    || ( ?cond = cmt:applies-when-multi-region\n         && EXISTS { ?o2 cp:offersCapability ?capability ; cp:offeredInScope ?s2 .\n                     ?os cp:subScopeOf* ?a1 . ?a1 cp:hasRegion ?r1 .\n                     ?s2 cp:subScopeOf* ?a2 . ?a2 cp:hasRegion ?r2 .\n                     FILTER(?r1 != ?r2) } )\n  )\n  OPTIONAL { ?commitment cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed }\n}\nORDER BY ?offering ?metric",
+    "modules": [
+     "commitment",
+     "control-plane"
+    ]
+   },
+   {
+    "id": "CQ-20",
+    "question": "For each enabled application, what does each requirement need from a capability, what does the covering offering promise, and is the need met?",
+    "query": "cq20-needs-met.rq",
+    "sparql": "# CQ-20 \u2014 For each enabled application, what does each of its requirements need\n# from a capability, what does the covering available offering promise, and is the\n# need met? \"no promise\" is a need nothing answers; \"unmet\" is a promise too weak\n# (D75). Both are violations of NeedMetShape; the met rows are the evidence.\nPREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>\nPREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\nSELECT ?application ?capability ?metric ?comparator ?need ?offering ?promise\n       (IF(BOUND(?promise), IF((?c = cmt:at-least && ?promise >= ?need) || (?c = cmt:at-most && ?promise <= ?need), \"met\", \"unmet\"), \"no promise\") AS ?status) WHERE {\n  ?r cp:ofApplication ?application ; cp:requiredCapability ?capability ; cmt:hasNeed ?n .\n  ?n cmt:metric ?m ; cmt:comparator ?c ; cmt:target ?need ; cmt:unit ?u .\n  ?m skos:notation ?metric . ?c skos:notation ?comparator .\n  ?e a cp:ApplicationEnablement ; cp:forApplication ?application ; cp:declarationScope ?s .\n  ?offering cp:offersCapability ?capability ; cp:offeredInScope ?os ; cp:hasOfferingState cp:offering-available .\n  ?s cp:subScopeOf* ?os .\n  OPTIONAL { ?cm cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:unit ?u ; cmt:comparator ?c ; cmt:hasCommitmentState cmt:state-committed ; cmt:target ?promise }\n}\nORDER BY ?application ?capability ?metric",
+    "modules": [
+     "commitment",
+     "control-plane"
     ]
    }
   ],
@@ -23105,9 +23712,20 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Which tenants are subscribed in a scope whose offering carries a weaker commitment than the tenant's contract requires? (needs the contract side \u2014 see the published-contracts scoping decision)",
+    "question": "Which enabled applications need more from a capability than the offering covering their scope promises? (formal \u2014 CQ-20; the need is stated on the capability requirement and approved with it \u2014 D75)",
     "expectedEmpty": false,
-    "realizedBy": []
+    "realizedBy": [
+     "NeedMetShape",
+     "CommitmentNeedShape"
+    ]
+   },
+   {
+    "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
+    "question": "Which metrics apply to an offering by what its capability holds and where it is offered, and which of those carry no promise? (formal \u2014 CQ-19; advice to the owner, never an obligation \u2014 D74)",
+    "expectedEmpty": false,
+    "realizedBy": [
+     "MetricApplicabilityShape"
+    ]
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
@@ -23288,37 +23906,51 @@
    {
     "id": "metric-availability",
     "label": "Availability",
-    "notation": "availability"
+    "notation": "availability",
+    "condition": "always",
+    "conditionLabel": "always"
    },
    {
     "id": "metric-change-failure-rate",
     "label": "Change-failure rate",
-    "notation": "change.failure-rate"
+    "notation": "change.failure-rate",
+    "condition": "always",
+    "conditionLabel": "always"
    },
    {
     "id": "metric-failover-success-ratio",
     "label": "Successful-request ratio during failover",
-    "notation": "failover.success-ratio"
+    "notation": "failover.success-ratio",
+    "condition": "multi-region",
+    "conditionLabel": "when offered in more than one region"
    },
    {
     "id": "metric-latency-p99",
     "label": "Latency, 99th percentile",
-    "notation": "latency.p99"
+    "notation": "latency.p99",
+    "condition": "always",
+    "conditionLabel": "always"
    },
    {
     "id": "metric-time-to-restore-redundancy",
     "label": "Time to restore redundancy",
-    "notation": "redundancy.restore-time"
+    "notation": "redundancy.restore-time",
+    "condition": "multi-region",
+    "conditionLabel": "when offered in more than one region"
    },
    {
     "id": "metric-recovery-point",
     "label": "Recovery point objective",
-    "notation": "rpo"
+    "notation": "rpo",
+    "condition": "holds-data",
+    "conditionLabel": "when holding data"
    },
    {
     "id": "metric-recovery-time",
     "label": "Recovery time objective",
-    "notation": "rto"
+    "notation": "rto",
+    "condition": "always",
+    "conditionLabel": "always"
    }
   ],
   "scopes": [
@@ -23354,6 +23986,10 @@
      }
     ],
     "dataCategories": [],
+    "regions": [
+     "us-west-2"
+    ],
+    "consumers": [],
     "offerings": [
      {
       "id": "offering-cap-decision-prod",
@@ -23595,10 +24231,96 @@
         "target": 60.0,
         "margin": 0.0
        }
+      ],
+      "metrics": [
+       {
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-decision-availability"
+       },
+       {
+        "metric": {
+         "id": "metric-change-failure-rate",
+         "label": "Change-failure rate",
+         "notation": "change.failure-rate"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-failover-success-ratio",
+         "label": "Successful-request ratio during failover",
+         "notation": "failover.success-ratio"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-decision-latency"
+       },
+       {
+        "metric": {
+         "id": "metric-time-to-restore-redundancy",
+         "label": "Time to restore redundancy",
+         "notation": "redundancy.restore-time"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "condition": "holds-data",
+        "conditionLabel": "when holding data",
+        "applies": false,
+        "commitment": "commit-cap-decision-rpo"
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-decision-rto"
+       }
       ]
      }
     ],
     "gaps": [
+     {
+      "kind": "not promised",
+      "offering": "Authorization decision capability offered in production",
+      "commitment": null,
+      "commitmentId": null,
+      "detail": "Change-failure rate applies here (always) and carries no committed promise; advice, not an obligation (D74)"
+     },
      {
       "kind": "no observation",
       "offering": "Authorization decision capability offered in production",
@@ -23634,7 +24356,7 @@
      "commitments": 4,
      "met": 0,
      "noObservation": 4,
-     "gaps": 4
+     "gaps": 5
     }
    },
    {
@@ -23657,6 +24379,10 @@
      }
     ],
     "dataCategories": [],
+    "regions": [
+     "us-west-2"
+    ],
+    "consumers": [],
     "offerings": [
      {
       "id": "offering-cap-ingress-prod",
@@ -23897,10 +24623,96 @@
         "target": 60.0,
         "margin": 0.0
        }
+      ],
+      "metrics": [
+       {
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-ingress-availability"
+       },
+       {
+        "metric": {
+         "id": "metric-change-failure-rate",
+         "label": "Change-failure rate",
+         "notation": "change.failure-rate"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-failover-success-ratio",
+         "label": "Successful-request ratio during failover",
+         "notation": "failover.success-ratio"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-ingress-latency"
+       },
+       {
+        "metric": {
+         "id": "metric-time-to-restore-redundancy",
+         "label": "Time to restore redundancy",
+         "notation": "redundancy.restore-time"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "condition": "holds-data",
+        "conditionLabel": "when holding data",
+        "applies": false,
+        "commitment": "commit-cap-ingress-rpo"
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-ingress-rto"
+       }
       ]
      }
     ],
     "gaps": [
+     {
+      "kind": "not promised",
+      "offering": "Ingress capability offered in production",
+      "commitment": null,
+      "commitmentId": null,
+      "detail": "Change-failure rate applies here (always) and carries no committed promise; advice, not an obligation (D74)"
+     },
      {
       "kind": "no observation",
       "offering": "Ingress capability offered in production",
@@ -23936,7 +24748,7 @@
      "commitments": 4,
      "met": 0,
      "noObservation": 4,
-     "gaps": 4
+     "gaps": 5
     }
    },
    {
@@ -23961,6 +24773,60 @@
     "dataCategories": [
      "Customer personal data",
      "Tenant workload data"
+    ],
+    "regions": [
+     "us-west-2"
+    ],
+    "consumers": [
+     {
+      "requirement": "req-digital-bank-notifications",
+      "application": "app-digital-bank",
+      "applicationLabel": "T123 digital bank",
+      "needs": [
+       {
+        "id": "need-digital-bank-availability",
+        "label": "Digital bank needs notifications available at least 99.9 %",
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "comparator": ">=",
+        "target": 99.9,
+        "unit": "%",
+        "offerings": [
+         {
+          "offering": "offering-notifications-prod",
+          "offeringLabel": "Notifications capability offered in production, US",
+          "commitment": "commit-notifications-availability",
+          "promise": 99.95,
+          "status": "met"
+         }
+        ]
+       },
+       {
+        "id": "need-digital-bank-latency",
+        "label": "Digital bank needs notifications latency p99 at most 300 ms",
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "comparator": "<=",
+        "target": 300.0,
+        "unit": "ms",
+        "offerings": [
+         {
+          "offering": "offering-notifications-prod",
+          "offeringLabel": "Notifications capability offered in production, US",
+          "commitment": "commit-notifications-latency",
+          "promise": 250.0,
+          "status": "met"
+         }
+        ]
+       }
+      ]
+     }
     ],
     "offerings": [
      {
@@ -24205,10 +25071,96 @@
         "target": 45.0,
         "margin": 15.0
        }
+      ],
+      "metrics": [
+       {
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-notifications-availability"
+       },
+       {
+        "metric": {
+         "id": "metric-change-failure-rate",
+         "label": "Change-failure rate",
+         "notation": "change.failure-rate"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-failover-success-ratio",
+         "label": "Successful-request ratio during failover",
+         "notation": "failover.success-ratio"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-notifications-latency"
+       },
+       {
+        "metric": {
+         "id": "metric-time-to-restore-redundancy",
+         "label": "Time to restore redundancy",
+         "notation": "redundancy.restore-time"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "condition": "holds-data",
+        "conditionLabel": "when holding data",
+        "applies": true,
+        "commitment": "commit-notifications-rpo"
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-notifications-rto"
+       }
       ]
      }
     ],
     "gaps": [
+     {
+      "kind": "not promised",
+      "offering": "Notifications capability offered in production, US",
+      "commitment": null,
+      "commitmentId": null,
+      "detail": "Change-failure rate applies here (always) and carries no committed promise; advice, not an obligation (D74)"
+     },
      {
       "kind": "no observation",
       "offering": "Notifications capability offered in production, US",
@@ -24237,7 +25189,7 @@
      "commitments": 4,
      "met": 1,
      "noObservation": 3,
-     "gaps": 3
+     "gaps": 4
     }
    },
    {
@@ -24259,7 +25211,13 @@
       ]
      }
     ],
-    "dataCategories": [],
+    "dataCategories": [
+     "Authentication and session evidence"
+    ],
+    "regions": [
+     "us-west-2"
+    ],
+    "consumers": [],
     "offerings": [
      {
       "id": "offering-cap-session-prod",
@@ -24502,10 +25460,96 @@
         "target": 60.0,
         "margin": 0.0
        }
+      ],
+      "metrics": [
+       {
+        "metric": {
+         "id": "metric-availability",
+         "label": "Availability",
+         "notation": "availability"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-session-availability"
+       },
+       {
+        "metric": {
+         "id": "metric-change-failure-rate",
+         "label": "Change-failure rate",
+         "notation": "change.failure-rate"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-failover-success-ratio",
+         "label": "Successful-request ratio during failover",
+         "notation": "failover.success-ratio"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-latency-p99",
+         "label": "Latency, 99th percentile",
+         "notation": "latency.p99"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-session-latency"
+       },
+       {
+        "metric": {
+         "id": "metric-time-to-restore-redundancy",
+         "label": "Time to restore redundancy",
+         "notation": "redundancy.restore-time"
+        },
+        "condition": "multi-region",
+        "conditionLabel": "when offered in more than one region",
+        "applies": false,
+        "commitment": null
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-point",
+         "label": "Recovery point objective",
+         "notation": "rpo"
+        },
+        "condition": "holds-data",
+        "conditionLabel": "when holding data",
+        "applies": true,
+        "commitment": "commit-cap-session-rpo"
+       },
+       {
+        "metric": {
+         "id": "metric-recovery-time",
+         "label": "Recovery time objective",
+         "notation": "rto"
+        },
+        "condition": "always",
+        "conditionLabel": "always",
+        "applies": true,
+        "commitment": "commit-cap-session-rto"
+       }
       ]
      }
     ],
     "gaps": [
+     {
+      "kind": "not promised",
+      "offering": "Session management capability offered in production",
+      "commitment": null,
+      "commitmentId": null,
+      "detail": "Change-failure rate applies here (always) and carries no committed promise; advice, not an obligation (D74)"
+     },
      {
       "kind": "no observation",
       "offering": "Session management capability offered in production",
@@ -24541,7 +25585,7 @@
      "commitments": 4,
      "met": 0,
      "noObservation": 4,
-     "gaps": 4
+     "gaps": 5
     }
    }
   ],

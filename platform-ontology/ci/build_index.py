@@ -779,6 +779,13 @@ def collect_commitments(g_ont, decisions):
             return None
         return round(target - floor_target if cmp == ">=" else floor_target - target, 6)
 
+    metric_defs = []
+    for m in sorted(g.subjects(SKOS.inScheme, CMT.MetricScheme), key=str):
+        cond = g.value(m, CMT.appliesWhen)
+        metric_defs.append({"iri": m, "metric": concept(m), "condition": lit(g, cond, SKOS.notation) if cond is not None else None,
+                            "conditionLabel": lit(g, cond, SKOS.prefLabel) if cond is not None else None})
+    metric_defs.sort(key=lambda x: x["metric"]["notation"] or "")
+
     floors = []
     for f in sorted(g.subjects(RDF.type, CMT.CommitmentBaseline), key=str):
         fs, m, c = g.value(f, CP.declarationScope), g.value(f, CMT.metric), g.value(f, CMT.comparator)
@@ -815,7 +822,10 @@ def collect_commitments(g_ont, decisions):
 
     caps, scopes = [], {}
     for cap in sorted(g.subjects(RDF.type, CORE.Capability), key=str):
-        offerings = []
+        cats = sorted({lit(g, dc, SKOS.prefLabel) or ln(dc) for p in g.subjects(CP.realizesCapability, cap) for dc in g.objects(p, CP.holdsDataCategory)})
+        regions = {(scope_info(g.value(o, CP.offeredInScope)) or {}).get("region") for o in g.subjects(CP.offersCapability, cap)} - {None}
+        multi_region = len(regions) > 1
+        offerings, off_nodes = [], {}
         for off in sorted(g.subjects(CP.offersCapability, cap), key=str):
             s, st = g.value(off, CP.offeredInScope), g.value(off, CP.hasOfferingState)
             state = ln(st).replace("offering-", "") if st is not None else None
@@ -834,11 +844,17 @@ def collect_commitments(g_ont, decisions):
                                       "offeringState": state, "commitment": match["id"] if match else None, "target": match["target"] if match else None, "margin": mg})
                 if match:
                     match["floor"] = {"id": f["id"], "target": f["target"], "margin": mg}
+            metric_rows = []
+            for md in metric_defs:
+                applies = md["condition"] == "always" or (md["condition"] == "holds-data" and bool(cats)) or (md["condition"] == "multi-region" and multi_region)
+                match = next((c for c in current if c["_metric"] == md["iri"]), None)
+                metric_rows.append({"metric": md["metric"], "condition": md["condition"], "conditionLabel": md["conditionLabel"], "applies": applies, "commitment": match["id"] if match else None})
             sc = scope_info(s)
             if sc:
                 scopes[sc["id"]] = sc
             offerings.append({"id": ln(off), "label": label(off), "state": state, "scope": sc, "commitments": current,
-                              "history": [c for c in cms if c["state"] != "committed"], "floors": floor_rows})
+                              "history": [c for c in cms if c["state"] != "committed"], "floors": floor_rows, "metrics": metric_rows})
+            off_nodes[ln(off)] = (off, s)
         contracts = []
         for ct in sorted(g.subjects(CTR.contractOf, cap), key=str):
             versions = []
@@ -846,10 +862,46 @@ def collect_commitments(g_ont, decisions):
                 vs = g.value(v, CTR.hasVersionState)
                 versions.append({"id": ln(v), "version": lit(g, v, CTR.versionString), "state": ln(vs).replace("state-", "") if vs is not None else None, "artifact": lit(g, v, CTR.artifact)})
             contracts.append({"id": ln(ct), "label": label(ct), "versions": versions})
-        cats = sorted({lit(g, dc, SKOS.prefLabel) or ln(dc) for p in g.subjects(CP.realizesCapability, cap) for dc in g.objects(p, CP.holdsDataCategory)})
         deps = sorted(({"id": ln(d), "label": label(d)} for d in g.objects(cap, CP.dependsOn)), key=lambda x: x["id"])
+        consumers = []
+        for r in sorted(g.subjects(CP.requiredCapability, cap), key=str):
+            need_nodes = sorted(g.objects(r, CMT.hasNeed), key=str)
+            if not need_nodes:
+                continue
+            app = g.value(r, CP.ofApplication)
+            en_scopes = [g.value(e, CP.declarationScope) for e in g.subjects(CP.forApplication, app) if (e, RDF.type, CP.ApplicationEnablement) in g]
+            covering = [(oid, od) for od in offerings for oid in [od["id"]] if od["state"] == "available"
+                        and any(off_nodes[oid][1] in set(ancestors(es)) for es in en_scopes if es is not None)]
+            needs = []
+            for nd in need_nodes:
+                m, c = g.value(nd, CMT.metric), g.value(nd, CMT.comparator)
+                t, u = num(g.value(nd, CMT.target)), unit_label(g.value(nd, CMT.unit))
+                cmpn = lit(g, c, SKOS.notation) if c is not None else None
+                rows = []
+                for oid, od in covering:
+                    match = next((x for x in od["commitments"] if x["_metric"] == m and x["unit"] == u and x["comparator"] == cmpn), None)
+                    if match is None or t is None:
+                        status = "no promise"
+                    elif (cmpn == ">=" and match["target"] >= t) or (cmpn == "<=" and match["target"] <= t):
+                        status = "met"
+                    else:
+                        status = "unmet"
+                    rows.append({"offering": oid, "offeringLabel": od["label"], "commitment": match["id"] if match else None,
+                                 "promise": match["target"] if match else None, "status": status})
+                needs.append({"id": ln(nd), "label": label(nd), "metric": concept(m), "comparator": cmpn, "target": t, "unit": u, "offerings": rows})
+            consumers.append({"requirement": ln(r), "application": ln(app), "applicationLabel": label(app), "needs": needs})
         gaps = []
+        for cons in consumers:
+            for nd in cons["needs"]:
+                for row in nd["offerings"]:
+                    if row["status"] != "met":
+                        gaps.append({"kind": "need unmet", "offering": row["offeringLabel"], "commitment": row["commitment"], "commitmentId": row["commitment"],
+                                     "detail": f"{cons['applicationLabel']} needs {nd['metric']['label']} {nd['comparator']} {nd['target']} {nd['unit']}: {row['status']} (D75)"})
         for off in offerings:
+            for mr in off["metrics"]:
+                if mr["applies"] and not mr["commitment"] and off["state"] == "available":
+                    gaps.append({"kind": "not promised", "offering": off["label"], "commitment": None, "commitmentId": None,
+                                 "detail": f"{mr['metric']['label']} applies here ({mr['conditionLabel']}) and carries no committed promise; advice, not an obligation (D74)"})
             for c in off["commitments"]:
                 ev = c["evidence"]["status"]
                 if ev == "no observation":
@@ -870,7 +922,7 @@ def collect_commitments(g_ont, decisions):
                              "detail": "declared but not yet available; readiness needs a published contract and a promise on every floor metric"})
         n_commit = sum(len(o["commitments"]) for o in offerings)
         caps.append({"id": ln(cap), "iri": str(cap), "label": label(cap), "dependsOn": deps, "contracts": contracts, "dataCategories": cats,
-                     "offerings": offerings, "gaps": gaps, "download": f"downloads/commitments/{ln(cap)}.json",
+                     "regions": sorted(regions), "consumers": consumers, "offerings": offerings, "gaps": gaps, "download": f"downloads/commitments/{ln(cap)}.json",
                      "counts": {"offerings": len(offerings), "commitments": n_commit,
                                 "met": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "met"),
                                 "noObservation": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "no observation"),
@@ -886,7 +938,7 @@ def collect_commitments(g_ont, decisions):
         for off in cap["offerings"]:
             for c in off["commitments"] + off["history"]:
                 c.pop("_metric", None)
-    metrics = sorted((concept(m) for m in g.subjects(SKOS.inScheme, CMT.MetricScheme)), key=lambda x: x["notation"] or "")
+    metrics = [{**md["metric"], "condition": md["condition"], "conditionLabel": md["conditionLabel"]} for md in metric_defs]
     try:
         source = str(DECLARATIONS.relative_to(ROOT))
     except ValueError:

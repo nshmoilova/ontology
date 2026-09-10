@@ -1,0 +1,26 @@
+# CQ-19 — Which metrics apply to each offering by what its capability holds and
+# where it is offered, and which of those carry no committed promise? Advice for
+# a capability owner (D74): "always" metrics apply everywhere; "holds-data" when a
+# realising data plane holds a data category; "multi-region" when the capability
+# is offered in more than one region. Rows with no commitment are the advice.
+PREFIX cmt:  <https://w3id.org/examplebank/platform/commitment#>
+PREFIX cp:   <https://w3id.org/examplebank/platform/control-plane#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?offering ?capability ?metric ?condition ?commitment WHERE {
+  ?offering a cp:CapabilityOffering ; cp:offersCapability ?capability ; cp:offeredInScope ?os .
+  ?m a cmt:Metric ; skos:inScheme cmt:MetricScheme ; cmt:appliesWhen ?cond ; skos:notation ?metric .
+  ?cond skos:notation ?condition .
+  FILTER(
+       ?cond = cmt:applies-always
+    || ( ?cond = cmt:applies-when-holding-data
+         && EXISTS { ?plane cp:realizesCapability ?capability ; cp:holdsDataCategory ?dc . } )
+    || ( ?cond = cmt:applies-when-multi-region
+         && EXISTS { ?o2 cp:offersCapability ?capability ; cp:offeredInScope ?s2 .
+                     ?os cp:subScopeOf* ?a1 . ?a1 cp:hasRegion ?r1 .
+                     ?s2 cp:subScopeOf* ?a2 . ?a2 cp:hasRegion ?r2 .
+                     FILTER(?r1 != ?r2) } )
+  )
+  OPTIONAL { ?commitment cmt:commitsTo ?offering ; cmt:metric ?m ; cmt:hasCommitmentState cmt:state-committed }
+}
+ORDER BY ?offering ?metric

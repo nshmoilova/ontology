@@ -783,3 +783,48 @@ ex:commit-no-rationale a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq18-commitment-rationale.rq"^^xsd:anyURI ;
     cmt:hasCommitmentState cmt:state-committed .
 # ex:floor-lax-latency (62) records no rationale either, so BaselineRationaleShape fires there — a floor without its reason.
+
+### 64. Metric with no applicability condition (MetricApplicabilityShape)
+ex:metric-unplaced a cmt:Metric ; skos:inScheme cmt:MetricScheme ; skos:prefLabel "Unplaced metric"@en ; skos:notation "unplaced" .
+
+### 65. Enabled application needs more than the covering offering promises (NeedMetShape);
+###     a need with no metric, and a need no requirement states (CommitmentNeedShape)
+ex:need-scope a cp:AdministrativeScope .
+ex:need-capability a core:Capability ; core:displayName "Capability with a consumer that needs more" .
+ex:offering-need a cp:CapabilityOffering ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:need-scope ;
+    cp:hasOfferingState cp:offering-available ;
+    cp:offersCapability ex:need-capability ;
+    cp:offeredInScope ex:need-scope .
+ex:commit-need-availability a cmt:Commitment ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:need-scope ;
+    cmt:commitsTo ex:offering-need ;
+    cmt:metric cmt:metric-availability ;
+    cmt:comparator cmt:at-least ;
+    cmt:target 99.9 ;
+    cmt:unit unit:PERCENT ;
+    cmt:window "P30D"^^xsd:duration ;
+    cmt:measuredBy ex:source-neg ;
+    cmt:validatedBy "queries/competency/cq20-needs-met.rq"^^xsd:anyURI ;
+    cmt:rationale "Negative corpus: a promise a consumer will need more than." ;
+    cmt:hasCommitmentState cmt:state-committed .
+ex:app-needy a core:Application ; core:ownedBy ex:bad-tenant .
+ex:enable-needy a cp:ApplicationEnablement ;
+    cp:declaredThrough ex:good-mgmt ;
+    cp:declarationScope ex:need-scope ;
+    cp:forApplication ex:app-needy .
+ex:req-needy a cp:CapabilityRequirement ;
+    cp:ofApplication ex:app-needy ;
+    cp:requiredCapability ex:need-capability ;
+    cp:hasApproval ex:approval-outsider-1 ;
+    cmt:hasNeed ex:need-availability-9999 , ex:need-malformed .
+ex:need-availability-9999 a cmt:CommitmentNeed ;
+    cmt:metric cmt:metric-availability ; cmt:comparator cmt:at-least ; cmt:target 99.99 ; cmt:unit unit:PERCENT .
+ex:need-malformed a cmt:CommitmentNeed ;
+    cmt:comparator cmt:at-least ; cmt:target 1.0 ; cmt:unit unit:PERCENT .
+ex:need-orphan a cmt:CommitmentNeed ;
+    cmt:metric cmt:metric-latency-p99 ; cmt:comparator cmt:at-most ; cmt:target 100.0 ; cmt:unit unit:MilliSEC .
+# ex:offering-need is available with no published contract and ex:enable-needy has no subscription behind it,
+# so OfferingWithoutContractShape, OfferingReadinessShape and EnablementGateShape also fire here.

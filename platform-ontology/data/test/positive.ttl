@@ -279,7 +279,7 @@ ex:scope-prod a cp:AdministrativeScope ;
     cp:inRegion "US" ;
     cp:hasRegion core:region-us-west-2 ;
     cp:requiresHumanApproval true ;
-    cp:scopeIncludes ex:t123-notifications-plane .
+    cp:scopeIncludes ex:t123-notifications-plane , ex:session-store-plane .
 
 ### Concurrent session policy — configured per device class
 ex:policy-sessions-browser a cp:ConcurrentSessionPolicy ;
@@ -343,7 +343,15 @@ ex:app-digital-bank a core:Application ;
 ex:req-digital-bank-notifications a cp:CapabilityRequirement ;
     cp:ofApplication ex:app-digital-bank ;
     cp:requiredCapability ex:cap-notifications ;
+    cmt:hasNeed ex:need-digital-bank-availability , ex:need-digital-bank-latency ;
     cp:hasApproval ex:approval-req-1 .
+# What the digital bank needs from notifications (D75): approved with the requirement, met by the production offering.
+ex:need-digital-bank-availability a cmt:CommitmentNeed ;
+    core:displayName "Digital bank needs notifications available at least 99.9 %" ;
+    cmt:metric cmt:metric-availability ; cmt:comparator cmt:at-least ; cmt:target 99.9 ; cmt:unit unit:PERCENT .
+ex:need-digital-bank-latency a cmt:CommitmentNeed ;
+    core:displayName "Digital bank needs notifications latency p99 at most 300 ms" ;
+    cmt:metric cmt:metric-latency-p99 ; cmt:comparator cmt:at-most ; cmt:target 300.0 ; cmt:unit unit:MilliSEC .
 
 ex:approval-req-1 a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
@@ -620,7 +628,15 @@ ex:cap-session a core:Capability ;
 ex:session-controller a core:WorkloadPrincipal ;
     core:identifier "spiffe://examplebank/platform/session-controller" ;
     core:displayName "Session management capability controller" .
+ex:session-store-plane a cp:DataPlane ;
+    core:operatedBy ex:examplebank ;
+    cp:holdsDataCategory core:data-authn-evidence ;
+    core:governedBy ex:policy-ledger-read ;
+    core:displayName "Session store, production" ;
+    cp:realizesCapability ex:cap-session ;
+    cp:servesTenant ex:platform-tenant .
 ex:session-control-plane a cp:CapabilityControlPlane ;
+    cp:actuates ex:session-store-plane ;
     core:governedBy ex:policy-ledger-read ;
     core:displayName "Session management capability control plane" ;
     cp:governsCapability ex:cap-session ;

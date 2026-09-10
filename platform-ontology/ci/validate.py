@@ -146,6 +146,10 @@ def main() -> int:
             "different units cannot be compared",
             "a target without its reason cannot be reviewed",
             "a baseline without its reason cannot be reviewed",
+            "cannot be offered to a capability owner as advice",
+            "A need targets exactly one metric",
+            "a minimum nobody requires is not a need",
+            "a consumer's stated need on a metric is met by no committed promise",
         ]
         for frag in expected_fragments:
             if frag in text:
@@ -175,6 +179,8 @@ def main() -> int:
         "cq16-commitment-status.rq",
         "cq17-floor-margins.rq",
         "cq18-commitment-rationale.rq",
+        "cq19-applicable-metrics.rq",
+        "cq20-needs-met.rq",
     }
     for qf in sorted((ROOT / "queries/competency").glob("*.rq")):
         try:
