@@ -489,9 +489,10 @@ with no measurement source or no validation mechanism is a violation — the
   which decision set it? *(formal — CQ-18; the rows with no rationale are the
   stewardship list — D72)* [realised: CommitmentRationaleShape, BaselineRationaleShape]
 - Should a floor bind the composed request path as well as each offering? In
-  series, the three request-path availability targets compose to about 99.89
-  percent against the 99.9 percent floor; composition is advisory and no
-  invariant applies to a path *(open — D73)*
+  series the three request-path availability targets composed to about 99.89
+  percent against the 99.9 percent floor until D76 raised decision and session
+  to match ingress, and now compose to about 99.97; composition is advisory
+  and no invariant applies to a path *(open — D73)*
 
 ## The four platform questions
 

@@ -914,7 +914,7 @@
         },
         {
           "heading": "The request-path targets",
-          "body": "Ingress, the decision point and session management are on every request, so their promises cap what any application can promise. Each carries four committed commitments on the platform observability feed and is available against all four floors. The targets were set by the platform (D71); a changed target is a new declaration superseding the old one, so the history of every promise stays in the graph.",
+          "body": "Ingress, the decision point and session management are on every request, so their promises cap what any application can promise. Each carries four committed commitments on the platform observability feed and is available against all four floors. The targets were set by the platform (D71, D76); a changed target is a new declaration superseding the old one, so the history of every promise stays in the graph.",
           "table": {
             "columns": [
               "Capability",
@@ -935,19 +935,19 @@
               ],
               [
                 "Authorization decision",
-                "99.95 %",
+                "99.99 %",
                 "25 ms",
                 "60 min",
                 "0",
-                "Fails with ingress in practice; the latency allows a membership and grant lookup that is not fully local; grants are re-projected, not lost"
+                "Fails with ingress in practice, so it promises what ingress promises (D76); the latency allows a membership and grant lookup that is not fully local; grants are re-projected, not lost"
               ],
               [
                 "Session management",
-                "99.95 %",
+                "99.99 %",
                 "30 ms",
                 "60 min",
                 "5 min",
-                "Handle lookup plus proof-of-possession check in-region; sessions created in the last five minutes before a region loss may need re-authentication"
+                "Promised at ingress's level so the path composes inside the floor (D76); handle lookup plus proof-of-possession check in-region; sessions created in the last five minutes before a region loss may need re-authentication"
               ]
             ]
           },
@@ -972,7 +972,8 @@
             "D67",
             "D68",
             "D70",
-            "D71"
+            "D71",
+            "D76"
           ],
           "questions": [
             "CQ-14",
@@ -1040,7 +1041,8 @@
             "D72",
             "D73",
             "D74",
-            "D75"
+            "D75",
+            "D76"
           ],
           "questions": [
             "CQ-16",
@@ -1052,7 +1054,7 @@
       ],
       "openQuestions": [
         "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each — a promise made and not yet evidenced.",
-        "Should a floor bind the composed request path as well as each offering? Ingress, the decision point and session management in series compose to about 99.89 percent availability against the 99.9 percent floor. The composition view shows it; no invariant applies to a path (D73)."
+        "Should a floor bind the composed request path as well as each offering? With decision and session availability raised to match ingress (D76), ingress, the decision point and session management in series compose to about 99.97 percent, inside the 99.9 percent floor; before that they composed to 99.89, under it, with no invariant firing. The composition view shows it; no invariant applies to a path (D73)."
       ]
     },
     {

@@ -1,6 +1,6 @@
 {
  "generated": true,
- "sourceDigest": "31fce7dad955",
+ "sourceDigest": "2c0870ffd33e",
  "stats": {
   "modules": 8,
   "classes": 95,
@@ -11,7 +11,7 @@
   "warnings": 11,
   "vocabularies": 22,
   "relationships": 80,
-  "decisions": 71,
+  "decisions": 72,
   "principles": 20,
   "standards": 15,
   "realisedBacklog": 49,
@@ -11159,7 +11159,8 @@
     "D71",
     "D72",
     "D73",
-    "D75"
+    "D75",
+    "D76"
    ],
    "principles": []
   },
@@ -11936,7 +11937,8 @@
    "usedBy": [],
    "vocabulary": [],
    "decisions": [
-    "D72"
+    "D72",
+    "D76"
    ],
    "principles": []
   },
@@ -20395,6 +20397,31 @@
     "cp:CapabilityOffering",
     "cp:CapabilityRequirement"
    ]
+  },
+  {
+   "id": "D76",
+   "title": "Decision and session availability match ingress",
+   "area": "Tenancy & subscriptions",
+   "invariant": false,
+   "principles": [
+    "P18",
+    "P3",
+    "P15"
+   ],
+   "reasoning": "The decision point and session management promised 99.95 percent, D70 placeholders that D71 let stand, while ingress promised 99.99. Every admission crosses all three, so ingress's promise was capped in practice by the two behind it, and the advisory composition (D73) showed the path at about 99.89 percent, under the 99.9 floor that binds each offering alone. Both now promise 99.99 percent, the platform's target, so the path composes to about 99.97 percent inside the floor. The architectural cost is recorded on each promise as its reason: about four minutes of unavailability a month, which needs zonal redundancy for both, a grant projection at the decision point that survives a control-plane outage, and a replicated session store with in-region failover; the session's five-minute recovery point stands. The seed carries the targets the platform set, as it has since the placeholders were removed, so the two promises are restated rather than superseded; supersession remains the rule for a change to a promise a consumer has already been given.",
+   "rejected": [
+    "Leaving 99.95 with its headroom above the floor: the floor binds an offering, but a consumer meets the path, and a path under the floor is a promise the platform cannot honestly make.",
+    "Raising the floor to 99.99 instead: the floor is the least any shared capability must meet, including tenant-facing stateful ones, and 99.99 for all of them is a cost nobody has accepted.",
+    "Superseding in the seed: these were placeholder targets no consumer had been given; a staged supersession would restore the illustration history the seed was cleared of."
+   ],
+   "terms": [
+    "Commitment",
+    "rationale"
+   ],
+   "termCuries": [
+    "cmt:Commitment",
+    "cmt:rationale"
+   ]
   }
  ],
  "principles": [
@@ -22518,7 +22545,7 @@
     },
     {
      "heading": "The request-path targets",
-     "body": "Ingress, the decision point and session management are on every request, so their promises cap what any application can promise. Each carries four committed commitments on the platform observability feed and is available against all four floors. The targets were set by the platform (D71); a changed target is a new declaration superseding the old one, so the history of every promise stays in the graph.",
+     "body": "Ingress, the decision point and session management are on every request, so their promises cap what any application can promise. Each carries four committed commitments on the platform observability feed and is available against all four floors. The targets were set by the platform (D71, D76); a changed target is a new declaration superseding the old one, so the history of every promise stays in the graph.",
      "table": {
       "columns": [
        "Capability",
@@ -22539,19 +22566,19 @@
        ],
        [
         "Authorization decision",
-        "99.95 %",
+        "99.99 %",
         "25 ms",
         "60 min",
         "0",
-        "Fails with ingress in practice; the latency allows a membership and grant lookup that is not fully local; grants are re-projected, not lost"
+        "Fails with ingress in practice, so it promises what ingress promises (D76); the latency allows a membership and grant lookup that is not fully local; grants are re-projected, not lost"
        ],
        [
         "Session management",
-        "99.95 %",
+        "99.99 %",
         "30 ms",
         "60 min",
         "5 min",
-        "Handle lookup plus proof-of-possession check in-region; sessions created in the last five minutes before a region loss may need re-authentication"
+        "Promised at ingress's level so the path composes inside the floor (D76); handle lookup plus proof-of-possession check in-region; sessions created in the last five minutes before a region loss may need re-authentication"
        ]
       ]
      },
@@ -22576,7 +22603,8 @@
       "D67",
       "D68",
       "D70",
-      "D71"
+      "D71",
+      "D76"
      ],
      "questions": [
       "CQ-14",
@@ -22644,7 +22672,8 @@
       "D72",
       "D73",
       "D74",
-      "D75"
+      "D75",
+      "D76"
      ],
      "questions": [
       "CQ-16",
@@ -22656,7 +22685,7 @@
    ],
    "openQuestions": [
     "Which observations exist for the request-path commitments? Their targets are set (D71) and they are available against the production floors; until the platform observability feed reports, CQ-16 shows 'no observation' for each \u2014 a promise made and not yet evidenced.",
-    "Should a floor bind the composed request path as well as each offering? Ingress, the decision point and session management in series compose to about 99.89 percent availability against the 99.9 percent floor. The composition view shows it; no invariant applies to a path (D73)."
+    "Should a floor bind the composed request path as well as each offering? With decision and session availability raised to match ingress (D76), ingress, the decision point and session management in series compose to about 99.97 percent, inside the 99.9 percent floor; before that they composed to 99.89, under it, with no invariant firing. The composition view shows it; no invariant applies to a path (D73)."
    ],
    "stepCount": 7,
    "download": "downloads/commitments.md"
@@ -23768,7 +23797,7 @@
    },
    {
     "section": "Non-functional commitments (module `commitment`, scaffolded \u2014 D58)",
-    "question": "Should a floor bind the composed request path as well as each offering? In series, the three request-path availability targets compose to about 99.89 percent against the 99.9 percent floor; composition is advisory and no invariant applies to a path (open \u2014 D73)",
+    "question": "Should a floor bind the composed request path as well as each offering? In series the three request-path availability targets composed to about 99.89 percent against the 99.9 percent floor until D76 raised decision and session to match ingress, and now compose to about 99.97; composition is advisory and no invariant applies to a path (open \u2014 D73)",
     "expectedEmpty": false,
     "realizedBy": []
    },
@@ -24008,14 +24037,14 @@
       "commitments": [
        {
         "id": "commit-cap-decision-availability",
-        "label": "Authorization decision: availability at least 99.95 %",
+        "label": "Authorization decision: availability at least 99.99 %",
         "metric": {
          "id": "metric-availability",
          "label": "Availability",
          "notation": "availability"
         },
         "comparator": ">=",
-        "target": 99.95,
+        "target": 99.99,
         "unit": "%",
         "window": "P30D",
         "state": "committed",
@@ -24025,10 +24054,9 @@
         "validatedBy": [
          "queries/competency/cq16-commitment-status.rq"
         ],
-        "rationale": "D70, confirmed by D71: fails with ingress in practice; 99.95 percent keeps headroom above the floor.",
+        "rationale": "D76: fails with ingress in practice, so it promises what ingress promises; 99.99 percent needs zonal redundancy and a grant projection that survives a control-plane outage.",
         "decisions": [
-         "D70",
-         "D71"
+         "D76"
         ],
         "supersedes": null,
         "declarationScope": "Production, US",
@@ -24039,7 +24067,7 @@
         "floor": {
          "id": "floor-prod-availability",
          "target": 99.9,
-         "margin": 0.05
+         "margin": 0.09
         },
         "evidence": {
          "status": "no observation",
@@ -24186,8 +24214,8 @@
         "floorTarget": 99.9,
         "unit": "%",
         "commitment": "commit-cap-decision-availability",
-        "target": 99.95,
-        "margin": 0.05
+        "target": 99.99,
+        "margin": 0.09
        },
        {
         "floor": "floor-prod-latency",
@@ -24324,7 +24352,7 @@
      {
       "kind": "no observation",
       "offering": "Authorization decision capability offered in production",
-      "commitment": "Authorization decision: availability at least 99.95 %",
+      "commitment": "Authorization decision: availability at least 99.99 %",
       "commitmentId": "commit-cap-decision-availability",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      },
@@ -25236,14 +25264,14 @@
       "commitments": [
        {
         "id": "commit-cap-session-availability",
-        "label": "Session management: availability at least 99.95 %",
+        "label": "Session management: availability at least 99.99 %",
         "metric": {
          "id": "metric-availability",
          "label": "Availability",
          "notation": "availability"
         },
         "comparator": ">=",
-        "target": 99.95,
+        "target": 99.99,
         "unit": "%",
         "window": "P30D",
         "state": "committed",
@@ -25253,10 +25281,9 @@
         "validatedBy": [
          "queries/competency/cq16-commitment-status.rq"
         ],
-        "rationale": "D70, confirmed by D71: in-region handle lookup, with the same headroom above the floor as the decision point.",
+        "rationale": "D76: promised at ingress's level so the request path composes inside the floor; 99.99 percent needs a replicated session store with zonal failover in-region.",
         "decisions": [
-         "D70",
-         "D71"
+         "D76"
         ],
         "supersedes": null,
         "declarationScope": "Production, US",
@@ -25267,7 +25294,7 @@
         "floor": {
          "id": "floor-prod-availability",
          "target": 99.9,
-         "margin": 0.05
+         "margin": 0.09
         },
         "evidence": {
          "status": "no observation",
@@ -25415,8 +25442,8 @@
         "floorTarget": 99.9,
         "unit": "%",
         "commitment": "commit-cap-session-availability",
-        "target": 99.95,
-        "margin": 0.05
+        "target": 99.99,
+        "margin": 0.09
        },
        {
         "floor": "floor-prod-latency",
@@ -25553,7 +25580,7 @@
      {
       "kind": "no observation",
       "offering": "Session management capability offered in production",
-      "commitment": "Session management: availability at least 99.95 %",
+      "commitment": "Session management: availability at least 99.99 %",
       "commitmentId": "commit-cap-session-availability",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      },
@@ -25629,8 +25656,8 @@
       "offeringLabel": "Authorization decision capability offered in production",
       "offeringState": "available",
       "commitment": "commit-cap-decision-availability",
-      "target": 99.95,
-      "margin": 0.05
+      "target": 99.99,
+      "margin": 0.09
      },
      {
       "capability": "cap-ingress",
@@ -25659,8 +25686,8 @@
       "offeringLabel": "Session management capability offered in production",
       "offeringState": "available",
       "commitment": "commit-cap-session-availability",
-      "target": 99.95,
-      "margin": 0.05
+      "target": 99.99,
+      "margin": 0.09
      }
     ]
    },

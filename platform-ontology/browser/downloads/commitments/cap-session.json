@@ -45,14 +45,14 @@
    "commitments": [
     {
      "id": "commit-cap-session-availability",
-     "label": "Session management: availability at least 99.95 %",
+     "label": "Session management: availability at least 99.99 %",
      "metric": {
       "id": "metric-availability",
       "label": "Availability",
       "notation": "availability"
      },
      "comparator": ">=",
-     "target": 99.95,
+     "target": 99.99,
      "unit": "%",
      "window": "P30D",
      "state": "committed",
@@ -62,10 +62,9 @@
      "validatedBy": [
       "queries/competency/cq16-commitment-status.rq"
      ],
-     "rationale": "D70, confirmed by D71: in-region handle lookup, with the same headroom above the floor as the decision point.",
+     "rationale": "D76: promised at ingress's level so the request path composes inside the floor; 99.99 percent needs a replicated session store with zonal failover in-region.",
      "decisions": [
-      "D70",
-      "D71"
+      "D76"
      ],
      "supersedes": null,
      "declarationScope": "Production, US",
@@ -76,7 +75,7 @@
      "floor": {
       "id": "floor-prod-availability",
       "target": 99.9,
-      "margin": 0.05
+      "margin": 0.09
      },
      "evidence": {
       "status": "no observation",
@@ -224,8 +223,8 @@
      "floorTarget": 99.9,
      "unit": "%",
      "commitment": "commit-cap-session-availability",
-     "target": 99.95,
-     "margin": 0.05
+     "target": 99.99,
+     "margin": 0.09
     },
     {
      "floor": "floor-prod-latency",
@@ -362,7 +361,7 @@
   {
    "kind": "no observation",
    "offering": "Session management capability offered in production",
-   "commitment": "Session management: availability at least 99.95 %",
+   "commitment": "Session management: availability at least 99.99 %",
    "commitmentId": "commit-cap-session-availability",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   },

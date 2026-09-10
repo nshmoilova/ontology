@@ -42,8 +42,8 @@
      "offeringLabel": "Authorization decision capability offered in production",
      "offeringState": "available",
      "commitment": "commit-cap-decision-availability",
-     "target": 99.95,
-     "margin": 0.05
+     "target": 99.99,
+     "margin": 0.09
     },
     {
      "capability": "cap-ingress",
@@ -72,8 +72,8 @@
      "offeringLabel": "Session management capability offered in production",
      "offeringState": "available",
      "commitment": "commit-cap-session-availability",
-     "target": 99.95,
-     "margin": 0.05
+     "target": 99.99,
+     "margin": 0.09
     }
    ]
   },

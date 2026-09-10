@@ -1433,6 +1433,27 @@
         "Commitment",
         "ApplicationEnablement"
       ]
+    },
+    {
+      "id": "D76",
+      "title": "Decision and session availability match ingress",
+      "area": "Tenancy & subscriptions",
+      "invariant": false,
+      "principles": [
+        "P18",
+        "P3",
+        "P15"
+      ],
+      "reasoning": "The decision point and session management promised 99.95 percent, D70 placeholders that D71 let stand, while ingress promised 99.99. Every admission crosses all three, so ingress's promise was capped in practice by the two behind it, and the advisory composition (D73) showed the path at about 99.89 percent, under the 99.9 floor that binds each offering alone. Both now promise 99.99 percent, the platform's target, so the path composes to about 99.97 percent inside the floor. The architectural cost is recorded on each promise as its reason: about four minutes of unavailability a month, which needs zonal redundancy for both, a grant projection at the decision point that survives a control-plane outage, and a replicated session store with in-region failover; the session's five-minute recovery point stands. The seed carries the targets the platform set, as it has since the placeholders were removed, so the two promises are restated rather than superseded; supersession remains the rule for a change to a promise a consumer has already been given.",
+      "rejected": [
+        "Leaving 99.95 with its headroom above the floor: the floor binds an offering, but a consumer meets the path, and a path under the floor is a promise the platform cannot honestly make.",
+        "Raising the floor to 99.99 instead: the floor is the least any shared capability must meet, including tenant-facing stateful ones, and 99.99 for all of them is a cost nobody has accepted.",
+        "Superseding in the seed: these were placeholder targets no consumer had been given; a staged supersession would restore the illustration history the seed was cleared of."
+      ],
+      "terms": [
+        "Commitment",
+        "rationale"
+      ]
     }
   ]
 }

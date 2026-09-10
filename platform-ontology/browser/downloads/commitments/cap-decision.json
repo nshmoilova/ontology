@@ -43,14 +43,14 @@
    "commitments": [
     {
      "id": "commit-cap-decision-availability",
-     "label": "Authorization decision: availability at least 99.95 %",
+     "label": "Authorization decision: availability at least 99.99 %",
      "metric": {
       "id": "metric-availability",
       "label": "Availability",
       "notation": "availability"
      },
      "comparator": ">=",
-     "target": 99.95,
+     "target": 99.99,
      "unit": "%",
      "window": "P30D",
      "state": "committed",
@@ -60,10 +60,9 @@
      "validatedBy": [
       "queries/competency/cq16-commitment-status.rq"
      ],
-     "rationale": "D70, confirmed by D71: fails with ingress in practice; 99.95 percent keeps headroom above the floor.",
+     "rationale": "D76: fails with ingress in practice, so it promises what ingress promises; 99.99 percent needs zonal redundancy and a grant projection that survives a control-plane outage.",
      "decisions": [
-      "D70",
-      "D71"
+      "D76"
      ],
      "supersedes": null,
      "declarationScope": "Production, US",
@@ -74,7 +73,7 @@
      "floor": {
       "id": "floor-prod-availability",
       "target": 99.9,
-      "margin": 0.05
+      "margin": 0.09
      },
      "evidence": {
       "status": "no observation",
@@ -221,8 +220,8 @@
      "floorTarget": 99.9,
      "unit": "%",
      "commitment": "commit-cap-decision-availability",
-     "target": 99.95,
-     "margin": 0.05
+     "target": 99.99,
+     "margin": 0.09
     },
     {
      "floor": "floor-prod-latency",
@@ -359,7 +358,7 @@
   {
    "kind": "no observation",
    "offering": "Authorization decision capability offered in production",
-   "commitment": "Authorization decision: availability at least 99.95 %",
+   "commitment": "Authorization decision: availability at least 99.99 %",
    "commitmentId": "commit-cap-decision-availability",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   },
