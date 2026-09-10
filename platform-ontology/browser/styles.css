@@ -386,6 +386,9 @@ table.data code { font-size: .82rem; }
 /* Tables inside a walkthrough sit mid-page, so a sticky header would
    overlap the first row rather than help. Full-page tables keep theirs. */
 .stepbody table.data th { position: static; }
+/* Inside a scrolling wrapper a sticky header offsets from the wrapper, not the page,
+   and lands on the first data row; wrapped tables scroll as a whole instead. */
+.tablewrap table.data th { position: static; }
 
 ol.openq { margin: .6rem 0 0; padding-left: 1.3rem; }
 ol.openq li { margin-bottom: .7rem; color: var(--ink-2); max-width: 72ch; }
