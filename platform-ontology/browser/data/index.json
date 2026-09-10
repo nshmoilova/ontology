@@ -23409,7 +23409,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-decision-latency-v2",
@@ -23449,7 +23450,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-decision-rpo",
@@ -23490,7 +23492,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-decision-rto-v2",
@@ -23530,7 +23533,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        }
       ],
       "history": [
@@ -23566,7 +23570,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-decision-latency-v2"
        },
        {
         "id": "commit-cap-decision-rto",
@@ -23600,7 +23605,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-decision-rto-v2"
        }
       ],
       "floors": [
@@ -23776,7 +23782,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-ingress-latency-v2",
@@ -23816,7 +23823,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-ingress-rpo",
@@ -23857,7 +23865,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-ingress-rto-v2",
@@ -23897,7 +23906,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        }
       ],
       "history": [
@@ -23933,7 +23943,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-ingress-availability-v2"
        },
        {
         "id": "commit-cap-ingress-latency",
@@ -23967,7 +23978,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-ingress-latency-v2"
        },
        {
         "id": "commit-cap-ingress-rto",
@@ -24001,7 +24013,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-ingress-rto-v2"
        }
       ],
       "floors": [
@@ -24178,7 +24191,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-session-latency",
@@ -24219,7 +24233,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-session-rpo",
@@ -24260,7 +24275,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-cap-session-rto-v2",
@@ -24300,7 +24316,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        }
       ],
       "history": [
@@ -24336,7 +24353,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": "commit-cap-session-rto-v2"
        }
       ],
       "floors": [
@@ -24519,7 +24537,8 @@
           "windowEnd": "2026-08-31T23:59:59+00:00"
          },
          "observations": 1
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-db-latency",
@@ -24559,7 +24578,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-db-rpo",
@@ -24599,7 +24619,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        },
        {
         "id": "commit-db-rto",
@@ -24639,7 +24660,8 @@
          "status": "no observation",
          "latest": null,
          "observations": 0
-        }
+        },
+        "supersededBy": null
        }
       ],
       "history": [],

@@ -82,7 +82,8 @@
        "windowEnd": "2026-08-31T23:59:59+00:00"
       },
       "observations": 1
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-db-latency",
@@ -122,7 +123,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-db-rpo",
@@ -162,7 +164,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-db-rto",
@@ -202,7 +205,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     }
    ],
    "history": [],

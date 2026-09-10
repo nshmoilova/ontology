@@ -76,7 +76,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-session-latency",
@@ -117,7 +118,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-session-rpo",
@@ -158,7 +160,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-session-rto-v2",
@@ -198,7 +201,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     }
    ],
    "history": [
@@ -234,7 +238,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-session-rto-v2"
     }
    ],
    "floors": [

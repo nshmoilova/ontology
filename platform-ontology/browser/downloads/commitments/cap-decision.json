@@ -76,7 +76,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-decision-latency-v2",
@@ -116,7 +117,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-decision-rpo",
@@ -157,7 +159,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-decision-rto-v2",
@@ -197,7 +200,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     }
    ],
    "history": [
@@ -233,7 +237,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-decision-latency-v2"
     },
     {
      "id": "commit-cap-decision-rto",
@@ -267,7 +272,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-decision-rto-v2"
     }
    ],
    "floors": [

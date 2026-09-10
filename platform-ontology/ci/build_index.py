@@ -875,6 +875,11 @@ def collect_commitments(g_ont, decisions):
                                 "met": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "met"),
                                 "noObservation": sum(1 for o in offerings for c in o["commitments"] if c["evidence"]["status"] == "no observation"),
                                 "gaps": len(gaps)}})
+    replaced_by = {c["supersedes"]: c["id"] for cap in caps for off in cap["offerings"] for c in off["commitments"] + off["history"] if c["supersedes"]}
+    for cap in caps:
+        for off in cap["offerings"]:
+            for c in off["commitments"] + off["history"]:
+                c["supersededBy"] = replaced_by.get(c["id"])
     for f in floors:
         f.pop("_scope"); f.pop("_metric")
     for cap in caps:

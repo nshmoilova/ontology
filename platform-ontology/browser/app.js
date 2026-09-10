@@ -831,7 +831,7 @@
     : `<span class="pill warning">no rationale</span> <span class="muted">a target without its reason cannot be reviewed (D72)</span>`;
   const capHref = (id) => `#/commitments/${encodeURIComponent(id)}`;
   const cmCrumb = (extra) => `<div class="crumb"><a href="#/">Ontology</a> › <a href="#/commitments">Commitments</a>${extra ? " › " + esc(extra) : ""}</div>`;
-  const cmSubnav = (active) => `<nav class="subnav" aria-label="Commitments views">${[["", "Capabilities"], ["floors", "Floors"], ["gaps", "Gaps"], ["compose", "Compose"]]
+  const cmSubnav = (active) => `<nav class="subnav" aria-label="Commitments views">${[["", "Capabilities"], ["promises", "All promises"], ["floors", "Floors"], ["gaps", "Gaps"], ["compose", "Compose"]]
     .map(([k, l]) => `<a href="#/commitments${k ? "/" + k : ""}" class="${active === k ? "active" : ""}">${l}</a>`).join("")}</nav>`;
   const cmSource = () => `<p class="muted small">Read at build time from the declarations in <code>${esc(CM().source)}</code>: the platform's promises as declared, approved and superseded — not a measurement feed.</p>`;
 
@@ -875,7 +875,7 @@
         </table></div>` : `<p class="muted">No committed promise yet.</p>`}
         ${o.floors.some((f) => !f.commitment) ? `<p class="small"><span class="pill warning">floor uncovered</span> ${o.floors.filter((f) => !f.commitment).map((f) => `${esc(f.metric.label)} (${cmpWord(f.comparator)} ${fmtNum(f.floorTarget)} ${esc(f.unit)})`).join(", ")}</p>` : ""}
         ${o.history.length ? `<details class="small" style="margin-top:.5rem"><summary>${plural(o.history.length, "superseded or draft promise")}</summary>
-          <ul class="mdlist">${o.history.map((x) => `<li>${esc(x.label)} — ${promiseText(x)} ${statePill(x.state)}</li>`).join("")}</ul></details>` : ""}
+          <ul class="mdlist">${o.history.map((x) => `<li id="${esc(x.id)}">${esc(x.label)} — ${promiseText(x)} ${statePill(x.state)}${x.supersededBy ? ` <span class="muted">replaced by <a href="#${esc(x.supersededBy)}">${esc(x.supersededBy)}</a></span>` : ""}</li>`).join("")}</ul></details>` : ""}
       </section>`).join("");
     return `${cmCrumb(c.label)}
       <h1 class="title">${esc(c.label)}</h1>
@@ -886,6 +886,42 @@
       <p style="margin-top:1rem"><a class="dlink" href="${esc(c.download)}" download>Download this view as JSON</a> ${c.gaps.length ? `<a class="dlink" href="#/commitments/gaps#${esc(c.id)}">${plural(c.gaps.length, "gap")} for this capability</a>` : ""}</p>
       <footer class="pagefoot">Rules: ${["CommitmentShape", "NoWeakerThanFloorShape", "FloorCoverageShape", "FloorUnitShape", "CommitmentRationaleShape"].map((s) => `<a href="#/shapes?q=${s}">${s}</a>`).join(", ")}.
       Questions: ${["CQ-9", "CQ-14", "CQ-15", "CQ-16", "CQ-17", "CQ-18"].map((q) => `<a href="#/questions?q=${q}">${q}</a>`).join(", ")}.</footer>`;
+  }
+
+  function viewPromises() {
+    const cm = CM();
+    const rows = [];
+    for (const c of cm.capabilities) for (const o of c.offerings) for (const x of [...o.commitments, ...o.history]) rows.push({ c, o, x });
+    const byId = new Map(rows.map((r) => [r.x.id, r]));
+    rows.sort((a, b) => a.c.label.localeCompare(b.c.label) || a.x.metric.notation.localeCompare(b.x.metric.notation) || (a.x.state === "committed" ? -1 : 1));
+    const status = (x) => x.state === "committed" ? `${statePill("committed")} ${evidencePill(x.evidence)}`
+      : x.state === "withdrawn" ? `<span class="pill draft">withdrawn</span>` : statePill(x.state);
+    const why = (x) => {
+      if (x.state === "withdrawn" && x.supersededBy) {
+        const nx = byId.get(x.supersededBy);
+        return `Placeholder replaced by <a href="#${esc(x.supersededBy)}">${nx ? promiseText(nx.x) : esc(x.supersededBy)}</a>. A declaration is not edited: the new target is a new promise that supersedes this one, and this one is withdrawn so the floor and readiness rules read only the current promise while the history stays in the graph. ${decisionChips(nx ? nx.x.decisions : [])}`;
+      }
+      if (x.state === "withdrawn") return `Withdrawn without a successor. ${x.rationale ? esc(x.rationale) : ""}`;
+      return whyCell(x);
+    };
+    const n = { committed: rows.filter((r) => r.x.state === "committed").length, withdrawn: rows.filter((r) => r.x.state === "withdrawn").length, draft: rows.filter((r) => r.x.state === "draft").length };
+    return `${cmCrumb("All promises")}
+      <h1 class="title">All promises</h1>
+      <p class="lede">Every commitment in the declarations, current or not: ${n.committed} committed, ${n.withdrawn} withdrawn${n.draft ? `, ${n.draft} draft` : ""}. A committed promise binds and is judged against its floor and evidence. A withdrawn one is history: it was superseded by a new declaration and no rule reads it any more, but it is never deleted.</p>
+      ${cmSource()}
+      ${cmSubnav("promises")}
+      <div class="tablewrap"><table class="data cmtable">
+        <tr><th>Capability</th><th>Metric</th><th>Promise</th><th>Status</th><th>History</th><th>Why</th></tr>
+        ${rows.map(({ c, o, x }) => `<tr id="${esc(x.id)}">
+          <td><a href="${capHref(c.id)}"><b>${esc(c.label)}</b></a><div class="muted small">${esc(o.label)}</div></td>
+          <td>${esc(x.metric.label)}<div class="muted small">${fmtWindow(x.window)}</div></td>
+          <td>${promiseText(x)}</td>
+          <td>${status(x)}</td>
+          <td class="small">${x.supersedes ? `supersedes <a href="#${esc(x.supersedes)}">${esc(x.supersedes)}</a>` : ""}${x.supersededBy ? `superseded by <a href="#${esc(x.supersededBy)}">${esc(x.supersededBy)}</a>` : ""}${!x.supersedes && !x.supersededBy ? `<span class="muted">first and only declaration</span>` : ""}</td>
+          <td class="small">${why(x)}</td>
+        </tr>`).join("")}
+      </table></div>
+      <footer class="pagefoot">Supersession is <a href="#/decisions#D05">D05</a>; the withdrawn placeholders and their replacements are <a href="#/decisions#D70">D70</a> and <a href="#/decisions#D71">D71</a>; why a withdrawn promise carries no reason of its own is <a href="#/decisions#D72">D72</a>.</footer>`;
   }
 
   function viewFloors() {
@@ -991,7 +1027,7 @@
       html = parts[1] ? viewExplainer(decodeURIComponent(parts[1])) : viewExplainList();
     } else if (parts[0] === "commitments") {
       const sub = parts[1] ? decodeURIComponent(parts[1]) : "";
-      html = !sub ? viewCommitments() : sub === "floors" ? viewFloors() : sub === "gaps" ? viewGaps() : sub === "compose" ? viewCompose(params) : viewCapability(sub);
+      html = !sub ? viewCommitments() : sub === "promises" ? viewPromises() : sub === "floors" ? viewFloors() : sub === "gaps" ? viewGaps() : sub === "compose" ? viewCompose(params) : viewCapability(sub);
     } else if (parts[0] === "shapes") html = viewShapes(q);
     else if (parts[0] === "relationships") html = viewRelationships();
     else if (parts[0] === "principles") html = viewPrinciples();

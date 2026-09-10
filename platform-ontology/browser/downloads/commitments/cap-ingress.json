@@ -75,7 +75,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-ingress-latency-v2",
@@ -115,7 +116,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-ingress-rpo",
@@ -156,7 +158,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     },
     {
      "id": "commit-cap-ingress-rto-v2",
@@ -196,7 +199,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": null
     }
    ],
    "history": [
@@ -232,7 +236,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-ingress-availability-v2"
     },
     {
      "id": "commit-cap-ingress-latency",
@@ -266,7 +271,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-ingress-latency-v2"
     },
     {
      "id": "commit-cap-ingress-rto",
@@ -300,7 +306,8 @@
       "status": "no observation",
       "latest": null,
       "observations": 0
-     }
+     },
+     "supersededBy": "commit-cap-ingress-rto-v2"
     }
    ],
    "floors": [
