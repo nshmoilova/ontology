@@ -776,60 +776,6 @@ ex:contract-change-cap-ingress a ctr:ContractChange ;
 ex:approval-contract-cap-ingress a cp:ChangeApproval ;
     cp:approvedBy ex:alice ;
     cp:approvedAtTime "2026-09-02T10:00:00Z"^^xsd:dateTime .
-ex:commit-cap-ingress-availability a cmt:Commitment ;
-    core:displayName "Ingress: availability at least 99.95 %" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-availability ;
-    cmt:commitsTo ex:offering-cap-ingress-prod ;
-    cmt:metric cmt:metric-availability ;
-    cmt:comparator cmt:at-least ;
-    cmt:target 99.95 ;
-    cmt:unit unit:PERCENT ;
-    cmt:window "P30D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-availability ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-ingress-availability a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
-ex:commit-cap-ingress-latency a cmt:Commitment ;
-    core:displayName "Ingress: latency p99 at most 20.0 ms" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-latency ;
-    cmt:commitsTo ex:offering-cap-ingress-prod ;
-    cmt:metric cmt:metric-latency-p99 ;
-    cmt:comparator cmt:at-most ;
-    cmt:target 20.0 ;
-    cmt:unit unit:MilliSEC ;
-    cmt:window "P7D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-latency ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-ingress-latency a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
-ex:commit-cap-ingress-rto a cmt:Commitment ;
-    core:displayName "Ingress: recovery time at most 30.0 minutes" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-rto ;
-    cmt:commitsTo ex:offering-cap-ingress-prod ;
-    cmt:metric cmt:metric-recovery-time ;
-    cmt:comparator cmt:at-most ;
-    cmt:target 30.0 ;
-    cmt:unit unit:MIN ;
-    cmt:window "P90D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-rto ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-ingress-rto a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
 ex:commit-cap-ingress-rpo a cmt:Commitment ;
     core:displayName "Ingress: recovery point at most 0.0 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
@@ -884,42 +830,6 @@ ex:commit-cap-decision-availability a cmt:Commitment ;
     cmt:satisfiesBaseline ex:floor-prod-availability ;
     cmt:hasCommitmentState cmt:state-committed .
 ex:approval-commit-cap-decision-availability a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
-ex:commit-cap-decision-latency a cmt:Commitment ;
-    core:displayName "Authorization decision: latency p99 at most 10.0 ms" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-decision-latency ;
-    cmt:commitsTo ex:offering-cap-decision-prod ;
-    cmt:metric cmt:metric-latency-p99 ;
-    cmt:comparator cmt:at-most ;
-    cmt:target 10.0 ;
-    cmt:unit unit:MilliSEC ;
-    cmt:window "P7D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-latency ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-decision-latency a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
-ex:commit-cap-decision-rto a cmt:Commitment ;
-    core:displayName "Authorization decision: recovery time at most 30.0 minutes" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-decision-rto ;
-    cmt:commitsTo ex:offering-cap-decision-prod ;
-    cmt:metric cmt:metric-recovery-time ;
-    cmt:comparator cmt:at-most ;
-    cmt:target 30.0 ;
-    cmt:unit unit:MIN ;
-    cmt:window "P90D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-rto ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-decision-rto a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
 ex:commit-cap-decision-rpo a cmt:Commitment ;
@@ -997,24 +907,6 @@ ex:commit-cap-session-latency a cmt:Commitment ;
 ex:approval-commit-cap-session-latency a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
-ex:commit-cap-session-rto a cmt:Commitment ;
-    core:displayName "Session management: recovery time at most 30.0 minutes" ;
-    cp:declaredThrough ex:mgmt-plane ;
-    cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-session-rto ;
-    cmt:commitsTo ex:offering-cap-session-prod ;
-    cmt:metric cmt:metric-recovery-time ;
-    cmt:comparator cmt:at-most ;
-    cmt:target 30.0 ;
-    cmt:unit unit:MIN ;
-    cmt:window "P90D"^^xsd:duration ;
-    cmt:measuredBy ex:source-platform-metrics ;
-    cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
-    cmt:satisfiesBaseline ex:floor-prod-rto ;
-    cmt:hasCommitmentState cmt:state-withdrawn .
-ex:approval-commit-cap-session-rto a cp:ChangeApproval ;
-    cp:approvedBy ex:dana ;
-    cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
 ex:commit-cap-session-rpo a cmt:Commitment ;
     core:displayName "Session management: recovery point at most 5.0 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
@@ -1035,13 +927,12 @@ ex:approval-commit-cap-session-rpo a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T12:00:00Z"^^xsd:dateTime .
 
-### The request-path targets set by the platform (D71): new commitments supersede the placeholders, which are withdrawn
-ex:commit-cap-ingress-latency-v2 a cmt:Commitment ;
+### The request-path targets set by the platform (D71): the six targets that differ from the D70 placeholders, declared as the current promises
+ex:commit-cap-ingress-latency a cmt:Commitment ;
     core:displayName "Ingress: latency p99 at most 50.0 ms" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-latency-v2 ;
-    cp:supersedes ex:commit-cap-ingress-latency ;
+    cp:hasApproval ex:approval-commit-cap-ingress-latency ;
     cmt:commitsTo ex:offering-cap-ingress-prod ;
     cmt:rationale "D71: covers TLS termination, tenant resolution and the decision call; 50 ms of the 300 ms floor." ;
     cmt:metric cmt:metric-latency-p99 ;
@@ -1053,15 +944,14 @@ ex:commit-cap-ingress-latency-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-latency ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-ingress-latency-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-ingress-latency a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .
-ex:commit-cap-ingress-availability-v2 a cmt:Commitment ;
+ex:commit-cap-ingress-availability a cmt:Commitment ;
     core:displayName "Ingress: availability at least 99.99 %" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-availability-v2 ;
-    cp:supersedes ex:commit-cap-ingress-availability ;
+    cp:hasApproval ex:approval-commit-cap-ingress-availability ;
     cmt:commitsTo ex:offering-cap-ingress-prod ;
     cmt:rationale "D71: on every request, so its availability caps everyone's; set above the floor so the capabilities behind it have headroom." ;
     cmt:metric cmt:metric-availability ;
@@ -1073,15 +963,14 @@ ex:commit-cap-ingress-availability-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-availability ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-ingress-availability-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-ingress-availability a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .
-ex:commit-cap-ingress-rto-v2 a cmt:Commitment ;
+ex:commit-cap-ingress-rto a cmt:Commitment ;
     core:displayName "Ingress: recovery time at most 60.0 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-ingress-rto-v2 ;
-    cp:supersedes ex:commit-cap-ingress-rto ;
+    cp:hasApproval ex:approval-commit-cap-ingress-rto ;
     cmt:commitsTo ex:offering-cap-ingress-prod ;
     cmt:rationale "D71: at the floor. Headroom below it is a decision about active-active deployment the platform has not yet taken." ;
     cmt:metric cmt:metric-recovery-time ;
@@ -1093,15 +982,14 @@ ex:commit-cap-ingress-rto-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-rto ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-ingress-rto-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-ingress-rto a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .
-ex:commit-cap-decision-latency-v2 a cmt:Commitment ;
+ex:commit-cap-decision-latency a cmt:Commitment ;
     core:displayName "Authorization decision: latency p99 at most 25.0 ms" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-decision-latency-v2 ;
-    cp:supersedes ex:commit-cap-decision-latency ;
+    cp:hasApproval ex:approval-commit-cap-decision-latency ;
     cmt:commitsTo ex:offering-cap-decision-prod ;
     cmt:rationale "D71: allows a membership and grant lookup that is not fully local; 25 ms of the 300 ms floor." ;
     cmt:metric cmt:metric-latency-p99 ;
@@ -1113,15 +1001,14 @@ ex:commit-cap-decision-latency-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-latency ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-decision-latency-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-decision-latency a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .
-ex:commit-cap-decision-rto-v2 a cmt:Commitment ;
+ex:commit-cap-decision-rto a cmt:Commitment ;
     core:displayName "Authorization decision: recovery time at most 60.0 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-decision-rto-v2 ;
-    cp:supersedes ex:commit-cap-decision-rto ;
+    cp:hasApproval ex:approval-commit-cap-decision-rto ;
     cmt:commitsTo ex:offering-cap-decision-prod ;
     cmt:rationale "D71: at the floor; grants are re-projected from governance, so recovery is a routing change." ;
     cmt:metric cmt:metric-recovery-time ;
@@ -1133,15 +1020,14 @@ ex:commit-cap-decision-rto-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-rto ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-decision-rto-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-decision-rto a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .
-ex:commit-cap-session-rto-v2 a cmt:Commitment ;
+ex:commit-cap-session-rto a cmt:Commitment ;
     core:displayName "Session management: recovery time at most 60.0 minutes" ;
     cp:declaredThrough ex:mgmt-plane ;
     cp:declarationScope ex:scope-prod ;
-    cp:hasApproval ex:approval-commit-cap-session-rto-v2 ;
-    cp:supersedes ex:commit-cap-session-rto ;
+    cp:hasApproval ex:approval-commit-cap-session-rto ;
     cmt:commitsTo ex:offering-cap-session-prod ;
     cmt:rationale "D71: at the floor; a standby region takes over session validation by a routing change." ;
     cmt:metric cmt:metric-recovery-time ;
@@ -1153,6 +1039,6 @@ ex:commit-cap-session-rto-v2 a cmt:Commitment ;
     cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;
     cmt:satisfiesBaseline ex:floor-prod-rto ;
     cmt:hasCommitmentState cmt:state-committed .
-ex:approval-commit-cap-session-rto-v2 a cp:ChangeApproval ;
+ex:approval-commit-cap-session-rto a cp:ChangeApproval ;
     cp:approvedBy ex:dana ;
     cp:approvedAtTime "2026-09-03T15:00:00Z"^^xsd:dateTime .

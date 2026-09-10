@@ -907,7 +907,7 @@
     const n = { committed: rows.filter((r) => r.x.state === "committed").length, withdrawn: rows.filter((r) => r.x.state === "withdrawn").length, draft: rows.filter((r) => r.x.state === "draft").length };
     return `${cmCrumb("All promises")}
       <h1 class="title">All promises</h1>
-      <p class="lede">Every commitment in the declarations, current or not: ${n.committed} committed, ${n.withdrawn} withdrawn${n.draft ? `, ${n.draft} draft` : ""}. A committed promise binds and is judged against its floor and evidence. A withdrawn one is history: it was superseded by a new declaration and no rule reads it any more, but it is never deleted.</p>
+      <p class="lede">Every commitment in the declarations: ${n.committed} committed${n.withdrawn ? `, ${n.withdrawn} withdrawn` : ""}${n.draft ? `, ${n.draft} draft` : ""}. A committed promise binds and is judged against its floor and evidence. A changed target is a new declaration that supersedes the old one, which is then withdrawn and kept as history rather than edited.</p>
       ${cmSource()}
       ${cmSubnav("promises")}
       <div class="tablewrap"><table class="data cmtable">

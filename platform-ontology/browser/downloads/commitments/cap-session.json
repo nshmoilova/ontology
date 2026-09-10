@@ -164,7 +164,7 @@
      "supersededBy": null
     },
     {
-     "id": "commit-cap-session-rto-v2",
+     "id": "commit-cap-session-rto",
      "label": "Session management: recovery time at most 60.0 minutes",
      "metric": {
       "id": "metric-recovery-time",
@@ -186,7 +186,7 @@
      "decisions": [
       "D71"
      ],
-     "supersedes": "commit-cap-session-rto",
+     "supersedes": null,
      "declarationScope": "Production, US",
      "approval": {
       "by": "Dana Okafor",
@@ -205,43 +205,7 @@
      "supersededBy": null
     }
    ],
-   "history": [
-    {
-     "id": "commit-cap-session-rto",
-     "label": "Session management: recovery time at most 30.0 minutes",
-     "metric": {
-      "id": "metric-recovery-time",
-      "label": "Recovery time objective",
-      "notation": "rto"
-     },
-     "comparator": "<=",
-     "target": 30.0,
-     "unit": "min",
-     "window": "P90D",
-     "state": "withdrawn",
-     "measuredBy": [
-      "Platform observability feed"
-     ],
-     "validatedBy": [
-      "queries/competency/cq16-commitment-status.rq"
-     ],
-     "rationale": null,
-     "decisions": [],
-     "supersedes": null,
-     "declarationScope": "Production, US",
-     "approval": {
-      "by": "Dana Okafor",
-      "at": "2026-09-03T12:00:00+00:00"
-     },
-     "floor": null,
-     "evidence": {
-      "status": "no observation",
-      "latest": null,
-      "observations": 0
-     },
-     "supersededBy": "commit-cap-session-rto-v2"
-    }
-   ],
+   "history": [],
    "floors": [
     {
      "floor": "floor-prod-availability",
@@ -295,7 +259,7 @@
      "comparator": "<=",
      "floorTarget": 60.0,
      "unit": "min",
-     "commitment": "commit-cap-session-rto-v2",
+     "commitment": "commit-cap-session-rto",
      "target": 60.0,
      "margin": 0.0
     }
@@ -328,7 +292,7 @@
    "kind": "no observation",
    "offering": "Session management capability offered in production",
    "commitment": "Session management: recovery time at most 60.0 minutes",
-   "commitmentId": "commit-cap-session-rto-v2",
+   "commitmentId": "commit-cap-session-rto",
    "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
   }
  ],

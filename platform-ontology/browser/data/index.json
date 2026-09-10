@@ -23413,7 +23413,7 @@
         "supersededBy": null
        },
        {
-        "id": "commit-cap-decision-latency-v2",
+        "id": "commit-cap-decision-latency",
         "label": "Authorization decision: latency p99 at most 25.0 ms",
         "metric": {
          "id": "metric-latency-p99",
@@ -23435,7 +23435,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-decision-latency",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -23496,7 +23496,7 @@
         "supersededBy": null
        },
        {
-        "id": "commit-cap-decision-rto-v2",
+        "id": "commit-cap-decision-rto",
         "label": "Authorization decision: recovery time at most 60.0 minutes",
         "metric": {
          "id": "metric-recovery-time",
@@ -23518,7 +23518,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-decision-rto",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -23537,78 +23537,7 @@
         "supersededBy": null
        }
       ],
-      "history": [
-       {
-        "id": "commit-cap-decision-latency",
-        "label": "Authorization decision: latency p99 at most 10.0 ms",
-        "metric": {
-         "id": "metric-latency-p99",
-         "label": "Latency, 99th percentile",
-         "notation": "latency.p99"
-        },
-        "comparator": "<=",
-        "target": 10.0,
-        "unit": "ms",
-        "window": "P7D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-decision-latency-v2"
-       },
-       {
-        "id": "commit-cap-decision-rto",
-        "label": "Authorization decision: recovery time at most 30.0 minutes",
-        "metric": {
-         "id": "metric-recovery-time",
-         "label": "Recovery time objective",
-         "notation": "rto"
-        },
-        "comparator": "<=",
-        "target": 30.0,
-        "unit": "min",
-        "window": "P90D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-decision-rto-v2"
-       }
-      ],
+      "history": [],
       "floors": [
        {
         "floor": "floor-prod-availability",
@@ -23634,7 +23563,7 @@
         "comparator": "<=",
         "floorTarget": 300.0,
         "unit": "ms",
-        "commitment": "commit-cap-decision-latency-v2",
+        "commitment": "commit-cap-decision-latency",
         "target": 25.0,
         "margin": 275.0
        },
@@ -23662,7 +23591,7 @@
         "comparator": "<=",
         "floorTarget": 60.0,
         "unit": "min",
-        "commitment": "commit-cap-decision-rto-v2",
+        "commitment": "commit-cap-decision-rto",
         "target": 60.0,
         "margin": 0.0
        }
@@ -23681,7 +23610,7 @@
       "kind": "no observation",
       "offering": "Authorization decision capability offered in production",
       "commitment": "Authorization decision: latency p99 at most 25.0 ms",
-      "commitmentId": "commit-cap-decision-latency-v2",
+      "commitmentId": "commit-cap-decision-latency",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      },
      {
@@ -23695,7 +23624,7 @@
       "kind": "no observation",
       "offering": "Authorization decision capability offered in production",
       "commitment": "Authorization decision: recovery time at most 60.0 minutes",
-      "commitmentId": "commit-cap-decision-rto-v2",
+      "commitmentId": "commit-cap-decision-rto",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      }
     ],
@@ -23745,7 +23674,7 @@
       },
       "commitments": [
        {
-        "id": "commit-cap-ingress-availability-v2",
+        "id": "commit-cap-ingress-availability",
         "label": "Ingress: availability at least 99.99 %",
         "metric": {
          "id": "metric-availability",
@@ -23767,7 +23696,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-ingress-availability",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -23786,7 +23715,7 @@
         "supersededBy": null
        },
        {
-        "id": "commit-cap-ingress-latency-v2",
+        "id": "commit-cap-ingress-latency",
         "label": "Ingress: latency p99 at most 50.0 ms",
         "metric": {
          "id": "metric-latency-p99",
@@ -23808,7 +23737,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-ingress-latency",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -23869,7 +23798,7 @@
         "supersededBy": null
        },
        {
-        "id": "commit-cap-ingress-rto-v2",
+        "id": "commit-cap-ingress-rto",
         "label": "Ingress: recovery time at most 60.0 minutes",
         "metric": {
          "id": "metric-recovery-time",
@@ -23891,7 +23820,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-ingress-rto",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -23910,113 +23839,7 @@
         "supersededBy": null
        }
       ],
-      "history": [
-       {
-        "id": "commit-cap-ingress-availability",
-        "label": "Ingress: availability at least 99.95 %",
-        "metric": {
-         "id": "metric-availability",
-         "label": "Availability",
-         "notation": "availability"
-        },
-        "comparator": ">=",
-        "target": 99.95,
-        "unit": "%",
-        "window": "P30D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-ingress-availability-v2"
-       },
-       {
-        "id": "commit-cap-ingress-latency",
-        "label": "Ingress: latency p99 at most 20.0 ms",
-        "metric": {
-         "id": "metric-latency-p99",
-         "label": "Latency, 99th percentile",
-         "notation": "latency.p99"
-        },
-        "comparator": "<=",
-        "target": 20.0,
-        "unit": "ms",
-        "window": "P7D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-ingress-latency-v2"
-       },
-       {
-        "id": "commit-cap-ingress-rto",
-        "label": "Ingress: recovery time at most 30.0 minutes",
-        "metric": {
-         "id": "metric-recovery-time",
-         "label": "Recovery time objective",
-         "notation": "rto"
-        },
-        "comparator": "<=",
-        "target": 30.0,
-        "unit": "min",
-        "window": "P90D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-ingress-rto-v2"
-       }
-      ],
+      "history": [],
       "floors": [
        {
         "floor": "floor-prod-availability",
@@ -24028,7 +23851,7 @@
         "comparator": ">=",
         "floorTarget": 99.9,
         "unit": "%",
-        "commitment": "commit-cap-ingress-availability-v2",
+        "commitment": "commit-cap-ingress-availability",
         "target": 99.99,
         "margin": 0.09
        },
@@ -24042,7 +23865,7 @@
         "comparator": "<=",
         "floorTarget": 300.0,
         "unit": "ms",
-        "commitment": "commit-cap-ingress-latency-v2",
+        "commitment": "commit-cap-ingress-latency",
         "target": 50.0,
         "margin": 250.0
        },
@@ -24070,7 +23893,7 @@
         "comparator": "<=",
         "floorTarget": 60.0,
         "unit": "min",
-        "commitment": "commit-cap-ingress-rto-v2",
+        "commitment": "commit-cap-ingress-rto",
         "target": 60.0,
         "margin": 0.0
        }
@@ -24082,14 +23905,14 @@
       "kind": "no observation",
       "offering": "Ingress capability offered in production",
       "commitment": "Ingress: availability at least 99.99 %",
-      "commitmentId": "commit-cap-ingress-availability-v2",
+      "commitmentId": "commit-cap-ingress-availability",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      },
      {
       "kind": "no observation",
       "offering": "Ingress capability offered in production",
       "commitment": "Ingress: latency p99 at most 50.0 ms",
-      "commitmentId": "commit-cap-ingress-latency-v2",
+      "commitmentId": "commit-cap-ingress-latency",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      },
      {
@@ -24103,7 +23926,7 @@
       "kind": "no observation",
       "offering": "Ingress capability offered in production",
       "commitment": "Ingress: recovery time at most 60.0 minutes",
-      "commitmentId": "commit-cap-ingress-rto-v2",
+      "commitmentId": "commit-cap-ingress-rto",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      }
     ],
@@ -24580,7 +24403,7 @@
         "supersededBy": null
        },
        {
-        "id": "commit-cap-session-rto-v2",
+        "id": "commit-cap-session-rto",
         "label": "Session management: recovery time at most 60.0 minutes",
         "metric": {
          "id": "metric-recovery-time",
@@ -24602,7 +24425,7 @@
         "decisions": [
          "D71"
         ],
-        "supersedes": "commit-cap-session-rto",
+        "supersedes": null,
         "declarationScope": "Production, US",
         "approval": {
          "by": "Dana Okafor",
@@ -24621,43 +24444,7 @@
         "supersededBy": null
        }
       ],
-      "history": [
-       {
-        "id": "commit-cap-session-rto",
-        "label": "Session management: recovery time at most 30.0 minutes",
-        "metric": {
-         "id": "metric-recovery-time",
-         "label": "Recovery time objective",
-         "notation": "rto"
-        },
-        "comparator": "<=",
-        "target": 30.0,
-        "unit": "min",
-        "window": "P90D",
-        "state": "withdrawn",
-        "measuredBy": [
-         "Platform observability feed"
-        ],
-        "validatedBy": [
-         "queries/competency/cq16-commitment-status.rq"
-        ],
-        "rationale": null,
-        "decisions": [],
-        "supersedes": null,
-        "declarationScope": "Production, US",
-        "approval": {
-         "by": "Dana Okafor",
-         "at": "2026-09-03T12:00:00+00:00"
-        },
-        "floor": null,
-        "evidence": {
-         "status": "no observation",
-         "latest": null,
-         "observations": 0
-        },
-        "supersededBy": "commit-cap-session-rto-v2"
-       }
-      ],
+      "history": [],
       "floors": [
        {
         "floor": "floor-prod-availability",
@@ -24711,7 +24498,7 @@
         "comparator": "<=",
         "floorTarget": 60.0,
         "unit": "min",
-        "commitment": "commit-cap-session-rto-v2",
+        "commitment": "commit-cap-session-rto",
         "target": 60.0,
         "margin": 0.0
        }
@@ -24744,7 +24531,7 @@
       "kind": "no observation",
       "offering": "Session management capability offered in production",
       "commitment": "Session management: recovery time at most 60.0 minutes",
-      "commitmentId": "commit-cap-session-rto-v2",
+      "commitmentId": "commit-cap-session-rto",
       "detail": "committed and measured by a named source, but no windowed observation has been ingested yet"
      }
     ],
@@ -24807,7 +24594,7 @@
       "offering": "offering-cap-ingress-prod",
       "offeringLabel": "Ingress capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-ingress-availability-v2",
+      "commitment": "commit-cap-ingress-availability",
       "target": 99.99,
       "margin": 0.09
      },
@@ -24871,7 +24658,7 @@
       "offering": "offering-cap-decision-prod",
       "offeringLabel": "Authorization decision capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-decision-latency-v2",
+      "commitment": "commit-cap-decision-latency",
       "target": 25.0,
       "margin": 275.0
      },
@@ -24881,7 +24668,7 @@
       "offering": "offering-cap-ingress-prod",
       "offeringLabel": "Ingress capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-ingress-latency-v2",
+      "commitment": "commit-cap-ingress-latency",
       "target": 50.0,
       "margin": 250.0
      },
@@ -25019,7 +24806,7 @@
       "offering": "offering-cap-decision-prod",
       "offeringLabel": "Authorization decision capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-decision-rto-v2",
+      "commitment": "commit-cap-decision-rto",
       "target": 60.0,
       "margin": 0.0
      },
@@ -25029,7 +24816,7 @@
       "offering": "offering-cap-ingress-prod",
       "offeringLabel": "Ingress capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-ingress-rto-v2",
+      "commitment": "commit-cap-ingress-rto",
       "target": 60.0,
       "margin": 0.0
      },
@@ -25049,7 +24836,7 @@
       "offering": "offering-cap-session-prod",
       "offeringLabel": "Session management capability offered in production",
       "offeringState": "available",
-      "commitment": "commit-cap-session-rto-v2",
+      "commitment": "commit-cap-session-rto",
       "target": 60.0,
       "margin": 0.0
      }

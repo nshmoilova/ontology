@@ -51,7 +51,7 @@
      "offering": "offering-cap-ingress-prod",
      "offeringLabel": "Ingress capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-ingress-availability-v2",
+     "commitment": "commit-cap-ingress-availability",
      "target": 99.99,
      "margin": 0.09
     },
@@ -115,7 +115,7 @@
      "offering": "offering-cap-decision-prod",
      "offeringLabel": "Authorization decision capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-decision-latency-v2",
+     "commitment": "commit-cap-decision-latency",
      "target": 25.0,
      "margin": 275.0
     },
@@ -125,7 +125,7 @@
      "offering": "offering-cap-ingress-prod",
      "offeringLabel": "Ingress capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-ingress-latency-v2",
+     "commitment": "commit-cap-ingress-latency",
      "target": 50.0,
      "margin": 250.0
     },
@@ -263,7 +263,7 @@
      "offering": "offering-cap-decision-prod",
      "offeringLabel": "Authorization decision capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-decision-rto-v2",
+     "commitment": "commit-cap-decision-rto",
      "target": 60.0,
      "margin": 0.0
     },
@@ -273,7 +273,7 @@
      "offering": "offering-cap-ingress-prod",
      "offeringLabel": "Ingress capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-ingress-rto-v2",
+     "commitment": "commit-cap-ingress-rto",
      "target": 60.0,
      "margin": 0.0
     },
@@ -293,7 +293,7 @@
      "offering": "offering-cap-session-prod",
      "offeringLabel": "Session management capability offered in production",
      "offeringState": "available",
-     "commitment": "commit-cap-session-rto-v2",
+     "commitment": "commit-cap-session-rto",
      "target": 60.0,
      "margin": 0.0
     }
