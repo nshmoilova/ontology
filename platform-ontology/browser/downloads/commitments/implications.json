@@ -1,0 +1,230 @@
+{
+ "generatedFrom": "data/test/positive.ttl",
+ "vocabulary": "https://nshmoilova.github.io/ontology/data/commitment-context.jsonld",
+ "webVersion": "https://nshmoilova.github.io/ontology/#/commitments",
+ "$comment": "Architectural implications of promising a metric at a level, by threshold band. Curated by the architecture team, validated at build against the metric scheme and the decision register, shown in the Commitments designer. status 'draft' marks the whole file as awaiting review; each band carries its basis in decisions where one exists.",
+ "status": "draft",
+ "metrics": {
+  "availability": {
+   "comparator": ">=",
+   "unit": "%",
+   "unitIri": "unit:PERCENT",
+   "window": "P30D",
+   "general": "Availability is the share of a 30-day window in which the offering answers correctly at its boundary. Promising it forces redundancy proportional to the level and a decision about which dependencies count.",
+   "bands": [
+    {
+     "at": 99.9,
+     "label": "99.9 %, about 43 minutes a month",
+     "implies": "Zonal redundancy behind a health-checked entry point; planned maintenance either counted against the budget or done without downtime; every hard dependency at least as available, or its failure contained so the offering degrades rather than stops.",
+     "basis": [
+      "D69"
+     ]
+    },
+    {
+     "at": 99.95,
+     "label": "99.95 %, about 22 minutes a month",
+     "implies": "Zonal redundancy with automated failover and no single instance anywhere on the path; dependency failures must not propagate as outages, which means timeouts, bulkheads and a defined degraded mode.",
+     "basis": [
+      "D70"
+     ]
+    },
+    {
+     "at": 99.99,
+     "label": "99.99 %, about four minutes a month",
+     "implies": "Less than one human-driven recovery a month, so failover is automatic and rehearsed; every hard dependency in series promises the same or is excluded from the measurement; the state the offering reads is a local projection that survives a control-plane or upstream outage.",
+     "basis": [
+      "D71",
+      "D76"
+     ]
+    },
+    {
+     "at": 99.999,
+     "label": "99.999 %, about 26 seconds a month",
+     "implies": "Active-active across regions with traffic steering that needs no human; no shared component in series without the same promise. A deployment model the platform has not adopted.",
+     "basis": [
+      "D71"
+     ]
+    }
+   ]
+  },
+  "latency.p99": {
+   "comparator": "<=",
+   "unit": "ms",
+   "unitIri": "unit:MilliSEC",
+   "window": "P7D",
+   "general": "Latency at the 99th percentile over 7 days, measured at the offering's boundary. Promising it caps how far away, and how many in series, the things on the hot path may be.",
+   "bands": [
+    {
+     "at": 300,
+     "label": "300 ms, the production budget",
+     "implies": "In-region dependencies only; no synchronous cross-region call on the request path; queueing under load bounded or shed. Consumers reserve against this figure, so whatever is left after the request path is theirs.",
+     "basis": [
+      "D69"
+     ]
+    },
+    {
+     "at": 100,
+     "label": "100 ms",
+     "implies": "Every lookup on the hot path in-region and mostly served from cache; no fan-out to more than one dependency in series; back-pressure rather than queues under load.",
+     "basis": []
+    },
+    {
+     "at": 50,
+     "label": "50 ms, edge-local",
+     "implies": "TLS termination, route resolution and any policy call served from a local projection; a dependency call is allowed only if it is itself well under the budget and in the same zone.",
+     "basis": [
+      "D71"
+     ]
+    },
+    {
+     "at": 25,
+     "label": "25 ms, local projections only",
+     "implies": "No network call beyond the zone on the hot path; the data the decision needs is replicated to where the decision is made, and re-projected from governance rather than fetched.",
+     "basis": [
+      "D71"
+     ]
+    }
+   ]
+  },
+  "rto": {
+   "comparator": "<=",
+   "unit": "min",
+   "unitIri": "unit:MIN",
+   "window": "P90D",
+   "general": "Recovery time is how long after losing a region the offering serves again, evidenced per quarter. Promising it decides how warm the standby is and whether a human is in the loop.",
+   "bands": [
+    {
+     "at": 60,
+     "label": "60 minutes, a routing change to a warm standby",
+     "implies": "A standby in another region with configuration, grants, journey definitions and routes replicated ahead of time; routing control that does not depend on the lost region; a rehearsed runbook. Evidence requires a quarterly exercise, not a dashboard.",
+     "basis": [
+      "D69",
+      "D71"
+     ]
+    },
+    {
+     "at": 15,
+     "label": "15 minutes, automated failover",
+     "implies": "Health detection, promotion and routing without a human in the loop; standby capacity kept warm and sized for the full load, not a fraction of it.",
+     "basis": []
+    },
+    {
+     "at": 5,
+     "label": "5 minutes, active-active",
+     "implies": "No promotion step at all: every region serves live traffic and the loss of one is a capacity event, not a recovery. A deployment model the platform has not adopted.",
+     "basis": [
+      "D71"
+     ]
+    }
+   ]
+  },
+  "rpo": {
+   "comparator": "<=",
+   "unit": "min",
+   "unitIri": "unit:MIN",
+   "window": "P90D",
+   "general": "Recovery point is how much of the most recent state may be lost in a region loss, evidenced per quarter. It applies where the offering holds data; a stateless offering meets any floor by promising zero.",
+   "bands": [
+    {
+     "at": 15,
+     "label": "15 minutes, asynchronous replication",
+     "implies": "Cross-region replication at a short interval; consumers accept losing the last interval of writes; residency rules bound where the replica may sit.",
+     "basis": [
+      "D69"
+     ]
+    },
+    {
+     "at": 5,
+     "label": "5 minutes, near-continuous replication",
+     "implies": "The window of possibly lost writes is small enough that repeating the last action is acceptable, for example re-authentication for sessions created in the last five minutes; the offering must fail closed on state it cannot find.",
+     "basis": [
+      "D71"
+     ]
+    },
+    {
+     "at": 0,
+     "label": "zero, nothing to lose",
+     "implies": "Either the offering holds no state and everything it reads is re-projected from a source of truth elsewhere, or replication is synchronous with the latency cost that implies.",
+     "basis": [
+      "D71"
+     ]
+    }
+   ]
+  },
+  "failover.success-ratio": {
+   "comparator": ">=",
+   "unit": "%",
+   "unitIri": "unit:PERCENT",
+   "window": "P90D",
+   "general": "The share of requests that succeed while a failover is in progress. It applies only where the capability is offered in more than one region; a single-region offering has no failover to measure.",
+   "bands": [
+    {
+     "at": 99,
+     "label": "99 %, one in a hundred lost during the event",
+     "implies": "Connection draining and retries at the entry point during failover; requests in flight retried idempotently; consumers told to expect brief errors.",
+     "basis": [
+      "D67"
+     ]
+    },
+    {
+     "at": 99.9,
+     "label": "99.9 %, failover invisible to almost every caller",
+     "implies": "Sticky state replicated ahead of the event, retries transparent to the caller, no cold caches in the standby.",
+     "basis": [
+      "D67"
+     ]
+    }
+   ]
+  },
+  "change.failure-rate": {
+   "comparator": "<=",
+   "unit": "%",
+   "unitIri": "unit:PERCENT",
+   "window": "P30D",
+   "general": "The share of changes taking effect in a scope that are followed by a breach of a promise in the next window. It applies everywhere and nothing promises it yet.",
+   "bands": [
+    {
+     "at": 15,
+     "label": "15 %",
+     "implies": "Every change taking effect in a scope carries a timestamp and the offering it touches, so the next window's observations can be attributed to it; progressive delivery with a rollback path.",
+     "basis": [
+      "D67"
+     ]
+    },
+    {
+     "at": 5,
+     "label": "5 %",
+     "implies": "Canary or staged rollout with automated rollback on a breach signal; changes small and reversible; the window after a change watched, not assumed.",
+     "basis": [
+      "D67"
+     ]
+    }
+   ]
+  },
+  "redundancy.restore-time": {
+   "comparator": "<=",
+   "unit": "min",
+   "unitIri": "unit:MIN",
+   "window": "P90D",
+   "general": "How long after losing a region the offering again has a failover target. It applies only to a multi-region offering; it is the operational safety margin.",
+   "bands": [
+    {
+     "at": 240,
+     "label": "4 hours",
+     "implies": "Capacity in a third location, or the ability to provision a new standby, within the working day; replication re-established before the window closes.",
+     "basis": [
+      "D67"
+     ]
+    },
+    {
+     "at": 60,
+     "label": "1 hour",
+     "implies": "Pre-provisioned spare capacity and automated re-replication; the platform is never more than an hour away from having a failover target again.",
+     "basis": [
+      "D67"
+     ]
+    }
+   ]
+  }
+ }
+}

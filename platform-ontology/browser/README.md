@@ -32,6 +32,7 @@ terms by local name, and the build joins the two.
 | a principle, its test, or what enforces it | `docs/principles.json` |
 | a guided explainer / walkthrough | `docs/explainers.json` |
 | a promise, a floor, or the reason behind one (the Commitments view) | `data/test/positive.ttl`, or the graph `DECLARATIONS` points at |
+| what promising a metric at a level implies architecturally (the designer) | `docs/implications.json` |
 | an explainer diagram | `docs/diagrams/*.svg` |
 | competency questions | `docs/competency-questions.md` |
 | the app itself | `browser/index.html`, `app.js`, `styles.css` |

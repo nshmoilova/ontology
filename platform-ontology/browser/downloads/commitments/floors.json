@@ -14,6 +14,10 @@
     "path": [
      "Platform root scope",
      "Production, US"
+    ],
+    "ancestorIds": [
+     "scope-prod",
+     "scope-root"
     ]
    },
    "metric": {
@@ -75,7 +79,15 @@
      "target": 99.99,
      "margin": 0.09
     }
-   ]
+   ],
+   "implication": {
+    "at": 99.9,
+    "label": "99.9 %, about 43 minutes a month",
+    "implies": "Zonal redundancy behind a health-checked entry point; planned maintenance either counted against the budget or done without downtime; every hard dependency at least as available, or its failure contained so the offering degrades rather than stops.",
+    "basis": [
+     "D69"
+    ]
+   }
   },
   {
    "id": "floor-prod-latency",
@@ -88,6 +100,10 @@
     "path": [
      "Platform root scope",
      "Production, US"
+    ],
+    "ancestorIds": [
+     "scope-prod",
+     "scope-root"
     ]
    },
    "metric": {
@@ -149,7 +165,15 @@
      "target": 30.0,
      "margin": 270.0
     }
-   ]
+   ],
+   "implication": {
+    "at": 300,
+    "label": "300 ms, the production budget",
+    "implies": "In-region dependencies only; no synchronous cross-region call on the request path; queueing under load bounded or shed. Consumers reserve against this figure, so whatever is left after the request path is theirs.",
+    "basis": [
+     "D69"
+    ]
+   }
   },
   {
    "id": "floor-prod-rpo",
@@ -162,6 +186,10 @@
     "path": [
      "Platform root scope",
      "Production, US"
+    ],
+    "ancestorIds": [
+     "scope-prod",
+     "scope-root"
     ]
    },
    "metric": {
@@ -223,7 +251,15 @@
      "target": 5.0,
      "margin": 10.0
     }
-   ]
+   ],
+   "implication": {
+    "at": 15,
+    "label": "15 minutes, asynchronous replication",
+    "implies": "Cross-region replication at a short interval; consumers accept losing the last interval of writes; residency rules bound where the replica may sit.",
+    "basis": [
+     "D69"
+    ]
+   }
   },
   {
    "id": "floor-prod-rto",
@@ -236,6 +272,10 @@
     "path": [
      "Platform root scope",
      "Production, US"
+    ],
+    "ancestorIds": [
+     "scope-prod",
+     "scope-root"
     ]
    },
    "metric": {
@@ -297,7 +337,16 @@
      "target": 60.0,
      "margin": 0.0
     }
-   ]
+   ],
+   "implication": {
+    "at": 60,
+    "label": "60 minutes, a routing change to a warm standby",
+    "implies": "A standby in another region with configuration, grants, journey definitions and routes replicated ahead of time; routing control that does not depend on the lost region; a rehearsed runbook. Evidence requires a quarterly exercise, not a dashboard.",
+    "basis": [
+     "D69",
+     "D71"
+    ]
+   }
   }
  ]
 }

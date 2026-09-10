@@ -255,6 +255,14 @@ h2.sec:first-of-type { margin-top: 1.6rem; }
 .cmtable td:last-child { max-width: 40ch; min-width: 26ch; }
 a.pill { text-decoration: none; }
 .stats .pill { display: inline-block; margin-top: .35rem; }
+.designer label { display: inline-flex; align-items: center; gap: 6px; margin: 0 16px 8px 0; font-size: .9rem; font-weight: 600; }
+.designer select, .designer input[type=text], .designer input[type=number], .designtable input[type=number] { font: inherit; font-size: .9rem; padding: 5px 8px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--panel); color: var(--ink); }
+.designer fieldset { border: 1px solid var(--rule); border-radius: 8px; padding: 6px 10px 4px; margin: 4px 0 8px; }
+.designer legend { font-size: .72rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; padding: 0 4px; }
+.designer .chk { font-weight: 500; font-size: .86rem; margin: 0 12px 4px 0; }
+.designtable td:nth-child(3) { white-space: normal; }
+.designtable td:last-child { max-width: 46ch; min-width: 30ch; }
+button.dlink { cursor: pointer; font: inherit; font-size: .78rem; }
 .chips a, .chips span.static {
   font-family: "IBM Plex Mono", monospace; font-size: .8rem;
   background: var(--code-bg); border: 1px solid var(--rule); border-radius: 5px;

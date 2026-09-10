@@ -835,21 +835,129 @@
     .map(([k, l]) => `<a href="#/commitments${k ? "/" + k : ""}" class="${active === k ? "active" : ""}">${l}</a>`).join("")}</nav>`;
   const cmSource = () => `<p class="muted small">Read at build time from the declarations in <code>${esc(CM().source)}</code>: the platform's promises as declared, approved and superseded — not a measurement feed.</p>`;
 
-  function viewCommitments() {
+  const bandFor = (spec, target) => {
+    if (!spec || target == null || Number.isNaN(target)) return null;
+    const elig = spec.bands.filter((b) => (spec.comparator === ">=" ? target >= b.at : target <= b.at));
+    if (!elig.length) return null;
+    return elig.reduce((a, b) => (spec.comparator === ">=" ? (b.at > a.at ? b : a) : (b.at < a.at ? b : a)));
+  };
+  const ttlNum = (t) => (Number.isInteger(t) ? t.toFixed(1) : String(t));
+  const slugify = (t) => (t || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "new-capability";
+
+  function viewCommitments(params) {
     const cm = CM();
+    const imp = cm.implications || { status: "draft", metrics: {} };
+    const capId = params.get("cap") || (cm.capabilities[0] ? cm.capabilities[0].id : "new");
+    const isNew = capId === "new";
+    const cap = isNew ? null : cm.capabilities.find((c) => c.id === capId) || null;
+    const scopeId = params.get("scope") || (cm.scopes[0] ? cm.scopes[0].id : "");
+    const scope = cm.scopes.find((s) => s.id === scopeId) || null;
+    const name = params.get("name") || "";
+    const holds = (params.get("holds") || "").split(",").filter(Boolean);
+    const regionIds = (params.get("regions") || "").split(",").filter(Boolean);
+    const offering = cap ? cap.offerings.find((o) => o.scope && o.scope.id === scopeId) || null : null;
+    const holdsLabels = isNew ? holds.map((id) => (cm.dataCategories.find((d) => d.id === id) || { label: id }).label) : (cap ? cap.dataCategories : []);
+    const regionLabels = isNew ? regionIds.map((id) => (cm.regions.find((r) => r.id === id) || { label: id }).label) : (cap ? cap.regions : []);
+    const multi = regionLabels.length > 1;
+    const floorsHere = scope ? cm.floors.filter((f) => f.scope && scope.ancestorIds.includes(f.scope.id)) : [];
+    const rows = cm.metrics.map((m) => {
+      const applies = m.condition === "always" || (m.condition === "holds-data" && holdsLabels.length > 0) || (m.condition === "multi-region" && multi);
+      const why = applies ? m.conditionLabel : (m.condition === "holds-data" ? "holds no data" : m.condition === "multi-region" ? "offered in one region" : m.conditionLabel);
+      const floor = floorsHere.find((f) => f.metric.notation === m.notation) || null;
+      const spec = imp.metrics[m.notation] || null;
+      let target = null, commitment = null;
+      if (isNew) { const v = params.get("t." + m.notation); target = v !== null && v !== "" ? +v : null; }
+      else if (offering) { commitment = offering.commitments.find((x) => x.metric.notation === m.notation) || null; if (commitment) target = commitment.target; }
+      return { m, applies, why, floor, spec, target, commitment, band: bandFor(spec, target), floorBand: floor ? bandFor(spec, floor.target) : null };
+    });
+    const unitOf = (r) => (r.spec ? r.spec.unit : (r.floor ? r.floor.unit : ""));
+    const draft = imp.status === "draft" ? `<span class="pill warning" title="Implication texts are drafted from the recorded decisions and await the architecture team's review">draft, for review</span>` : "";
+    const select = (name, opts, value) => `<select data-param="${name}">${opts.map(([v, l]) => `<option value="${esc(v)}"${v === value ? " selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
+    const controls = `<div class="card designer">
+      <label>Capability ${select("cap", [...cm.capabilities.map((c) => [c.id, c.label]), ["new", "Describe a new capability…"]], capId)}</label>
+      <label>Scope ${select("scope", cm.scopes.map((s) => [s.id, s.label]), scopeId)}</label>
+      ${isNew ? `<label>Name <input type="text" data-param="name" value="${esc(name)}" placeholder="for example Document storage"></label>
+      <fieldset><legend>Holds data</legend>${cm.dataCategories.map((d) => `<label class="chk"><input type="checkbox" data-param="holds" value="${esc(d.id)}"${holds.includes(d.id) ? " checked" : ""}> ${esc(d.label)}</label>`).join("")}</fieldset>
+      <fieldset><legend>Offered in regions</legend>${cm.regions.map((r) => `<label class="chk"><input type="checkbox" data-param="regions" value="${esc(r.id)}"${regionIds.includes(r.id) ? " checked" : ""}> ${esc(r.label)}</label>`).join("")}</fieldset>` : ""}
+    </div>`;
+    const facts = `<p class="small" style="margin:.8rem 0 .4rem">
+      <b>Holds</b> ${holdsLabels.length ? holdsLabels.map(esc).join(", ") : "no data"} ·
+      <b>Regions</b> ${regionLabels.length ? regionLabels.map(esc).join(", ") : "none chosen"} ·
+      <b>Scope</b> ${scope ? esc(scope.path.join(" › ")) : "—"} ·
+      <b>Floors here</b> ${floorsHere.length}
+      ${cap ? ` · <a href="${capHref(cap.id)}">open the record</a>${offering ? ` · ${statePill(offering.state)}` : ` · <span class="pill draft">no offering in this scope</span>`}` : ""}
+    </p>`;
+    const promiseCell = (r) => {
+      if (isNew) return `<input type="number" step="any" data-param="t.${esc(r.m.notation)}" value="${r.target == null ? "" : r.target}" placeholder="${r.floor ? fmtNum(r.floor.target) : (r.spec && r.spec.bands[0] ? fmtNum(r.spec.bands[0].at) : "")}" style="width:6.5em"${r.applies ? "" : " title=\"does not apply here; a promise is still allowed\""}> ${esc(unitOf(r))}`;
+      if (r.commitment) return `${promiseText(r.commitment)} ${evidencePill(r.commitment.evidence)}${r.commitment.floor ? `<div>${marginPill(r.commitment.floor.margin)}</div>` : ""}`;
+      if (!offering) return `<span class="muted">—</span>`;
+      return r.applies ? `<span class="pill warning">not promised</span>` : `<span class="muted">—</span>`;
+    };
+    const implCell = (r) => {
+      if (r.target != null) {
+        if (r.band) return `<b>${esc(r.band.label)}</b> ${esc(r.band.implies)} ${decisionChips(r.band.basis)}`;
+        return `<span class="pill warning">outside the described bands</span> <span class="muted">${r.spec ? esc(r.spec.general) : ""}</span>`;
+      }
+      if (!r.applies) return `<span class="muted">${r.spec ? esc(r.spec.general) : "Does not apply here."}</span>`;
+      if (r.floorBand) return `<span class="muted">At the floor, ${esc(r.floorBand.label)}:</span> ${esc(r.floorBand.implies)} ${decisionChips(r.floorBand.basis)}`;
+      return `<span class="muted">${r.spec ? esc(r.spec.general) : ""}</span>`;
+    };
+    const table = `<div class="tablewrap"><table class="data cmtable designtable">
+      <tr><th>Metric</th><th>Applies</th><th>Floor here</th><th>${isNew ? "Proposed promise" : "Promise"}</th><th>Architectural implication ${draft}</th></tr>
+      ${rows.map((r) => `<tr>
+        <td><b>${esc(r.m.label)}</b><div class="muted small">${esc(r.m.notation)}</div></td>
+        <td>${r.applies ? `<span class="pill met">applies</span>` : `<span class="pill draft">does not apply</span>`}<div class="muted small">${esc(r.why)}</div></td>
+        <td>${r.floor ? `${cmpWord(r.floor.comparator)} ${fmtNum(r.floor.target)} ${esc(r.floor.unit)}<div class="muted small">${fmtWindow(r.floor.window)} · <a href="#/commitments/floors#${esc(r.floor.id)}">must</a></div>` : `<span class="muted">no floor</span>`}</td>
+        <td>${promiseCell(r)}</td>
+        <td class="small">${implCell(r)}</td>
+      </tr>`).join("")}
+    </table></div>`;
+    let ttl = "";
+    if (isNew) {
+      const ctx = cm.context || {}; const slug = slugify(name); const sid = scope ? scope.id : "scope";
+      const promised = rows.filter((r) => r.target != null && r.spec);
+      const lines = [
+        "@prefix ex:   <https://w3id.org/examplebank/platform/data#> .",
+        "@prefix core: <https://w3id.org/examplebank/platform/core#> .",
+        "@prefix cp:   <https://w3id.org/examplebank/platform/control-plane#> .",
+        "@prefix cmt:  <https://w3id.org/examplebank/platform/commitment#> .",
+        "@prefix unit: <http://qudt.org/vocab/unit/> .",
+        "@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .", "",
+        `ex:cap-${slug} a core:Capability ; core:displayName "${name || "New capability"}" .`,
+        `ex:offering-${slug}-${sid} a cp:CapabilityOffering ; cp:declaredThrough ex:${ctx.managementPlane || "mgmt-plane"} ; cp:declarationScope ex:${sid} ;`,
+        `    cp:hasOfferingState cp:offering-planned ; cp:offersCapability ex:cap-${slug} ; cp:offeredInScope ex:${sid} .`,
+        ...(holds.length ? [`ex:${slug}-plane a cp:DataPlane ; cp:realizesCapability ex:cap-${slug} ; cp:holdsDataCategory ${holds.map((h) => "core:" + h).join(" , ")} ;`,
+          `    core:operatedBy ex:${(ctx.operators && ctx.operators[0]) ? ctx.operators[0].id : "operator"} .`,
+          `# add cp:scopeIncludes ex:${slug}-plane to ex:${sid}, and a capability control plane that actuates it`] : []),
+        ...(multi ? [`# one offering per region scope: repeat the offering for each region the capability is offered in`] : []),
+        ...(promised.length ? [`ex:source-${slug}-metrics a cmt:MeasurementSource ; core:displayName "${name || "New capability"} metrics feed" .`] : []),
+        ...promised.flatMap((r) => [
+          `ex:commit-${slug}-${slugify(r.m.notation)} a cmt:Commitment ; cp:declaredThrough ex:${ctx.managementPlane || "mgmt-plane"} ; cp:declarationScope ex:${sid} ;`,
+          `    cmt:commitsTo ex:offering-${slug}-${sid} ; cmt:metric cmt:${r.m.id} ; cmt:comparator cmt:${r.spec.comparator === ">=" ? "at-least" : "at-most"} ;`,
+          `    cmt:target ${ttlNum(r.target)} ; cmt:unit ${r.spec.unitIri} ; cmt:window "${r.floor ? r.floor.window : r.spec.window}"^^xsd:duration ;`,
+          `    cmt:measuredBy ex:source-${slug}-metrics ; cmt:validatedBy "queries/competency/cq16-commitment-status.rq"^^xsd:anyURI ;`,
+          `    cmt:rationale "TODO: why ${ttlNum(r.target)} ${r.spec.unit}${r.band ? " — " + r.band.label : ""}" ; cmt:hasCommitmentState cmt:state-draft .`]),
+      ];
+      ttl = `<section class="card" style="margin-top:1rem"><div class="mh"><b>Declarations to submit</b> <span class="muted small">planned offering, draft promises; the readiness gate makes it available once a contract is published and every floor metric is promised</span> <button type="button" class="dlink" data-copy="ttl-out">Copy</button></div>
+        <pre class="fence" id="ttl-out">${esc(lines.join("\n"))}</pre></section>`;
+    }
     return `${cmCrumb()}
       <h1 class="title">Commitments</h1>
-      <p class="lede">What each capability promises, where, against which floor, with what evidence, and why. A promise is a declaration: made through the management plane, approved where the scope requires it, superseded rather than edited. For the people who own a capability and the people who build on one.</p>
+      <p class="lede">Pick a capability, or describe one, and a scope. The table says which metrics apply to it and why, the floor that binds there, what is promised or proposed, and what promising at that level forces architecturally. Only a floor obliges; applicability and implications are advice.</p>
       ${cmSource()}
       ${cmSubnav("")}
+      ${controls}
+      ${facts}
+      ${table}
+      ${ttl}
+      ${(cap && cap.consumers && cap.consumers.length) ? `<p class="small" style="margin-top:.8rem"><b>Consumers</b> ${cap.consumers.map((k) => `${esc(k.applicationLabel)} (${k.needs.length} need${k.needs.length === 1 ? "" : "s"})`).join(", ")} · <a href="${capHref(cap.id)}">details</a></p>` : ""}
+      <h2 class="sec" style="margin-top:1.6rem">Records</h2>
       <div class="grid wide">${cm.capabilities.map((c) => `<div class="card modcard">
-        <div class="mh"><b style="font-family:'IBM Plex Serif',Georgia,serif;font-size:1.1rem"><a href="${capHref(c.id)}">${esc(c.label)}</a></b></div>
-        <div class="counts">${plural(c.counts.offerings, "offering")} · ${plural(c.counts.commitments, "promise")} · ${c.counts.met} evidenced · ${c.counts.noObservation} awaiting evidence · ${plural(c.counts.gaps, "gap")}</div>
-        ${c.offerings.map((o) => `<div class="small" style="margin-top:.4rem">${esc(o.label)} ${statePill(o.state)}
-          ${o.commitments.map((x) => `<span class="pill draft" title="${promiseText(x)}">${esc(x.metric.notation)}</span>`).join(" ")}</div>`).join("")}
-        <div class="cardlinks" style="margin-top:.6rem"><a href="${capHref(c.id)}">Open →</a><a class="dlink" href="${esc(c.download)}" download>Download .json</a></div>
+        <div class="mh"><b><a href="${capHref(c.id)}">${esc(c.label)}</a></b></div>
+        <div class="counts">${plural(c.counts.offerings, "offering")} · ${plural(c.counts.commitments, "promise")} · ${c.counts.met} evidenced · ${plural(c.counts.gaps, "gap")}</div>
+        <div class="cardlinks" style="margin-top:.5rem"><a href="#/commitments?cap=${esc(c.id)}">Design →</a><a class="dlink" href="${esc(c.download)}" download>Download .json</a></div>
       </div>`).join("")}</div>
-      <footer class="pagefoot">Answers <a href="#/questions?q=CQ-9">CQ-9</a>, <a href="#/questions?q=CQ-14">CQ-14</a> to <a href="#/questions?q=CQ-18">CQ-18</a>; see the explainer <a href="#/explain/commitments">Promises the platform can prove</a>.</footer>`;
+      <footer class="pagefoot">Applicability is D74, needs are D75, implications are curated in <code>docs/implications.json</code>; answers <a href="#/questions?q=CQ-19">CQ-19</a> and <a href="#/questions?q=CQ-20">CQ-20</a>.</footer>`;
   }
 
   function viewCapability(id) {
@@ -1037,7 +1145,7 @@
       html = parts[1] ? viewExplainer(decodeURIComponent(parts[1])) : viewExplainList();
     } else if (parts[0] === "commitments") {
       const sub = parts[1] ? decodeURIComponent(parts[1]) : "";
-      html = !sub ? viewCommitments() : sub === "promises" ? viewPromises() : sub === "floors" ? viewFloors() : sub === "gaps" ? viewGaps() : sub === "compose" ? viewCompose(params) : viewCapability(sub);
+      html = !sub ? viewCommitments(params) : sub === "promises" ? viewPromises() : sub === "floors" ? viewFloors() : sub === "gaps" ? viewGaps() : sub === "compose" ? viewCompose(params) : viewCapability(sub);
     } else if (parts[0] === "shapes") html = viewShapes(q);
     else if (parts[0] === "relationships") html = viewRelationships();
     else if (parts[0] === "principles") html = viewPrinciples();
@@ -1096,6 +1204,23 @@
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) { e.preventDefault(); searchEl.focus(); }
     });
 
+    $("#main").addEventListener("change", (e) => {
+      if (!e.target.matches("[data-param]")) return;
+      const p = new URLSearchParams();
+      const boxes = {};
+      $("#main").querySelectorAll("[data-param]").forEach((el) => {
+        const k = el.dataset.param;
+        if (el.type === "checkbox") { (boxes[k] = boxes[k] || []); if (el.checked) boxes[k].push(el.value); }
+        else if (el.value !== "") p.set(k, el.value);
+      });
+      Object.entries(boxes).forEach(([k, v]) => { if (v.length) p.set(k, v.join(",")); });
+      location.hash = "#/commitments?" + p.toString();
+    });
+    $("#main").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-copy]"); if (!b) return;
+      const src = document.getElementById(b.dataset.copy); if (!src) return;
+      navigator.clipboard.writeText(src.textContent).then(() => { b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 1500); });
+    });
     $("#filter").addEventListener("input", renderTree);
     document.querySelectorAll(".kindtabs button").forEach((b) => {
       b.addEventListener("click", () => {

@@ -38,6 +38,10 @@
     "path": [
      "Platform root scope",
      "Production, US"
+    ],
+    "ancestorIds": [
+     "scope-prod",
+     "scope-root"
     ]
    },
    "commitments": [
@@ -74,6 +78,15 @@
       "id": "floor-prod-availability",
       "target": 99.9,
       "margin": 0.09
+     },
+     "implication": {
+      "at": 99.99,
+      "label": "99.99 %, about four minutes a month",
+      "implies": "Less than one human-driven recovery a month, so failover is automatic and rehearsed; every hard dependency in series promises the same or is excluded from the measurement; the state the offering reads is a local projection that survives a control-plane or upstream outage.",
+      "basis": [
+       "D71",
+       "D76"
+      ]
      },
      "evidence": {
       "status": "no observation",
@@ -115,6 +128,14 @@
       "id": "floor-prod-latency",
       "target": 300.0,
       "margin": 275.0
+     },
+     "implication": {
+      "at": 25,
+      "label": "25 ms, local projections only",
+      "implies": "No network call beyond the zone on the hot path; the data the decision needs is replicated to where the decision is made, and re-projected from governance rather than fetched.",
+      "basis": [
+       "D71"
+      ]
      },
      "evidence": {
       "status": "no observation",
@@ -158,6 +179,14 @@
       "target": 15.0,
       "margin": 15.0
      },
+     "implication": {
+      "at": 0,
+      "label": "zero, nothing to lose",
+      "implies": "Either the offering holds no state and everything it reads is re-projected from a source of truth elsewhere, or replication is synchronous with the latency cost that implies.",
+      "basis": [
+       "D71"
+      ]
+     },
      "evidence": {
       "status": "no observation",
       "latest": null,
@@ -198,6 +227,15 @@
       "id": "floor-prod-rto",
       "target": 60.0,
       "margin": 0.0
+     },
+     "implication": {
+      "at": 60,
+      "label": "60 minutes, a routing change to a warm standby",
+      "implies": "A standby in another region with configuration, grants, journey definitions and routes replicated ahead of time; routing control that does not depend on the lost region; a rehearsed runbook. Evidence requires a quarterly exercise, not a dashboard.",
+      "basis": [
+       "D69",
+       "D71"
+      ]
      },
      "evidence": {
       "status": "no observation",

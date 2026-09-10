@@ -571,7 +571,7 @@ def source_digest() -> str:
             if f.is_file():
                 h.update(f.name.encode())
                 h.update(f.read_bytes())
-    for rel in ("docs/decisions.json", "docs/principles.json", "docs/explainers.json",
+    for rel in ("docs/decisions.json", "docs/principles.json", "docs/explainers.json", "docs/implications.json",
                 "docs/competency-questions.md"):
         f = ROOT / rel
         if f.exists():
@@ -708,7 +708,47 @@ def write_explainer_downloads(explainers, shapes, principles, decisions, formal)
     return sorted(written)
 
 
-def collect_commitments(g_ont, decisions):
+def load_implications(decisions):
+    """docs/implications.json: per metric, threshold bands with what promising at that
+    level forces architecturally. Validated fail-closed against the decision register;
+    metric notations are checked where the metric scheme is known."""
+    path = ROOT / "docs" / "implications.json"
+    if not path.exists():
+        return None
+    imp = json.loads(path.read_text())
+    known = {d["id"] for d in decisions}
+    for notation, spec in imp.get("metrics", {}).items():
+        if spec.get("comparator") not in (">=", "<="):
+            problem(f"implications for {notation}: comparator must be >= or <=")
+        for key in ("unit", "unitIri", "window", "general", "bands"):
+            if key not in spec:
+                problem(f"implications for {notation}: missing {key}")
+        for b in spec.get("bands", []):
+            if not isinstance(b.get("at"), (int, float)) or not b.get("label") or not b.get("implies"):
+                problem(f"implications for {notation}: a band needs a numeric 'at', a label and what it implies")
+            for d in b.get("basis", []):
+                if d not in known:
+                    problem(f"implications for {notation} cite unknown decision {d}")
+    return imp
+
+
+def band_for(imp, notation, target):
+    """The band a target falls in: the strongest band the target meets."""
+    if not imp or target is None:
+        return None
+    spec = imp.get("metrics", {}).get(notation)
+    if not spec:
+        return None
+    if spec["comparator"] == ">=":
+        elig = [b for b in spec["bands"] if target >= b["at"]]
+        pick = max(elig, key=lambda b: b["at"]) if elig else None
+    else:
+        elig = [b for b in spec["bands"] if target <= b["at"]]
+        pick = min(elig, key=lambda b: b["at"]) if elig else None
+    return {k: pick[k] for k in ("at", "label", "implies", "basis")} if pick else None
+
+
+def collect_commitments(g_ont, decisions, implications=None):
     """The Commitments view: every capability with its offerings by scope, each
     offering's committed promises with floor, margin, evidence and reason, the
     floors by scope with their coverage, and each owner's gaps. Read from the
@@ -772,7 +812,8 @@ def collect_commitments(g_ont, decisions):
                 r = g.value(x, CP.hasRegion); region = lit(g, r, SKOS.prefLabel) or ln(r)
             if env is None:
                 env = lit(g, x, CP.inEnvironment)
-        return {"id": ln(s), "label": label(s), "environment": env, "region": region, "path": [label(x) for x in reversed(chain)]}
+        return {"id": ln(s), "label": label(s), "environment": env, "region": region, "path": [label(x) for x in reversed(chain)],
+                "ancestorIds": [ln(x) for x in chain]}
 
     def margin(cmp, target, floor_target):
         if target is None or floor_target is None:
@@ -785,6 +826,11 @@ def collect_commitments(g_ont, decisions):
         metric_defs.append({"iri": m, "metric": concept(m), "condition": lit(g, cond, SKOS.notation) if cond is not None else None,
                             "conditionLabel": lit(g, cond, SKOS.prefLabel) if cond is not None else None})
     metric_defs.sort(key=lambda x: x["metric"]["notation"] or "")
+    if implications:
+        notations = {md["metric"]["notation"] for md in metric_defs}
+        for notation in implications.get("metrics", {}):
+            if notation not in notations:
+                problem(f"implications describe unknown metric {notation}")
 
     floors = []
     for f in sorted(g.subjects(RDF.type, CMT.CommitmentBaseline), key=str):
@@ -794,7 +840,8 @@ def collect_commitments(g_ont, decisions):
                        "comparator": lit(g, c, SKOS.notation) if c is not None else None, "target": num(g.value(f, CMT.target)),
                        "unit": unit_label(g.value(f, CMT.unit)), "window": lit(g, f, CMT.window),
                        "referenceSource": lit(g, f, CMT.referenceSource), "rationale": why, "decisions": cited(why),
-                       "approval": approval(f), "coverage": []})
+                       "approval": approval(f), "coverage": [],
+                       "implication": band_for(implications, (concept(m) or {}).get("notation"), num(g.value(f, CMT.target)))})
 
     def commitment_info(cm):
         m, c, st = g.value(cm, CMT.metric), g.value(cm, CMT.comparator), g.value(cm, CMT.hasCommitmentState)
@@ -818,6 +865,7 @@ def collect_commitments(g_ont, decisions):
                 "validatedBy": sorted(str(v) for v in g.objects(cm, CMT.validatedBy)),
                 "rationale": why, "decisions": cited(why), "supersedes": ln(sup) if sup is not None else None,
                 "declarationScope": label(ds), "approval": approval(cm), "floor": None,
+                "implication": band_for(implications, (concept(m) or {}).get("notation"), target),
                 "evidence": {"status": status, "latest": latest, "observations": len(obs)}}
 
     caps, scopes = [], {}
@@ -939,11 +987,18 @@ def collect_commitments(g_ont, decisions):
             for c in off["commitments"] + off["history"]:
                 c.pop("_metric", None)
     metrics = [{**md["metric"], "condition": md["condition"], "conditionLabel": md["conditionLabel"]} for md in metric_defs]
+    def scheme_members(scheme):
+        return sorted(({"id": ln(x), "label": lit(g, x, SKOS.prefLabel) or ln(x)} for x in g.subjects(SKOS.inScheme, scheme)), key=lambda x: x["id"])
+    context = {"managementPlane": next((ln(x) for x in sorted(g.subjects(RDF.type, CP.ManagementControlPlane), key=str)), None),
+               "sources": [{"id": ln(x), "label": label(x)} for x in sorted(g.subjects(RDF.type, CMT.MeasurementSource), key=str)],
+               "operators": [{"id": ln(x), "label": label(x)} for x in sorted(g.subjects(RDF.type, CORE.LegalEntity), key=str)]}
     try:
         source = str(DECLARATIONS.relative_to(ROOT))
     except ValueError:
         source = str(DECLARATIONS)
-    return {"source": source, "metrics": metrics, "scopes": sorted(scopes.values(), key=lambda x: x["id"]), "capabilities": caps, "floors": floors}
+    return {"source": source, "metrics": metrics, "scopes": sorted(scopes.values(), key=lambda x: x["id"]), "capabilities": caps, "floors": floors,
+            "dataCategories": scheme_members(CORE.DataCategoryScheme), "regions": scheme_members(CORE.RegionScheme), "context": context,
+            "implications": implications}
 
 
 def write_commitment_downloads(cm):
@@ -957,6 +1012,10 @@ def write_commitment_downloads(cm):
         for cap in cm["capabilities"]:
             p = out / f"{cap['id']}.json"
             p.write_text(json.dumps({**head, "webVersion": f"{SITE_URL}#/commitments/{cap['id']}", **{k: v for k, v in cap.items() if k != "download"}}, indent=1, ensure_ascii=False) + "\n")
+            written.add(p)
+        if cm.get("implications"):
+            p = out / "implications.json"
+            p.write_text(json.dumps({**head, "webVersion": f"{SITE_URL}#/commitments", **cm["implications"]}, indent=1, ensure_ascii=False) + "\n")
             written.add(p)
         p = out / "floors.json"
         p.write_text(json.dumps({**head, "webVersion": f"{SITE_URL}#/commitments/floors", "floors": cm["floors"]}, indent=1, ensure_ascii=False) + "\n")
@@ -995,7 +1054,8 @@ def main() -> int:
         print(f"  note: {len(unclassified)} stored classes carry no data category: {', '.join(unclassified[:8])}{' …' if len(unclassified) > 8 else ''}")
     principles, not_principles = load_principles(terms, shapes, decisions)
     explainers = load_explainers(terms, shapes)
-    commitments = collect_commitments(g, decisions)
+    implications = load_implications(decisions)
+    commitments = collect_commitments(g, decisions, implications)
     for ex in explainers:
         ex["download"] = f"downloads/{ex['id']}.md"
     formal, backlog = load_competency_questions()
